@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>فاتورة {{ bill.id }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+      line-height: 1.4;
+      font-size: 12px;
+      max-width: 80mm;
+      margin: 0 auto;
+    }
+
+    h1.store-name {
+      text-align: center;
+      font-size: 18px;
+      color: #000;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .invoice-header, .invoice-footer {
+      margin-bottom: 15px;
+    }
+    .t-left {
+      text-align: left;
+    }
+    .invoice-section {
+      margin-bottom: 10px;
+    }
+
+    .invoice-section div {
+      line-height: 1.5;
+      margin-bottom: 3px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+      font-size: 11px;
+    }
+
+    th, td {
+      border: 1px solid #aaa;
+      padding: 5px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      font-size: 10px;
+    }
+
+    td.text-left {
+      text-align: right;
+    }
+
+    td.text-right {
+      text-align: left;
+    }
+
+    .total-section {
+      margin-left: auto;
+      margin-bottom: 15px;
+    }
+
+    .total-section table {
+      width: 100%;
+      border: none;
+    }
+
+    .total-section td {
+      padding: 4px 0;
+    }
+
+    .total-section strong {
+      font-size: 12px;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .print-btn, .back-btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .print-btn {
+      background-color: #000;
+      color: white;
+    }
+
+    .print-btn:hover {
+      background-color: #444;
+    }
+
+    .back-btn {
+      background-color: #f0f0f0;
+      color: #000;
+      border: 1px solid #ccc;
+    }
+
+    .back-btn:hover {
+      background-color: #e0e0e0;
+    }
+
+    @media print {
+      .action-buttons {
+        display: none;
+      }
+
+      body {
+        padding: 5px;
+      }
+
+      h1.store-name {
+        border-bottom: none;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="store-name">{{ bill.menu.customer.store_ar_name }}</h1>
+
+  <div class="invoice-header">
+    <div class="invoice-section">
+      <div>
+        <div class="t-left"><strong>التاريخ:</strong> {{ bill.created_at|date:"Y/m/d " }}</div>
+        <div ><strong>رقم الفاتورة:</strong> #{{ bill.ordernumber }}</div>
+
+        
+
+        <div><strong>العميل:</strong> {{ bill.customer_name }}   - <strong>الهاتف:</strong> {{ bill.customer_phone }}</div>
+        {% if bill.delivery_address %}
+        <div><strong>طريقة الاستلام:</strong> توصيل </div>
+
+        <div><strong>العنوان:</strong> {{ bill.delivery_address.name }}</div>
+
+        {% else %}
+        <div><strong>طريقة الاستلام:</strong> استلام من المحل</div>
+        {% endif %}
+        {% if bill.order_type %}
+        <div><strong>نوع الطلب:</strong> {{ bill.order_type }}</div>
+        {% endif %}
+       
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th width="5%">#</th>
+        <th width="25%">المنتج</th>
+        <th width="15%">السعر</th>
+        <th width="10%">الكمية</th>
+        <th width="10%">الحجم</th>
+        <th width="10%">اللون</th>
+        <th width="15%">الإجمالي</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in items %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td class="text-left">{{ i.product.name }}</td>
+        <td>{{ i.product.price }} د.ل</td>
+        <td>{{ i.quantity }}</td>
+        <td>{% if i.size %}{{ i.size }}{% else %}--{% endif %}</td>
+        <td>{% if i.color %}{{ i.color }}{% else %}--{% endif %}</td>
+        <td>{{ i.get_final_price }} د.ل</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+    <div class="invoice-header">
+    <div class="invoice-section">
+      <div>
+        {% if bill.notes %}
+        <div><strong>ملاحظات:</strong> {{ bill.notes }}</div>
+        {% endif %}
+      </div>
+    </div>
+    </div>
+             
+        
+    <div class="total-section">
+
+    <table>
+      {% if bill.delivery_address %}
+      <tr>
+        <td>تكلفة التوصيل:</td>
+        <td class="text-right">{{ bill.delivery_address.price }} د.ل</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td><strong>المجموع الكلي:</strong></td>
+        <td class="text-right"><strong>{{ bill.get_total }} د.ل</strong></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="action-buttons">
+    <button class="print-btn" onclick="window.print()">🖨️ طباعة الفاتورة</button>
+    <a href="{% url 'customer_dashboard' %}" class="back-btn">← العودة للوحة التحكم</a>
+  </div>
+
+  <script>
+    function adjustPrintStyles() {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @media print {
+          body {
+            font-size: 10px !important;
+          }
+          h1.store-name {
+            font-size: 14px !important;
+          }
+          table {
+            font-size: 9px !important;
+          }
+          th, td {
+            padding: 3px !important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    window.addEventListener('load', adjustPrintStyles);
+  </script>
+
+</body>
+</html>

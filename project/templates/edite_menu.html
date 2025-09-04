@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>liysta - تعديل صفحتك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/edmenu.css' %}">
+
+</head>
+<body>
+
+
+
+<div class="edit-menu-container">
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <h1 class="page-title">تعديل صفحة {{ menu.customer.store_ar_name }}</h1>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-cog"></i>
+                الإعدادات الأساسية
+            </h2>
+ 
+            <!-- Logo Field -->
+            <div class="form-group">
+                <label class="form-label">{{ form.logo.label }}</label>
+                
+                {% if menu.logo %}
+                    <div class="current-image-container">
+                        <span class="image-title">الشعار الحالي:</span>
+                        <img src="{{ menu.logo.url }}" alt="شعار المتجر الحالي" class="current-image">
+                    </div>
+                {% endif %}
+                
+                <div class="file-input-container">
+                    <label class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>انقر لرفع شعار جديد</span>
+                        <small>الحجم الموصى به: 200×200 بكسل (خلفية شفافة)</small>
+                        {{ form.logo }}
+                    </label>
+                </div>
+                {% if form.logo.errors %}
+                    <div class="error">{{ form.logo.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <!-- Main Image Field -->
+            <div class="form-group">
+                <label class="form-label">{{ form.image.label }}</label>
+                
+                {% if menu.image %}
+                    <div class="current-image-container">
+                        <span class="image-title">الصورة الحالية:</span>
+                        <img src="{{ menu.image.url }}" alt="الصورة الرئيسية الحالية" class="current-image">
+                    </div>
+                {% endif %}
+                
+                <div class="file-input-container">
+                    <label class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>انقر لرفع صورة جديدة</span>
+                        <small>الحجم الموصى به: 800×400 بكسل</small>
+                        {{ form.image }}
+                    </label>
+                </div>
+                {% if form.image.errors %}
+                    <div class="error">{{ form.image.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">{{ form.desc.label }}</label>
+    
+              <div class="desc-editor-container">
+                {{ form.desc }}
+              </div>
+    
+              {% if form.desc.errors %}
+                <div class="error">{{ form.desc.errors }}</div>
+              {% endif %}
+            </div>
+            <!-- Second Color Field -->
+            <div class="form-group">
+                <label class="form-label">{{ form.second_color.label }}</label>
+                <p>اختر لوناً يميز علامتك التجارية</p>
+                
+                <div class="color-picker-container">
+                    {{ form.second_color }}
+                    <span id="color-value" class="color-value">{{ form.second_color.value|default:"#F97316" }}</span>
+                </div>
+                {% if form.second_color.errors %}
+                    <div class="error">{{ form.second_color.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <!-- Delivery Field -->
+        <div class="form-group">
+          <label class="form-label" for="id_recivieing">طريقة تسليم الطلبات</label>
+          {{ form.recivieing }}
+        </div>
+
+        
+        <!-- Template Selection -->
+        <div class="template-selection">
+            <div class="template-header">
+                <h2 class="section-title">
+                    <i class="fas fa-palette"></i>
+                    تصميم القائمة
+                </h2>
+                <p>اختر التصميم الذي يناسب متجرك</p>
+            </div>
+            
+            <div class="template-cards">
+                <!-- Template 1 -->
+                <div class="template-card {% if form.template.value == 'template1' %}selected{% endif %}">
+                    <input type="radio" id="id_template_template1" name="template" value="template1" {% if form.template.value == 'template1' %}checked{% endif %}>
+                    <label for="id_template_template1">
+                        <div class="template-badge">محدد</div>
+                        <div class="template-info">
+                            <h4 class="template-name">Liysta Geo</h4>
+                            <p class="template-desc">يتميز هذا التصميم بالتركيز على التفاصيل الدقيقة لضمان تجربة مستخدم احترافية .</p>
+                        </div>
+                        <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template1" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                     
+                    </div>
+                    </label>
+                </div>
+                
+                <!-- Template 2 -->
+                <div class="template-card {% if form.template.value == 'template2' %}selected{% endif %}">
+                    <input type="radio" id="id_template_template2" name="template" value="template2" {% if form.template.value == 'template2' %}checked{% endif %}>
+                    <label for="id_template_template2">
+                        <div class="template-badge">محدد</div>
+                        <div class="template-info">
+                            <h4 class="template-name">Liysta Simple</h4>
+                            <p class="template-desc">يتميز هذا التصميم بعرض المنتجات في مستطيلات متوازية بطريقة تتناسب مع المطاعم والمقاهي.</p>
+                        </div>
+                        <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template2" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        
+                    </div>
+                    </label>
+                </div>
+                
+                <!-- Template 3 -->
+                <div class="template-card {% if form.template.value == 'template3' %}selected{% endif %}">
+                    <input type="radio" id="id_template_template3" name="template" value="template3" {% if form.template.value == 'template3' %}checked{% endif %}>
+                    <label for="id_template_template3">
+                        <div class="template-badge">محدد</div>
+                        <div class="template-info">
+                            <h4 class="template-name">Liysta Simple Dark  </h4>
+                            <p class="template-desc">يتميز هذا القالب عن نظيره السابق باهتمام اكبر بالتفاصيل واماكنية التغيير الى الوضع الليلي</p>
+                        </div>
+                        <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template3" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                     
+                    </div>
+                    </label>
+                </div>
+
+                <div class="template-card {% if form.template.value == 'template4' %}selected{% endif %}">
+                    <input type="radio" id="id_template_template4" name="template" value="template4" {% if form.template.value == 'template4' %}checked{% endif %}>
+                    <label for="id_template_template4">
+                        <div class="template-badge">محدد</div>
+                        <div class="template-info">
+                            <h4 class="template-name">Liysta Cards</h4>
+                            <p class="template-desc">يتميز هذا القالب بعرض المنتجات بطريقة جذابة وتسويقية تتماشى مع المتاجر الالكترونية</p>
+                        </div>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template4" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                       
+                    </div>
+                    </label>
+                </div>
+            </div>
+            {% if form.template.errors %}
+                <div class="error">{{ form.template.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-save"></i> حفظ التعديلات
+        </button>
+    </form>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    const colorPicker = document.getElementById('id_second_color');
+    const colorValue = document.getElementById('color-value');
+    
+    colorPicker.addEventListener('input', function() {
+        colorValue.textContent = this.value;
+        colorValue.style.color = this.value;
+    });
+    
+    document.querySelectorAll('.template-card input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            if (this.checked) {
+                this.closest('.template-card').classList.add('selected');
+            }
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            group.style.opacity = '0';
+            group.style.transform = 'translateY(20px)';
+            group.style.transition = `all 0.5s ease ${index * 0.1}s`;
+            
+            setTimeout(() => {
+                group.style.opacity = '1';
+                group.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    });
+</script>
+</body>
+</html>

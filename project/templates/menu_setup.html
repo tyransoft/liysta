@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta -  اعداد صفحتك</title>
+    <link rel="stylesheet" href="{% static 'css/menusetup.css' %}">
+
+</head>
+<body>
+    <div class="auth-container">
+        <div class="brand-header">
+            <div class="brand-logo">Liysta</div>
+            <div class="brand-subtitle">منصتك الذكية لتنقل عملك الى العالم الرقمي </div>
+        </div>
+        
+        <div class="auth-card">
+            <h2 class="auth-title">جهّز صفحة متجرك الان!</h2>
+            
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="desc" class="form-label">وصف للمتجر</label>
+            <input type="text" name="desc" id="desc" class="form-control-file">
+        </div>
+        <div class="form-group">
+            <label for="logo" class="form-label">شعار المتجر</label>
+            <input type="file" name="logo" id="logo" class="form-control-file" accept="image/*">
+            <small class="text-muted">الصورة المثالية تكون بخلفية شفافة وبقياس 200×200 بكسل</small>
+        </div>
+        
+
+        <div class="form-group">
+            <label for="image" class="form-label">صورة المتجر</label>
+            <input type="file" name="image" id="image" class="form-control-file" accept="image/*">
+            <small class="text-muted">اختر صورة تعبر عن متجرك (800×400 بكسل مثالية)</small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">اختيار اللون</label>
+            <div class="color-picker-container">
+                <input type="color" name="second_color" id="second_color" value="#F97316" class="color-picker">
+                <span id="color-value">#F97316</span>
+            </div>
+            <small class="text-muted">اختر لوناً يتناسب مع هوية متجرك</small>
+        </div>
+
+       <div class="form-group">
+    <label for="recivieing" class="form-label">طريقة تسليم الطلب</label>
+     <select name="recivieing" id="recivieing" class="form-control-file">
+        <option value="التوصيل">التوصيل</option>
+        <option value="الاستلام في المحل">التسليم في المتجر</option>
+        <option value="التوصيل او الاستلام في المحل">التوصيل و التسليم في المتجر</option>
+     </select>
+    </div>
+
+
+        <button type="submit" class="submit-btn">حفظ الإعدادات</button>
+    </form>
+    
+    <div class="preview-section">
+        <h3 class="preview-title">معاينة اللون</h3>
+        <div class="preview-box" id="color-preview" style="background-color: #F97316;">
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    const colorPicker = document.getElementById('second_color');
+    const colorPreview = document.getElementById('color-preview');
+    const colorValue = document.getElementById('color-value');
+    
+    colorPicker.addEventListener('input', function() {
+        const selectedColor = this.value;
+        colorPreview.style.backgroundColor = selectedColor;
+        colorValue.textContent = selectedColor;
+    });
+</script>
+</body>
+</html>

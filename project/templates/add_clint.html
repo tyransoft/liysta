@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - إدارة عرض العملاء</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #2667cc;
+            --action: #F97316;
+            --action-dark: #E06515;
+            --text: #1F2937;
+            --light-bg: #F9FAFB;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray: #6B7280;
+            --light-gray: #E5E7EB;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--action));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .brand-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            accent-color: var(--action);
+        }
+        
+        .checkbox-label {
+            margin: 0;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: var(--action);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1.5rem;
+        }
+        
+        .submit-btn:hover {
+            background: var(--action-dark);
+            transform: translateY(-2px);
+        }
+        
+        .error-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--danger);
+        }
+        
+        .error-box ul {
+            margin: 0.5rem 0 0 0;
+            padding-right: 1.5rem;
+        }
+        
+        .messages {
+            margin-bottom: 1.5rem;
+        }
+        
+        .message {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .message.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .message.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .form-helptext {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .current-image {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .current-image img {
+            display: block;
+            max-width: 150px;
+            max-height: 150px;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 1.5rem;
+            }
+            
+            .auth-card {
+                padding: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="brand-header">
+            <div class="brand-logo">Liysta</div>
+            <div class="brand-subtitle">منصتك الذكية لتنقل عملك إلى العالم الرقمي</div>
+        </div>
+        
+        <div class="auth-card">
+            <h2 class="auth-title">
+                {% if clint %}تعديل العميل{% else %}إضافة عميل جديد{% endif %}
+            </h2>
+            
+            {% if form.errors %}
+                <div class="error-box">
+                    <strong>حدثت أخطاء في النموذج:</strong>
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                    {{ form.name }}
+                    {% if form.name.help_text %}
+                        <span class="form-helptext">{{ form.name.help_text }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                    {{ form.description }}
+                    {% if form.description.help_text %}
+                        <span class="form-helptext">{{ form.description.help_text }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.logo.id_for_label }}">{{ form.logo.label }}</label>
+                    {{ form.logo }}
+                    {% if form.logo.help_text %}
+                        <span class="form-helptext">{{ form.logo.help_text }}</span>
+                    {% endif %}
+                    {% if clint and clint.logo %}
+                        <div class="current-image">
+                            الصورة الحالية:
+                            <img src="{{ clint.logo.url }}" alt="شعار {{ clint.name }}">
+                        </div>
+                    {% endif %}
+                </div>
+                
+               
+                
+                <button type="submit" class="submit-btn">
+                    {% if clint %}تحديث العميل{% else %}إضافة العميل{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

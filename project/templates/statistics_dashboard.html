@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الاحصائية | Liysta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #2667cc;
+            --primary-light: #1F2937;
+            --secondary: #F97316;
+            --accent: #F97316;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #0EA5E9;
+            
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --light: #f9fafb;
+            --lighter: #ffffff;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            direction: rtl;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+      
+        .logo-text {
+            font-weight: 900;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Enhanced Dashboard Container */
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* Premium Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dashboard-header h1 i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .user-actions, .guest-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+       
+        .s-btn {
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            background: #F97316; 
+            color: white;
+        }
+        
+        /* Advanced Stat Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Premium Stat Card */
+        .stat-card {
+            background: var(--lighter);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover::after {
+            height: 6px;
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card-header .icon-container {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 12px rgba(58, 134, 255, 0.3);
+        }
+
+        .stat-card-header .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .stat-card-header .card-actions button {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .stat-card-header .card-actions button:hover {
+            color: var(--primary);
+        }
+
+        .stat-card-header h3 {
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+            flex-grow: 1;
+            padding: 0 1rem;
+        }
+
+        .stat-value {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value .main-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .stat-value .unit {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            gap: 0.5rem;
+        }
+
+        .positive {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .negative {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .neutral {
+            background-color: rgba(14, 165, 233, 0.15);
+            color: var(--info);
+        }
+
+        .stat-period {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Premium Chart Section */
+        .chart-section {
+            background: var(--lighter);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .chart-section:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-header h2 i {
+            color: var(--primary);
+        }
+
+        .chart-container {
+            height: 400px;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .stat-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+            
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value .main-value {
+                font-size: 2.4rem;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stat-card {
+                padding: 1.5rem;
+            }
+            
+            .stat-value .main-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="logo">
+            <span class="logo-text">Liysta</span>
+        </div>
+        
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-pie"></i> لوحة الإحصائيات</h1>
+            <div class="user-actions">
+                <a href="{% url 'home' %}" class="s-btn">    
+                    <i class="fas fa-home"></i> الصفحة الرئيسية
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>المستخدمون النشطون</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ active_users }}</span>
+                    <span class="unit">مستخدم</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--danger) 0%, #d43a5f 100%); box-shadow: 0 4px 12px rgba(239, 71, 111, 0.3);">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <h3>المستخدمون غير النشطين</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ inactive_users }}</span>
+                    <span class="unit">مستخدم</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--info) 0%, #0e6f8e 100%); box-shadow: 0 4px 12px rgba(17, 138, 178, 0.3);">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3> عدد زيارات قوائمنا</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ visits }}</span>
+                    <span class="unit">زيارة</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">
+                        <i class="fas fa-plus"></i> {{ month_visits }} هذا الشهر 
+                    </span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%); box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3>إجمالي الاشتراكات</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ subscriptions_count }}</span>
+                    <span class="unit">اشتراك</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">
+                        <i class="fas fa-check-circle"></i> {{ active_subscriptions }} نشط
+                    </span>
+                    <span class="stat-period">هذا الشهر</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3>الإيرادات هذا الشهر</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ monthly_income }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%); box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>مستفيدي العرض المجاني</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ free_users }}</span>
+                    <span class="unit">إجمالي</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">
+                        <i class="fas fa-user"></i> {{ currentfree_users }} نشط حاليًا
+                    </span>
+                    <span class="stat-change neutral">
+                        <i class="fas fa-arrow-up"></i> {{ converted_users }} تم الترقية
+                    </span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">
+                        <i class="fas fa-percent"></i> {{ converted_per|floatformat:2 }}% نسبة التحويل
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> إحصائيات المبيعات السنوية {{ current_year }}</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>الإيرادات السنوية</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ yearly_income }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--accent) 0%, #d9005a 100%); box-shadow: 0 4px 12px rgba(255, 0, 110, 0.3);">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3>إجمالي الطلبات</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ orders_stats.total }}</span>
+                    <span class="unit">طلب</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">
+                        <i class="fas fa-check-circle"></i> {{ orders_stats.delivered }} مكتمل
+                    </span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%); box-shadow: 0 4px 12px rgba(255, 190, 11, 0.3);">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <h3>طلبات قيد الانتظار</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ orders_stats.pending }}</span>
+                    <span class="unit">طلب</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-period">من إجمالي الطلبات</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            
+            // البيانات من Django
+            const monthlyLabels = {{ months|safe }};
+            const currentYearData = {{ monthly_sales }};
+            
+            // إنشاء المخطط
+            new Chart(salesCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [
+                        {
+                            label: 'المبيعات الشهرية لعام {{ current_year }}',
+                            data: currentYearData,
+                            backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                            borderColor: 'rgba(37, 99, 235, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal, sans-serif'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            rtl: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw.toLocaleString() + ' د.ل';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' د.ل';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    locale: 'ar-LY'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

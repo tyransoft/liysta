@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta -  اختيار التصميم </title>
+    <link rel="stylesheet" href="{% static 'css/temp.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+
+</head>
+
+<body>
+<div class="template-selection-container">
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <h1 class="page-title">اختر قالب القائمة</h1>
+        <p style="color: #6B7280;">اختر التصميم الذي يناسب متجرك</p>
+    </div>
+    
+    <form method="POST" action="{% url 'choose_template' menu_id=menu_id %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_template" id="selected-template" value="">
+        
+        <div class="template-cards">            <div class="template-card" data-template="template1" onclick="selectTemplate(this, 'template1')">
+                <div class="template-info">
+                    <h3 class="template-name">Liysta Geo</h3>
+                    <p class="template-desc">تصميم جذاب بتفاصيل دقيقة وتجربة مستخدم احترافية</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template1" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'template1')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="template-card" data-template="template2" onclick="selectTemplate(this, 'template2')">
+                <div class="template-info">
+                    <h3 class="template-name">Liysta Simple</h3>
+                    <p class="template-desc">تصميم كلاسيكي وجذاب يتناسب مع المطاعم والمقاهي</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template2" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'template2')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+              <div class="template-card" data-template="template3" onclick="selectTemplate(this, 'template3')">
+                <div class="template-info">
+                    <h3 class="template-name">Liysta Simple Dark</h3>
+                    <p class="template-desc">تصميم كلاسيكي جذاب  يشبه نظيره السابق ولكن يتميز باهتمام اكثر بالتفاصيل مع امكانية التغيير الى الوضع الليلي</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template3" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'template3')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="template-card" data-template="template4" onclick="selectTemplate(this, 'template4')">
+                <div class="template-info">
+                    <h3 class="template-name">Liysta Cards</h3>
+                    <p class="template-desc">تصميم معاصر يتميز بعرض المنتجات في بطاقات تسويقية ليتماشى مع المتاجر الالكترونية</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_template' %}?template=template4" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'template4')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="submit-btn" id="submit-btn" disabled>
+                حفظ الإعدادات والمتابعة
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function selectTemplate(cardElement, templateName) {
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        cardElement.classList.add('selected');
+        
+        document.getElementById('selected-template').value = templateName;
+        
+        document.getElementById('submit-btn').disabled = false;
+    }
+    
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!document.getElementById('selected-template').value) {
+            e.preventDefault();
+            alert('يرجى اختيار قالب قبل الحفظ');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+     :root {
+        --primary: #2563EB;
+        --action: #F97316;
+        --text: #1F2937;
+        --light-bg: #F9FAFB;
+    }
+    
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Tajawal', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    
+    .auth-container {
+        width: 100%;
+        max-width: 480px;
+        padding: 2rem;
+    }
+    
+    .brand-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    
+    .brand-logo {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(to right, var(--primary), var(--action));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .brand-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+        .auth-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .menu-setup-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    .menu-setup-title {
+        text-align: center;
+        color: var(--text);
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    
+    .menu-setup-title::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background: var(--action);
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .form-control-file {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px dashed #E5E7EB;
+        border-radius: 8px;
+        background: #F8FAFC;
+        transition: all 0.3s;
+    }
+    
+    .form-control-file:hover {
+        border-color: var(--primary);
+        background: white;
+    }
+    
+    .color-picker-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .color-picker {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        border: 2px solid #E5E7EB;
+        cursor: pointer;
+    }
+    
+    .delivery-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .delivery-checkbox input {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--action);
+    }
+    
+    .submit-btn {
+        background: var(--action);
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .submit-btn:hover {
+        background: #E06515;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    }
+    
+    .preview-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #E5E7EB;
+    }
+    
+    .preview-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text);
+    }
+    
+    .preview-box {
+        width: 200px;
+        height: 200px;
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        background-color: #FFFFFF;
+        transition: background-color 0.3s;
+    }
+    
+    @media (max-width: 768px) {
+        .menu-setup-container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+    }

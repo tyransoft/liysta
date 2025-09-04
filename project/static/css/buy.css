@@ -1,0 +1,226 @@
+  :root {
+        --primary: #2563EB;
+        --action: #F97316;
+        --text: #1F2937;
+        --light-bg: #F9FAFB;
+        --success: #22C55E;
+        --danger: #EF4444;
+    }
+    
+    .subscription-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    .page-title {
+        text-align: center;
+        color: var(--text);
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    
+    .page-title::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background: var(--action);
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    .plan-details {
+        background: var(--light-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .plan-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .plan-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+    
+    .plan-duration {
+        background: var(--primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .price-section {
+        display: flex;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .price-item {
+        flex: 1;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .original-price {
+        border: 1px solid #E5E7EB;
+    }
+    
+    .discounted-price {
+        background: #F0FDF4;
+        border: 1px solid var(--success);
+    }
+    
+    .final-price {
+        background: #EFF6FF;
+        border: 1px solid var(--primary);
+    }
+    
+    .price-label {
+        font-size: 0.9rem;
+        color: #6B7280;
+        margin-bottom: 0.5rem;
+    }
+    
+    .price-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .original-price .price-value {
+        color: var(--text);
+        text-decoration: line-through;
+    }
+    
+    .discounted-price .price-value {
+        color: var(--success);
+    }
+    
+    .final-price .price-value {
+        color: var(--primary);
+    }
+    
+    .coupon-section {
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        background: #FFF7ED;
+        border-radius: 8px;
+        border: 1px dashed var(--action);
+    }
+    
+    .coupon-form {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .coupon-input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    
+    .coupon-btn {
+        background: var(--action);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    
+    .wallet-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: var(--light-bg);
+        border-radius: 8px;
+    }
+    
+    .wallet-info {
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem 0;
+    }
+    
+    .wallet-label {
+        font-weight: 600;
+    }
+    
+    .wallet-value {
+        font-weight: 700;
+    }
+    
+    .success-msg {
+        color: var(--success);
+        font-weight: 600;
+    }
+    
+    .error-msg {
+        color: var(--danger);
+        font-weight: 600;
+    }
+    
+    .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .confirm-btn {
+        background: var(--action);
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .cancel-btn {
+        background: white;
+        color: var(--text);
+        border: 1px solid #E5E7EB;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .renewal-note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #FEF2F2;
+        border-radius: 8px;
+        color: #991B1B;
+        text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+        .price-section {
+            flex-direction: column;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }

@@ -1,0 +1,62 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block title %}liysta- باقاتنا {% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/plans.css' %}">
+<section class="packages" id="packages">
+    <div class="section-title">
+        <h2>اختر الباقة ذات الميزات المناسبة لك</h2>
+        <p style="text-align: center; color: #666; margin-top: 20px;">باقات مرنة تناسب جميع أنواع الأعمال مع خصومات دورية</p>
+    </div>
+    <div class="packages-container">
+        {% for plan in plans %}
+        {% if plan.duration != 'free_trial' %}
+        <div class="package">
+            <div class="package-header">
+                <h3>{{ plan.name }}</h3>
+                <p>المدة: {{ plan.get_duration_display }}</p>
+                {% if plan.discount %}
+                <div class="discount-badge">خصم {{ plan.discount }}%</div>
+                {% endif %}
+            </div>
+            <div class="package-body">
+                <div class="price">د.ل {{ plan.get_discounted_price}} <span>/{{ plan.get_duration_display }}</span></div>
+                <ul class="features">
+                    <li>عدد المنتجات: {{ plan.product_count }}</li>
+                    {% if plan.ordering %}
+                    <li>نظام طلبات متكامل</li>
+                    <li>إحصائيات المبيعات والارباح</li>
+                    <li>  ادارة اسعار التوصيل</li>
+
+                    {% else %}
+                    <li>قائمة عرض فقط</li>
+                    {% endif %}
+                    {% if plan.review %}
+                    <li>الحصول على التقييمات</li>
+
+
+                    {% endif %}
+
+                    <li>لوحة تحكم كاملة</li>
+                    <li>دعم فني 24/7</li>
+                </ul>
+                {% if user.is_superuser %}
+                <a href="{% url 'update_plan' plan.id %}" class="package-button"> تعديل الباقة</a>
+                <a href="{% url 'delete_plan' plan.id %}" class="package-button"> حذف الباقة</a>
+                {% else %} 
+                {% if user.customer.active_subscription %}
+                 <p></p>
+                {% else %}
+                <a href="{% url 'buy_plan' plan.id %}" class="package-button">اشترك الآن</a>
+                 {% endif %}
+                {% endif %}
+            {% endif %}
+
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

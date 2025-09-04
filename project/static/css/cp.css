@@ -1,0 +1,166 @@
+        :root {
+            --primary: #2563EB;
+            --action: #F97316;
+            --text: #1F2937;
+            --light-bg: #F9FAFB;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --error-border: #FCA5A5;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--action));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .brand-subtitle {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .error-message {
+            color: var(--error-text);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        
+        .error-box {
+            background-color: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-box ul {
+            margin: 0;
+            padding-right: 1.5rem;
+        }
+        
+        .error-box li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            accent-color: var(--action);
+        }
+        
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        .products-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: var(--action);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background: #E06515;
+        }
+        
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 1.5rem;
+            }
+            
+            .auth-card {
+                padding: 1.75rem;
+            }
+        }

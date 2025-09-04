@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - منصتك الذكية للتحول الرقمي</title>
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        
+ 
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="logo">
+                    <span class="logo-text">Liysta</span>
+                </div>
+                <div class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+
+                <ul class="navbar-links">
+                    {% if user.is_authenticated %} 
+                    <div class="user-actions">
+                        {% if user.is_staff or user.is_superuser %} 
+                            <a href="{% url 'control_dashboard' %}" class="admin-btn">
+                                <i class="fas fa-cog"></i> لوحة الإدارة
+                            </a>
+                            <a href="{% url 'statistics_dashboard' %}" class="stats-btn">
+                                <i class="fas fa-chart-bar"></i> الإحصائيات
+                            </a>
+                        {% endif %}
+                
+                        {% if user.customer.active_subscription %} 
+                         <a href="{% url 'customer_dashboard' %}" class="dashboard-btn">
+                            <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+                         </a>
+    
+                         {% elif user.customer.has_any_subscription %} 
+                          <a href="{% url 'renew_subscription' sub.id %}" class="renew-btn">
+                            <i class="fas fa-sync-alt"></i> تجديد الاشتراك
+                          </a>
+    
+                        {% elif user.customer.can_use_free_trial %} 
+                          <a href="{% url 'start_free_trial' %}" class="trial-btn">
+                            <i class="fas fa-gift"></i> تجربة مجانية
+                          </a>
+    
+                         
+                        {% endif %} 
+                
+                        <a href="{% url 'user_logout' %}" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                        </a>
+                    </div>
+                
+                    {% else %} 
+                    <div class="guest-actions">
+                        <li><a href="{% url 'user_login' %}" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                        </a></li>
+                        <li><a href="{% url 'register-customer' %}" class="register-btn">
+                            <i class="fas fa-user-plus"></i> إنشاء حساب
+                        </a></li>
+                        <li>
+                            <a href="{% url 'register-customer' %}?next={% url 'start_free_trial' %}" class="cta-button">
+                                <i class="fas fa-gift"></i> تجربة مجانية
+                            </a>
+                        </li>
+                    </div>
+                 {% endif %} 
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>إدارة مشروعك ستصبح اوتوماتيكية!</h1>
+            <p>Liysta معنا يمكنك إنشاء كتالوجك الخاص لعرض وبيع منتجاتك على وسائل التواصل الاجتماعي أو تقديم قائمة مطعمك
+                للزوار بشكل حديث وسهل.</p>
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <a href="{% url 'plan_list' %}" class="cta-button" style="display: inline-block;">
+                    <i class="fas fa-list"></i> الباقات   
+                </a>
+                <a href="{% url 'how-it-works' %}" class="cta-button"
+                    style="display: inline-block; background: white; color: var(--primary);">
+                    <i class="fas fa-play-circle"></i> كيف يعمل
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="floating-icons">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+        <i class="fab fa-linkedin-in"></i>
+    </div>
+</section>
+
+         <div class="message-container">
+
+        {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <section class="quick-features">
+        <div class="section-title">
+            <h2>لماذا Liysta هي الحل الأمثل لك؟</h2>
+        </div>
+    
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide feature-card" data-aos="fade-up">
+                    <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                    <h3>سهولة الانتشار</h3>
+                    <p>معنا يمكنك ان تنشر مشروعك  بدون عوائق وقت ولامكان ماسيوفر عليك الكثير من التكاليف</p>
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up">
+                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                    <h3>اختصر وقتك</h3>
+                    <p>استقبل الطلبات في اي وقت وسهل على عملائك اختيار حاجاتهم بدون تعقيدات ولا انتظار</p>
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3> احصائيات دقيقة</h3>
+                    <p>راقب متجرك واحصل على تحليلات كاملة عن الاداء والمبيعات والارباح...</p>
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up">
+                    <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+                    <h3>رموز QR مخصصة</h3>
+                    <p>ستحصل تلقائيا على رمز QR فريدة لمتجرك أو قائمة مطعمك...</p>
+                    <p>لتشاركه مع عملائك</p>
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up">
+                    <div class="feature-icon"><i class="fas fa-star"></i></div>
+                    <h3>تقييمات العملاء</h3> 
+                    <p>استقبل تقييمات عملائك حول متجرك او مطعمك باحترافي عالية</p>
+                </div>
+    
+                <div class="swiper-slide feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <h3>نظام طلبات متكامل</h3>
+                    <p>استقبل الطلبات مباشرة من عملائك عبر  صفحتك الخاصة بك...</p>
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3> سرعة فائقة</h3>
+                    <p>منصة سريعة ومحسنة لأداء مثالي حتى مع اتصال الإنترنت البطيء</p>
+
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3> أمن وحماية</h3>
+                    <p>بياناتك محمية بأحدث تقنيات الأمان والتشفير</p>
+
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <h3> دعم فني دائم</h3>
+                   <p>فريق دعم فني متاح على مدار الساعة لمساعدتك في أي استفسار</p>
+
+                </div>
+                <div class="swiper-slide feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                    <h3> تحديثات مستمرة</h3>
+                    <p>نضيف ميزات جديدة باستمرار لتحسين تجربة عملك وعملائك</p>
+
+                </div>
+
+            </div>
+    
+            <div class="swiper-pagination"></div>
+    
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    
+    <section class="packages" id="packages">
+        <div class="section-title" data-aos="fade-up">
+            <h2>اختر الباقة ذات الميزات المناسبة لك</h2>
+            <p style="text-align: center; color: #666; margin-top: 20px;">باقات مرنة تناسب جميع أنواع الأعمال مع خصومات دورية</p>
+        </div>
+        <div class="packages-container">
+            {% for plan in plans %}
+             {% if plan.duration != 'free_trial'%} 
+            <div class="package" data-aos="zoom-in">
+                <div class="package-header">
+                    <h3>{{ plan.name }}</h3>
+                    <p>المدة: {{ plan.get_duration_display }}</p>
+                    {% if plan.discount %}
+                    <div class="discount-badge">خصم {{ plan.discount }}%</div>
+                    {% endif %}
+                </div>
+                <div class="package-body">
+                    <div class="price">د.ل {{ plan.get_discounted_price }} <span>/{{ plan.get_duration_display }}</span></div>
+                    <ul class="features">
+                        <li>عدد المنتجات: {{ plan.product_count }}</li>
+                        {% if plan.ordering %}
+                        <li>نظام طلبات متكامل</li>
+                        <li>إحصائيات المبيعات والارباح</li>
+                        <li>  ادارة اسعار التوصيل</li>
+    
+                        {% else %}
+                        <li>قائمة عرض فقط</li>
+                        {% endif %}
+                        {% if plan.review %}
+                        <li>الحصول على التقييمات</li>
+    
+    
+                        {% endif %}
+    
+                        <li>لوحة تحكم كاملة</li>
+                        <li>دعم فني 24/7</li>
+                    </ul>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'update_plan' plan.id %}" class="package-button"> تعديل الباقة</a>
+                    <a href="{% url 'delete_plan' plan.id %}" class="package-button"> حذف الباقة</a>
+                    {% else %} 
+                    {% if user.customer.active_subscription %}
+                     <p></p>
+                    {% else %}
+                    <a href="{% url 'buy_plan' plan.id %}" class="package-button">اشترك الآن</a>
+                     {% endif %}
+                    {% endif %}
+               {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-title">
+            <h2>كيف تحول عملك مع Liysta؟</h2>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step" data-aos="fade-right">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>سجل حسابك في دقائق</h3>
+                    <p>أنشئ حسابك في أقل من دقيقة باستخدام بريدك الإلكتروني و  رقم هاتفك. لا حاجة لمعلومات معقدة أو خبرة تقنية.</p>
+                    <p>بعد التسجيل. اشحن محفظتك من خلال دفع مستحقات الباقة التي تريدها والحصول على كرت دف مسبق لتتمكن من اتمام شحن محفظتك وماعليك الا ان تشتري الباقة التي تريد وستتتمكن من اعداد صفحتك  الخاصة بك بسهولة</p>
+                </div>
+            </div>
+            
+            <div class="step" data-aos="fade-left" data-aos-delay="200">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>أضف منتجاتك بسهولة</h3>
+                    <p>قم بتحميل منتجاتك أو قائمة طعامك مع صور عالية الجودة، وأوصاف تفصيلية، وأسعار، وأي تفاصيل أخرى يحتاجها عملاؤك.</p>
+                    <p>ايضا يمكنك  اضافة المدن او المناطق التي توفر التوصيل لها مع اسعار التوصيل لتساعد عملائك</p>
+                </div>
+            </div>
+            
+            <div class="step" data-aos="fade-right">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>شارك متجرك مع العالم</h3>
+                    <p>احصل على رابط فريد لمتجرك ورمز يمكنك مشاركته على وسائل التواصل الاجتماعي  QR</p>
+                    <p>يمكن للعملاء تصفح منتجاتك ووضع الطلبات مباشرة من هواتفهم.</p>
+                </div>
+            </div>
+            
+            <div class="step" data-aos="fade-left" data-aos-delay="200">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>استقبل الطلبات وأدرها بسهولة</h3>
+                    <p>استقبل الطلبات مباشرة على  لوحة التحكم الخاصة بك. يمكنك تحديث حالة الطلب وإدارة المخزون بضغطة زر.</p>
+                    <p>في المطاعم، يمكن للعملاء تقديم الطلبات مباشرة من طاولاتهم باستخدام رمز QR الخاص بهم.</p>
+                </div>
+            </div>
+            
+            <div class="step" data-aos="fade-right">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>تابع أداء عملك</h3>
+                    <p>احصل على تقارير مفصلة عن مبيعاتك، ارباحك   وسلوك عملائك لمساعدتك في اتخاذ قرارات أعمال أكثر ذكاءً.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="customers">
+        <div class="section-title">
+            <h2>عملاؤنا الذين يثقون بنا</h2>
+            <p style="text-align: center; color: #666; margin-top: 20px;">شركات ومؤسسات ليبية رائدة اختارت Liysta</p>
+        </div>
+        
+        <div class="customers-logos">
+            {% for customer in our_customers %}
+            <div class="customer-logo">
+                <img 
+                    src="{{ customer.logo.url }}" 
+                    alt="{{ customer.name }}"
+                >
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+ 
+    
+     <footer class="footer">
+        <div class="footer-logo">Liysta</div>
+        <ul class="footer-links">
+            <li><a href="{% url 'terms' %}">الشروط والأحكام</a></li>
+            <li><a href="{% url 'privacy' %}">سياسة الخصوصية</a></li>
+            <li><a href="{% url 'about' %}">من نحن؟</a></li>
+        </ul>
+        <ul class="contact-info">
+        <li>
+            <i class="fas fa-envelope"></i>
+                <span>liysta@gmail.com</span>
+            </li>
+            <li>
+                <i class="fab fa-whatsapp"></i>
+                <span>0911957329</span>
+            </li>
+                  
+        </ul>
+        <a href="https://wa.me/218911957329?text=مرحباً، أريد الاستفسار عن خدماتكم" class="whatsapp-btn">
+            <i class="fab fa-whatsapp"></i> تواصل معنا على واتساب
+        </a>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
+        </div>
+        <p class="copyright">&copy; 2025 Liysta. جميع الحقوق محفوظة</p>
+    </footer>
+
+    </script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        once: false
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+
+
+<script src="{% static 'js/lista.js' %}"></script>
+</body>
+</html>

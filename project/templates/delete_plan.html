@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>حذف الخطة: {{ plan.name }}</h2>
+    <p>هل أنت متأكد من أنك تريد حذف هذه الخطة؟</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">نعم، حذف الخطة</button>
+    </form>
+    <br>
+    <a href="{% url 'plan_list' %}">العودة إلى قائمة الخطط</a>
+</div>
+{% endblock %}

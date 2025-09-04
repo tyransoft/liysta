@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>liysta - تعديل الطلب</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .order-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .btn-update {
+            background-color: #F97316;
+            color: white;
+        }
+        .btn-update:hover {
+            background-color: #F97316;
+        }
+        .quantity-control {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <h1>تعديل الطلب رقم {{ order.ordernumber }}</h1>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" id="orderForm" action="{% url 'update_order' order.id %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card order-card">
+                        
+                        <div class="card-body">
+                            <h5 class="mb-0">منتجات الطلب</h5>
+                            <p> </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>الصورة</th>
+                                            <th>المنتج</th>
+                                            <th>اللون</th>
+                                            <th>المقاس</th>
+                                            <th>السعر</th>
+                                            <th>الكمية</th>
+                                            <th>المجموع</th>
+                                            <th>الإجراء</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order_items %}
+                                        <tr id="item-{{ item.id }}">
+                                            <td>
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-img">
+                                            </td>
+                                            <td>{{ item.product.name }}</td>
+                                            <td>{{ item.color|default:"-" }}</td>
+                                            <td>{{ item.size|default:"-" }}</td>
+                                            <td>{{ item.product.price }} د.ل</td>
+                                            <td>
+                                                <div class="input-group quantity-control">
+                                                    <button class="btn btn-outline-secondary decrease-btn" type="button" data-item-id="{{ item.id }}">-</button>
+                                                    <input type="number" class="form-control text-center quantity-input" 
+                                                           name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" 
+                                                           data-current-value="{{ item.quantity }}" 
+                                                           data-product-id="{{ item.product.id }}"
+                                                           data-price="{{ item.product.price }}"
+                                                           data-max-quantity="{{ item.product.quantity|add:item.quantity }}">
+                                                    <button class="btn btn-outline-secondary increase-btn" type="button" data-item-id="{{ item.id }}">+</button>
+                                                </div>
+                                                <small class="text-muted">المخزون: <span class="stock-{{ item.product.id }}">{{ item.product.quantity }}</span></small>
+                                            </td>
+                                            <td id="item-total-{{ item.id }}">{{ item.get_final_price }} د.ل</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-danger remove-item" data-item-id="{{ item.id }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5" class="text-end"><strong>المجموع الفرعي:</strong></td>
+                                            <td colspan="3" id="subtotal">{{ order.sales_total }} د.ل</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
+                                            <td colspan="3" id="delivery-cost">{{ order.delivery_address.price|default:0 }} د.ل</td>
+                                        </tr>
+                                        <tr class="fw-bold fs-5">
+                                            <td colspan="5" class="text-end"><strong>المجموع الكلي:</strong></td>
+                                            <td colspan="3" id="grand-total">{{ order.get_total }} د.ل</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card order-card">
+                        <div class="card-body">
+                            <h5 class="mb-0">معلومات الطلب</h5>
+                            <p> </p>
+                            <div class="mb-3">
+                                <label class="form-label">اسم الزبون</label>
+                                <input type="text" class="form-control" name="customer_name" value="{{ order.customer_name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">رقم الهاتف</label>
+                                <input type="text" class="form-control" name="customer_phone" value="{{ order.customer_phone }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">عنوان التوصيل</label>
+                                <select class="form-select" name="delivery_address" required>
+                                    <option value="">اختر عنوان التوصيل</option>
+                                    {% for city in cities %}
+                                    <option value="{{ city.id }}" data-price="{{ city.price }}" {% if order.delivery_address and city.id == order.delivery_address.id %}selected{% endif %}>
+                                        {{ city.name }} ({{ city.price }} د.ل)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">ملاحظات</label>
+                                <textarea class="form-control" name="notes" rows="3">{{ order.notes }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">حالة الطلب</label>
+                                <select class="form-select" name="status" required>
+                                    {% for status_value, status_name in status_choices %}
+                                    <option value="{{ status_value }}" {% if status_value == order.status %}selected{% endif %}>{{ status_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <strong>مجموع المنتجات:</strong>
+                                <span id="summary-subtotal">{{ order.sales_total }} د.ل</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <strong>رسوم التوصيل:</strong>
+                                <span id="summary-delivery">{{ order.delivery_address.price|default:0 }} د.ل</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 fs-5">
+                                <strong>المجموع الكلي:</strong>
+                                <span class="text-primary" id="summary-total">{{ order.get_total }} د.ل</span>
+                            </div>
+                            <button type="submit" class="btn btn-update w-100">
+                                <i class="bi bi-check-circle"></i> حفظ التعديلات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // زيادة الكمية
+            document.querySelectorAll('.increase-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    const input = document.querySelector(`input[name="quantity_${itemId}"]`);
+                    const maxQuantity = parseInt(input.dataset.maxQuantity);
+                    const price = parseFloat(input.dataset.price);
+                    
+                    if (parseInt(input.value) < maxQuantity) {
+                        input.value = parseInt(input.value) + 1;
+                        updateStock(input.dataset.productId, -1);
+                        updateItemTotal(itemId, price);
+                    } else {
+                        alert('لا يمكن تجاوز الحد الأقصى للمخزون المتاح');
+                    }
+                });
+            });
+
+            // تقليل الكمية
+            document.querySelectorAll('.decrease-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    const input = document.querySelector(`input[name="quantity_${itemId}"]`);
+                    const price = parseFloat(input.dataset.price);
+                    
+                    if (parseInt(input.value) > 1) {
+                        input.value = parseInt(input.value) - 1;
+                        updateStock(input.dataset.productId, 1);
+                        updateItemTotal(itemId, price);
+                    }
+                });
+            });
+
+            // تحديث المخزون المعروض
+            function updateStock(productId, change) {
+                const stockElement = document.querySelector(`.stock-${productId}`);
+                if (stockElement) {
+                    stockElement.textContent = parseInt(stockElement.textContent) + change;
+                }
+            }
+
+            // تحديث المجموع للعنصر
+            function updateItemTotal(itemId, price) {
+                const quantityInput = document.querySelector(`input[name="quantity_${itemId}"]`);
+                const quantity = parseInt(quantityInput.value);
+                const total = quantity * price;
+                
+                document.getElementById(`item-total-${itemId}`).textContent = total + ' د.ل';
+                updateOrderSummary();
+            }
+
+            // تحديث ملخص الطلب
+            function updateOrderSummary() {
+                let subtotal = 0;
+                
+                document.querySelectorAll('[id^="item-total-"]').forEach(element => {
+                    // تجاهل العناصر المخفية (المحذوفة)
+                    if (element.closest('tr').style.display !== 'none') {
+                        const totalText = element.textContent.replace(' د.ل', '').trim();
+                        subtotal += parseFloat(totalText) || 0;
+                    }
+                });
+                
+                const deliverySelect = document.querySelector('select[name="delivery_address"]');
+                const selectedOption = deliverySelect.options[deliverySelect.selectedIndex];
+                const deliveryCost = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+                
+                const grandTotal = subtotal + deliveryCost;
+                
+                document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
+                document.getElementById('delivery-cost').textContent = deliveryCost.toFixed(2) + ' د.ل';
+                document.getElementById('grand-total').textContent = grandTotal.toFixed(2) + ' د.ل';
+                
+                // تحديث الملخص في الجانب
+                document.getElementById('summary-subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
+                document.getElementById('summary-delivery').textContent = deliveryCost.toFixed(2) + ' د.ل';
+                document.getElementById('summary-total').textContent = grandTotal.toFixed(2) + ' د.ل';
+            }
+
+            // إزالة منتج من الطلب
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    if (confirm('هل أنت متأكد من إزالة هذا المنتج من الطلب؟')) {
+                        // إرجاع الكمية إلى المخزون
+                        const input = document.querySelector(`input[name="quantity_${itemId}"]`);
+                        const productId = input.dataset.productId;
+                        const quantity = parseInt(input.value);
+                        
+                        updateStock(productId, quantity);
+                        
+                        // إخفاء الصف
+                        this.closest('tr').style.display = 'none';
+                        
+                        // إضافة حقل مخفي للإشارة إلى إزالة المنتج
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = `remove_${itemId}`;
+                        hiddenInput.value = 'true';
+                        document.getElementById('orderForm').appendChild(hiddenInput);
+                        
+                        // تحديث المجموع
+                        updateOrderSummary();
+                    }
+                });
+            });
+
+            // تحديث تكاليف التوصيل عند التغيير
+            document.querySelector('select[name="delivery_address"]').addEventListener('change', function() {
+                updateOrderSummary();
+            });
+
+            // تحديث الكميات عند التغيير المباشر في حقل الإدخال
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const itemId = this.name.split('_')[1];
+                    const price = parseFloat(this.dataset.price);
+                    const maxQuantity = parseInt(this.dataset.maxQuantity);
+                    
+                    if (parseInt(this.value) > maxQuantity) {
+                        alert('لا يمكن تجاوز الحد الأقصى للمخزون المتاح');
+                        this.value = maxQuantity;
+                    }
+                    
+                    if (parseInt(this.value) < 1) {
+                        this.value = 1;
+                    }
+                    
+                    // حساب الفرق في الكمية وتحديث المخزون
+                    const currentValue = parseInt(this.dataset.currentValue);
+                    const newValue = parseInt(this.value);
+                    const quantityDiff = newValue - currentValue;
+                    
+                    if (quantityDiff !== 0) {
+                        updateStock(this.dataset.productId, -quantityDiff);
+                        this.dataset.currentValue = newValue;
+                    }
+                    
+                    updateItemTotal(itemId, price);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

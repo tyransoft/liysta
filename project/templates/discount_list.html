@@ -1,0 +1,236 @@
+{% extends "base_generic.html" %}
+
+{% block title %}قائمة الخصومات - Liysta{% endblock %}
+
+{% block content %}
+<style>
+        :root {
+        --primary-color: #FF8C00;
+        --secondary-color: #FFA500;
+        --light-orange: #FFF3E0;
+        --dark-orange: #E65100;
+        --text-color: #333;
+        --border-color: #e0e0e0;
+        --success-color: #4CAF50;
+        --danger-color: #FF5252;
+        --warning-color: #FFC107;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--light-orange);
+    }
+
+    .section-header h1 {
+        color: var(--primary-color);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .add-btn {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .add-btn:hover {
+        background-color: var(--dark-orange);
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th, .data-table td {
+        padding: 15px;
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+        background-color: var(--light-orange);
+        color: var(--dark-orange);
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+    }
+
+    .data-table tr:hover {
+        background-color: rgba(255,140,0,0.05);
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .bg-success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--success-color);
+    }
+
+    .bg-secondary {
+        background-color: rgba(158, 158, 158, 0.1);
+        color: #f73e3e;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+
+    .btn-sm {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .btn-warning {
+        background-color: var(--warning-color);
+        color: #000;
+        border: none;
+    }
+
+    .btn-danger {
+        background-color: var(--danger-color);
+        color: white;
+        border: none;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+        list-style: none;
+    }
+
+    .page-item {
+        margin: 0 5px;
+    }
+
+    .page-link {
+        padding: 8px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+        .data-table {
+            font-size: 0.9rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 10px 8px;
+        }
+        
+        .actions {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+</style>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-percentage"></i> قائمة الخصومات</h1>
+        <a href="{% url 'add_discount' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> إضافة خصم جديد
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الباقة</th>
+                    <th>نسبة الخصم</th>
+                    <th>تاريخ البدء</th>
+                    <th>تاريخ الانتهاء</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for discount in discounts %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ discount.plan.name }}</td>
+                    <td>{{ discount.percentage }}%</td>
+                    <td>{{ discount.start_date|date:"Y-m-d" }}</td>
+                    <td>{{ discount.end_date|date:"Y-m-d" }}</td>
+                    
+                    <td>
+                        <div class="actions">
+                            <a href="{% url 'edit_discount' discount.id %}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'delete_discount' discount.id %}" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد من حذف هذا الخصم؟');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: white;
+    }
+    
+    .bg-success { background: var(--success); }
+    .bg-secondary { background: var(--secondary); }
+</style>
+{% endblock %}

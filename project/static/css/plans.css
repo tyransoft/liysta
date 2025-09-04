@@ -1,0 +1,120 @@
+:root {
+            --primary: #2563EB;
+            --action: #F97316;
+            --secondary: #F3F4F6;
+            --text: #1F2937;
+            --success: #22C55E;
+}
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }    
+.packages {
+    padding: 100px 10%;
+    background: var(--secondary);
+}
+.section-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+.section-title h2 {
+    font-size: 2.5rem;
+    color: var(--text);
+    position: relative;
+    display: inline-block;
+}
+.section-title h2::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 4px;
+    background: var(--action);
+    bottom: -10px;
+    left: 25%;
+    border-radius: 2px;
+}
+.packages-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+.package {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+}
+.package:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+.package-header {
+    background: var(--primary);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+.package-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+.package-body {
+    padding: 30px;
+}
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 20px 0;
+    text-align: center;
+}
+.price span {
+    font-size: 1rem;
+    color: #777;
+}
+.discount-badge {
+    background: var(--action);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+.features {
+    list-style: none;
+    margin-bottom: 30px;
+}
+.features li {
+    margin-bottom: 15px;
+    position: relative;
+    padding-right: 25px;
+}
+.features li::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--success);
+    position: absolute;
+    right: 0;
+}
+.package-button {
+    display: block;
+    text-align: center;
+    background: var(--action);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+.package-button:hover {
+    background: #e06515;
+}

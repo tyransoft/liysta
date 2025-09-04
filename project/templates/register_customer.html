@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - تسجيل</title>
+<style>
+     :root {
+        --primary: #2563EB;
+        --action: #F97316;
+        --text: #1F2937;
+        --light-bg: #F9FAFB;
+    }
+    
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Tajawal', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    
+    .auth-container {
+        width: 100%;
+        max-width: 480px;
+        padding: 2rem;
+    }
+    
+    .brand-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    
+    .brand-logo {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(to right, var(--primary), var(--action));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .brand-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    .auth-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.95rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+    
+    .form-input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .terms-container {
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .terms-checkbox {
+        margin-left: 0.5rem;
+    }
+    
+    .terms-text {
+        font-size: 0.9rem;
+        color: #6B7280;
+        line-height: 1.5;
+    }
+    
+    .terms-text a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        background: var(--action);
+        color: white;
+        border: none;
+        padding: 0.875rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 0.5rem;
+    }
+    
+    .submit-btn:hover {
+        background: #E06515;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #6B7280;
+    }
+    
+    .auth-footer a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    @media (max-width: 576px) {
+        .auth-container {
+            padding: 1.5rem;
+        }
+        
+        .auth-card {
+            padding: 1.75rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="brand-header">
+            <div class="brand-logo">Liysta</div>
+            <div class="brand-subtitle">منصتك الذكية  لتنقل عملك الى العالم الرقمي</div>
+        </div>
+        
+        <div class="auth-card">
+            <h2 class="auth-title">إنشاء حساب جديد</h2>
+            
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="first_name" class="form-label">الاسم الأول</label>
+                    <input type="text" id="first_name" name="first_name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                
+         
+                
+                <div class="form-group">
+                    <label for="phone" class="form-label">رقم الهاتف</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="store_ar_name" class="form-label">اسم المتجر (عربي)</label>
+                    <input type="text" id="store_ar_name" name="store_ar_name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="store_en_name" class="form-label">اسم المتجر (إنجليزي)</label>
+                    <input type="text" id="store_en_name" name="store_en_name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                 <label class="form-label">(اختياري)تحديد الموقع الجغرافي</label>
+                 <button type="button" onclick="getLocation()" class="submit-btn" style="margin-bottom: 10px;">📍 حدد موقعي</button>
+                 <input type="text" id="location_url" name="location_url" class="form-input" readonly placeholder="رابط الموقع الجغرافي">
+                </div>
+
+                <div class="form-group">
+                    <label for="store_kind" class="form-label">نوع المتجر</label>
+                    <select id="store_kind" name="store_kind" class="form-input" required>
+                        <option value="" disabled selected>اختر نوع المتجر</option>
+                        <option value="مطعم\مقهى">مطعم\مقهى</option>
+                        <option value="متجر" > متجر</option>
+                        <option value="غير ذلك" > غير ذلك</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">كلمة المرور</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                <div class="terms-container">
+                    <input type="checkbox" id="terms" name="terms" class="terms-checkbox" required>
+                    <label for="terms" class="terms-text">
+                        أوافق على <a href="{% url 'terms' %}">الشروط والأحكام</a> و <a href="{% url 'privacy'%}">سياسة الخصوصية</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn">تسجيل الحساب</button>
+            </form>
+            
+            <div class="auth-footer">
+                لديك حساب بالفعل؟ <a href="{% url 'user_login' %}">سجل الدخول</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError, {
+            enableHighAccuracy: true
+        });
+    } else {
+        alert("المتصفح لا يدعم تحديد الموقع الجغرافي");
+    }
+}
+
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const url = `https://www.google.com/maps?q=${lat},${lng}`;
+    document.getElementById("location_url").value = url;
+    alert("تم تحديد الموقع بنجاح!");
+}
+
+function showError(error) {
+    alert("فشل تحديد الموقع. تأكد من السماح للموقع بالوصول إلى موقعك.");
+}
+</script>
+
+</html>

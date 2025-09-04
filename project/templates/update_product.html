@@ -1,0 +1,251 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #2563EB;
+        --action: #F97316;
+        --text: #1F2937;
+        --light-bg: #F9FAFB;
+        --border: #E5E7EB;
+        --radius: 12px;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .add-product-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 3rem;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-hover);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .page-title {
+        color: var(--text);
+        margin: 1rem 0;
+        font-size: 1.8rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    
+    .page-title::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--action));
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 1.1rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+    
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .file-input-container {
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+    
+    .file-input-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .file-input-label:hover {
+        border-color: var(--primary);
+        background: #f8fafc;
+    }
+    
+    .file-input-label i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    
+    .file-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .price-input-container {
+        position: relative;
+    }
+    
+    .price-symbol {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: bold;
+        color: var(--text);
+    }
+    
+    .price-input {
+        padding-left: 40px;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(to right, var(--primary), var(--action));
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: block;
+        width: 100%;
+        margin-top: 2rem;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    }
+    
+    .error {
+        color: #EF4444;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .add-product-container {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+
+<div class="add-product-container">
+    <div class="page-header">
+        <h1 class="page-title">  تحديث المنتج</h1>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_name" class="form-label">اسم المنتج</label>
+            <input type="text" name="name" id="id_name" class="form-input" required
+                   value="{{ form.name.value|default:'' }}" placeholder="أدخل اسم المنتج">
+            {% if form.name.errors %}
+                <div class="error">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">صورة المنتج</label>
+            
+            <div class="file-input-container">
+                <label class="file-input-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>انقر لرفع صورة المنتج</span>
+                    <small>الحجم الموصى به: 800×800 بكسل</small>
+                    {{ form.image }}
+                </label>
+            </div>
+            {% if form.image.errors %}
+                <div class="error">{{ form.image.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_price" class="form-label">سعر المنتج</label>
+            <div class="price-input-container">
+                <span class="price-symbol">د.ل</span>
+                <input type="number" name="price" id="id_price" class="form-input price-input" required
+                       step="0.01" min="0" value="{{ form.price.value|default:'' }}" placeholder="0.00">
+            </div>
+            {% if form.price.errors %}
+                <div class="error">{{ form.price.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_description" class="form-label">وصف المنتج</label>
+            <textarea name="description" id="id_description" class="form-input form-textarea"
+                      placeholder="أدخل وصفاً تفصيلياً للمنتج">{{ form.description.value|default:'' }}</textarea>
+            {% if form.description.errors %}
+                <div class="error">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-plus-circle"></i> تحديث المنتج 
+        </button>
+    </form>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            group.style.opacity = '0';
+            group.style.transform = 'translateY(20px)';
+            group.style.transition = `all 0.5s ease ${index * 0.1}s`;
+            
+            setTimeout(() => {
+                group.style.opacity = '1';
+                group.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}

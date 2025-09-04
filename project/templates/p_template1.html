@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart  </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/p1.css'%}">
+
+ <style>
+  
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'img/smartlogo.png' %}" alt="Smart Logo">
+            <h1>Smart</h1>
+        </div>
+        
+        <div class="header-controls">
+            <div class="store-rating">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span>4.5</span>
+            </div>
+            
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>مرحباً بكم في Smart</h2>
+            <div class="rating-container">
+                <div class="rating-stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="rating-text">4.5 (128 تقييمات)</span>
+            </div>
+            <p>حيث عالم الالكترونات والتطور الرقمي</p>
+            
+            <a href="#" class="location-btn" onclick="alert('هذا زر وهمي - المعاينة فقط')">
+                <i class="fas fa-map-marker-alt"></i> موقع المتجر
+            </a>
+            
+            <button class="rate-btn" id="openRatingModal">
+                <i class="fas fa-star"></i> قيم المتجر
+            </button>
+        </div>
+        <div class="hero-image">
+            <img src="{% static 'img/smarthero.png' %}" alt="Smart Store">
+        </div>
+    </section>
+
+    <!-- قسم الفلترة الجديد -->
+    <section class="filter-section">
+        <form class="filter-form" onsubmit="event.preventDefault(); alert('هذه فلترة وهمية - المعاينة فقط')">
+            <div class="filter-group">
+                <label for="category">تصفية حسب الفئة:</label>
+                <select id="category" name="category">
+                    <option value="">جميع الفئات</option>
+                    <option value="phones">الهواتف</option>
+                    <option value="watches">الساعات الذكية</option>
+                    <option value="headphones">السماعات</option>
+                </select>
+            </div>
+            
+           
+            
+            <button type="submit" class="filter-submit">تصفية</button>
+            <button type="reset" class="filter-submit" style="background: var(--gray-color);">إعادة تعيين</button>
+        </form>
+    </section>
+
+    <section class="menu-section">
+        <div class="section-title">
+            <h3>المنتجات المتاحة</h3>
+        </div>
+        
+        <div class="menu-cards">
+            <!-- منتج 1 -->
+            <div class="menu-card">
+                <div class="menu-card-image">
+                    <img src="{% static 'img/watch.png' %}" alt="ساعة ذكية">
+                </div>
+                <div class="menu-card-content">
+                    <div class="menu-card-title">
+                        <h4>ساعة ذكية</h4>
+                        <div>
+                            <span class="price">250 د.ل</span>
+                            <span class="original-price">300 د.ل</span>
+                        </div>
+                    </div>
+                    <p>هذه الساعة هي الافضل في فئتها من انتاج شركة smart</p>
+                    
+                    <div class="product-options">
+                        <div class="option-group">
+                            <label class="required-field">اللون:</label>
+                            <div class="option-buttons colors-container">
+                                <button class="option-btn color-btn" data-value="أسود">أسود</button>
+                                <button class="option-btn color-btn" data-value="أزرق">أزرق</button>
+                                <button class="option-btn color-btn" data-value="أحمر">أحمر</button>
+                            </div>
+                            <input type="hidden" class="selected-color">
+                        </div>
+                        
+                        <div class="option-group">
+                            <label>المقاس:</label>
+                            <div class="option-buttons sizes-container">
+                                <button class="option-btn size-btn" data-value="صغير">صغير</button>
+                                <button class="option-btn size-btn" data-value="كبير">كبير</button>
+                            </div>
+                            <input type="hidden" class="selected-size">
+                        </div>
+                    </div>
+                    
+                    <div class="menu-card-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <span class="quantity">1</span>
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart" data-product-id="1" disabled>أضف للسلة</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- منتج 2 -->
+            <div class="menu-card">
+                <div class="menu-card-image">
+                    <img src="{% static 'img/smartphone.png' %}" alt="هاتف ذكي">
+                </div>
+                <div class="menu-card-content">
+                    <div class="menu-card-title">
+                        <h4>هاتف smart H56</h4>
+                        <div>
+                            <span class="price">735 د.ل</span>
+                        </div>
+                    </div>
+                    <p>تصميم انيق وقوة في الاداء بمعالج سريع ومتطور</p>
+                    
+                    <div class="product-options">
+                        <div class="option-group">
+                            <label class="required-field">اللون:</label>
+                            <div class="option-buttons colors-container">
+                                <button class="option-btn color-btn" data-value="أسود">أسود</button>
+                                <button class="option-btn color-btn" data-value="فضي">فضي</button>
+                            </div>
+                            <input type="hidden" class="selected-color">
+                        </div>
+                    </div>
+                    
+                    <div class="menu-card-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <span class="quantity">1</span>
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart" data-product-id="2" disabled>أضف للسلة</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- منتج 3 - نفذ من المخزن -->
+            <div class="menu-card sold-out">
+                <div class="menu-card-image">
+                    <img src="{% static 'img/headphone.png' %}" alt="سماعات">
+                </div>
+                <div class="menu-card-content">
+                    <div class="menu-card-title">
+                        <h4>سماعة smart M24</h4>
+                        <div>
+                            <span class="price">140 د.ل</span>
+                            <span class="original-price">100 د.ل</span>
+                        </div>
+                    </div>
+                    <p>صوت نقي وعزل مضاعف</p>
+                    
+                    <div class="product-options">
+                        <div class="option-group">
+                            <label>اللون:</label>
+                            <div class="option-buttons colors-container">
+                                <button class="option-btn color-btn" data-value="أبيض">أبيض</button>
+                                <button class="option-btn color-btn" data-value="أسود">أسود</button>
+                            </div>
+                            <input type="hidden" class="selected-color">
+                        </div>
+                    </div>
+                    
+                    <div class="menu-card-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <span class="quantity">1</span>
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart" data-product-id="3" disabled style="background: #ccc;">نفذ من المخزن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="floating-cart">
+        <div class="cart-toggle">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count">0</span>
+        </div>
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h4>سلة التسوق</h4>
+                <button class="close-cart"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-items"></div>
+            <div class="cart-summary">
+                <div class="cart-summary-item">
+                    <span>المجموع:</span>
+                    <span class="subtotal-price">0 د.ل</span>
+                </div>
+                <div class="cart-summary-item">
+                    <span>رسوم التوصيل:</span>
+                    <span class="delivery-price">0 د.ل</span>
+                </div>
+                <div class="cart-summary-item cart-total">
+                    <span>المجموع الكلي:</span>
+                    <span class="total-price">0 د.ل</span>
+                </div>
+            </div>
+            <button class="checkout-btn">إتمام الطلب</button>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3>إتمام الطلب</h3>
+            <form id="orderForm" onsubmit="event.preventDefault(); submitOrder()">
+                <div class="form-group">
+                    <label for="customer_name">اسم الزبون:</label>
+                    <input type="text" id="customer_name" name="customer_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer_phone">رقم الهاتف:</label>
+                    <input type="text" id="customer_phone" name="customer_phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>طريقة الاستلام:</label>
+                    <div class="delivery-options">
+                        <div class="delivery-option">
+                            <input type="radio" id="delivery" name="receiving_method" value="delivery" checked>
+                            <label for="delivery">توصيل إلى العنوان</label>
+                        </div>
+                        <div class="delivery-option">
+                            <input type="radio" id="pickup" name="receiving_method" value="pickup">
+                            <label for="pickup">استلام من المحل</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="addressField">
+                    <label for="delivery_address">المدينة:</label>
+                    <select id="delivery_address" name="delivery_address" required>
+                        <option value="">اختر المدينة</option>
+                        <option value="1" data-price="5">طرابلس - 5 د.ل</option>
+                        <option value="2" data-price="7">بنغازي - 7 د.ل</option>
+                        <option value="3" data-price="10">مصراتة - 10 د.ل</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">ملاحظات:</label>
+                    <textarea id="notes" name="notes" rows="3"></textarea>
+                </div>
+                
+                <div class="order-summary">
+                    <h4>ملخص الطلب</h4>
+                    <div id="modalOrderItems"></div>
+                    
+                    <div class="order-total">
+                        <span>المجموع الكلي:</span>
+                        <span id="modalTotalPrice">0 د.ل</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-order-btn">تأكيد الطلب</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="rating-modal" id="ratingModal">
+        <div class="rating-content">
+            <h3>قيم تجربتك مع Smart</h3>
+            <p>كيف كانت تجربتك مع متجرنا؟</p>
+            
+            <div class="rating-stars">
+                <i class="fas fa-star" data-rating="1"></i>
+                <i class="fas fa-star" data-rating="2"></i>
+                <i class="fas fa-star" data-rating="3"></i>
+                <i class="fas fa-star" data-rating="4"></i>
+                <i class="fas fa-star" data-rating="5"></i>
+            </div>
+            
+            <input type="hidden" id="selectedRating" value="0">
+            
+            <button class="submit-rating" id="submitRating">تأكيد التقييم</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let cart = [];
+    let deliveryFee = 0;
+
+    // عناصر DOM
+    const cartToggle = document.querySelector('.cart-toggle');
+    const cartPanel = document.querySelector('.cart-panel');
+    const closeCart = document.querySelector('.close-cart');
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    const cartItemsContainer = document.querySelector('.cart-items');
+    const cartCountElements = document.querySelectorAll('.cart-count');
+    const subtotalPriceElement = document.querySelector('.subtotal-price');
+    const deliveryPriceElement = document.querySelector('.delivery-price');
+    const totalPriceElement = document.querySelector('.total-price');
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    const orderForm = document.getElementById('orderForm');
+    const modalOrderItems = document.getElementById('modalOrderItems');
+    const modalTotalPrice = document.getElementById('modalTotalPrice');
+    const deliveryAddressSelect = document.getElementById('delivery_address');
+    const addressField = document.getElementById('addressField');
+    const receivingMethodRadios = document.querySelectorAll('input[name="receiving_method"]');
+    const openRatingModal = document.getElementById('openRatingModal');
+    const ratingModal = document.getElementById('ratingModal');
+    const stars = document.querySelectorAll('.rating-stars i');
+    const selectedRating = document.getElementById('selectedRating');
+    const submitRating = document.getElementById('submitRating');
+
+    // أحداث السلة
+    if (cartToggle) cartToggle.addEventListener('click', toggleCartPanel);
+    if (closeCart) closeCart.addEventListener('click', closeCartPanel);
+    
+    // أحداث إضافة إلى السلة
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', addToCart);
+    });
+    
+    // أحداث تعديل الكمية
+    document.querySelectorAll('.quantity-btn').forEach(button => {
+        button.addEventListener('click', adjustQuantity);
+    });
+    
+    // أحداث خيارات المنتج (الألوان والمقاسات)
+    document.querySelectorAll('.color-btn, .size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const container = this.closest('.option-buttons');
+            container.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            
+            const hiddenField = this.closest('.option-group').querySelector('input[type="hidden"]');
+            hiddenField.value = this.getAttribute('data-value');
+            
+            checkAddToCartButton(this.closest('.menu-card'));
+        });
+    });
+    
+    // أحداث طريقة الاستلام
+    if (receivingMethodRadios) {
+        receivingMethodRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'delivery') {
+                    addressField.style.display = 'block';
+                    document.getElementById('delivery_address').setAttribute('required', 'required');
+                } else {
+                    addressField.style.display = 'none';
+                    document.getElementById('delivery_address').removeAttribute('required');
+                    deliveryFee = 0;
+                    updateCartTotals();
+                }
+            });
+        });
+    }
+    
+    // أحداث التقييم
+// أحداث التقييم
+if (openRatingModal) {
+    openRatingModal.addEventListener('click', function() {
+        ratingModal.style.display = 'flex'; // إظهار النموذج عند النقر
+    });
+}
+
+if (ratingModal) {
+    ratingModal.addEventListener('click', function(e) {
+        if (e.target === ratingModal) {
+            ratingModal.style.display = 'none'; // إخفاء النموذج عند النقر خارج المحتوى
+        }
+    });
+}
+
+if (submitRating) {
+    submitRating.addEventListener('click', function() {
+        const rating = selectedRating.value;
+        
+        if (rating === '0') {
+            alert('الرجاء اختيار تقييم من 1 إلى 5 نجوم');
+            return;
+        }
+        
+        alert('شكراً لتقييمك! تقييمك: ' + rating + ' نجوم (هذه معاينة فقط، التقييم لم يتم إرساله فعلياً)');
+        ratingModal.style.display = 'none'; // إخفاء النموذج بعد التقييم
+        selectedRating.value = '0';
+        stars.forEach(star => star.classList.remove('active'));
+    });
+}
+    
+    // أحداث إتمام الطلب
+    if (checkoutBtn) checkoutBtn.addEventListener('click', showCheckoutForm);
+    
+    if (deliveryAddressSelect) {
+        deliveryAddressSelect.addEventListener('change', updateDeliveryFee);
+    }
+    
+    if (orderForm) orderForm.addEventListener('submit', handleFormSubmit);
+    
+    // وظائف مساعدة
+    function toggleCartPanel() {
+        cartPanel.classList.toggle('active');
+    }
+
+    function closeCartPanel() {
+        cartPanel.classList.remove('active');
+    }
+    
+    function checkAddToCartButton(menuCard) {
+        const addButton = menuCard.querySelector('.add-to-cart');
+        if (!addButton) return;
+        
+        let isDisabled = false;
+        
+        // التحقق من الألوان إذا كانت مطلوبة
+        const colorGroup = menuCard.querySelector('.colors-container');
+        if (colorGroup) {
+            const selectedColor = menuCard.querySelector('.selected-color').value;
+            if (!selectedColor) isDisabled = true;
+        }
+        
+        addButton.disabled = isDisabled;
+    }
+
+    function addToCart() {
+        const productId = this.getAttribute('data-product-id');
+        const menuItem = this.closest('.menu-card');
+        const itemName = menuItem.querySelector('h4').textContent;
+        const itemPrice = parseFloat(menuItem.querySelector('.price').textContent);
+        const itemQuantity = parseInt(menuItem.querySelector('.quantity').textContent);
+        const itemImage = menuItem.querySelector('img').src;
+        
+        // الحصول على اللون والمقاس المحددين
+        let itemColor = null;
+        let itemSize = null;
+        
+        const colorInput = menuItem.querySelector('.selected-color');
+        if (colorInput) itemColor = colorInput.value;
+        
+        const sizeInput = menuItem.querySelector('.selected-size');
+        if (sizeInput) itemSize = sizeInput.value;
+        
+        const existingItem = cart.find(item => 
+            item.id === productId && 
+            item.color === itemColor && 
+            item.size === itemSize
+        );
+        
+        if (existingItem) {
+            existingItem.quantity += itemQuantity;
+        } else {
+            cart.push({
+                id: productId,
+                name: itemName,
+                price: itemPrice,
+                quantity: itemQuantity,
+                image: itemImage,
+                color: itemColor,
+                size: itemSize
+            });
+        }
+        
+        updateCart();
+        cartPanel.classList.add('active');
+        menuItem.querySelector('.quantity').textContent = '1';
+        
+        showCartNotification(itemName, itemQuantity);
+    }
+
+    function adjustQuantity() {
+        const quantityElement = this.parentElement.querySelector('.quantity');
+        let quantity = parseInt(quantityElement.textContent);
+        
+        if (this.classList.contains('plus')) {
+            quantity++;
+        } else {
+            if (quantity > 1) {
+                quantity--;
+            }
+        }
+        
+        quantityElement.textContent = quantity;
+    }
+
+    function showCartNotification(itemName, quantity) {
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification';
+        notification.innerHTML = `
+            <span>تم إضافة ${quantity} × ${itemName} إلى السلة</span>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    function updateCart() {
+        cartItemsContainer.innerHTML = '';
+        
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p>السلة فارغة</p>';
+            updateCartTotals();
+            return;
+        }
+        
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            let optionsText = '';
+            
+            if (item.color) optionsText += ` | اللون: ${item.color}`;
+            if (item.size) optionsText += ` | المقاس: ${item.size}`;
+            
+            const cartItemElement = document.createElement('div');
+            cartItemElement.className = 'cart-item';
+            cartItemElement.innerHTML = `
+                <div class="cart-item-info">
+                    <div class="cart-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <h5>${item.name}</h5>
+                        <p>${item.price} د.ل × ${item.quantity} ${optionsText}</p>
+                    </div>
+                </div>
+                <div class="cart-item-actions">
+                    <span class="cart-item-price">${itemTotal.toFixed(2)} د.ل</span>
+                    <button class="cart-item-remove" data-index="${index}">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                </div>
+            `;
+            
+            cartItemsContainer.appendChild(cartItemElement);
+        });
+        
+        updateCartTotals();
+        
+        document.querySelectorAll('.cart-item-remove').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                const removedItem = cart[index];
+                cart.splice(index, 1);
+                updateCart();
+                
+                showRemoveNotification(removedItem.name);
+            });
+        });
+        
+        if (checkoutBtn) checkoutBtn.disabled = cart.length === 0;
+    }
+
+    function showRemoveNotification(itemName) {
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification';
+        notification.innerHTML = `
+            <span>تم إزالة ${itemName} من السلة</span>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    function updateCartTotals() {
+        const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const total = subtotal + deliveryFee;
+        
+        subtotalPriceElement.textContent = subtotal.toFixed(2) + ' د.ل';
+        if (deliveryPriceElement) {
+            deliveryPriceElement.textContent = deliveryFee.toFixed(2) + ' د.ل';
+        }
+        totalPriceElement.textContent = total.toFixed(2) + ' د.ل';
+        
+        const totalCount = cart.reduce((count, item) => count + item.quantity, 0);
+        cartCountElements.forEach(el => {
+            el.textContent = totalCount;
+        });
+    }
+
+    function updateDeliveryFee() {
+        const selectedOption = this.options[this.selectedIndex];
+        deliveryFee = selectedOption ? parseFloat(selectedOption.getAttribute('data-price')) : 0;
+        updateCartTotals();
+    }
+
+    function showCheckoutForm(event) {
+        event.preventDefault();
+        
+        if (cart.length === 0) {
+            alert('السلة فارغة، أضف بعض العناصر أولاً');
+            return;
+        }
+
+        const orderData = {
+            items: cart.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity,
+                price: item.price,
+                name: item.name,
+                color: item.color,
+                size: item.size
+            })),
+            subtotal: parseFloat(subtotalPriceElement.textContent),
+            delivery_fee: deliveryFee,
+            total: parseFloat(totalPriceElement.textContent)
+        };
+
+        updateModalOrderItems(orderData.items);
+        modalTotalPrice.textContent = orderData.total.toFixed(2) + ' د.ل';
+        
+        document.getElementById('checkoutModal').style.display = 'block';
+    }
+
+    function updateModalOrderItems(items) {
+        modalOrderItems.innerHTML = '';
+        
+        items.forEach(item => {
+            let optionsText = '';
+            if (item.color) optionsText += ` | اللون: ${item.color}`;
+            if (item.size) optionsText += ` | المقاس: ${item.size}`;
+            
+            const itemElement = document.createElement('div');
+            itemElement.className = 'order-summary-item';
+            itemElement.innerHTML = `
+                <span>${item.name} (${item.quantity}) ${optionsText}</span>
+                <span>${(item.price * item.quantity).toFixed(2)} د.ل</span>
+            `;
+            modalOrderItems.appendChild(itemElement);
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        submitOrder();
+    }
+
+    function submitOrder() {
+        alert('شكراً لطلبك! (هذه معاينة فقط، الطلب لم يتم إرساله فعلياً)');
+        cart = [];
+        updateCart();
+        closeModal();
+        orderForm.reset();
+    }
+
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('checkoutModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>
+</body>
+</html>
