@@ -33,7 +33,7 @@ def verification(request, user):
     send_mail(
     subject,
     message,    
-    [settings.EMAIL_HOST_USER],
+    settings.EMAIL_HOST_USER,
     [user.email],
     fail_silently=False,
     )
