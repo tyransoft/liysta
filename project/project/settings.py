@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 with open(os.path.join(BASE_DIR,'SECRET_KEY.txt')) as f:
     SECRET_KEY=f.read().strip()
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['liysta.ly','www.liysta.ly']
 
@@ -124,12 +124,13 @@ USE_I18N = True
 USE_TZ = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_HOST_USER='tyransoftagency@gmail.com'
-EMAIL_HOST_PASSWORD='eltz wvmx qgfy dqzb'
-EMAIL_USE_TLS=True
-EMAIL_PORT='587'
-SITE_NAME = "Liysta"
+EMAIL_HOST = "mail.liysta.ly"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = "info@liysta.ly"
+EMAIL_HOST_PASSWORD ="k#eEQ{$[}9l{LKXL"
+DEFAULT_FROM_EMAIL = "info@liysta.ly"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -146,6 +147,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'  
-
+WHITENOISE_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = False  
 CSRF_COOKIE_HTTPONLY = False
