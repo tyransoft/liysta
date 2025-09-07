@@ -369,5 +369,16 @@
 
 
 <script src="{% static 'js/lista.js' %}"></script>
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.navbar-links').classList.toggle('open');
+        });
+        
+        document.querySelectorAll('.navbar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.navbar-links').classList.remove('open');
+            });
+        });
+    </script>
 </body>
 </html>
