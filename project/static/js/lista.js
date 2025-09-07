@@ -1,3 +1,4 @@
+// ----------- Toggle Menu -----------
 const toggle = document.getElementById('menu-toggle');
 const navbarLinks = document.querySelector('.navbar-links');
 
@@ -5,45 +6,48 @@ toggle.addEventListener('click', () => {
     navbarLinks.classList.toggle('open');
 });
 
-
+// ----------- Navbar Scroll Effect -----------
 window.addEventListener('scroll', function () {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
-        navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
-        navbar.style.padding = '0.5rem 5%';
+        navbar.classList.add('scrolled');
     } else {
-        navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
-        navbar.style.padding = '1rem 5%';
+        navbar.classList.remove('scrolled');
     }
 });
 
+// ----------- Packages Animation Delay -----------
 const packages = document.querySelectorAll('.package');
 packages.forEach((pkg, index) => {
     pkg.style.transitionDelay = `${index * 0.1}s`;
 });
 
-
-
-
-    var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 3,
+// ----------- Swiper Slider -----------
+var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 3,
     spaceBetween: 20,
     loop: true,
     autoplay: {
         delay: 2500,
-    disableOnInteraction: false,
+        disableOnInteraction: false,
     },
     pagination: {
         el: ".swiper-pagination",
-    clickable: true,
+        clickable: true,
     },
     navigation: {
         nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
+        prevEl: ".swiper-button-prev",
     },
     breakpoints: {
-        1024: {slidesPerView: 3 },
-    768: {slidesPerView: 2 },
-    480: {slidesPerView: 1 },
+        1024: { slidesPerView: 3 },
+        768: { slidesPerView: 2 },
+        480: { slidesPerView: 1, centeredSlides: true, slidesPerGroup: 1 },
     }
+});
+
+// ----------- AOS Animation Init -----------
+AOS.init({
+    duration: 1000,
+    once: false
 });
