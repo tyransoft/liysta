@@ -9,8 +9,8 @@
             --text-light: #64748B;
             --success: #22C55E;
             --white: #FFFFFF;
-            --gradient-primary: linear-gradient(135deg, var(--primary), var(--action));
-            --gradient-action: linear-gradient(135deg, var(--primary),var(--action));
+            --gradient-primary: linear-gradient(135deg, var(--action), var(--primary));
+            --gradient-action: linear-gradient(135deg, var(--action),var(--primary));
             --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.15);
@@ -202,7 +202,7 @@
         .hero {
             position: relative;
             padding: 160px 5% 100px;
-            background: linear-gradient(135deg, #cbc5e2 0%, #928DAB 100%);
+            background: linear-gradient(135deg, #9b9999 0% , #c2c2c4 100%);
             color: var(--white);
             overflow: hidden;
         }
@@ -239,7 +239,7 @@
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 1.5rem;
-            background: linear-gradient(to right, #fff, #e0e7ff);
+            background: linear-gradient(to right, #080808, #0e0e0f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
