@@ -21,7 +21,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.db import transaction
-
+from io import BytesIO
+from openpyxl import WorkBook
 #guest user and so on
 
 
@@ -63,7 +64,25 @@ def generate_cards_view(request):
         number_of_cards = int(request.POST.get('number_of_cards'))  
         value = int(request.POST.get('value'))  
         cards = Paymentcard.generate_cards(number_of_cards, value)
-        return redirect('card_list')
+        wb=WorkBook()
+        ws=wb.active
+        ws.title='بطاقات الدفع'
+        ws.append(['الكود','القيمة'])
+        for card in cards:
+            ws.append([card.code,card.value])
+        output=BytesIO()
+        wb.save(output)
+        output.seek(0)
+        filename = "cards.xlsx"
+        response = HttpResponse(
+                    output,
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+     
+       
+    
     return render(request, 'generate_cards.html')
 
 
