@@ -607,6 +607,7 @@
             transition: stroke-dashoffset 0.8s ease-out;
         }
 
+        
         .progress-text {
             position: absolute;
             top: 50%;
