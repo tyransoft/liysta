@@ -1,144 +1,185 @@
+
 <!DOCTYPE html>
 {% load static %}
 
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- المكتبات -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static 'css/lista.css'%}" />
+    
+    <!-- الأيقونة -->
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
-
-<style>
     
-    </style>
-</head>
+
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="navbar-container">
-                <div class="logo">
-                    <span class="logo-text">Liysta</span>
-                </div>
-                <div class="menu-toggle" id="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </div>
-
-                <ul class="navbar-links">
-                    {% if user.is_authenticated %} 
-                    <div class="user-actions">
-                        {% if user.is_staff or user.is_superuser %} 
-                            <a href="{% url 'control_dashboard' %}" class="admin-btn">
-                                <i class="fas fa-cog"></i> لوحة الإدارة
-                            </a>
-                            <a href="{% url 'statistics_dashboard' %}" class="stats-btn">
-                                <i class="fas fa-chart-bar"></i> الإحصائيات
-                            </a>
-                        {% endif %}
-                
-                        {% if user.customer.active_subscription %} 
-                         <a href="{% url 'customer_dashboard' %}" class="dashboard-btn">
-                            <i class="fas fa-tachometer-alt"></i> لوحة التحكم
-                         </a>
-    
-                         {% elif user.customer.has_any_subscription and  user.customer.can_use_free_trial %} 
-                          <a href="{% url 'renew_subscription' sub.id %}" class="renew-btn">
-                            <i class="fas fa-sync-alt"></i> تجديد الاشتراك
-                          </a>
-    
-                        {% elif user.customer.can_use_free_trial %} 
-                          <a href="{% url 'start_free_trial' %}" class="trial-btn">
-                            <i class="fas fa-gift"></i> تجربة مجانية
-                          </a>
-    
-                         {% else %}
-                         {% if not user.is_superuser %} 
-                          <a href="{% url 'plan_list' %}" class="subscribe-btn">
-                            <i class="fas fa-crown"></i> الاشتراك الآن
-                          </a>
-
-                          {% endif %}
-                        {% endif %} 
-                
-                        <a href="{% url 'user_logout' %}" class="logout-btn">
-                            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
-                        </a>
-                    </div>
-                
-                    {% else %} 
-                    <div class="guest-actions">
-                        <li><a href="{% url 'user_login' %}" class="login-btn">
-                            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
-                        </a></li>
-                        <li><a href="{% url 'register-customer' %}" class="register-btn">
-                            <i class="fas fa-user-plus"></i> إنشاء حساب
-                        </a></li>
-                        <li>
-                            <a href="{% url 'register-customer' %}?next={% url 'start_free_trial' %}" class="cta-button">
-                                <i class="fas fa-gift"></i> تجربة مجانية
-                            </a>
-                        </li>
-                    </div>
-                 {% endif %} 
-                </ul>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-text">Liysta</span>
             </div>
-        </nav>
-    </header>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <ul class="navbar-links">
+                {% if user.is_authenticated %} 
+                <div class="user-actions">
+                    {% if user.is_staff or user.is_superuser %} 
+                        <a href="{% url 'control_dashboard' %}" class="admin-btn">
+                            <i class="fas fa-cog"></i> لوحة الإدارة
+                        </a>
+                        <a href="{% url 'statistics_dashboard' %}" class="stats-btn">
+                            <i class="fas fa-chart-bar"></i> الإحصائيات
+                        </a>
+                    {% endif %}
+            
+                    {% if user.customer.active_subscription %} 
+                     <a href="{% url 'customer_dashboard' %}" class="dashboard-btn">
+                        <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+                     </a>
+
+                     {% elif user.customer.has_any_subscription %} 
+                      <a href="{% url 'renew_subscription' sub.id %}" class="renew-btn">
+                        <i class="fas fa-sync-alt"></i> تجديد الاشتراك
+                      </a>
+
+                    {% elif user.customer.can_use_free_trial %} 
+                      <a href="{% url 'start_free_trial' %}" class="trial-btn">
+                        <i class="fas fa-gift"></i> تجربة مجانية
+                      </a>
+
+                     
+                    {% endif %} 
+            
+                    <a href="{% url 'user_logout' %}" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                    </a>
+                </div>
+            
+                {% else %} 
+                <div class="guest-actions">
+                    <li><a href="{% url 'user_login' %}" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </a></li>
+                    <li><a href="{% url 'register-customer' %}" class="register-btn">
+                        <i class="fas fa-user-plus"></i> إنشاء حساب
+                    </a></li>
+                    <li>
+                        <a href="{% url 'register-customer' %}?next={% url 'start_free_trial' %}" class="btn btn-action">
+                            <i class="fas fa-gift"></i> تجربة مجانية
+                        </a>
+                    </li>
+                </div>
+             {% endif %} 
+            </ul>
+        </div>
+    </nav>
 
         {% block content %}
         {% endblock %}
-    
- <footer class="footer">
-        <div class="footer-logo">Liysta</div>
-        <ul class="footer-links">
-            <li><a href="{% url 'terms' %}">الشروط والأحكام</a></li>
-            <li><a href="{% url 'privacy' %}">سياسة الخصوصية</a></li>
-            <li><a href="{% url 'about' %}">من نحن؟</a></li>
-        </ul>
-        <ul class="contact-info">
-        <li>
-            <i class="fas fa-envelope"></i>
-                <span>liystacompany@gmail.com</span>
-            </li>
-            <li>
-                <i class="fab fa-whatsapp"></i>
-                <span>0911957329</span>
-            </li>
-                  
-        </ul>
-        <a href="https://wa.me/218911957329?text=مرحباً، أريد الاستفسار عن خدماتكم" class="whatsapp-btn">
-            <i class="fab fa-whatsapp"></i> تواصل معنا على واتساب
-        </a>
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-tiktok"></i></a>
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Liysta</h3>
+                <p>منصتك الذكية للتحول الرقمي، نساعدك في إنشاء متجرك الإلكتروني وإدارة عملك بكل كفاءة واحترافية.</p>
+                
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="#home"><i class="fas fa-arrow-left"></i> الرئيسية</a></li>
+                    <li><a href="#features"><i class="fas fa-arrow-left"></i> الميزات</a></li>
+                    <li><a href="#packages"><i class="fas fa-arrow-left"></i> الباقات</a></li>
+                    <li><a href="#how-it-works"><i class="fas fa-arrow-left"></i> كيف يعمل</a></li>
+                    <li><a href="#support"><i class="fas fa-arrow-left"></i> الدعم</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>المساعدة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'terms' %}"><i class="fas fa-arrow-left"></i> الشروط والأحكام</a></li>
+                    <li><a href="{% url 'privacy' %}"><i class="fas fa-arrow-left"></i> سياسة الخصوصية</a></li>
+                    <li><a href="{% url 'about' %}"><i class="fas fa-arrow-left"></i> من نحن</a></li>
+                    <li><a href="#"><i class="fas fa-arrow-left"></i> الأسئلة الشائعة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>اتصل بنا</h3>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>liystacompany@gmail.com</span>
+                    </li>
+                    <li>
+                        <i class="fab fa-whatsapp"></i>
+                        <span>0911957329</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>ليبيا</span>
+                    </li>
+                </ul>
+                
+                <a href="https://wa.me/218911957329?text=مرحباً، أريد الاستفسار عن خدماتكم" class="btn btn-action" style="margin-top: 20px; width: 100%;">
+                    <i class="fab fa-whatsapp"></i> تواصل على واتساب
+                </a>
+            </div>
         </div>
-        <p class="copyright">&copy; 2025 Liysta. جميع الحقوق محفوظة</p>
-    </footer
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Liysta. جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
 
-    
-     
-    </script>
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>
-    AOS.init({
-        duration: 1000,
-        once: false
-    });
-</script>
+    <div class="alert-container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert-custom alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                <div class="icon">
+                    {% if message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                </div>
+                <div class="content">
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-
-
-<script src="{% static 'js/lista.js' %}"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="{% static 'js/lista.js' %}"></script>
 </body>
 </html>
