@@ -22,7 +22,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from io import BytesIO
-from openpyxl import WorkBook
+from openpyxl import Workbook
 #guest user and so on
 
 
@@ -64,7 +64,7 @@ def generate_cards_view(request):
         number_of_cards = int(request.POST.get('number_of_cards'))  
         value = int(request.POST.get('value'))  
         cards = Paymentcard.generate_cards(number_of_cards, value)
-        wb=WorkBook()
+        wb=Workbook()
         ws=wb.active
         ws.title='بطاقات الدفع'
         ws.append(['الكود','القيمة'])

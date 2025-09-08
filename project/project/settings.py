@@ -31,6 +31,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['liysta.ly','www.liysta.ly']
 
 
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'core.apps.CoreConfig',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
