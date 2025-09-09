@@ -31,7 +31,10 @@ DEBUG = False
 ALLOWED_HOSTS = ['liysta.ly','www.liysta.ly']
 
 
+import locale
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+DEFAULT_CHARSET = 'utf-8'
 
 # Application definition
 
