@@ -7,7 +7,19 @@ import qrcode
 from io import BytesIO
 from django.core.files.base import ContentFile
 import secrets
+from django.utils.text import slugify
+from django.utils.encoding import force_str
+import os
+import uuid
 
+def get_upload_path(instance, filename):
+    name, ext = os.path.splitext(filename)
+    safe_name = slugify(force_str(name))
+    
+    if not safe_name:
+        safe_name = uuid.uuid4().hex
+    
+    return f'uploads/{safe_name}{ext}'
 
 
 class Customer(models.Model):
@@ -84,8 +96,8 @@ class Menu(models.Model):
         ('التوصيل او الاستلام في المحل',' التوصيل و التسليم في المحل'),
     }
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
-    logo=models.ImageField(upload_to='logo_images/',null=True)    
-    image=models.ImageField(upload_to='images/',null=True)    
+    logo=models.ImageField(upload_to=get_upload_path,null=True)    
+    image=models.ImageField(upload_to=get_upload_path,null=True)    
     second_color=models.CharField(max_length=20,null=True)
     template=models.CharField(max_length=20,null=True)
     recivieing=models.CharField(max_length=50, choices=recivieing,default='التوصيل')
@@ -145,7 +157,7 @@ class Products(models.Model):
     catogery=models.ForeignKey(Catogery,on_delete=models.CASCADE)
 
     name=models.CharField(max_length=50)
-    image=models.ImageField(upload_to='product_images/',null=False)
+    image=models.ImageField(upload_to=get_upload_path,null=False)
     bought_price=models.IntegerField(null=True,blank=True)
     price=models.IntegerField()
     quantity=models.IntegerField(null=True,blank=True)
