@@ -1027,14 +1027,16 @@ def edit_customer_data(request):
        
        if form.is_valid():
         changed=[]
+
+
         for field in form.changed_data:
             changed.append(field)
+        form.save()
 
         if 'store_en_name' in changed:
             menu=Menu.objects.get(customer=clint)
             menu.qr_image=menu.generate_qr_code()
             menu.save()
-        form.save()
 
 
         messages.success(request, 'تم تعديل بياناتك بنجاح!')

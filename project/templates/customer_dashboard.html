@@ -761,7 +761,7 @@
                         <div style="display: flex; justify-content: center; margin: 1.5rem 0 2rem;">
                             <div style="width: 220px; height: 220px; border: 2px solid var(--border); padding: 1.2rem; border-radius: var(--radius); background: white; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
                                 {% if menus.qr_image %}
-                                <img src="{{ menus.qr_image.url }}" alt="QR Code" style="width: 100%; height: 100%;">
+                                <img id="qr-image"  src="{{ menus.qr_image.url }}" alt="QR Code" style="width: 100%; height: 100%;">
                                 {% else %}
                                 <p>لا يوجد كود QR متاح</p>
                                 {% endif %}
@@ -1017,7 +1017,15 @@
             alert('فشل في نسخ الرابط');
         });
 }
-
+document.getElementById('download-qr').addEventListener('click', function() {
+    const qrImage = document.getElementById('qr-image');
+    const downloadLink = document.createElement('a');
+    downloadLink.href = qrImage.src;
+    downloadLink.download = 'qr-code-menu.png';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+});
     </script>
 </body>
 </html>
