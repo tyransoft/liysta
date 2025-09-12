@@ -92,7 +92,8 @@ class Menu(models.Model):
     desc=models.CharField(max_length=200)
     qr_image=models.ImageField(null=True,upload_to='Qr_images')
     def get_menu_url(self):
-        return reverse('menu_page', kwargs={'store_name': self.customer.store_en_name})
+     return f'https://liysta.ly/{self.customer.store_en_name}'
+
     def generate_qr_code(self):
         url = self.get_menu_url()
         

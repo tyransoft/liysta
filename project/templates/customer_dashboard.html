@@ -10,7 +10,42 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{% static 'css/cusdash.css' %}">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+<style>
+    .link-container {
+    display: flex;
+    margin: 20px 0;
+    max-width: 500px;
+}
 
+#menu-link {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    font-size: 14px;
+    direction: ltr;
+    text-align: left;
+}
+
+.copy-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.copy-btn:hover {
+    background-color: #0056b3;
+}
+
+.copy-btn:active {
+    background-color: #004085;
+}
+</style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -715,7 +750,14 @@
                         <p style="color: var(--gray); margin-bottom: 1.5rem; font-size: 1.1rem;">
                             يمكن للعملاء مسح هذا الكود للوصول إلى صفحة متجرك
                         </p>
-                        
+                        <div class="link-container">
+                        <input type="text" id="menu-link" value="https://liysta.ly/{{ menus.customer.store_en_name }}" readonly>
+                         <button onclick="copyMenuLink()" class="copy-btn">
+                          <i class="fas fa-copy"></i> 
+                          </button>
+                        </div>
+
+                       
                         <div style="display: flex; justify-content: center; margin: 1.5rem 0 2rem;">
                             <div style="width: 220px; height: 220px; border: 2px solid var(--border); padding: 1.2rem; border-radius: var(--radius); background: white; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
                                 {% if menus.qr_image %}
@@ -949,6 +991,33 @@
                 sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
             });
         });
+        function copyMenuLink() {
+    // الحصول على حقل الإدخال
+    const linkInput = document.getElementById('menu-link');
+    
+    // تحديد النص
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // للجوال
+    
+    // نسخ النص
+    navigator.clipboard.writeText(linkInput.value)
+        .then(() => {
+            // تغيير نص الزر مؤقتاً للإشارة إلى النسخ
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+            
+            // العودة إلى النص الأصلي بعد ثانيتين
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('فشل في النسخ: ', err);
+            alert('فشل في نسخ الرابط');
+        });
+}
+
     </script>
 </body>
 </html>

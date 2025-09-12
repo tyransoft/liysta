@@ -58,7 +58,6 @@ def deactivate_users_subs():
           [sub.customer.user.email],
           fail_silently=False,
          )           
-    print('انتهت العملية بنجاح')
 
 def start():
     scheduler=BackgroundScheduler()
@@ -72,5 +71,4 @@ def start():
     )
     register_events(scheduler)
     scheduler.start()
-    print('start now!!!!!')
 
