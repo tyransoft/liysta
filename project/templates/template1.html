@@ -1153,12 +1153,16 @@
                 <div class="menu-card-content">
                     <div class="menu-card-title">
                         <h4>{{ product.name }}</h4>
-                        <div>
-                            <span class="price">{{ product.get_discounted_price }} د.ل</span>
-                            {% if product.get_discounted_price != product.price %}
-                                <span class="original-price">{{ product.price }} د.ل</span>
-                            {% endif %}
-                        </div>
+                            <div>
+                                {% if product.get_discounted_price != product.price %}
+                                 <span class="price">{{ product.get_discounted_price }} د.ل</span>
+ 
+                                 <span class="original-price">{{ product.price }} د.ل</span>
+                                {% elif product.get_discounted_price == product.price %}
+                                    <span class="price">{{ product.price }} د.ل</span>
+                                
+                                {% endif %}
+                            </div>
                     </div>
                     <p>{{ product.description }}</p>
                     

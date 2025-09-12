@@ -165,15 +165,15 @@ class Products(models.Model):
     available_colors = models.CharField(max_length=255,null=True,blank=True, help_text="أدخل الألوان مفصولة بفاصلة مثل: أحمر, أخضر, أزرق")
     available_sizes = models.CharField(max_length=255,null=True ,blank=True, help_text="أدخل المقاسات مفصولة بفاصلة مثل: S, M, L, XL")
     def get_discounted_price(self):
-        try:
+        
          active_discount = CPDiscount.objects.filter(product=self, start_date__lte=timezone.now(), end_date__gte=timezone.now()).first()
          if active_discount:
             discount_amount = self.price * (active_discount.percentage / 100)
             return self.price - discount_amount
-        except:
+         else:
             
 
-         return self.price          
+          return self.price          
 
 
     def save(self,*args,**kwargs):
