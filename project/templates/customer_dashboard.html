@@ -1019,12 +1019,17 @@
 }
 document.getElementById('download-qr').addEventListener('click', function() {
     const qrImage = document.getElementById('qr-image');
-    const downloadLink = document.createElement('a');
-    downloadLink.href = qrImage.src;
-    downloadLink.download = 'qr-code-menu.png';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    
+    if (qrImage && qrImage.src) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = qrImage.src;
+        downloadLink.download = '{{ menus.customer.store_en_name }}-qr-code.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    } else {
+        alert('لا يوجد صورة QR متاحة للتحميل');
+    }
 });
     </script>
 </body>
