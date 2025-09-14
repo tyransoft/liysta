@@ -11,6 +11,8 @@ from django.utils.text import slugify
 from django.utils.encoding import force_str
 import os
 import uuid
+from django.utils.text import slugify
+
 
 def get_upload_path(instance, filename):
     name, ext = os.path.splitext(filename)
@@ -21,6 +23,15 @@ def get_upload_path(instance, filename):
     
     return f'uploads/{safe_name}{ext}'
 
+
+class Customer(models.Model):
+    store_en_name = models.CharField(max_length=100)
+    store_slug = models.SlugField(max_length=100, unique=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.store_slug:
+            self.store_slug = slugify(self.store_en_name)
+        super().save(*args, **kwargs)
 
 class Customer(models.Model):
     status = {
@@ -42,6 +53,7 @@ class Customer(models.Model):
     has_used_free_trial = models.BooleanField(default=False)
     location_url = models.URLField(blank=True, null=True)
     created_at=models.DateField(auto_now_add=True)
+    store_slug = models.SlugField(max_length=100, unique=True, blank=True)
 
 
     @property
@@ -58,6 +70,12 @@ class Customer(models.Model):
     def can_use_free_trial(self):
         """التحقق من إمكانية استخدام التجربة المجانية"""
         return not self.has_used_free_trial and not self.has_any_subscription
+    
+    def save(self, *args, **kwargs):
+        if not self.store_slug:
+            self.store_slug = slugify(self.store_en_name)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.user.first_name}-{self.customer_status}'
 
@@ -104,7 +122,7 @@ class Menu(models.Model):
     desc=models.CharField(max_length=200)
     qr_image=models.ImageField(null=True,upload_to='Qr_images')
     def get_menu_url(self):
-     return f'https://liysta.ly/{self.customer.store_en_name}'
+     return f'https://liysta.ly/{self.customer.store_slug}'
 
     def generate_qr_code(self):
         url = self.get_menu_url()

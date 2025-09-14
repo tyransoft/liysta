@@ -68,7 +68,7 @@ urlpatterns = [
 
     path('discounts/', discount_list, name='discount_list'),
 
-    path('<str:store_name>/', menu_page_view, name='menu_page'),
+    path('<str:store_slug>/', menu_page_view, name='menu_page'),
 
     path('renew-subscription/<int:subscription_id>/', renew_subscription, name='renew_subscription'),
     path('buy_plan/<int:plan_id>/', buy_plan, name='buy_plan'),

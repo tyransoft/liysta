@@ -1340,8 +1340,9 @@ def update_menu_statistics(menu):
     stat.visits_count += 1
     stat.save()
 
-def menu_page_view(request, store_name):
-    menu =get_object_or_404(Menu,customer__store_en_name=store_name)
+def menu_page_view(request, store_slug):
+
+    menu =get_object_or_404(Menu,customer__store_slug=store_slug)
     subscription = Subscription.objects.get(customer=menu.customer)
     categories=Catogery.objects.filter(customer=menu.customer)
     menu.average_rating = Reviews.objects.filter(menu=menu).aggregate(
