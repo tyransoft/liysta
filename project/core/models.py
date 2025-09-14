@@ -24,14 +24,7 @@ def get_upload_path(instance, filename):
     return f'uploads/{safe_name}{ext}'
 
 
-class Customer(models.Model):
-    store_en_name = models.CharField(max_length=100)
-    store_slug = models.SlugField(max_length=100, unique=True, blank=True)
-    
-    def save(self, *args, **kwargs):
-        if not self.store_slug:
-            self.store_slug = slugify(self.store_en_name)
-        super().save(*args, **kwargs)
+
 
 class Customer(models.Model):
     status = {
@@ -53,7 +46,7 @@ class Customer(models.Model):
     has_used_free_trial = models.BooleanField(default=False)
     location_url = models.URLField(blank=True, null=True)
     created_at=models.DateField(auto_now_add=True)
-    store_slug = models.SlugField(max_length=100, unique=True, blank=True)
+    store_slug = models.SlugField(max_length=100)
 
 
     @property
