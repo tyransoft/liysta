@@ -965,7 +965,10 @@ def menu_setup(request):
         return redirect('user_login')   
     
     customer = Customer.objects.get(user=request.user)
-    
+    menu=Menu.objects.get(customer=customer)
+    if menu:
+        messages.error(request, 'لديك صفحة بالفعل!')
+        return redirect('customer_dashboard')
 
     if request.method == 'POST':
         logo = request.FILES.get('logo')

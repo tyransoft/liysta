@@ -46,7 +46,7 @@ class Customer(models.Model):
     has_used_free_trial = models.BooleanField(default=False)
     location_url = models.URLField(blank=True, null=True)
     created_at=models.DateField(auto_now_add=True)
-    store_slug = models.SlugField(max_length=100)
+    store_slug = models.SlugField(max_length=100,null=True)
 
 
     @property
