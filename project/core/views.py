@@ -684,11 +684,15 @@ def start_free_trial(request):
         return redirect('login')
     
     customer = Customer.objects.get(user=request.user)
-    
-    if Subscription.objects.filter(customer=customer, plan__duration='free_trial').exists():
+    today=timezone.now().date()
+
+    if Subscription.objects.filter(customer=customer, plan__duration='free_trial', end_date__lt=today).exists():
         messages.warning(request, 'لقد استخدمت التجربة المجانية مسبقاً')
         return redirect('/')  
-    
+    elif Subscription.objects.filter(customer=customer, plan__duration='free_trial', end_date__gl=today).exists():
+        messages.warning(request, 'لقد استخدمت التجربة المجانية مسبقاً')
+        return redirect('menu_setup')  
+        
     try:
         free_plan = Plan.objects.get(duration='free_trial')
     except Plan.DoesNotExist:
