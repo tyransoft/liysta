@@ -145,7 +145,7 @@
             </div>
             {% endif %}
             
-            <form method="POST">
+            <form method="POST" id="myform">
                 {% csrf_token %}
                 
                 <div class="form-group">
@@ -171,9 +171,16 @@
                 </div>
 
           
-                <button type="submit" class="submit-btn">حفظ </button>
+                <button type="submit" class="submit-btn" id="submitBtn">حفظ </button>
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById("myform").addEventListener("submit",function() {
+            const btn =document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
+        });
+    </script>
 </body>
 </html>

@@ -36,7 +36,7 @@
                 </div>
             {% endif %}
 
-            <form method="post">
+            <form method="post" id="myform">
                 {% csrf_token %}
 
                 <!-- حقل المنتجات -->
@@ -87,9 +87,16 @@
                     {% endif %}
                 </div>
 
-                <button type="submit" class="submit-btn">حفظ الخصم</button>
+                <button type="submit" class="submit-btn" id="submitBtn">حفظ الخصم</button>
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById("myform").addEventListener("submit",function() {
+            const btn =document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
+        }); 
+    </script>
 </body>
 </html>

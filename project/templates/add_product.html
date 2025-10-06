@@ -25,7 +25,7 @@
         <h1 class="page-title"> إدارة المنتجات </h1>
     </div>
     
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="myform">
         {% csrf_token %}
         
         <div class="form-group">
@@ -114,7 +114,7 @@
           {% endif %}
         </div>
 
-        <button type="submit" class="submit-btn">
+        <button type="submit" class="submit-btn" id="submitBtn">
             <i class="fas fa-plus-circle"></i>  حفظ
         </button>
     </form>
@@ -135,6 +135,11 @@
             }, 100);
         });
     });
+    document.getElementById("myform").addEventListener("submit",function() {
+        const btn =document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.innerText ="جاري الارسال.....";
+    });    
 </script>
 </body>
 </html>

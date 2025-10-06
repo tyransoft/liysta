@@ -19,7 +19,7 @@
         <p style="color: #6B7280;">اختر التصميم الذي يناسب متجرك</p>
     </div>
     
-    <form method="POST" action="{% url 'choose_template' menu_id=menu_id %}">
+    <form id="myform" method="POST" action="{% url 'choose_template' menu_id=menu_id %}">
         {% csrf_token %}
         <input type="hidden" name="selected_template" id="selected-template" value="">
         
@@ -108,6 +108,11 @@
             e.preventDefault();
             alert('يرجى اختيار قالب قبل الحفظ');
         }
+    });
+    document.getElementById("myform").addEventListener("submit",function() {
+            const btn =document.getElementById("submit-btn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
     });
 </script>
 </body>

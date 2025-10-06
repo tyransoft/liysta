@@ -177,7 +177,7 @@
             </div>
             {% endif %}
             
-            <form method="POST">
+            <form method="POST" id="myform">
                 {% csrf_token %}
                 
                 <div class="form-group">
@@ -233,7 +233,7 @@
                     </label>
                 </div>
                 
-                <button type="submit" class="submit-btn">تسجيل الحساب</button>
+                <button type="submit" class="submit-btn" id="submitBtn">تسجيل الحساب</button>
             </form>
             
             <div class="auth-footer">
@@ -264,6 +264,11 @@ function showPosition(position) {
 function showError(error) {
     alert("فشل تحديد الموقع. تأكد من السماح للموقع بالوصول إلى موقعك.");
 }
+document.getElementById("myform").addEventListener("submit",function() {
+            const btn =document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
+        });
 </script>
 
 </html>

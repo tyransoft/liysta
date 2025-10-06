@@ -135,7 +135,7 @@
         </h1>
     </div>
     
-    <form method="POST">
+    <form method="POST" id="myform">
         {% csrf_token %}
         
         <div class="form-group">
@@ -147,7 +147,7 @@
             {% endif %}
         </div>
         
-        <button type="submit" class="submit-btn">
+        <button type="submit" class="submit-btn" id="submitBtn">
             <i class="fas fa-edit"></i> حفظ 
             
         </button>
@@ -168,6 +168,11 @@
                 group.style.transform = 'translateY(0)';
             }, 100);
         });
+    });
+    document.getElementById("myform").addEventListener("submit",function() {
+        const btn =document.getElementById("submitBtn");
+        btn.disabled = true;
+        btn.innerText ="جاري الارسال.....";
     });
 </script>
 </body>

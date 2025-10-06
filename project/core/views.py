@@ -689,7 +689,7 @@ def start_free_trial(request):
     if Subscription.objects.filter(customer=customer, plan__duration='free_trial', end_date__lt=today).exists():
         messages.warning(request, 'لقد استخدمت التجربة المجانية مسبقاً')
         return redirect('/')  
-    elif Subscription.objects.filter(customer=customer, plan__duration='free_trial', end_date__gl=today).exists():
+    elif Subscription.objects.filter(customer=customer, plan__duration='free_trial', end_date__gt=today).exists():
         messages.warning(request, 'لقد استخدمت التجربة المجانية مسبقاً')
         return redirect('menu_setup')  
         
@@ -716,7 +716,7 @@ def start_free_trial(request):
 تهانينا! هذه فرصتك ل:
 - اختراق أسرار إدارة المتاجر الناجحة
 - تجربة جميع الأسلحة السرية (مجانًا!)
-- تدريب كامل لمدة 15 يومًا
+- 30 كامل لمدة 15 يومًا
 
 "الدمار الإيجابي يبدأ بالتدريب..."
 
@@ -732,7 +732,7 @@ def start_free_trial(request):
     [customer.user.email],
     fail_silently=False,
     )    
-    messages.success(request, 'تم تفعيل التجربة المجانية بنجاح! تستطيع الآن استخدام المنصة لمدة 15 يوما')
+    messages.success(request,'تم تفعيل التجربة المجانية بنجاح!')
     return redirect('menu_setup') 
 
 
@@ -965,15 +965,14 @@ def delete_catogery_view(request, catogery_id):
 
 @login_required
 def menu_setup(request):
-    if not request.user.is_authenticated:
+   if not request.user.is_authenticated:
         return redirect('user_login')   
-    
-    customer = Customer.objects.get(user=request.user)
-    menu=Menu.objects.get(customer=customer)
-    if menu:
-        messages.error(request, 'لديك صفحة بالفعل!')
-        return redirect('customer_dashboard')
-
+   try:    
+     customer = Customer.objects.get(user=request.user)
+     menu=Menu.objects.get(customer=customer)
+     messages.error(request, 'لديك صفحة بالفعل!')
+     return redirect('customer_dashboard')
+   except:
     if request.method == 'POST':
         logo = request.FILES.get('logo')
         second_color = request.POST.get('second_color')

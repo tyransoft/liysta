@@ -86,7 +86,7 @@
                 <div class="product-detail">هذا الخصم مرتبط بهذا المنتج</div>
             </div>
 
-            <form method="post">
+            <form id="myform" method="post">
                 {% csrf_token %}
 
                 <div class="form-group">
@@ -120,11 +120,18 @@
                     {% endif %}
                 </div>
 
-                <button type="submit" class="submit-btn">حفظ التعديلات</button>
+                <button type="submit" class="submit-btn" id="submitBtn">حفظ التعديلات</button>
             </form>
             
             <a href="{% url 'customer_dashboard' %}" class="back-link">العودة إلى لوحة التحكم</a>
         </div>
     </div>
+    <script>
+        document.getElementById("myform").addEventListener("submit",function() {
+            const btn =document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
+        });
+    </script>
 </body>
 </html>
