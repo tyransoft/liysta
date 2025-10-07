@@ -141,8 +141,10 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 EMAIL_HOST_USER = "info@liysta.ly"
-EMAIL_HOST_PASSWORD ="k#eEQ{$[}9l{LKXL"
-DEFAULT_FROM_EMAIL = "info@liysta.ly"
+EMAIL_HOST_PASSWORD ='7xDs352Jp[{c}]UU'
+DEFAULT_FROM_EMAIL = 'Liysta Platform <info@liysta.ly>'
+SERVER_EMAIL = 'Liysta Platform <info@liysta.ly>'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 

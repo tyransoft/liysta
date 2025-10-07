@@ -573,7 +573,7 @@ def apply_coupon(request):
     })
 
 @login_required
-def buy_plan(request, plan_id):
+def buy_plan(sendrequest, plan_id):
     if request.method == 'POST':
         if request.user.is_authenticated:
             customer = Customer.objects.get(user=request.user)
@@ -649,7 +649,7 @@ def buy_plan(request, plan_id):
                 send_mail(
                   subject,
                   message,    
-                  settings.EMAIL_HOST_USER,
+                  settings.DEFAULT_FROM_EMAIL,
                   [customer.user.email],
                   fail_silently=False,
                 )
@@ -716,7 +716,7 @@ def start_free_trial(request):
 تهانينا! هذه فرصتك ل:
 - اختراق أسرار إدارة المتاجر الناجحة
 - تجربة جميع الأسلحة السرية (مجانًا!)
-- 30 كامل لمدة 15 يومًا
+-  كامل لمدة 30 يومًا
 
 "الدمار الإيجابي يبدأ بالتدريب..."
 
@@ -728,7 +728,7 @@ def start_free_trial(request):
     send_mail(
     subject,
     message,    
-    settings.EMAIL_HOST_USER,
+    settings.DEFAULT_FROM_EMAIL,
     [customer.user.email],
     fail_silently=False,
     )    
@@ -1452,7 +1452,7 @@ def renew_subscription(request, subscription_id):
                 send_mail(
                   subject,
                   message,    
-                  settings.EMAIL_HOST_USER,
+                  settings.DEFAULT_FROM_EMAIL,
                   [customer.user.email],
                   fail_silently=False,
                 )

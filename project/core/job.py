@@ -31,7 +31,7 @@ def deactivate_users_subs():
          send_mail(
           subject,
           message,    
-          settings.EMAIL_HOST_USER,
+          settings.DEFAULT_FROM_EMAIL,
           [sub.customer.user.email],
           fail_silently=False,
          )
@@ -54,7 +54,7 @@ def deactivate_users_subs():
          send_mail(
           subject,
           message,    
-          settings.EMAIL_HOST_USER,
+          settings.DEFAULT_FROM_EMAIL,
           [sub.customer.user.email],
           fail_silently=False,
          )           
