@@ -61,7 +61,11 @@
 
                      
                     {% endif %} 
-            
+                    {% if not user.is_staff or not user.is_superuser %} 
+                    <a href="{% url 'wallet_charging' %}" class="trial-btn">
+                        <i class="fas fa-wallet"></i> شحن المحفظة
+                     </a>
+                    {% endif %}            
                     <a href="{% url 'user_logout' %}" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
                     </a>
