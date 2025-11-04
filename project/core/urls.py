@@ -53,6 +53,7 @@ urlpatterns = [
 
     path('submit-review/', submit_review, name='submit_review'),
     path('customer-dashboard/', customer_dashboard, name='customer_dashboard'),
+    path('check-new-orders/',check_new_orders,name='check-new-orders'),
     path('preview-template/', preview_template, name='preview_template'),
     path('print-invoice/<int:order_id>', print_invoice, name='invoice'),
     path('confirm-delivered/<int:order_id>', confirm_delivered, name='recive'),

@@ -23,6 +23,9 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from io import BytesIO
 from openpyxl import Workbook
+from django.utils import timezone
+from datetime import timedelta
+
 #guest user and so on
 
 
@@ -1646,3 +1649,54 @@ def delete_order(request, order_id):
     messages.success(request, 'تم حذف الطلب بنجاح.')
     return redirect('customer_dashboard')
 
+
+def check_new_orders(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'غير مصرح'}, status=401)
+    
+    try:
+        customer = request.user.customer
+        menu = customer.menu_set.first()
+        
+        if not menu:
+            return JsonResponse({'error': 'لا يوجد متجر'}, status=404)
+        
+        last_check = request.GET.get('last_check')
+        
+        if last_check:
+            from datetime import datetime
+            try:
+                last_check_time = datetime.fromisoformat(last_check.replace('Z', '+00:00'))
+            except:
+                last_check_time = timezone.now() - timedelta(minutes=5)
+        else:
+            last_check_time = timezone.now() - timedelta(minutes=5)
+        
+        new_orders = Order.objects.filter(
+            menu=menu,
+            created_at__gt=last_check_time,
+            status='new' 
+        )
+        
+        new_orders_count = new_orders.count()
+        
+        orders_data = []
+        for order in new_orders:
+            orders_data.append({
+                'id': order.id,
+                'customer_name': order.customer_name,
+                'customer_phone': order.customer_phone,
+                'delivery_address': order.delivery_address or 'استلام شخصي',
+                'total': str(order.total),
+                'created_at': order.created_at.isoformat()
+            })
+        
+        return JsonResponse({
+            'has_new_orders': new_orders_count > 0,
+            'new_orders_count': new_orders_count,
+            'orders': orders_data,
+            'last_check': timezone.now().isoformat()
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

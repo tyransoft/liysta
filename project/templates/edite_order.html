@@ -149,7 +149,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">عنوان التوصيل</label>
-                                <select class="form-select" name="delivery_address" required>
+                                <select class="form-select" name="delivery_address" >
                                     <option value="">اختر عنوان التوصيل</option>
                                     {% for city in cities %}
                                     <option value="{{ city.id }}" data-price="{{ city.price }}" {% if order.delivery_address and city.id == order.delivery_address.id %}selected{% endif %}>
