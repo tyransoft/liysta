@@ -576,7 +576,7 @@ def apply_coupon(request):
     })
 
 @login_required
-def buy_plan(sendrequest, plan_id):
+def buy_plan(request, plan_id):
     if request.method == 'POST':
         if request.user.is_authenticated:
             customer = Customer.objects.get(user=request.user)
