@@ -11,7 +11,6 @@ from django.utils.text import slugify
 from django.utils.encoding import force_str
 import os
 import uuid
-from django.utils.text import slugify
 
 
 def get_upload_path(instance, filename):

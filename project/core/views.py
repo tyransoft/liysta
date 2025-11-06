@@ -26,6 +26,7 @@ from openpyxl import Workbook
 from django.utils import timezone
 from datetime import timedelta
 from django.utils.dateparse import parse_datetime
+from django.utils.text import slugify
 
 #guest user and so on
 
@@ -1030,9 +1031,9 @@ def choose_template(request, menu_id):
 
 @login_required
 def edit_customer_data(request):
+   clint=Customer.objects.get(user=request.user)
 
    if request.method == "POST":
-       clint=Customer.objects.get(user=request.user)
        form=CustomerForm(request.POST,instance=clint,user=request.user)
        
        if form.is_valid():
@@ -1045,7 +1046,9 @@ def edit_customer_data(request):
 
         if 'store_en_name' in changed:
             menu=Menu.objects.get(customer=clint)
-            menu.qr_image=menu.generate_qr_code()
+            menu.generate_qr_code()
+            clint.store_slug = slugify(clint.store_en_name)
+            clint.save()
             menu.save()
 
 
@@ -1054,9 +1057,8 @@ def edit_customer_data(request):
         return redirect('customer_dashboard')
       
    else:
-      clint=Customer.objects.get(user=request.user)
 
-      form=CustomerForm(instance=clint)
+      form=CustomerForm(instance=clint,user=request.user)
    
    return render(request,'update_cust.html',{'form':form,'customer':clint})
 
