@@ -1673,7 +1673,7 @@ def check_new_orders(request):
 
         new_orders = Order.objects.filter(
             menu=menu,
-            check__gt=last_check_time,
+            last_check__gt=last_check_time,
             status='pending' 
         )
         
