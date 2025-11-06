@@ -10,6 +10,27 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/cusdash.css' %}">
+    <style>
+        .alert-custom {
+    transition: all 0.3s ease;
+    transform: translateX(0);
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -1001,60 +1022,120 @@
         });
 
 function checkNewOrders() {
-    fetch('check-new-orders/', {
+    fetch('check-new-orders/', {  
         method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
         credentials: 'same-origin'
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.has_new_orders) {
+            const newOrdersCountElement = document.getElementById('newOrdersCount');
+            if (newOrdersCountElement) {
+                const currentCount = parseInt(newOrdersCountElement.textContent) || 0;
+                newOrdersCountElement.textContent = currentCount + data.new_orders_count;
+            }
+
             const notification = document.getElementById('newOrderNotification');
             const notificationContent = document.getElementById('notificationContent');
-            notificationContent.textContent = 'تم استلام ' + data.new_orders_count + ' طلب جديد';
-            notification.classList.add('show');
-            setTimeout(() => notification.classList.remove('show'), 5000);
+            if (notification && notificationContent) {
+                notificationContent.textContent = 'تم استلام ' + data.new_orders_count + ' طلب جديد';
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
 
-            const tableBody = document.getElementById('newOrdersTable');
-            
-            data.orders.forEach(order => {
-                if (!document.getElementById('order-' + order.id)) {
-                    const row = document.createElement('tr');
-                    row.id = 'order-' + order.id;
-
-                    const address = order.delivery_address ? order.delivery_address : 'استلام شخصي';
-                    
-                    row.innerHTML = `
-                        <td>${order.customer_name}</td>
-                        <td>${order.customer_phone}</td>
-                        <td>${address}</td>
-                        <td>
-                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                <a href="/print-invoice/${order.id}/" class="action-btn" title="طباعة الفاتورة">
-                                    <i class="fas fa-print"></i>
-                                </a>
-                                <a href="/cancel-order//${order.id}/" class="action-btn" 
-                                   title="إلغاء الطلب" 
-                                   style="background: var(--danger-light); color: var(--danger);">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </div>
-                        </td>
-                    `;
-
-                    tableBody.prepend(row);
-
-                    const emptyRow = tableBody.querySelector('tr td[colspan="4"]');
-                    if (emptyRow) {
-                        emptyRow.parentElement.remove();
-                    }
-                }
-            });
+            updateOrdersTable(data.orders);
         }
     })
     .catch(error => console.error('Error checking new orders:', error));
 }
 
+function updateOrdersTable(orders) {
+    const tableBody = document.getElementById('newOrdersTable');
+    
+    if (!tableBody) return;
+
+    orders.forEach(order => {
+        if (!document.getElementById('order-' + order.id)) {
+            const row = document.createElement('tr');
+            row.id = 'order-' + order.id;
+
+            const address = order.delivery_address ? order.delivery_address : 'استلام شخصي';
+            
+            row.innerHTML = `
+                <td>${order.customer_name}</td>
+                <td>${order.customer_phone}</td>
+                <td>${address}</td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <a href="/print-invoice/${order.id}/" class="action-btn" title="طباعة الفاتورة">
+                            <i class="fas fa-print"></i>
+                        </a>
+                        <a href="/cancel-order/${order.id}/" class="action-btn" 
+                           title="إلغاء الطلب" 
+                           style="background: var(--danger-light); color: var(--danger);">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </td>
+            `;
+
+            tableBody.prepend(row);
+
+            const emptyRow = tableBody.querySelector('tr td[colspan="4"]');
+            if (emptyRow) {
+                emptyRow.parentElement.remove();
+            }
+        }
+    });
+}
+
 setInterval(checkNewOrders, 10000);
+
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(checkNewOrders, 2000);
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.querySelectorAll('.btn-close');
+    
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const alert = this.closest('.alert-custom');
+            if (alert) {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    alert.remove();
+                }, 300);
+            }
+        });
+    });
+
+    const alerts = document.querySelectorAll('.alert-custom');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 300);
+            }
+        }, 5000);
+    });
+});
     </script>
 </body>
 </html>
