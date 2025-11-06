@@ -67,8 +67,19 @@ class CustomerForm(forms.ModelForm):
     
     class Meta:
         model = Customer
-        exclude = ['user', 'has_used_free_trial', 'wallet', 'customer_status']
+        exclude = ['user', 'has_used_free_trial', 'wallet', 'customer_status','store_slug']
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user:
+            self.fields['first_name'].initial = self.user.first_name
     
+    def save(self, commit=True):
+        customer = super().save(commit=commit)
+        if self.user and commit:
+            self.user.first_name = self.cleaned_data['first_name']
+            self.user.save()
+        return customer
  
 class CityForm(forms.ModelForm):
     class Meta:
