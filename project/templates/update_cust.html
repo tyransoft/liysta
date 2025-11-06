@@ -1,154 +1,172 @@
 <!DOCTYPE html>
 {% load static %}
-
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>liysta - تعديل بياناتك</title>
+
+    <!-- خطوط و أيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ملفات CSS -->
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
     <link rel="stylesheet" href="{% static 'css/edite_cust.css' %}">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
-
 </head>
-<body>
 
+<body>
 <div class="add-product-container">
-     <div class="brand-header">
-            <div class="brand-logo">Liysta</div>
-            <div class="brand-subtitle">منصتك الذكية لتنقل عملك الى العالم الرقمي </div>
-        </div>
+
+    <!-- الهيدر -->
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <div class="brand-subtitle">منصتك الذكية لتنقل عملك إلى العالم الرقمي</div>
+    </div>
+
     <div class="page-header">
         <h1 class="page-title">تعديل بياناتك</h1>
     </div>
+
+    <!-- عرض الأخطاء العامة (غير المرتبطة بحقل معين) -->
     {% if form.non_field_errors %}
     <div class="error general-error">
         {% for error in form.non_field_errors %}
             <p>{{ error }}</p>
         {% endfor %}
     </div>
-    {% endif %} 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
+    {% endif %}
 
-         <input type="text" name="first_name" id="first_name" class="form-input" 
-            value="{% if form.first_name.value %}{{ form.first_name.value }}{% elif customer.user.first_name %}{{ customer.user.first_name }}{% endif %}" 
-            placeholder="اسمك">          
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- الاسم -->
+        <div class="form-group">
+            <label for="first_name" class="form-label">الاسم</label>
+            <input type="text" name="first_name" id="first_name" class="form-input"
+                value="{% if form.first_name.value %}{{ form.first_name.value }}{% elif customer.user.first_name %}{{ customer.user.first_name }}{% endif %}"
+                placeholder="اسمك">
+            {% if form.first_name.errors %}
+                <div class="error">{{ form.first_name.errors|join:", " }}</div>
+            {% endif %}
             {% if customer.user %}
                 <div class="current-data">الحالي: {{ customer.user.first_name }}</div>
-            {% endif %}           
-        </div>        
+            {% endif %}
+        </div>
+
+        <!-- اسم المتجر بالعربي -->
         <div class="form-group">
-            <label for="id_store_ar_name" class="form-label">اسم المتجر بالعربي</label>
+            <label for="store_ar_name" class="form-label">اسم المتجر بالعربي</label>
             <input type="text" name="store_ar_name" id="store_ar_name" class="form-input" required
                    value="{{ form.store_ar_name.value|default:'' }}" placeholder="أدخل اسم المتجر بالعربي">
             {% if form.store_ar_name.errors %}
-                <div class="error">{{ form.store_ar_name.errors }}</div>
+                <div class="error">{{ form.store_ar_name.errors|join:", " }}</div>
             {% endif %}
             {% if customer.store_ar_name %}
                 <div class="current-data">الحالي: {{ customer.store_ar_name }}</div>
             {% endif %}
         </div>
+
+        <!-- اسم المتجر بالإنجليزي -->
         <div class="form-group">
-            <label for="id_store_en_name" class="form-label">اسم المتجر بالانجليزي</label>
+            <label for="store_en_name" class="form-label">اسم المتجر بالإنجليزي</label>
             <input type="text" name="store_en_name" id="store_en_name" class="form-input" required
-                   value="{{ form.store_en_name.value|default:'' }}" placeholder="أدخل اسم المتجر بالانجليزي">
+                   value="{{ form.store_en_name.value|default:'' }}" placeholder="أدخل اسم المتجر بالإنجليزي">
             {% if form.store_en_name.errors %}
-                <div class="error">{{ form.store_en_name.errors }}</div>
+                <div class="error">{{ form.store_en_name.errors|join:", " }}</div>
             {% endif %}
             {% if customer.store_en_name %}
                 <div class="current-data">الحالي: {{ customer.store_en_name }}</div>
             {% endif %}
         </div>
-        
+
+        <!-- رقم الهاتف -->
         <div class="form-group">
             <label for="id_phone" class="form-label">رقم الهاتف</label>
             <div class="phone-input-container">
-                <span class="country-code"></span>
-                <input type="tel" name="phone" id="id_phone" class="form-input phone-input" 
+                <input type="tel" name="phone" id="id_phone" class="form-input phone-input"
                        value="{{ form.phone.value|default:'' }}" placeholder="5XXXXXXXX">
             </div>
             {% if form.phone.errors %}
-                <div class="error">{{ form.phone.errors }}</div>
+                <div class="error">{{ form.phone.errors|join:", " }}</div>
             {% endif %}
             {% if customer.phone %}
                 <div class="current-data">الحالي: {{ customer.phone }}</div>
             {% endif %}
         </div>
-<div class="form-group">
-    <label for="location_url" class="form-label">الموقع الجغرافي (اختياري)</label>
-    <button type="button" onclick="getLocation()" class="submit-btn" style="background: #4B5563; margin-bottom: 10px;">
-        📍 حدد موقعي
-    </button>
-    <input type="text" name="location_url" id="location_url" class="form-input"
-           value="{{ form.location_url.value|default:'' }}" placeholder="رابط خريطة الموقع (اختياري)">
-    {% if form.location_url.errors %}
-        <div class="error">{{ form.location_url.errors }}</div>
-    {% endif %}
-    {% if customer.location_url %}
-        <div class="current-data">
-            الرابط الحالي: <a href="{{ customer.location_url }}" target="_blank" style="color: var(--primary); text-decoration: underline;">عرض على الخريطة</a>
+
+        <!-- الموقع الجغرافي -->
+        <div class="form-group">
+            <label for="location_url" class="form-label">الموقع الجغرافي (اختياري)</label>
+            <button type="button" onclick="getLocation()" class="submit-btn" style="background:#4B5563;margin-bottom:10px;">
+                📍 حدد موقعي
+            </button>
+            <input type="text" name="location_url" id="location_url" class="form-input"
+                   value="{{ form.location_url.value|default:'' }}" placeholder="رابط خريطة الموقع (اختياري)">
+            {% if form.location_url.errors %}
+                <div class="error">{{ form.location_url.errors|join:", " }}</div>
+            {% endif %}
+            {% if customer.location_url %}
+                <div class="current-data">
+                    الرابط الحالي:
+                    <a href="{{ customer.location_url }}" target="_blank" style="color:var(--primary);text-decoration:underline;">
+                        عرض على الخريطة
+                    </a>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
-</div>
-       
+
+        <!-- نوع المتجر -->
         <div class="form-group">
             <label for="id_store_kind" class="form-label">نوع المتجر</label>
             <select name="store_kind" id="id_store_kind" class="form-input">
                 {% for value, label in form.store_kind.field.choices %}
-                    <option value="{{ value }}" {% if form.store_kind.value == value %}selected{% endif %}>
-                        {{ label }}
-                    </option>
+                    <option value="{{ value }}" {% if form.store_kind.value == value %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
             </select>
             {% if form.store_kind.errors %}
-                <div class="error">{{ form.store_kind.errors }}</div>
+                <div class="error">{{ form.store_kind.errors|join:", " }}</div>
             {% endif %}
             {% if customer.get_store_kind_display %}
                 <div class="current-data">الحالي: {{ customer.get_store_kind_display }}</div>
             {% endif %}
         </div>
-        
+
+        <!-- زر الحفظ -->
         <button type="submit" class="submit-btn">
             <i class="fas fa-save"></i> حفظ التعديلات
         </button>
     </form>
 </div>
 
+<!-- سكربتات -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const formGroups = document.querySelectorAll('.form-group');
-        formGroups.forEach((group, index) => {
-            group.style.opacity = '0';
-            group.style.transform = 'translateY(20px)';
-            group.style.transition = `all 0.5s ease ${index * 0.1}s`;
-            
-            setTimeout(() => {
-                group.style.opacity = '1';
-                group.style.transform = 'translateY(0)';
-            }, 100);
-        });
-        
-        const phoneInput = document.getElementById('id_phone');
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function(e) {
-                this.value = this.value.replace(/[^0-9]/g, '');
-            });
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+        group.style.opacity = '0';
+        group.style.transform = 'translateY(20px)';
+        group.style.transition = `all 0.5s ease ${index * 0.1}s`;
+        setTimeout(() => {
+            group.style.opacity = '1';
+            group.style.transform = 'translateY(0)';
+        }, 100);
     });
-    function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError, {
-            enableHighAccuracy: true
+
+    const phoneInput = document.getElementById('id_phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
+    }
+});
+
+// تحديد الموقع الجغرافي
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError, { enableHighAccuracy: true });
     } else {
         alert("المتصفح لا يدعم تحديد الموقع الجغرافي");
     }
@@ -162,10 +180,9 @@ function showPosition(position) {
     alert("تم تحديد الموقع بنجاح!");
 }
 
-function showError(error) {
+function showError() {
     alert("تعذر تحديد الموقع. تأكد من منح الإذن للمتصفح.");
 }
-
 </script>
 </body>
 </html>
