@@ -1347,7 +1347,7 @@ def update_order(request, order_id):
     return redirect('manege_order', menu_id=order.menu.id)
 
 def update_menu_statistics(menu):
-    today = timezone.localdate()
+    today = localdate()
     stat, created = MenuStatistics.objects.get_or_create(menu=menu, date=today)
     stat.visits_count += 1
     stat.save()
@@ -1673,7 +1673,7 @@ def check_new_orders(request):
 
         new_orders = Order.objects.filter(
             menu=menu,
-            created_at__gt=last_check_time,
+            check__gt=last_check_time,
             status='pending' 
         )
         

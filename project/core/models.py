@@ -405,7 +405,7 @@ class Order(models.Model):
     created_at = models.DateField(auto_now_add=True)
     sales_total=models.FloatField(null=True,blank=True)
     profit_total=models.FloatField(null=True,blank=True)
-    
+    check = models.DateTimeField(default=timezone.now) 
     def get_total(self):
         if self.delivery_address:
             total= self.sales_total + self.delivery_address.price
@@ -415,7 +415,9 @@ class Order(models.Model):
             return total
 
 
-
+    def save(self, *args, **kwargs):
+        self.check = timezone.now()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"طلب  - {self.menu.customer.store_en_name} - {self.customer_name}"

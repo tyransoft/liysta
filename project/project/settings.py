@@ -133,7 +133,7 @@ TIME_ZONE = 'Africa/Tripoli'
 
 USE_I18N = True
 
-USE_TZ = False
+USE_TZ = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "mail.liysta.ly"
