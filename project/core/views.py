@@ -1033,9 +1033,9 @@ def choose_template(request, menu_id):
 def edit_customer_data(request):
     try:
         clint = Customer.objects.get(user=request.user)
-        
+
         if request.method == "POST":
-            form = CustomerForm(request.POST, instance=clint, user=request.user)
+            form = CustomerForm(request.POST, instance=clint)
             
             if form.is_valid():
                 changed = form.changed_data
@@ -1053,19 +1053,16 @@ def edit_customer_data(request):
             else:
                 messages.error(request, 'يرجى تصحيح الأخطاء أدناه.')
         else:
-            form = CustomerForm(instance=clint, user=request.user)
+            form = CustomerForm(instance=clint)
         
         return render(request, 'update_cust.html', {'form': form, 'customer': clint})
-    
+      
     except Customer.DoesNotExist:
         messages.error(request, 'لم يتم العثور على بيانات العميل.')
         return redirect('customer_dashboard')
     except Exception as e:
         messages.error(request, f'حدث خطأ: {str(e)}')
         return redirect('customer_dashboard')
-
-
-
 
 @login_required
 def edit_menu(request, menu_id):

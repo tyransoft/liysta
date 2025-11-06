@@ -6,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>liysta - تعديل بياناتك</title>
 
-    <!-- خطوط و أيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- ملفات CSS -->
     <link rel="stylesheet" href="{% static 'css/lista.css' %}">
     <link rel="stylesheet" href="{% static 'css/edite_cust.css' %}">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
@@ -19,7 +17,6 @@
 <body>
 <div class="add-product-container">
 
-    <!-- الهيدر -->
     <div class="brand-header">
         <div class="brand-logo">Liysta</div>
         <div class="brand-subtitle">منصتك الذكية لتنقل عملك إلى العالم الرقمي</div>
@@ -28,8 +25,15 @@
     <div class="page-header">
         <h1 class="page-title">تعديل بياناتك</h1>
     </div>
-
-    <!-- عرض الأخطاء العامة (غير المرتبطة بحقل معين) -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% if form.non_field_errors %}
     <div class="error general-error">
         {% for error in form.non_field_errors %}
@@ -41,21 +45,7 @@
     <form method="POST"  novalidate>
         {% csrf_token %}
 
-        <!-- الاسم -->
-        <div class="form-group">
-            <label for="first_name" class="form-label">الاسم</label>
-            <input type="text" name="first_name" id="first_name" class="form-input"
-                value="{% if form.first_name.value %}{{ form.first_name.value }}{% elif customer.user.first_name %}{{ customer.user.first_name }}{% endif %}"
-                placeholder="اسمك">
-            {% if form.first_name.errors %}
-                <div class="error">{{ form.first_name.errors|join:", " }}</div>
-            {% endif %}
-            {% if customer.user %}
-                <div class="current-data">الحالي: {{ customer.user.first_name }}</div>
-            {% endif %}
-        </div>
-
-        <!-- اسم المتجر بالعربي -->
+        
         <div class="form-group">
             <label for="store_ar_name" class="form-label">اسم المتجر بالعربي</label>
             <input type="text" name="store_ar_name" id="store_ar_name" class="form-input" required
@@ -68,7 +58,6 @@
             {% endif %}
         </div>
 
-        <!-- اسم المتجر بالإنجليزي -->
         <div class="form-group">
             <label for="store_en_name" class="form-label">اسم المتجر بالإنجليزي</label>
             <input type="text" name="store_en_name" id="store_en_name" class="form-input" required
@@ -81,7 +70,6 @@
             {% endif %}
         </div>
 
-        <!-- رقم الهاتف -->
         <div class="form-group">
             <label for="id_phone" class="form-label">رقم الهاتف</label>
             <div class="phone-input-container">
@@ -96,7 +84,6 @@
             {% endif %}
         </div>
 
-        <!-- الموقع الجغرافي -->
         <div class="form-group">
             <label for="location_url" class="form-label">الموقع الجغرافي (اختياري)</label>
             <button type="button" onclick="getLocation()" class="submit-btn" style="background:#4B5563;margin-bottom:10px;">
@@ -117,7 +104,6 @@
             {% endif %}
         </div>
 
-        <!-- نوع المتجر -->
         <div class="form-group">
             <label for="id_store_kind" class="form-label">نوع المتجر</label>
             <select name="store_kind" id="id_store_kind" class="form-input">
@@ -133,14 +119,12 @@
             {% endif %}
         </div>
 
-        <!-- زر الحفظ -->
         <button type="submit" class="submit-btn">
             <i class="fas fa-save"></i> حفظ التعديلات
         </button>
     </form>
 </div>
 
-<!-- سكربتات -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -163,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// تحديد الموقع الجغرافي
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError, { enableHighAccuracy: true });

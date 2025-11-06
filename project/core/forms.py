@@ -70,25 +70,8 @@ class CustomerForm(forms.ModelForm):
         exclude = ['user', 'has_used_free_trial', 'wallet', 'customer_status']
     
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if user and self.instance:
-            self.fields['first_name'].initial = user.first_name
-            self._user = user
-    
-    def save(self, commit=True):
-        customer = super().save(commit=False)
-        
-        if hasattr(self, '_user'):
-            self._user.first_name = self.cleaned_data['first_name']
-            if commit:
-                self._user.save()
-        
-        if commit:
-            customer.save()
-            self.save_m2m() 
-        
-        return customer
     
 class CityForm(forms.ModelForm):
     class Meta:
