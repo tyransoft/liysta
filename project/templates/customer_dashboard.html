@@ -1021,8 +1021,11 @@
             }
         });
 
+let lastCheckTime = new Date().toISOString();
+let processedOrderIds = new Set();
+
 function checkNewOrders() {
-    fetch('check-new-orders/', {  
+    fetch(`check-new-orders/?last_check=${encodeURIComponent(lastCheckTime)}`, {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -1036,25 +1039,35 @@ function checkNewOrders() {
         return response.json();
     })
     .then(data => {
+        if (data.last_check) {
+            lastCheckTime = data.last_check;
+        }
+
         if (data.has_new_orders) {
-            const newOrdersCountElement = document.getElementById('newOrdersCount');
-            if (newOrdersCountElement) {
-                const currentCount = parseInt(newOrdersCountElement.textContent) || 0;
-                newOrdersCountElement.textContent = currentCount + data.new_orders_count;
-            }
+            const trulyNewOrders = data.orders.filter(order => !processedOrderIds.has(order.id));
+            const newOrdersCount = trulyNewOrders.length;
 
-            const notification = document.getElementById('newOrderNotification');
-            const notificationContent = document.getElementById('notificationContent');
-            if (notification && notificationContent) {
-                notificationContent.textContent = 'تم استلام ' + data.new_orders_count + ' طلب جديد';
-                notification.classList.add('show');
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 5000);
-            }
+            if (newOrdersCount > 0) {
+                const newOrdersCountElement = document.getElementById('newOrdersCount');
+                if (newOrdersCountElement) {
+                    const currentCount = parseInt(newOrdersCountElement.textContent) || 0;
+                    newOrdersCountElement.textContent = currentCount + newOrdersCount;
+                }
 
-            updateOrdersTable(data.orders);
+                const notification = document.getElementById('newOrderNotification');
+                const notificationContent = document.getElementById('notificationContent');
+                if (notification && notificationContent) {
+                    notificationContent.textContent = 'تم استلام ' + newOrdersCount + ' طلب جديد';
+                    notification.classList.add('show');
+                    
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 5000);
+                }
+
+                updateOrdersTable(trulyNewOrders);
+                trulyNewOrders.forEach(order => processedOrderIds.add(order.id));
+            }
         }
     })
     .catch(error => console.error('Error checking new orders:', error));
@@ -1063,7 +1076,7 @@ function checkNewOrders() {
 function updateOrdersTable(orders) {
     const tableBody = document.getElementById('newOrdersTable');
     
-    if (!tableBody) return;
+    if (!tableBody || orders.length === 0) return;
 
     orders.forEach(order => {
         if (!document.getElementById('order-' + order.id)) {
@@ -1098,9 +1111,43 @@ function updateOrdersTable(orders) {
             }
         }
     });
+
+    syncCounterWithTable();
+}
+
+function syncCounterWithTable() {
+    const tableBody = document.getElementById('newOrdersTable');
+    const newOrdersCountElement = document.getElementById('newOrdersCount');
+    
+    if (tableBody && newOrdersCountElement) {
+        const actualRowCount = tableBody.querySelectorAll('tr:not([style*="display: none"])').length;
+        
+        const hasEmptyMessage = tableBody.querySelector('tr td[colspan="4"]');
+        const actualOrdersCount = hasEmptyMessage ? 0 : actualRowCount;
+        
+        newOrdersCountElement.textContent = actualOrdersCount;
+    }
+}
+
+function resetProcessedOrders() {
+    processedOrderIds.clear();
+    lastCheckTime = new Date().toISOString();
 }
 
 setInterval(checkNewOrders, 10000);
+
+document.addEventListener('DOMContentLoaded', function() {
+    syncCounterWithTable();
+    
+    setTimeout(checkNewOrders, 2000);
+    
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            setTimeout(resetProcessedOrders, 1000);
+        });
+    });
+})
 
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(checkNewOrders, 2000);
