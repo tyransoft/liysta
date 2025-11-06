@@ -1031,38 +1031,38 @@ def choose_template(request, menu_id):
 
 @login_required
 def edit_customer_data(request):
-   clint=Customer.objects.get(user=request.user)
+    try:
+        clint = Customer.objects.get(user=request.user)
+        
+        if request.method == "POST":
+            form = CustomerForm(request.POST, instance=clint, user=request.user)
+            
+            if form.is_valid():
+                changed = form.changed_data
+                form.save()
 
-   if request.method == "POST":
-       form=CustomerForm(request.POST,instance=clint,user=request.user)
-       
-       if form.is_valid():
-        changed=[]
+                if 'store_en_name' in changed:
+                    menu = Menu.objects.get(customer=clint)
+                    menu.generate_qr_code()
+                    clint.store_slug = slugify(clint.store_en_name)
+                    clint.save()
+                    menu.save()
 
-
-        for field in form.changed_data:
-            changed.append(field)
-        form.save()
-
-        if 'store_en_name' in changed:
-            menu=Menu.objects.get(customer=clint)
-            menu.generate_qr_code()
-            clint.store_slug = slugify(clint.store_en_name)
-            clint.save()
-            menu.save()
-
-
-        messages.success(request, 'تم تعديل بياناتك بنجاح!')
-
+                messages.success(request, 'تم تعديل بياناتك بنجاح!')
+                return redirect('customer_dashboard')
+            else:
+                messages.error(request, 'يرجى تصحيح الأخطاء أدناه.')
+        else:
+            form = CustomerForm(instance=clint, user=request.user)
+        
+        return render(request, 'update_cust.html', {'form': form, 'customer': clint})
+    
+    except Customer.DoesNotExist:
+        messages.error(request, 'لم يتم العثور على بيانات العميل.')
         return redirect('customer_dashboard')
-      
-   else:
-
-      form=CustomerForm(instance=clint,user=request.user)
-   
-   return render(request,'update_cust.html',{'form':form,'customer':clint})
-
-
+    except Exception as e:
+        messages.error(request, f'حدث خطأ: {str(e)}')
+        return redirect('customer_dashboard')
 
 
 
@@ -1685,8 +1685,8 @@ def check_new_orders(request):
                 'id': order.id,
                 'customer_name': order.customer_name,
                 'customer_phone': order.customer_phone,
-                'delivery_address': order.delivery_address or 'استلام شخصي',
-                'total': str(order.total),
+                'delivery_address': order.delivery_address or None,
+                'total': str(order.sales_total),
                 'created_at': order.created_at.isoformat()
             })
         

@@ -63,27 +63,33 @@ class CPDForm(forms.ModelForm):
         exclude=['menu','product']
 
 class CustomerForm(forms.ModelForm):
-    first_name=forms.CharField(label='الاسم',max_length=200)
+    first_name = forms.CharField(label='الاسم', max_length=200)
+    
     class Meta:
         model = Customer
-        exclude = ['user','has_used_free_trial','wallet','customer_status']
+        exclude = ['user', 'has_used_free_trial', 'wallet', 'customer_status']
+    
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if user:
-            self.fields['first_name'].initial=user.first_name
-            self._user=user
-    def save(self,commit=True):
-        customer=super().save(commit=False)
+        if user and self.instance:
+            self.fields['first_name'].initial = user.first_name
+            self._user = user
+    
+    def save(self, commit=True):
+        customer = super().save(commit=False)
+        
         if hasattr(self, '_user'):
-            self._user.first_name=self.cleaned_data['first_name']
+            self._user.first_name = self.cleaned_data['first_name']
             if commit:
-              self._user.save()
+                self._user.save()
+        
         if commit:
             customer.save()
-        return customer    
-
-
+            self.save_m2m() 
+        
+        return customer
+    
 class CityForm(forms.ModelForm):
     class Meta:
         model = City

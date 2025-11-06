@@ -1000,31 +1000,61 @@
             }
         });
 
-        function checkNewOrders() {
-            fetch('check-new-orders/', {
-                   method: 'GET',
-                   credentials: 'same-origin'
-                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.has_new_orders) {
-                        const notification = document.getElementById('newOrderNotification');
-                        const notificationContent = document.getElementById('notificationContent');
-                        
-                        notificationContent.textContent = 'تم استلام ' + data.new_orders_count + ' طلب جديد';
-                        notification.classList.add('show');
-                        
-                        document.getElementById('newOrdersCount').textContent = data.new_orders_count;
-                        
-                        setTimeout(() => {
-                            notification.classList.remove('show');
-                        }, 5000);
-                    }
-                })
-                .catch(error => console.error('Error checking new orders:', error));
-        }
+function checkNewOrders() {
+    fetch('customer-dashboard/check-new-orders/', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.has_new_orders) {
+            const notification = document.getElementById('newOrderNotification');
+            const notificationContent = document.getElementById('notificationContent');
+            notificationContent.textContent = 'تم استلام ' + data.new_orders_count + ' طلب جديد';
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 5000);
 
-        setInterval(checkNewOrders, 10000);
+            const tableBody = document.getElementById('newOrdersTable');
+            
+            data.orders.forEach(order => {
+                if (!document.getElementById('order-' + order.id)) {
+                    const row = document.createElement('tr');
+                    row.id = 'order-' + order.id;
+
+                    const address = order.delivery_address ? order.delivery_address : 'استلام شخصي';
+                    
+                    row.innerHTML = `
+                        <td>${order.customer_name}</td>
+                        <td>${order.customer_phone}</td>
+                        <td>${address}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                <a href="/invoice/${order.id}/" class="action-btn" title="طباعة الفاتورة">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                                <a href="/order-delete/${order.id}/" class="action-btn" 
+                                   title="إلغاء الطلب" 
+                                   style="background: var(--danger-light); color: var(--danger);">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </td>
+                    `;
+
+                    tableBody.prepend(row);
+
+                    const emptyRow = tableBody.querySelector('tr td[colspan="4"]');
+                    if (emptyRow) {
+                        emptyRow.parentElement.remove();
+                    }
+                }
+            });
+        }
+    })
+    .catch(error => console.error('Error checking new orders:', error));
+}
+
+setInterval(checkNewOrders, 10000);
     </script>
 </body>
 </html>
