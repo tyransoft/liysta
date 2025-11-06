@@ -1668,11 +1668,13 @@ def check_new_orders(request):
         
         if last_check:
            last_check_time = parse_datetime(last_check) or timezone.now() - timedelta(minutes=5)
+        else:
+           last_check_time = timezone.now() - timedelta(minutes=5)
 
         new_orders = Order.objects.filter(
             menu=menu,
             created_at__gt=last_check_time,
-            status='new' 
+            status='pending' 
         )
         
         new_orders_count = new_orders.count()

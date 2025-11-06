@@ -27,7 +27,13 @@
     <div class="page-header">
         <h1 class="page-title">تعديل بياناتك</h1>
     </div>
-    
+    {% if form.non_field_errors %}
+    <div class="error general-error">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %} 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
