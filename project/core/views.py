@@ -1042,10 +1042,11 @@ def edit_customer_data(request):
                 form.save()
 
                 if 'store_en_name' in changed:
-                    menu = Menu.objects.get(customer=clint)
-                    menu.generate_qr_code()
                     clint.store_slug = slugify(clint.store_en_name)
                     clint.save()
+                    menu = Menu.objects.get(customer=clint)
+                    menu.generate_qr_code()
+                    
                     menu.save()
 
                 messages.success(request, 'تم تعديل بياناتك بنجاح!')
