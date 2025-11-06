@@ -1,0 +1,342 @@
+        :root {
+            --primary-color: #F97316;
+            --primary-hover: #e5670f;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --success-color: #d4edda;
+            --warning-color: #fff3cd;
+            --info-color: #cce5ff;
+            --success-text: #155724;
+            --warning-text: #856404;
+            --info-text: #004085;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            font-family: 'Tajawal', sans-serif;
+            line-height: 1.6;
+            padding-bottom: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #1a2530 100%);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .header-actions .btn {
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 0 1 auto;
+            min-width: 140px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 15px 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-radius: 12px 12px 0 0 !important;
+            font-size: 1.1rem;
+        }
+        
+        .filter-card .card-body {
+            padding: 20px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #e1e5eb;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.25);
+        }
+        
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-edit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(249, 115, 22, 0.3);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+        
+        .table-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+        }
+        
+        .table thead th {
+            background-color: var(--dark-color);
+            color: white;
+            border: none;
+            padding: 15px 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            border-color: #f1f1f1;
+        }
+        
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(249, 115, 22, 0.05);
+        }
+        
+        .badge {
+            padding: 8px 12px;
+            font-weight: 500;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+        
+        .status-pending {
+            background-color: var(--warning-color);
+            color: var(--warning-text);
+        }
+        
+        .status-indeliver {
+            background-color: var(--info-color);
+            color: var(--info-text);
+        }
+        
+        .status-delivered {
+            background-color: var(--success-color);
+            color: var(--success-text);
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+        }
+        
+        .alert-dismissible .btn-close {
+            padding: 0.75rem;
+        }
+        
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #dee2e6;
+        }
+        
+        .mobile-order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-right: 4px solid var(--primary-color);
+        }
+        
+        .mobile-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .mobile-order-number {
+            font-weight: 700;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+        
+        .mobile-order-status {
+            font-size: 0.85rem;
+        }
+        
+        .mobile-order-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .mobile-order-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            min-width: 100px;
+        }
+        
+        .mobile-order-value {
+            color: #555;
+            text-align: left;
+            flex: 1;
+        }
+        
+        .mobile-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .mobile-actions .btn {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.8rem;
+            padding: 8px 10px;
+        }
+        
+        @media (min-width: 992px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header-actions {
+                flex-wrap: nowrap;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 0;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-actions .btn {
+                width: 100%;
+                max-width: 250px;
+                margin: 3px 0;
+            }
+            
+            .filter-card .card-body {
+                padding: 15px;
+            }
+            
+            .table thead {
+                display: none;
+            }
+            
+            .desktop-table {
+                display: none;
+            }
+            
+            .mobile-orders {
+                display: block;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-orders {
+                display: none;
+            }
+            
+            .desktop-table {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            .card-header {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+            
+            .mobile-order-card {
+                padding: 12px;
+            }
+            
+            .mobile-actions {
+                flex-direction: column;
+            }
+            
+            .mobile-actions .btn {
+                width: 100%;
+            }
+        }

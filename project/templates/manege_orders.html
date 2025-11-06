@@ -10,209 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
-
-    <style>
-        :root {
-            --primary-color: #F97316;
-            --dark-color: #2c3e50;
-            --light-color: #f8f9fa;
-            --success-color: #d4edda;
-            --warning-color: #fff3cd;
-            --info-color: #cce5ff;
-            --success-text: #155724;
-            --warning-text: #856404;
-            --info-text: #004085;
-        }
-        
-        body {
-            background-color: var(--light-color);
-            font-family: 'Tajawal', sans-serif;
-            line-height: 1.6;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, var(--dark-color) 0%, #1a2530 100%);
-            color: white;
-            padding: 25px 0;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header h1 {
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        
-        .header-actions .btn {
-            margin: 0 5px;
-            border-radius: 30px;
-            padding: 8px 20px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            padding: 15px 20px;
-            font-weight: 700;
-            color: var(--primary-color);
-            border-radius: 12px 12px 0 0 !important;
-        }
-        
-        .filter-card .card-body {
-            padding: 25px;
-        }
-        
-        .form-label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--dark-color);
-        }
-        
-        .form-control {
-            border-radius: 8px;
-            padding: 10px 15px;
-            border: 1px solid #e1e5eb;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.25);
-        }
-        
-        .btn-edit {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-edit:hover {
-            background-color: #e5670f;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(249, 115, 22, 0.3);
-        }
-        
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.875rem;
-        }
-        
-        .table-responsive {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .table {
-            margin-bottom: 0;
-        }
-        
-        .table thead th {
-            background-color: var(--dark-color);
-            color: white;
-            border: none;
-            padding: 15px 12px;
-            font-weight: 600;
-        }
-        
-        .table tbody td {
-            padding: 12px;
-            vertical-align: middle;
-            border-color: #f1f1f1;
-        }
-        
-        .table tbody tr {
-            transition: background-color 0.2s ease;
-        }
-        
-        .table tbody tr:hover {
-            background-color: rgba(249, 115, 22, 0.05);
-        }
-        
-        .badge {
-            padding: 8px 12px;
-            font-weight: 500;
-            border-radius: 30px;
-        }
-        
-        .status-pending {
-            background-color: var(--warning-color);
-            color: var(--warning-text);
-        }
-        
-        .status-indeliver {
-            background-color: var(--info-color);
-            color: var(--info-text);
-        }
-        
-        .status-delivered {
-            background-color: var(--success-color);
-            color: var(--success-text);
-        }
-        
-        .alert {
-            border: none;
-            border-radius: 10px;
-            padding: 15px 20px;
-        }
-        
-        .alert-dismissible .btn-close {
-            padding: 0.75rem;
-        }
-        
-        .empty-state {
-            padding: 40px 20px;
-            text-align: center;
-            color: #6c757d;
-        }
-        
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #dee2e6;
-        }
-        
-        @media (max-width: 768px) {
-            .header-actions {
-                margin-top: 15px;
-            }
-            
-            .header-actions .btn {
-                display: block;
-                margin: 5px 0;
-                width: 100%;
-            }
-            
-            .table-responsive {
-                font-size: 0.875rem;
-            }
-            
-            .btn-sm {
-                display: block;
-                margin: 5px 0;
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/mo.css' %}">
 </head>
 
 <body>
@@ -274,64 +72,143 @@
                 <i class="fas fa-list-alt me-2"></i> قائمة الطلبات
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>رقم الطلب</th>
-                                <th>اسم الزبون</th>
-                                <th>رقم الهاتف</th>
-                                <th>التاريخ</th>
-                                <th>المجموع</th>
-                                <th>الحالة</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                            <tr>
-                                <td><strong>{{ order.ordernumber }}</strong></td>
-                                <td>{{ order.customer_name }}</td>
-                                <td>{{ order.customer_phone }}</td>
-                                <td>{{ order.created_at }}</td>
-                                <td><strong>{{ order.get_total }} د.ل</strong></td>
-                                <td>
-                                    <span class="badge status-{{ order.status }}">
-                                        {{ order.get_status_display }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-edit" title="إلغاء الطلب">
-                                            <i class="fas fa-times me-1"></i> إلغاء
-                                        </a>
-                                        <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-edit" title="تعديل الطلب">
-                                            <i class="bi bi-pencil-fill me-1"></i> تعديل
-                                        </a>
-                                        <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-edit" title="عرض الفاتورة">
-                                            <i class="fas fa-file-invoice me-1"></i> فاتورة
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="7">
-                                    <div class="empty-state">
-                                        <i class="fas fa-clipboard-list"></i>
-                                        <h5>لا توجد طلبات</h5>
-                                        <p class="text-muted">لم يتم العثور على أي طلبات تطابق معايير البحث</p>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="table-container desktop-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>اسم الزبون</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>التاريخ</th>
+                                    <th>المجموع</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td><strong>{{ order.ordernumber }}</strong></td>
+                                    <td>{{ order.customer_name }}</td>
+                                    <td>{{ order.customer_phone }}</td>
+                                    <td>{{ order.created_at }}</td>
+                                    <td><strong>{{ order.get_total }} د.ل</strong></td>
+                                    <td>
+                                        <span class="badge status-{{ order.status }}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-edit" title="إلغاء الطلب">
+                                                <i class="fas fa-times me-1"></i> إلغاء
+                                            </a>
+                                            <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-edit" title="تعديل الطلب">
+                                                <i class="bi bi-pencil-fill me-1"></i> تعديل
+                                            </a>
+                                            <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-edit" title="عرض الفاتورة">
+                                                <i class="fas fa-file-invoice me-1"></i> فاتورة
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="empty-state">
+                                            <i class="fas fa-clipboard-list"></i>
+                                            <h5>لا توجد طلبات</h5>
+                                            <p class="text-muted">لم يتم العثور على أي طلبات تطابق معايير البحث</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- عرض البطاقات للشاشات الصغيرة -->
+                <div class="mobile-orders p-3">
+                    {% for order in orders %}
+                    <div class="mobile-order-card">
+                        <div class="mobile-order-header">
+                            <div class="mobile-order-number">طلب #{{ order.ordernumber }}</div>
+                            <div class="mobile-order-status">
+                                <span class="badge status-{{ order.status }}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">الزبون:</span>
+                            <span class="mobile-order-value">{{ order.customer_name }}</span>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">الهاتف:</span>
+                            <span class="mobile-order-value">{{ order.customer_phone }}</span>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">التاريخ:</span>
+                            <span class="mobile-order-value">{{ order.created_at }}</span>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">المجموع:</span>
+                            <span class="mobile-order-value"><strong>{{ order.get_total }} د.ل</strong></span>
+                        </div>
+                        
+                        <div class="mobile-actions">
+                            <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-edit">
+                                <i class="fas fa-times me-1"></i> إلغاء
+                            </a>
+                            <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-edit">
+                                <i class="bi bi-pencil-fill me-1"></i> تعديل
+                            </a>
+                            <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-edit">
+                                <i class="fas fa-file-invoice me-1"></i> فاتورة
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h5>لا توجد طلبات</h5>
+                        <p class="text-muted">لم يتم العثور على أي طلبات تطابق معايير البحث</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileCards = document.querySelectorAll('.mobile-order-card');
+            mobileCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.btn')) {
+                        this.classList.toggle('expanded');
+                    }
+                });
+            });
+            
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.add('loading');
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                    }, 1000);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

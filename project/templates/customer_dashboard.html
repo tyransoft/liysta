@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{% static 'css/cusdash.css' %}">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
-
+    <link rel="stylesheet" href="{% static 'css/cusdash.css' %}">
 </head>
 <body>
     <div class="dashboard-container">
@@ -64,7 +63,6 @@
             </nav>
         </aside>
 
-        <!-- المحتوى الرئيسي -->
         <main class="main-content">
             <div class="header">
                 <h1 class="page-title">لوحة التحكم {{ customer.store_ar_name }}</h1>
@@ -84,8 +82,21 @@
                 {% if messages %}
                 <div class="mt-3">
                     {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                        {{ message }}
+                    <div class="alert-custom alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                        <div class="icon">
+                            {% if message.tags == 'success' %}
+                            <i class="fas fa-check-circle"></i>
+                            {% elif message.tags == 'error' %}
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% elif message.tags == 'warning' %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {% else %}
+                            <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="content">
+                            {{ message }}
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endfor %}
@@ -93,7 +104,6 @@
                 {% endif %}
             </div>
             
-            <!-- إشعار الطلبات الجديدة -->
             <div class="new-order-notification" id="newOrderNotification">
                 <button class="notification-close" id="closeNotification">
                     <i class="fas fa-times"></i>
@@ -157,7 +167,6 @@
                     </div>
                 </div>
 
-                <!-- حالة الاشتراك -->
                 <div class="subscription-container">
                     <div class="subscription-info">
                         <h3 style="color: var(--primary); margin-bottom: 0.5rem;">مدة الاشتراك المتبقية</h3>
@@ -184,7 +193,6 @@
                     </div>
                 </div>
 
-                <!-- مخطط المبيعات والأرباح -->
                 {% if subscription.plan.ordering %}
                 <div class="chart-container">
                     <div class="chart-header">
@@ -202,7 +210,6 @@
                 </div>
                 {% endif %}
 
-                <!-- إحصائيات -->
                 <div class="dashboard-section">
                     <div class="section-header">
                         <h2 class="section-title">الإحصائيات</h2>
@@ -256,14 +263,12 @@
                 </div>
             </div>
 
-            <!-- قسم الإحصائيات -->
             <div id="analytics" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
                         <h2 class="section-title">الإحصائيات التفصيلية</h2>
                     </div>
                     
-                    <!-- مخطط المبيعات والأرباح -->
                     {% if subscription.plan.ordering %}
                     <div class="chart-container">
                         <div class="chart-header">
@@ -280,7 +285,6 @@
                         </div>
                     </div>
                     
-                    <!-- إحصائيات المبيعات -->
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);">
@@ -331,7 +335,6 @@
                     </div>
                     {% endif %}
                     
-                    <!-- إحصائيات الزيارات -->
                     <div class="dashboard-section">
                         <div class="section-header">
                             <h2 class="section-title">إحصائيات الزيارات</h2>
@@ -360,7 +363,6 @@
                         </div>
                     </div>
                     
-                    <!-- التقييمات -->
                     {% if subscription.plan.review %}
                     <div class="dashboard-section">
                         <div class="section-header">
@@ -393,7 +395,6 @@
                 </div>
             </div>
 
-            <!-- قسم الطلبات -->
             <div id="orders" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
@@ -422,7 +423,6 @@
                         </div>
                     </div>
 
-                    <!-- الطلبات الجديدة -->
                     <div class="dashboard-section">
                         <div class="section-header">
                             <h2 class="section-title">الطلبات الجديدة</h2>
@@ -525,7 +525,6 @@
                 </div>
             </div>
 
-            <!-- قسم المنتجات والتخفيضات -->
             <div id="products" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
@@ -616,7 +615,6 @@
                 </div>
             </div>       
             
-            <!-- قسم الفئات -->
             <div id="categories" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
@@ -660,7 +658,6 @@
                 </div>
             </div>
 
-            <!-- قسم التوصيل -->
             <div id="delivery" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
@@ -706,7 +703,6 @@
                 </div>
             </div>
 
-            <!-- قسم كود QR -->
             <div id="qrcode" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
@@ -757,7 +753,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // مخطط المبيعات والأرباح للوحة التحكم
             {% if subscription.plan.ordering %}
             const salesCtx = document.getElementById('salesChart').getContext('2d');
             
@@ -828,7 +823,6 @@
                 }
             });
 
-            // مخطط الإحصائيات
             const analyticsCtx = document.getElementById('analyticsChart').getContext('2d');
             
             const analyticsChart = new Chart(analyticsCtx, {
@@ -898,7 +892,6 @@
                 }
             });
 
-            // تبديل بين المبيعات والأرباح
             const chartBtns = document.querySelectorAll('.chart-btn');
             chartBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -915,7 +908,6 @@
             });
             {% endif %}
 
-            // تبديل القوائم
             const menuItems = document.querySelectorAll('.menu-item');
             const contentSections = document.querySelectorAll('.content-section');
             
@@ -923,25 +915,20 @@
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // إزالة النشاط من جميع العناصر
                     menuItems.forEach(i => i.classList.remove('active'));
                     contentSections.forEach(s => s.classList.remove('active'));
                     
-                    // إضافة النشاط للعنصر الحالي
                     this.classList.add('active');
                     
-                    // إظهار القسم المحدد
                     const target = this.getAttribute('data-target');
                     document.getElementById(target).classList.add('active');
                     
-                    // إغلاق القائمة على الجوال
                     if (window.innerWidth <= 1024) {
                         sidebar.style.transform = 'translateX(100%)';
                     }
                 });
             });
             
-            // تبديل القائمة في الجوال
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.getElementById('sidebar');
             
@@ -966,7 +953,6 @@
                 }
             });
 
-            // إغلاق إشعار الطلبات الجديدة
             const closeNotification = document.getElementById('closeNotification');
             const newOrderNotification = document.getElementById('newOrderNotification');
             
@@ -978,22 +964,17 @@
         });
 
         function copyMenuLink() {
-            // الحصول على حقل الإدخال
             const linkInput = document.getElementById('menu-link');
             
-            // تحديد النص
             linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // للجوال
+            linkInput.setSelectionRange(0, 99999); 
             
-            // نسخ النص
             navigator.clipboard.writeText(linkInput.value)
                 .then(() => {
-                    // تغيير نص الزر مؤقتاً للإشارة إلى النسخ
                     const btn = document.querySelector('.copy-btn');
                     const originalText = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
                     
-                    // العودة إلى النص الأصلي بعد ثانيتين
                     setTimeout(() => {
                         btn.innerHTML = originalText;
                     }, 2000);
@@ -1019,23 +1000,22 @@
             }
         });
 
-        // تحديث الطلبات تلقائياً (بدون ريفريش)
         function checkNewOrders() {
-            fetch('check-new-orders/')
+            fetch('check-new-orders/', {
+                   method: 'GET',
+                   credentials: 'same-origin'
+                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.has_new_orders) {
-                        // عرض إشعار الطلبات الجديدة
                         const notification = document.getElementById('newOrderNotification');
                         const notificationContent = document.getElementById('notificationContent');
                         
                         notificationContent.textContent = 'تم استلام ' + data.new_orders_count + ' طلب جديد';
                         notification.classList.add('show');
                         
-                        // تحديث العداد
                         document.getElementById('newOrdersCount').textContent = data.new_orders_count;
                         
-                        // إخفاء الإشعار بعد 5 ثواني
                         setTimeout(() => {
                             notification.classList.remove('show');
                         }, 5000);
@@ -1044,7 +1024,6 @@
                 .catch(error => console.error('Error checking new orders:', error));
         }
 
-        // التحقق من الطلبات الجديدة كل 10 ثواني
         setInterval(checkNewOrders, 10000);
     </script>
 </body>

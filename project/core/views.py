@@ -25,6 +25,7 @@ from io import BytesIO
 from openpyxl import Workbook
 from django.utils import timezone
 from datetime import timedelta
+from django.utils.dateparse import parse_datetime
 
 #guest user and so on
 
@@ -1664,14 +1665,8 @@ def check_new_orders(request):
         last_check = request.GET.get('last_check')
         
         if last_check:
-            from datetime import datetime
-            try:
-                last_check_time = datetime.fromisoformat(last_check.replace('Z', '+00:00'))
-            except:
-                last_check_time = timezone.now() - timedelta(minutes=5)
-        else:
-            last_check_time = timezone.now() - timedelta(minutes=5)
-        
+           last_check_time = parse_datetime(last_check) or timezone.now() - timedelta(minutes=5)
+
         new_orders = Order.objects.filter(
             menu=menu,
             created_at__gt=last_check_time,
