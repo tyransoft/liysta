@@ -170,12 +170,13 @@ class DiscountForm(forms.ModelForm):
 class CouponForm(forms.ModelForm):
     class Meta:
         model = Coupon
-        fields = ['code', 'percentage','affiliate_percentage','affiliate_name', 'start_date', 'end_date']
+        fields = ['saler_id','code', 'percentage','affiliate_percentage','affiliate_name', 'start_date', 'end_date']
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
         }
         labels = {
+            'saler_id':'الرقم التعريفي',
             'code': 'كود الخصم',
             'percentage': 'نسبة الخصم',
             'affiliate_name':'اسم المسوق',

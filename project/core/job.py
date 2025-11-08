@@ -1,5 +1,5 @@
 from django.utils.timezone import now
-from .models import Subscription
+from .models import *
 from django.core.mail import send_mail
 from django.conf import settings
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -8,6 +8,9 @@ from django_apscheduler.jobstores import register_events,DjangoJobStore
 
 def deactivate_users_subs():
     today=now().date()
+    cards=Paymentcard.objects.filter(is_used=True)
+    for card in cards:
+        card.delete()
     subs=Subscription.objects.filter(end_date__lt=today,is_active=True)
     for sub in subs:
         sub.is_active=False

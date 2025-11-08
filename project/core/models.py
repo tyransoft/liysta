@@ -220,6 +220,7 @@ class City(models.Model):
 
 
 class Coupon(models.Model):
+    saler_id=models.CharField(max_length=20, unique=True) 
     code = models.CharField(max_length=20, unique=True)  
     percentage = models.FloatField()  
     affiliate_percentage = models.FloatField(default=0) 

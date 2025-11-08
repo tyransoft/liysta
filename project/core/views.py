@@ -1697,3 +1697,25 @@ def check_new_orders(request):
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def sales_man(request):
+    if request.method == 'POST':
+      try:   
+        saler_id=request.POST.get('saler_id')
+        man=Coupon.objects.get(saler_id=saler_id)    
+        if man:
+            messages.success(f'مرحبا بك{man.affiliate_name} لقد تم التعرف عليك شكرا لاستخدامك منصتنا')
+            return redirect('saler-man-info',man.id)   
+      except Exception as e:
+          messages.error({'error': str(e)}, status=500)
+          return redirect('/')
+    return render(request,'saler_login.html')    
+def saler_man_info(request, man_id):
+    if request.method =='GET': 
+     try:
+        man=Coupon.objects.get(id=man_id)
+
+     except Coupon.DoesNotExist:
+         messages.error('لم يتم التعرف عليك حاول مرة اخرى او تواصل معنا .') 
+         return redirect('/')    
+     return render(request, 'saler_info.html',{'coupon':man})     
