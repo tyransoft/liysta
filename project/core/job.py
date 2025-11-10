@@ -1,13 +1,107 @@
-from django.utils.timezone import now
 from .models import *
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMessage
 from django.conf import settings
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import register_events,DjangoJobStore
+from datetime import date
+import calendar
+from openpyxl import  Workbook
+from io import BytesIO
+from django.db.models import Sum
+from django.core.files import File
 
 
 def deactivate_users_subs():
-    today=now().date()
+    today=date.today()
+    last_day_num=calendar.monthrange(today.year,today.month)[1]
+    last_day_date=date(today.year,today.month,last_day_num)
+    
+    if today == date(2025, 11, 10):
+     now = timezone.now()
+     # عدد الاشتراكات
+     subs_count=Subscription.objects.count()
+     #عدد النشطين في الشهر الجدد
+     new_active_users = Customer.objects.filter(customer_status='active',created_at__month=now.month).count()
+     #عدد غير النشطاء في هذا الشهر
+     new_inactive_users = Customer.objects.filter(customer_status='inactive',created_at__month=now.month).count()
+     #النشطين القدامى
+     old_active_users= Customer.objects.filter(customer_status='active').count() -  new_active_users
+     #غير النشطين القدامى
+     old_inactive_users = Customer.objects.filter(customer_status='inactive').count() - new_inactive_users
+     #نسبة النشطين في هذا الشهر
+     month_actives_percentage = new_active_users / old_active_users * 100 if old_active_users else 0
+     #نسبة النشطين من غيرهم
+     actives_percentage = ((old_active_users + new_active_users) / (old_inactive_users + new_inactive_users)) * 100 if old_inactive_users or new_inactive_users   else 0
+     #نسبة التحول من غير نشط الى نشط
+     activetion_converted_percentage = ( new_active_users / (old_inactive_users + new_inactive_users)) * 100 if old_inactive_users or new_inactive_users   else 0
+     #عدد الاشتركات النشطة
+     active_subscriptions = Subscription.objects.filter(is_active=True).count()
+     #نسبة الاشتركات الفعالة من الكل 
+     active_subs=active_subscriptions / subs_count * 100 if subs_count else 0  
+
+     #من استخدم الخطة المجانية
+     free_users = Customer.objects.filter(has_used_free_trial=True).count()
+     #من استخدم المجانية واشترك
+     converted_users = Customer.objects.filter(customer_status='active', has_used_free_trial=True).count()
+     #النسبة بينهم
+     converted_percentage = converted_users / free_users * 100 if free_users else 0
+    
+     
+     #الايرادات الشهرية
+     monthly_income = AdminSales.objects.filter(
+        created_at__year=now.year,
+        created_at__month=now.month,
+     ).aggregate(total=Sum('profit'))['total']
+
+     #تكاليف تشغيلية شهرية 
+     operations=Coasts.objects.filter(kind='Operations')
+     operations_amount=0
+     for i in operations:
+       if i.created_at.month==now.month or i.recurring:
+          operations_amount += i.amount 
+     operations_amount += monthly_income * 0.1
+     #تكاليف تسويقية شهرية
+     marketing=Coasts.objects.filter(kind='Marketing&sells')
+     marketing_amount=0
+     for i in marketing:
+       if i.created_at.month==now.month or i.recurring:
+         marketing_amount += i.amount
+     #هامش الربح
+     gross_profit=monthly_income - operations_amount
+     #نسبة هامش الربح
+     gross_percentage=gross_profit / monthly_income * 100 if monthly_income else 0
+     #الربح الصافي 
+     net_profit=gross_profit - marketing_amount
+     #نسبة الربح الصافي
+     net_percentage=net_profit / monthly_income * 100 if monthly_income else 0
+     #تكلفة العميل الجديد
+     news_coast=marketing_amount / new_active_users if new_active_users else 0 
+     
+     wb=Workbook()
+     ws=wb.active
+     ws.title=f"{now.year}لسنة-{now.month}-بيانات شهر"
+     ws.append(['news coast $','NP %','NP $','GP %','GP $','sells $','M&S $','operations $','converted  %','free subs','activate %','all actives %','month actives %','olds inactive','olds active','news inactive','news active','active subs %','active subs','all subs'])
+     ws.append([news_coast,net_percentage,net_profit,gross_percentage,gross_profit,monthly_income,marketing_amount,operations_amount,converted_percentage,free_users,activetion_converted_percentage,actives_percentage,month_actives_percentage,old_inactive_users,old_active_users,new_inactive_users,new_active_users,active_subs,active_subscriptions,subs_count])
+     output=BytesIO()
+     wb.save(output)
+     output.seek(0)
+     filename=f'report_{now.year}_{now.month}.xlsx'
+     report=Liystanumbers.objects.create(
+        month_date=File(output,name=filename)
+     )
+     report.save()
+
+     email=EmailMessage(
+        subject=f"Liysta report for {now.month}/{now.year}",
+        body="Hi M.Moad this is a report about our results in the last month thank you for your effort.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=["hamodamourad72@gmail.com"],
+
+                       )
+     email.attach(filename, output.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+     email.send()
+    else:
+       pass   
     cards=Paymentcard.objects.filter(is_used=True)
     for card in cards:
         card.delete()
@@ -67,7 +161,7 @@ def start():
     scheduler.add_jobstore(DjangoJobStore(),"default")
     scheduler.add_job(
         deactivate_users_subs, trigger='cron',
-        hour=4,
+        hour=14,
         minute=0,
         id='deactive_subs',
         replace_existing=True

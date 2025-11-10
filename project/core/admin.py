@@ -18,4 +18,5 @@ admin.site.register(Coupon)
 admin.site.register(Discount)
 admin.site.register(OurCustomer)
 admin.site.register(AdminSales)
-
+admin.site.register(Liystanumbers)
+admin.site.register(Coasts)

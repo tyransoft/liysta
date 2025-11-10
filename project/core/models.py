@@ -443,3 +443,20 @@ class AdminSales(models.Model):
     def __str__(self):
         return self.profit
 
+class Liystanumbers(models.Model):
+    month_data=models.FileField(upload_to='data/')
+    created_at=models.DateField(auto_now_add=True)
+    def __str__(self):
+        return self.created_at
+
+class Coasts(models.Model):
+    KIND={
+        ('Operations','Operations'),
+        ('Marketing&sells','Marketing&sells'),
+    }
+    coast_kind=models.CharField(max_length=25,choices=KIND,null=False)
+    amount=models.FloatField()
+    recurring=models.BooleanField(default=False)
+    created_at=models.DateField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.amount}----{self.created_at}"
