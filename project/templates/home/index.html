@@ -10,10 +10,11 @@
     <meta name="author" content="Liysta">
     <meta name="robots" content="index, follow">
     <title>Liysta - منصتك الذكية  </title>
-    <meta property="og:title" content="ليستا - المنيو الإلكتروني">
+    <meta property="og:title" content="Liysta - تحولك من العالم الورقي الى الرقمي">
     <meta property="og:description" content="منصة متطورة لعرض منتجات المطاعم واستقبال الطلبات في ليبيا">
-    <meta property="og:image" content="{% static 'img/fc.png' %}">
+    <meta property="og:image" content="{{ request.build_absolute_uri(static('img/fc.png')) }}">
     <meta property="og:url" content="https://Liysta.ly">
+    <meta property="og:type" content="website">
     <meta name="google-site-verification" content="iOErQ2oA1VwE1zVAs5EhdvMZfXkm3UhjC4Dv-tfnCuc" /> 
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -340,7 +341,6 @@
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-tiktok"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             
