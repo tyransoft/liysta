@@ -1704,10 +1704,10 @@ def sales_man(request):
         saler_id=request.POST.get('saler_id')
         man=Coupon.objects.get(saler_id=saler_id)    
         if man:
-            messages.success(f'مرحبا بك{man.affiliate_name} لقد تم التعرف عليك شكرا لاستخدامك منصتنا')
+            messages.success(request,f'مرحبا بك{man.affiliate_name} لقد تم التعرف عليك شكرا لاستخدامك منصتنا')
             return redirect('saler-man-info',man.id)   
       except Exception as e:
-          messages.error(f'{str(e)}هناك مشكلة ما توصل مع الدعم الفني')
+          messages.error(request,f'{str(e)}هناك مشكلة ما توصل مع الدعم الفني')
           return redirect('/')
     return render(request,'saler_login.html')    
 def saler_man_info(request, man_id):
@@ -1716,6 +1716,6 @@ def saler_man_info(request, man_id):
         man=Coupon.objects.get(id=man_id)
 
      except Coupon.DoesNotExist:
-         messages.error('لم يتم التعرف عليك حاول مرة اخرى او تواصل معنا .') 
+         messages.error(request,'لم يتم التعرف عليك حاول مرة اخرى او تواصل معنا .') 
          return redirect('/')    
      return render(request, 'saler_info.html',{'coupon':man})     
