@@ -13,6 +13,8 @@ urlpatterns = [
     path('cards/', card_list_view, name='card_list'),
     path('generate-cards/', generate_cards_view, name='generate_cards'),
     path('customers/', customer_list_view, name='customers_list'),
+    path('saler-login/',sales_man,name='saler_login'),
+    path('saler-man-info/<int:man_id>/',saler_man_info,name='saler-man-info'),
     
     path('menu/setup/', menu_setup, name='menu_setup'),
 
@@ -93,8 +95,6 @@ urlpatterns = [
     path('clint/edit/<int:clint_id>/', edit_clint, name='edit_clint'),
     path('clint/delete/<int:clint_id>/', delete_clint, name='delete_clint'),
 
-    path('saler-login/',sales_man,name='saler_login'),
-    path('saler-man-info/<int:man_id>/',saler_man_info,name='saler-man-info'),
-
+    
 
 ]
