@@ -1707,7 +1707,7 @@ def sales_man(request):
             messages.success(f'مرحبا بك{man.affiliate_name} لقد تم التعرف عليك شكرا لاستخدامك منصتنا')
             return redirect('saler-man-info',man.id)   
       except Exception as e:
-          messages.error({'error': str(e)}, status=500)
+          messages.error('هناك مشكلة ما توصل مع الدعم الفني')
           return redirect('/')
     return render(request,'saler_login.html')    
 def saler_man_info(request, man_id):
