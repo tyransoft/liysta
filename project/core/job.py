@@ -16,7 +16,7 @@ def deactivate_users_subs():
     last_day_num=calendar.monthrange(today.year,today.month)[1]
     last_day_date=date(today.year,today.month,last_day_num)
     
-    if today == date(2025, 11, 11):
+    if today :
      now = timezone.now()
      # عدد الاشتراكات
      subs_count=Subscription.objects.count()
@@ -161,7 +161,7 @@ def start():
     scheduler.add_jobstore(DjangoJobStore(),"default")
     scheduler.add_job(
         deactivate_users_subs, trigger='cron',
-        hour=11,
+        hour=1,
         minute=0,
         id='deactive_subs',
         replace_existing=True
