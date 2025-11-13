@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /admin/
 Disallow: /dashboard/statistics/
 Disallow: /dashboard/control/
+Allow: /
+Sitemap: https://liysta.ly/sitemap.xml
