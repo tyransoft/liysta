@@ -6,7 +6,7 @@ from .sitemaps import StaticSitemap
 from django.views.generic.base import TemplateView
 
 sitemaps={
-    'staticsite':StaticSitemap,
+    'static':StaticSitemap,
 }
 
 urlpatterns = [
