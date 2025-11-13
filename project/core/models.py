@@ -453,6 +453,8 @@ class Coasts(models.Model):
     KIND={
         ('Operations','Operations'),
         ('Marketing&sells','Marketing&sells'),
+        ('sellermen','sellermen'),
+
     }
     coast_kind=models.CharField(max_length=25,choices=KIND,null=False)
     amount=models.FloatField()

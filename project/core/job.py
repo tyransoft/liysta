@@ -21,7 +21,7 @@ def deactivate_users_subs():
      # عدد الاشتراكات
      subs_count=Subscription.objects.count()
      #عدد النشطين في الشهر الجدد
-     new_active_users = Customer.objects.filter(customer_status='active',created_at__month=now.month).count()
+     new_active_users = Customer.objects.filter(customer_status='active', created_at__month=now.month).count()
      #عدد غير النشطاء في هذا الشهر
      new_inactive_users = Customer.objects.filter(customer_status='inactive',created_at__month=now.month).count()
      #النشطين القدامى
@@ -51,21 +51,28 @@ def deactivate_users_subs():
      monthly_income = AdminSales.objects.filter(
         created_at__year=now.year,
         created_at__month=now.month,
-     ).aggregate(total=Sum('profit'))['total']
+     ).aggregate(total=Sum('profit'))['total'] or 0
 
      #تكاليف تشغيلية شهرية 
-     operations=Coasts.objects.filter(kind='Operations')
+     operations=Coasts.objects.filter(coast_kind='Operations',  created_at__year=now.year,created_at__month=now.month)
      operations_amount=0
-     for i in operations:
+     if operations: 
+      for i in operations:
        if i.created_at.month==now.month or i.recurring:
           operations_amount += i.amount 
      operations_amount += monthly_income * 0.1
+     #نسبة مندوبي المبيعات
+     sellers=Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year,created_at__month=now.month).first()
+     seller_amount=sellers.amount
+     
      #تكاليف تسويقية شهرية
-     marketing=Coasts.objects.filter(kind='Marketing&sells')
-     marketing_amount=0
-     for i in marketing:
+     marketing=Coasts.objects.filter(coast_kind='Marketing&sells',  created_at__year=now.year,created_at__month=now.month)
+     marketing_amount=seller_amount
+     if marketing:
+      for i in marketing:
        if i.created_at.month==now.month or i.recurring:
          marketing_amount += i.amount
+
      #هامش الربح
      gross_profit=monthly_income - operations_amount
      #نسبة هامش الربح
@@ -80,8 +87,8 @@ def deactivate_users_subs():
      wb=Workbook()
      ws=wb.active
      ws.title=f"{now.year}لسنة-{now.month}-بيانات شهر"
-     ws.append(['news coast $','NP %','NP $','GP %','GP $','sells $','M&S $','operations $','converted  %','free subs','activate %','all actives %','month actives %','olds inactive','olds active','news inactive','news active','active subs %','active subs','all subs'])
-     ws.append([news_coast,net_percentage,net_profit,gross_percentage,gross_profit,monthly_income,marketing_amount,operations_amount,converted_percentage,free_users,activetion_converted_percentage,actives_percentage,month_actives_percentage,old_inactive_users,old_active_users,new_inactive_users,new_active_users,active_subs,active_subscriptions,subs_count])
+     ws.append(['seller $','news coast $','NP %','NP $','GP %','GP $','sells $','M&S $','operations $','converted  %','free subs','activate %','all actives %','month actives %','olds inactive','olds active','news inactive','news active','active subs %','active subs','all subs'])
+     ws.append([seller_amount,news_coast,net_percentage,net_profit,gross_percentage,gross_profit,monthly_income,marketing_amount,operations_amount,converted_percentage,free_users,activetion_converted_percentage,actives_percentage,month_actives_percentage,old_inactive_users,old_active_users,new_inactive_users,new_active_users,active_subs,active_subscriptions,subs_count])
      output=BytesIO()
      wb.save(output)
      output.seek(0)

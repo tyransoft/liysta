@@ -617,9 +617,16 @@ def buy_plan(request, plan_id):
                 
                 if coupon_code:
                     try:
+                        now = timezone.now()
+
                         coupon = Coupon.objects.get(code=coupon_code)
                         subscription.coupon = coupon
                         subscription.save()
+                        seller = Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year, created_at__month=now.month).first()
+                        if not seller:
+                         seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
+                        seller.amount += (final_price * coupon.affiliate_percentage) / 100
+                        seller.save()
                         coupon.record_usage(final_price)
                     except Coupon.DoesNotExist:
                         pass
@@ -1424,6 +1431,11 @@ def renew_subscription(request, subscription_id):
                     try:
                         coupon = Coupon.objects.get(code=coupon_code)
                         sub.coupon = coupon
+                        seller = Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year, created_at__month=now.month).first()
+                        if not seller:
+                         seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
+                        seller.amount += (final_price * coupon.affiliate_percentage) / 100
+                        seller.save()
                         sub.save()
                         coupon.record_usage(final_price)
                     except Coupon.DoesNotExist:
