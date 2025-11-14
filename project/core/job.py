@@ -94,7 +94,7 @@ def deactivate_users_subs():
      output.seek(0)
      filename=f'report_{now.year}_{now.month}.xlsx'
      report=Liystanumbers.objects.create(
-        month_date=File(output,name=filename)
+        month_data=File(output,name=filename)
      )
      report.save()
 
