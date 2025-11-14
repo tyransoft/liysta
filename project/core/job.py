@@ -168,7 +168,7 @@ def start():
     scheduler.add_jobstore(DjangoJobStore(),"default")
     scheduler.add_job(
         deactivate_users_subs, trigger='cron',
-        hour=1,
+        hour=17,
         minute=0,
         id='deactive_subs',
         replace_existing=True
