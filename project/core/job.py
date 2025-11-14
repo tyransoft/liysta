@@ -63,7 +63,7 @@ def deactivate_users_subs():
      operations_amount += monthly_income * 0.1
      #نسبة مندوبي المبيعات
      sellers=Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year,created_at__month=now.month).first()
-     seller_amount=sellers.amount
+     seller_amount=sellers.amount if sellers else 0
      
      #تكاليف تسويقية شهرية
      marketing=Coasts.objects.filter(coast_kind='Marketing&sells',  created_at__year=now.year,created_at__month=now.month)
