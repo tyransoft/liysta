@@ -100,8 +100,8 @@ def deactivate_users_subs():
 
      email=EmailMessage(
         subject=f"Liysta report for {now.month}/{now.year}",
-        body="Hi M.Moad this is a report about our results in the last month thank you for your effort.",
-        from_email="liystaplatform@liysta.ly",
+        body="Hi Mr.Moad this is a report about our results in the last month thank you for your effort.",
+        from_email="liystacompany@gmail.com",
         to=["hamodamourad72@gmail.com"],
 
                        )

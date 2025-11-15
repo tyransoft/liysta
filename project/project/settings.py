@@ -147,8 +147,8 @@ EMAIL_HOST_USER = "liystacompany@gmail.com"
 
 EMAIL_HOST_PASSWORD = "jihd garj dnzj aqyo"
 
-DEFAULT_FROM_EMAIL = "Liysta Platform <liystaplatform@liysta.ly>"
-SERVER_EMAIL = "liystaplatform@liysta.ly"
+DEFAULT_FROM_EMAIL = "Liysta Platform <liystacompany@gmail.com>"
+SERVER_EMAIL = "liystacompany@gmail.com"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
