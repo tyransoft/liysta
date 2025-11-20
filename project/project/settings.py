@@ -23,8 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-with open(os.path.join(BASE_DIR,'SECRET_KEY.txt')) as f:
-    SECRET_KEY=f.read().strip()
+SECRET_KEY=os.getenv("SECRET_KET")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -98,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'shahenat_liysta', 
         'USER': 'shahenat_moad',  
-        'PASSWORD': 'm!mCx5MIA@.tBzFR',  
+        'PASSWORD': os.getenv("DB_PASSWORD"),  
         'HOST': '102.213.180.2',  
         'PORT': '3306',
         'OPTIONS': {
@@ -143,12 +142,12 @@ EMAIL_PORT = 465
 EMAIL_USE_TLS = False   
 EMAIL_USE_SSL = True  
 
-EMAIL_HOST_USER = "liystaplatform@liysta.ly"
+EMAIL_HOST_USER = "liystacompany@gmail.com"
 
-EMAIL_HOST_PASSWORD = "%O~]ThP^][N!*91z"
+EMAIL_HOST_PASSWORD = 'bcyp vaar frgd ejlw'
 
-DEFAULT_FROM_EMAIL = "Liysta Platform <liystaplatform@liysta.ly>"
-SERVER_EMAIL = "liystaplatform@liysta.ly"
+DEFAULT_FROM_EMAIL = "Liysta Platform <liystacompany@gmail.com"
+SERVER_EMAIL = "liystacompany@gmail.com"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

@@ -16,7 +16,7 @@ def deactivate_users_subs():
     last_day_num=calendar.monthrange(today.year,today.month)[1]
     last_day_date=date(today.year,today.month,last_day_num)
     
-    if today :
+    if today ==last_day_date:
      now = timezone.now()
      # عدد الاشتراكات
      subs_count=Subscription.objects.count()
@@ -101,7 +101,7 @@ def deactivate_users_subs():
      email=EmailMessage(
         subject=f"Liysta report for {now.month}/{now.year}",
         body="Hi Mr.Moad this is a report about our results in the last month thank you for your effort.",
-        from_email="liystaplatform@liysta.ly",
+        from_email="liystacompany@gmail.com",
         to=["hamodamourad72@gmail.com"],
 
                        )
@@ -168,7 +168,7 @@ def start():
     scheduler.add_jobstore(DjangoJobStore(),"default")
     scheduler.add_job(
         deactivate_users_subs, trigger='cron',
-        hour=17,
+        hour=2,
         minute=0,
         id='deactive_subs',
         replace_existing=True
