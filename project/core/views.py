@@ -1162,7 +1162,7 @@ def customer_dashboard(request):
             'products': products,
             'citys': cities,
             'cpds':cpds,
-            'total_visits':total_visits['total']
+            'total_visits':total_visits['total'],
         }
 
         if subscription.plan.ordering:
