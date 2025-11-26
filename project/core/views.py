@@ -627,7 +627,10 @@ def buy_plan(request, plan_id):
                          seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
                         seller.amount += plan.price * coupon.affiliate_percentage
                         seller.save()
-                        coupon.record_usage(final_price)
+                        coupon.total_earned +=plan.price * coupon.affiliate_percentage
+                        coupon.used_count += 1
+                        coupon.save()
+
                     except Coupon.DoesNotExist:
                         pass
                 try:
@@ -1441,7 +1444,9 @@ def renew_subscription(request, subscription_id):
                         seller.amount += plan.price * coupon.affiliate_percentage
                         seller.save()
                         sub.save()
-                        coupon.record_usage(final_price)
+                        coupon.total_earned +=plan.price * coupon.affiliate_percentage
+                        coupon.used_count += 1
+                        coupon.save()
                     except Coupon.DoesNotExist:
                         pass
                 try:
