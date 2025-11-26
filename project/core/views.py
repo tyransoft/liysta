@@ -478,7 +478,7 @@ def activate_user(request,uidb64,token):
       
         if user:
             login(request,user)
-            messages.success(request, 'اهلا بك في عالمنا ,لبدأ رحلتك معنا يجب عليك شح محفظتك تواصل معنا للمزيد!')
+            messages.success(request, 'اهلا بك في عالمنا ,لبدأ رحلتك معنا يجب عليك شحن محفظتك تواصل معنا للمزيد!')
             return redirect('/')
         else:
           messages.error(request, 'لم يتم تسجيلك حاول مرة اخرى')
@@ -625,7 +625,7 @@ def buy_plan(request, plan_id):
                         seller = Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year, created_at__month=now.month).first()
                         if not seller:
                          seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
-                        seller.amount += (final_price * coupon.affiliate_percentage) / 100
+                        seller.amount += plan.price * coupon.affiliate_percentage
                         seller.save()
                         coupon.record_usage(final_price)
                     except Coupon.DoesNotExist:
@@ -729,6 +729,10 @@ def start_free_trial(request):
 - اختراق أسرار إدارة المتاجر الناجحة
 - تجربة جميع الأسلحة السرية (مجانًا!)
 -  كامل لمدة 30 يومًا
+
+كود خصم <20%> احتفظ به ممكن تحتاجه في المستقبل!
+
+الكود:liyfree20
 
 "الدمار الإيجابي يبدأ بالتدريب..."
 
@@ -1434,7 +1438,7 @@ def renew_subscription(request, subscription_id):
                         seller = Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year, created_at__month=now.month).first()
                         if not seller:
                          seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
-                        seller.amount += (final_price * coupon.affiliate_percentage) / 100
+                        seller.amount += plan.price * coupon.affiliate_percentage
                         seller.save()
                         sub.save()
                         coupon.record_usage(final_price)

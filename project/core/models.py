@@ -240,7 +240,7 @@ class Coupon(models.Model):
     def record_usage(self, subscription_amount):
         """تسجيل استخدام الكوبون وحساب العمولة"""
         self.used_count += 1
-        commission = (subscription_amount * self.affiliate_percentage) / 100
+        commission = subscription_amount * self.affiliate_percentage
         self.total_earned += commission
         self.save()
         return commission    
@@ -347,8 +347,8 @@ class Subscription(models.Model):
 
 
        
-        if self.coupon and self.final_price:
-            self.coupon.record_usage(self.final_price)
+        if self.coupon :
+            self.coupon.record_usage(self.plan.price)
             
         super().save(*args, **kwargs)
 
