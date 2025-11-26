@@ -433,7 +433,7 @@ class AdminSales(models.Model):
     profit=models.FloatField(default=0)
     created_at=models.DateField(auto_now_add=True)
     def __str__(self):
-        return self.profit
+        return f"{self.profit}"
 
 class Liystanumbers(models.Model):
     month_data=models.FileField(upload_to='data/')
