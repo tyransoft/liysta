@@ -633,14 +633,13 @@ def buy_plan(request, plan_id):
 
                     except Coupon.DoesNotExist:
                         pass
-                try:
-                 admin=AdminSales.objects.filter(created_at__month=start_of_month,created_at__year=year)
-                
-                 admin.profit += float(final_price)
-                 admin.save() 
-                except:
-                 admin=AdminSales.objects.create(profit=final_price)
-                 admin.save()
+                admin, created = AdminSales.objects.get_or_create(
+                  created_at__month=now.month,
+                  created_at__year=year,
+                )
+
+                admin.profit += float(final_price)
+                admin.save() 
                 customer.wallet -= final_price
                 customer.customer_status = 'active'
                 customer.save()
@@ -1449,14 +1448,13 @@ def renew_subscription(request, subscription_id):
                         coupon.save()
                     except Coupon.DoesNotExist:
                         pass
-                try:
-                 admin=AdminSales.objects.filter(created_at__month=start_of_month,created_at__year=year)
-                
-                 admin.profit += float(final_price)
-                 admin.save() 
-                except:
-                 admin=AdminSales.objects.create(profit=final_price)
-                 admin.save()         
+                admin, created = AdminSales.objects.get_or_create(
+                  created_at__month=now.month,
+                  created_at__year=year,
+                )
+
+                admin.profit += float(final_price)
+                admin.save()        
                 customer.wallet -= final_price
                 customer.customer_status = 'active'
                 customer.save()
