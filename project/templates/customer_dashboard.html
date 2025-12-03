@@ -50,10 +50,13 @@
                     <i class="fas fa-home"></i>
                     <span>لوحة التحكم</span>
                 </a>
+                {% if subscription.plan.ordering %}
+
                 <a href="#" class="menu-item" data-target="orders">
                     <i class="fas fa-shopping-cart"></i>
                     <span>الطلبات</span>
                 </a>
+                {% endif %}
                 <a href="#" class="menu-item" data-target="products">
                     <i class="fas fa-box"></i>
                     <span>المنتجات والتخفيضات</span>
@@ -62,12 +65,14 @@
                     <i class="fas fa-layer-group"></i>
                     <span>الفئات</span>
                 </a>
-                
+               {% if subscription.plan.ordering %}
+
                 <p class="menu-title">الإعدادات</p>
                 <a href="#" class="menu-item" data-target="delivery">
                     <i class="fas fa-truck"></i>
                     <span>التوصيل</span>
                 </a>
+               {% endif %}
                 <a href="#" class="menu-item" data-target="analytics">
                     <i class="fas fa-chart-line"></i>
                     <span>الإحصائيات</span>
@@ -175,7 +180,8 @@
                                 <h3 class="stat-value">{{ statistics.visits_count|default:0 }}</h3>
                             </div>
                         </div>
-                        
+                        {% if subscription.plan.ordering %}
+
                         <div class="stat-card sales">
                             <div class="stat-icon">
                                 <i class="fas fa-chart-line"></i>
@@ -185,6 +191,7 @@
                                 <h3 class="stat-value">{{ total_sales|default:0 }} د.ل</h3>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
 
