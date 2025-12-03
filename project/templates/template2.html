@@ -757,7 +757,6 @@
     {% if not subscription.is_active %}
     <div class="service-disabled">
         <h3>نعتذر، الخدمة غير متوفرة حالياً</h3>
-        <p>الاشتراك غير مفعل حالياً. يرجى التواصل مع الدعم الفني.</p>
     </div>
     {% else %}
     
@@ -778,13 +777,13 @@
             
             {% if menu.location_url %}
             <a href="{{ menu.location_url }}" target="_blank" class="location-btn">
-                <i class="fas fa-map-marker-alt"></i> موقع المتجر
+                <i class="fas fa-map-marker-alt"></i> موقعنا 
             </a>
             {% endif %}
             
             {% if subscription.plan.review %}
             <button class="rate-btn" id="openRatingModal">
-                <i class="fas fa-star"></i> قيم المتجر
+                <i class="fas fa-star"></i> قيمنا 
             </button>
             {% endif %}
         </div>
@@ -793,7 +792,6 @@
         </div>
     </section>
 
-    <!-- قسم الفلترة الجديد -->
     <section class="filter-section">
         <form method="GET" class="filter-form">
             <div class="filter-group">
@@ -818,7 +816,6 @@
 
 
 
-    {% if subscription.plan.ordering %}
     <section class="menu-section">
         <div class="section-title">
             <h3>المنتجات المتاحة</h3>
@@ -875,6 +872,8 @@
                             {% endif %}
                         </div>
                         
+                        {% if subscription.plan.ordering %}
+
                         <div class="menu-item-actions">
                             <div class="quantity-control">
                                 <button class="quantity-btn minus">-</button>
@@ -887,11 +886,13 @@
                                 {% if product.quantity <= 0 %}نفذ من المخزن{% else %}أضف للسلة{% endif %}
                             </button>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
         </div>
     </section>
+    {% if subscription.plan.ordering %}
 
     <div class="floating-cart">
         <div class="cart-toggle">
@@ -976,10 +977,10 @@
                 
                 <div class="form-group" id="addressField" 
                     style="display: {% if menu.recivieing == 'التوصيل' %}block{% else %}none{% endif %}">
-                    <label for="delivery_address">المدينة:</label>
+                    <label for="delivery_address">العنوان:</label>
                     <select id="delivery_address" name="delivery_address" 
                         {% if menu.recivieing == 'التوصيل' %}required{% endif %}>
-                        <option value="">اختر المدينة</option>
+                        <option value="">اختر العنوان</option>
                         {% for city in cities %}
                             <option value="{{ city.id }}" data-price="{{ city.price }}">{{ city.name }} - {{ city.price }} د.ل</option>
                         {% endfor %}
@@ -988,7 +989,7 @@
                 
                 {% if menu.location_url %}
                 <div class="form-group">
-                    <label>موقع المتجر:</label>
+                    <label>موقعنا:</label>
                     <a href="{{ menu.location_url }}" target="_blank" class="location-btn">
                         <i class="fas fa-map-marker-alt"></i> عرض على الخريطة
                     </a>
