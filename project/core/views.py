@@ -1035,7 +1035,7 @@ def choose_template(request, menu_id):
                 
         except Menu.DoesNotExist:
             messages.error(request, 'لم يتم العثور على القائمة المطلوبة')
-            return redirect('home')
+            return redirect('/')
     
     return render(request, 'choose_template.html', {
         'menu_id': menu_id

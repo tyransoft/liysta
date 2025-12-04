@@ -327,7 +327,8 @@ class Subscription(models.Model):
             self.end_date = self.start_date + timedelta(days=365)  
         elif self.plan.duration == 'daily':
             self.end_date = self.start_date + timedelta(days=1)  
-
+        elif self.plan.duration == 'halfy':
+            self.end_date = self.start_date + timedelta(days=183)  
         elif self.plan.duration == 'free_trial':
         
             self.end_date = self.start_date + timedelta(days=30)
