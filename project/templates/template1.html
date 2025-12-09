@@ -1031,7 +1031,10 @@
 <body>
     <header>
         <div class="logo">
+            {% if menu.logo %}
+
             <img src="{{ menu.logo.url }}" alt="{{ menu.customer.store_ar_name }}">
+            {% endif %}
             <h1>{{ menu.customer.store_ar_name }}</h1>
         </div>
         
@@ -1090,7 +1093,10 @@
             {% endif %}
         </div>
         <div class="hero-image">
+            {% if menu.image %}
+
             <img src="{{ menu.image.url }}" alt="{{ menu.customer.store_ar_name }}">
+            {% endif %}
         </div>
     </section>
 
