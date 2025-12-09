@@ -207,7 +207,7 @@
                         <p style="color: var(--gray); margin-bottom: 1.5rem;">
                             لديك {{ remaining_days }} يوم متبقي في اشتراكك الحالي
                         </p>
-                        {% if not subscription.is_active %}
+                        {% if not subscription.is_active and subscription.plan.duration != 'free_trial' %}
                         <a href="{% url 'renew_subscription' subscription.id %}" class="btn btn-primary">
                             <i class="fas fa-sync-alt"></i> تجديد الاشتراك
                         </a>
