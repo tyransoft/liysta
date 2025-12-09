@@ -248,7 +248,7 @@ class Plan(models.Model):
         ('quarterly', 'ربع سنة(3 شهور)'),
         ('yearly', 'سنة'),
         ('halfy', 'نصف سنة (6 شهور)'),
-        
+        ('forever','مدى الحياة'),
         ('daily','يوم')
     ]
 
@@ -292,7 +292,9 @@ class Plan(models.Model):
                 pass    
         
         return discounted_price
-    
+    @property
+    def is_forever(self):
+       return self.duration == "forever"
     def __str__(self):
         return self.name
 
@@ -328,7 +330,9 @@ class Subscription(models.Model):
         elif self.plan.duration == 'daily':
             self.end_date = self.start_date + timedelta(days=1)  
         elif self.plan.duration == 'halfy':
-            self.end_date = self.start_date + timedelta(days=183)  
+            self.end_date = self.start_date + timedelta(days=183)   
+        elif self.plan.duration == 'forever':
+            self.end_date = self.start_date + timedelta(days=10000)  
         elif self.plan.duration == 'free_trial':
         
             self.end_date = self.start_date + timedelta(days=30)

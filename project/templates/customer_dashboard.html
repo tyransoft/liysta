@@ -165,9 +165,15 @@
                             <div class="stat-info">
                                 <p class="stat-title">الباقة الحالية</p>
                                 <h3 class="stat-value">{{ subscription.plan.name }}</h3>
+                                {% if not subscription.plan.is_forever %}
                                 <div style="color: var(--gray); font-size: 0.85rem; margin-top: 0.25rem;">
                                     تنتهي في {{ subscription.end_date }}
                                 </div>
+                                {% else %}
+                                <div style="color: var(--gray); font-size: 0.85rem; margin-top: 0.25rem;">
+                                    باقة مدى الحياة
+                                </div>           
+                                {% endif %}
                             </div>
                         </div>
                         
@@ -194,7 +200,7 @@
                         {% endif %}
                     </div>
                 </div>
-
+               {% if not subscription.plan.is_forever %}
                 <div class="subscription-container">
                     <div class="subscription-info">
                         <h3 style="color: var(--primary); margin-bottom: 0.5rem;">مدة الاشتراك المتبقية</h3>
@@ -220,7 +226,7 @@
                         </div>
                     </div>
                 </div>
-
+                {% endif %}
                 {% if subscription.plan.ordering %}
                 <div class="chart-container">
                     <div class="chart-header">

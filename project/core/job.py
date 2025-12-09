@@ -3,7 +3,7 @@ from django.core.mail import send_mail,EmailMessage
 from django.conf import settings
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import register_events,DjangoJobStore
-from datetime import date
+from datetime import timedelta , date
 import calendar
 from openpyxl import  Workbook
 from io import BytesIO
@@ -114,10 +114,14 @@ def deactivate_users_subs():
         card.delete()
     subs=Subscription.objects.filter(end_date__lt=today,is_active=True)
     for sub in subs:
-        sub.is_active=False
-        sub.save()
-        if sub.plan.duration =='تجربة مجانية':
-         subject="انتهى تدريبنا المجاني"
+        if sub.plan.duration != 'forever':
+         sub.is_active=False
+         sub.save()
+        else:
+          sub.end_date = sub.end_date + timedelta(days=10000) 
+          sub.save()  
+        if  sub.plan.duration == 'free_trial':
+         subject="انتهت تجربتك المجانية"
          message = f"""
 انتبه {sub.customer.store_ar_name}! ⏳
 
@@ -125,7 +129,7 @@ def deactivate_users_subs():
 - سيتم تعطيل الوصول للأسلحة المتقدمة
 - تقارير الاستخبارات ستتوقف
 - لكن.. كل بياناتك ستظل آمنة
-
+احصل على خصم عشرين في المئة باستخدام هذا الكوبون:liyfree20
 "الآن تعرف الأسرار.. حان وقت التطبيق"
 احتفظ بأسلحتك: https://liysta.ly/plans
 
