@@ -168,8 +168,8 @@ class Products(models.Model):
 
     name=models.CharField(max_length=50)
     image=models.ImageField(upload_to=get_upload_path,null=False)
-    bought_price=models.IntegerField(null=True,blank=True)
-    price=models.IntegerField()
+    bought_price=models.FloatField(null=True,blank=True)
+    price=models.FloatField()
     quantity=models.IntegerField(null=True,blank=True)
     description=models.TextField()
     available_colors = models.CharField(max_length=255,null=True,blank=True, help_text="أدخل الألوان مفصولة بفاصلة مثل: أحمر, أخضر, أزرق")
