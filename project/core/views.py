@@ -625,9 +625,9 @@ def buy_plan(request, plan_id):
                         seller = Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year, created_at__month=now.month).first()
                         if not seller:
                          seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
-                        seller.amount += plan.price * coupon.affiliate_percentage
+                        seller.amount += plan.get_discounted_price() * coupon.affiliate_percentage
                         seller.save()
-                        coupon.total_earned +=plan.price * coupon.affiliate_percentage
+                        coupon.total_earned +=plan.get_discounted_price() * coupon.affiliate_percentage
                         coupon.used_count += 1
                         coupon.save()
 
@@ -1440,10 +1440,10 @@ def renew_subscription(request, subscription_id):
                         seller = Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year, created_at__month=now.month).first()
                         if not seller:
                          seller = Coasts.objects.create(coast_kind='sellermen', amount=0)
-                        seller.amount += plan.price * coupon.affiliate_percentage
+                        seller.amount += plan.get_discounted_price() * coupon.affiliate_percentage
                         seller.save()
                         sub.save()
-                        coupon.total_earned +=plan.price * coupon.affiliate_percentage
+                        coupon.total_earned +=plan.get_discounted_price() * coupon.affiliate_percentage
                         coupon.used_count += 1
                         coupon.save()
                     except Coupon.DoesNotExist:
