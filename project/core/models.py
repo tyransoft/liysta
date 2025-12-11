@@ -106,8 +106,8 @@ class Menu(models.Model):
         ('التوصيل او الاستلام في المحل',' التوصيل و التسليم في المحل'),
     }
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
-    logo=models.ImageField(upload_to=get_upload_path,null=True)    
-    image=models.ImageField(upload_to=get_upload_path,null=True)    
+    logo=models.ImageField(upload_to=get_upload_path,null=False)    
+    image=models.ImageField(upload_to=get_upload_path,null=False)    
     second_color=models.CharField(max_length=20,null=True)
     template=models.CharField(max_length=20,null=True)
     recivieing=models.CharField(max_length=50, choices=recivieing,default='التوصيل')

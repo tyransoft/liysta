@@ -36,7 +36,9 @@
     <div class="dashboard-container">
         <aside class="sidebar" id="sidebar">
             <div class="profile-card">
+                {% if menus.logo %}
                 <img src="{{ menus.logo.url }}" class="profile-img" alt="صورة المتجر">
+                {% endif %}
                 <h3 class="profile-name">{{ customer.user.first_name }}</h3>
                 <p class="profile-store">{{ customer.store_en_name }}</p>
                 <a href="{% url 'update_customer' %}" class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.6rem 1.2rem; font-size: 0.85rem;">
