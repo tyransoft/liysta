@@ -66,9 +66,11 @@
                       </a>
 
                     {% elif user.customer.can_use_free_trial %} 
-                      <a href="{% url 'start_free_trial' %}" class="trial-btn">
-                        <i class="fas fa-gift"></i> تجربة مجانية
-                      </a>
+                      <a href="{% url 'start_free_trial' %}"
+                        class="trial-btn"
+                        onclick="disableTrialBtn(this)">
+                       <i class="fas fa-gift"></i> تجربة مجانية
+                     </a>
               
                      
                     {% endif %}
@@ -424,5 +426,12 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="{% static 'js/lista.js' %}"></script>
+    <script>
+     function disableTrialBtn(btn) {
+    btn.style.pointerEvents = 'none';   
+    btn.style.opacity = '0.6';          
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفعيل...';
+}   
+    </script>
 </body>
 </html>

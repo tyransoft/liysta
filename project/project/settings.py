@@ -27,6 +27,8 @@ SECRET_KEY=os.getenv("SECRET_KET")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+
+
 ALLOWED_HOSTS = ['liysta.ly','www.liysta.ly']
 
 
