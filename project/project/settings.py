@@ -29,6 +29,8 @@ DEBUG = False
 
 
 
+
+
 ALLOWED_HOSTS = ['liysta.ly','www.liysta.ly']
 
 
