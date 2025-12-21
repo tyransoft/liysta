@@ -27,7 +27,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.utils.dateparse import parse_datetime
 from django.utils.text import slugify
-
+import re
 #guest user and so on
 
 
@@ -1379,12 +1379,12 @@ def menu_page_view(request, store_slug):
      products = Products.objects.filter(menu=menu,catogery__id=category)
     else:
      products = Products.objects.filter(menu=menu)
-
+    delim=r'[,،\|\\/_\.;:-]'
     for product in products:
         if product.available_sizes:
-         product.sizes_list = [s.strip() for s in product.available_sizes.split('،') if s.strip()]    
+         product.sizes_list = [s.strip() for s in re.split(delim,product.available_sizes) if s.strip()]    
         if product.available_colors:
-         product.colors_list = [s.strip() for s in product.available_colors.split('،') if s.strip()]    
+         product.colors_list = [s.strip() for s in re.split(delim,product.available_colors) if s.strip()]    
         
  
     cities = City.objects.filter(menu=menu) 

@@ -36,16 +36,16 @@ class Customer(models.Model):
         ('غير ذلك', 'غير ذلك'),
     }
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=13)
-    store_ar_name = models.CharField(max_length=40)
-    store_en_name = models.CharField(max_length=40,unique=True)
+    phone = models.CharField(max_length=20)
+    store_ar_name = models.CharField(max_length=250)
+    store_en_name = models.CharField(max_length=250,unique=True)
     customer_status = models.CharField(max_length=29, choices=status)
     store_kind = models.CharField(max_length=20, choices=kind)
     wallet=models.FloatField(default=0.0)
     has_used_free_trial = models.BooleanField(default=False)
     location_url = models.URLField(blank=True, null=True)
     created_at=models.DateField(auto_now_add=True)
-    store_slug = models.SlugField(max_length=100,null=True)
+    store_slug = models.SlugField(max_length=250,null=True)
 
 
     @property
@@ -70,7 +70,13 @@ class Customer(models.Model):
 
     def __str__(self):
         return f'{self.user.first_name}-{self.customer_status}'
+    class Meta:
+        indexes = [
+            models.Index(fields=['store_en_name']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['store_slug']),
 
+        ]
 class Paymentcard(models.Model):
     code=models.CharField(max_length=13, unique=True, db_index=True)
     value=models.IntegerField(default=0)
@@ -111,7 +117,7 @@ class Menu(models.Model):
     second_color=models.CharField(max_length=20,null=True)
     template=models.CharField(max_length=20,null=True)
     recivieing=models.CharField(max_length=50, choices=recivieing,default='التوصيل')
-    desc=models.CharField(max_length=200)
+    desc=models.CharField(max_length=1000)
     qr_image=models.ImageField(null=True,upload_to='Qr_images')
     def get_menu_url(self):
      return f'https://liysta.ly/{self.customer.store_slug}'
@@ -136,13 +142,22 @@ class Menu(models.Model):
     
     def __str__(self):
         return self.customer.user.first_name
+    class Meta:
+        indexes = [
+           models.Index(fields=['customer']),
 
+        ] 
 
 class MenuStatistics(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     date = models.DateField()
     visits_count = models.IntegerField(default=0)
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
+           models.Index(fields=['date']),
 
+        ] 
     def __str__(self):
         return f"{self.menu.customer.user.first_name} - {self.date} - {self.visits_count} visits"
 
@@ -153,13 +168,21 @@ class Reviews(models.Model):
 
     def __st__(self):
         return f' {self.menu.customer.store_en_name} --{self.rating}'
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
 
+        ] 
 class Catogery(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     name=models.CharField(max_length=25)
     def __str__(self):
         return self.name
-    
+    class Meta:
+        indexes = [
+           models.Index(fields=['customer']),
+
+        ]       
 
     
 class Products(models.Model):
@@ -172,8 +195,8 @@ class Products(models.Model):
     price=models.FloatField()
     quantity=models.IntegerField(null=True,blank=True)
     description=models.TextField()
-    available_colors = models.CharField(max_length=255,null=True,blank=True, help_text="أدخل الألوان مفصولة بفاصلة مثل: أحمر, أخضر, أزرق")
-    available_sizes = models.CharField(max_length=255,null=True ,blank=True, help_text="أدخل المقاسات مفصولة بفاصلة مثل: S, M, L, XL")
+    available_colors = models.CharField(max_length=1000,null=True,blank=True, help_text="أدخل الألوان مفصولة بفاصلة مثل: أحمر, أخضر, أزرق")
+    available_sizes = models.CharField(max_length=1000,null=True ,blank=True, help_text="أدخل المقاسات مفصولة بفاصلة مثل: S, M, L, XL")
     def get_discounted_price(self):
         
          active_discount = CPDiscount.objects.filter(product=self, start_date__lte=timezone.now(), end_date__gte=timezone.now()).first()
@@ -192,7 +215,12 @@ class Products(models.Model):
      super().save(*args,**kwargs)
     def __str__(self):
         return self.name
-   
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
+           models.Index(fields=['catogery'])
+
+        ]    
 
 class CPDiscount(models.Model):
     menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
@@ -206,7 +234,12 @@ class CPDiscount(models.Model):
 
     def __str__(self):
         return f"خصم {self.percentage} "
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
+           models.Index(fields=['product']),
 
+        ] 
 
 class City(models.Model):
     menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
@@ -216,7 +249,11 @@ class City(models.Model):
         return f'{self.name}--{self.price}'
     def get_price_display(self):
         return f'{self.price} د.ل'
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
 
+        ] 
 
 
 class Coupon(models.Model):
@@ -236,7 +273,12 @@ class Coupon(models.Model):
 
     def __str__(self):
         return f"كوبون: {self.code} - خصم {self.percentage}% - عمولة {self.affiliate_percentage}%"
+    class Meta:
+        indexes = [
+           models.Index(fields=['code']),
+           models.Index(fields=['saler_id']),
 
+        ] 
   
     
 
@@ -356,7 +398,11 @@ class Subscription(models.Model):
         return 0
     def __str__(self):
         return f"Subscription for {self.customer.user.first_name} to {self.plan.name}"
-
+    class Meta:
+        indexes = [
+           models.Index(fields=['customer']),
+           models.Index(fields=['plan']),
+        ] 
 
 
 class Discount(models.Model):
@@ -372,7 +418,11 @@ class Discount(models.Model):
         return f"خصم {self.percentage}% على {self.plan.name}"
 
 
+    class Meta:
+        indexes = [
+           models.Index(fields=['plan']),
 
+        ] 
 
 class OurCustomer(models.Model):
     name=models.CharField(max_length=40)
@@ -419,7 +469,14 @@ class Order(models.Model):
 
     def __str__(self):
         return f"طلب  - {self.menu.customer.store_en_name} - {self.customer_name}"
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
+           models.Index(fields=['ordernumber']),
+           models.Index(fields=['status']),
+           models.Index(fields=['created_at']),
 
+        ] 
 
 class OrderItem(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
@@ -432,6 +489,11 @@ class OrderItem(models.Model):
        return self.quantity * self.product.price
     def __str__(self):
         return f"طلب  - {self.product} * {self.quantity}"
+    class Meta:
+        indexes = [
+           models.Index(fields=['menu']),
+
+        ] 
     
 
 class AdminSales(models.Model):
@@ -439,13 +501,23 @@ class AdminSales(models.Model):
     created_at=models.DateField(auto_now_add=True)
     def __str__(self):
         return f"{self.profit}"
+    class Meta:
+        indexes = [
+           models.Index(fields=['created_at']),
+
+        ] 
+        
 
 class Liystanumbers(models.Model):
     month_data=models.FileField(upload_to='data/')
     created_at=models.DateField(auto_now_add=True)
     def __str__(self):
         return f"{self.created_at}"
+    class Meta:
+        indexes = [
+           models.Index(fields=['created_at']),
 
+        ] 
 class Coasts(models.Model):
     KIND={
         ('Operations','Operations'),
@@ -459,3 +531,10 @@ class Coasts(models.Model):
     created_at=models.DateField(auto_now_add=True)
     def __str__(self):
         return f"{self.amount}----{self.created_at}"
+    class Meta:
+        indexes = [
+
+           models.Index(fields=['coast_kind']),
+           models.Index(fields=['created_at']),
+        
+        ] 
