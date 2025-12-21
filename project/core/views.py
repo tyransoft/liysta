@@ -1379,7 +1379,7 @@ def menu_page_view(request, store_slug):
      products = Products.objects.filter(menu=menu,catogery__id=category)
     else:
      products = Products.objects.filter(menu=menu)
-    delim=r'[,،\|\\/_\.;:-]'
+    delim=r'[,،٬\|\\/_\.;:-]'
     for product in products:
         if product.available_sizes:
          product.sizes_list = [s.strip() for s in re.split(delim,product.available_sizes) if s.strip()]    
