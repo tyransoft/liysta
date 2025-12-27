@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +8,7 @@
     <title>Liysta - ادارة الاشتراك</title>
     <link rel="stylesheet" href="{% static 'css/buy.css' %}">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+
 </head>
 <body>
 
@@ -19,20 +21,26 @@
             <span class="plan-duration">{{ plan.get_duration_display }}</span>
         </div>
         
+        
         <div class="price-section">
             <div class="price-item original-price">
                 <div class="price-label">السعر الأصلي</div>
-                <div class="price-value">{{ plan.price }} د.ل</div>
+                <div class="price-value">{{ plan.price }}د.ل</div>
+            </div>
+            
+            <div class="price-item discounted-price">
+                <div class="price-label">السعر بعد الخصم</div>
+                <div class="price-value">{{ plan.get_discounted_price }} د.ل</div>
             </div>
             
             <div class="price-item final-price" id="final-price-container">
                 <div class="price-label">السعر النهائي</div>
-                <div class="price-value" id="final-price">{{ plan.price }} د.ل</div>
+                <div class="price-value" id="final-price">{{ final_price }} د.ل</div>
             </div>
         </div>
         
         <div class="renewal-note">
-            ملاحظة: سعر تجديد الاشتراك ليس ثابتا وغير قابل للزيادة حيث يمكنك تجديد الاشتراك بسعر الباقة الاصلي اذا لم يكن هناك تخفيض 
+                        ملاحظة:سعر تجديد الاشتراك ليس ثابتا وغير قابل للزيادة حيث يمكنك تجديد الاشتراك بسعر الباقة الاصلي اذا لم يكن هناك تخفيض 
         </div>
     </div>
     
@@ -42,7 +50,6 @@
             <input type="text" id="coupon-code" class="coupon-input" placeholder="أدخل كود الخصم">
             <button type="button" class="coupon-btn" onclick="applyCoupon()">تطبيق</button>
         </div>
-        <input type="hidden" id="coupon-input-hidden" value="">
         <div id="coupon-message" style="margin-top: 0.5rem;"></div>
     </div>
     
@@ -55,87 +62,27 @@
         </div>
         
         <div class="wallet-info">
-            <span class="wallet-label">المبلغ المطلوب:</span>
-            <span class="wallet-value" id="required-amount">{{ plan.price }} د.ل</span>
+            <span class="wallet-label">المبلغ المطلوب "الذي سيخصم منك":</span>
+            <span class="wallet-value" id="required-amount">{{ final_price }} د.ل</span>
         </div>
         
-        <div id="wallet-status" style="padding:10px;border-radius:5px;margin:10px 0;{% if customer.wallet >= plan.price %}background-color:#d4edda;color:#155724;{% else %}background-color:#f8d7da;color:#721c24;{% endif %}">
-            {% if customer.wallet >= plan.price %}
-                ✅ رصيدك كافٍ لإتمام عملية الشراء
-            {% else %}
-                ❌ رصيدك غير كافٍ لإتمام عملية الشراء
-            {% endif %}
-        </div>
-        
-        <div id="payment-form-container" {% if customer.wallet < plan.price %}style="display:none;"{% endif %}>
-            <form method="POST" id="payment-form">
-                {% csrf_token %}
-                <input type="hidden" name="coupon_code" id="coupon-input" value="">
-                <div class="action-buttons">
-                    <button type="submit" class="confirm-btn" id="submitBtn">تأكيد الشراء</button>
-                    <a href="{% url 'home' %}" class="cancel-btn">إلغاء</a>
-                </div>
-            </form>
-        </div>
-        
-        <div id="charge-section" {% if customer.wallet >= plan.price %}style="display:none;"{% endif %}>
-            <div style="color:red;margin-top:1rem;margin-bottom:1rem;">
-                رصيدك غير كافٍ لإتمام عملية الشراء. يرجى شحن المحفظة أولاً.
-            </div>
+        <form method="POST"  id="payment-form">
+            {% csrf_token %}
+            <input type="hidden" name="coupon_code" id="coupon-input" value="">
             <div class="action-buttons">
-                <a href="{% url 'wallet_charging' %}" class="confirm-btn">شحن المحفظة</a>
+                <button type="submit" class="confirm-btn" id="submitBtn">تأكيد الشراء</button>
                 <a href="{% url 'home' %}" class="cancel-btn">إلغاء</a>
             </div>
-        </div>
+        </form>
+
     </div>
 </div>
 
 <script>
-const initialWalletBalance = {{ customer.wallet }};
-let currentFinalPrice = {{ plan.price }};
-
-function updateWalletInterface(finalPrice) {
-    const walletStatus = document.getElementById('wallet-status');
-    const paymentFormContainer = document.getElementById('payment-form-container');
-    const chargeSection = document.getElementById('charge-section');
-    const requiredAmount = document.getElementById('required-amount');
-    
-    requiredAmount.textContent = finalPrice.toFixed(2) + ' د.ل';
-    currentFinalPrice = finalPrice;
-    
-    if (initialWalletBalance >= finalPrice) {
-        walletStatus.innerHTML = '✅ رصيدك كافٍ لإتمام عملية الشراء';
-        walletStatus.style.backgroundColor = '#d4edda';
-        walletStatus.style.color = '#155724';
-        
-        if (paymentFormContainer) paymentFormContainer.style.display = 'block';
-        if (chargeSection) chargeSection.style.display = 'none';
-    } else {
-        walletStatus.innerHTML = '❌ رصيدك غير كافٍ لإتمام عملية الشراء';
-        walletStatus.style.backgroundColor = '#f8d7da';
-        walletStatus.style.color = '#721c24';
-        
-        if (paymentFormContainer) paymentFormContainer.style.display = 'none';
-        if (chargeSection) chargeSection.style.display = 'block';
-    }
-}
-
 function applyCoupon() {
-    const couponCodeInput = document.getElementById('coupon-code');
-    let couponCode = couponCodeInput.value.trim().toUpperCase();
-    
-    if (!couponCode) {
-        document.getElementById('coupon-message').innerHTML = '<span style="color:red;">الرجاء إدخال كود الخصم</span>';
-        return;
-    }
-    
+    const couponCode = document.getElementById('coupon-code').value;
     const planId = {{ plan.id }};
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    
-    const applyBtn = document.querySelector('.coupon-btn');
-    const originalBtnText = applyBtn.textContent;
-    applyBtn.disabled = true;
-    applyBtn.textContent = 'جاري التطبيق...';
     
     fetch('/apply-coupon/', {
         method: 'POST',
@@ -151,46 +98,20 @@ function applyCoupon() {
     .then(response => response.json())
     .then(data => {
         const messageEl = document.getElementById('coupon-message');
-        
         if (data.valid) {
             document.getElementById('final-price').textContent = data.final_price + ' د.ل';
-            
-            const couponInput = document.getElementById('coupon-input');
-            const couponHidden = document.getElementById('coupon-input-hidden');
-            
-            if (couponInput) couponInput.value = couponCode;
-            if (couponHidden) couponHidden.value = couponCode;
-            
-            messageEl.innerHTML = '<span style="color:green;">' + data.message + '</span>';
-            
-            updateWalletInterface(parseFloat(data.final_price));
+            document.getElementById('required-amount').textContent = data.final_price + ' د.ل';
+            document.getElementById('coupon-input').value = couponCode;
+            messageEl.innerHTML = `<span class="success-msg">${data.message}</span>`;
         } else {
-            messageEl.innerHTML = '<span style="color:red;">' + data.message + '</span>';
-            
-            const originalPrice = {{ plan.price }};
-            document.getElementById('final-price').textContent = originalPrice + ' د.ل';
-            
-            const couponInput = document.getElementById('coupon-input');
-            const couponHidden = document.getElementById('coupon-input-hidden');
-            if (couponInput) couponInput.value = '';
-            if (couponHidden) couponHidden.value = '';
-            
-            updateWalletInterface(originalPrice);
+            messageEl.innerHTML = `<span class="error-msg">${data.message}</span>`;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('coupon-message').innerHTML = '<span style="color:red;">حدث خطأ في الاتصال</span>';
-    })
-    .finally(() => {
-        applyBtn.disabled = false;
-        applyBtn.textContent = originalBtnText;
     });
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    updateWalletInterface({{ plan.price }});
-});
+document.getElementById("payment-form").addEventListener("submit",function() {
+            const btn =document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
+        });
 </script>
 </body>
-</html>
