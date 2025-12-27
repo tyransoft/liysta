@@ -201,7 +201,7 @@ class Products(models.Model):
         
          active_discount = CPDiscount.objects.filter(product=self, start_date__lte=timezone.now(), end_date__gte=timezone.now()).first()
          if active_discount:
-            discount_amount = self.price * (active_discount.percentage / 100)
+            discount_amount = self.price * active_discount.percentage 
             return self.price - discount_amount
          else:
             
@@ -320,20 +320,31 @@ class Plan(models.Model):
           return discounted_price
         else:
           return self.price  
+        
     def get_discounted_price_with_coupon(self, coupon_code=None):
-     
-        discounted_price = self.get_discounted_price()
-
+        base_price = float(self.price)
+        
         if coupon_code:
+            coupon_code = coupon_code.strip().upper()
+            today = timezone.now().date()
             
-            coupon = Coupon.objects.get(code=coupon_code, is_active=True)
+            coupon = Coupon.objects.filter(
+                code=coupon_code,
+                is_active=True,
+                start_date__lte=today,
+                end_date__gte=today
+            ).first()
+            
             if coupon:
-             discount_amount = discounted_price * (coupon.percentage)
-             discounted_price -= discount_amount
-             
-            return discounted_price
-              
-        return discounted_price
+                discount_amount = base_price * coupon.percentage
+                final_price = base_price - discount_amount
+                
+                if final_price < 0:
+                    final_price = 0
+                
+                return round(final_price, 2)
+        
+        return round(base_price, 2)
     @property
     def is_forever(self):
        return self.duration == "forever"

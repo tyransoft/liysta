@@ -537,21 +537,27 @@ def wallet_charging(request):
 
  return render(request, 'wallet_charging.html') 
 
+
 @login_required
 def apply_coupon(request):
     if request.method == 'POST' and request.user.is_authenticated:
         try:
             data = json.loads(request.body)
-            coupon_code = data.get('coupon_code', '').strip()
+            coupon_code = data.get('coupon_code', '').strip().upper()
             plan_id = data.get('plan_id')
+            
             plan = Plan.objects.get(id=plan_id)
             customer = Customer.objects.get(user=request.user)
             
-            try:
-                coupon = Coupon.objects.get(
-                    code=coupon_code,
-                    is_active=True
-                )
+            today = timezone.now().date()
+            coupon = Coupon.objects.filter(
+                code=coupon_code,
+                is_active=True,
+                start_date__lte=today,
+                end_date__gte=today
+            ).first()
+            
+            if coupon:
                 final_price = plan.get_discounted_price_with_coupon(coupon_code)
                 
                 return JsonResponse({
@@ -559,12 +565,22 @@ def apply_coupon(request):
                     'final_price': final_price,
                     'message': 'تم تطبيق كود الخصم بنجاح!'
                 })
-            except Coupon.DoesNotExist:
+            else:
                 return JsonResponse({
                     'valid': False,
                     'message': 'كود الخصم غير صالح أو منتهي الصلاحية'
                 })
                 
+        except Plan.DoesNotExist:
+            return JsonResponse({
+                'valid': False,
+                'message': 'الباقة غير موجودة'
+            })
+        except Customer.DoesNotExist:
+            return JsonResponse({
+                'valid': False,
+                'message': 'المستخدم غير موجود'
+            })
         except Exception as e:
             return JsonResponse({
                 'valid': False,
@@ -575,7 +591,6 @@ def apply_coupon(request):
         'valid': False,
         'message': 'طلب غير صالح'
     })
-
 @login_required
 def buy_plan(request, plan_id):
     if request.method == 'POST':
