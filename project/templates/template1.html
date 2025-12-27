@@ -859,23 +859,23 @@
             margin-bottom: 25px;
         }
         
-        .rating-stars {
-            margin: 25px 0;
-            direction: ltr;
-        }
-        
-        .rating-stars i {
-            font-size: 2.8rem;
-            color: #ddd;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 0 8px;
-        }
-        
-        .rating-stars i.active {
-            color: var(--primary-color);
-            transform: scale(1.1);
-        }
+.modal-rating-stars {
+    margin: 25px 0;
+    direction: ltr;
+}
+
+.modal-rating-stars i {
+    font-size: 2.8rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0 8px;
+}
+
+.modal-rating-stars i.active {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
         
         .submit-rating {
             background: var(--primary-color);
@@ -1104,9 +1104,9 @@
     <div class="rating-modal" id="ratingModal" style="display:none;">
         <div class="rating-content">
             <h3>قيم تجربتك مع {{ menu.customer.store_ar_name }}</h3>
-            <p>كيف كانت تجربتك مع متجرنا؟</p>
+            <p>كيف كانت تجربتك معنا؟</p>
             
-            <div class="rating-stars">
+            <div class="modal-rating-stars">
                 <i class="fas fa-star" data-rating="1"></i>
                 <i class="fas fa-star" data-rating="2"></i>
                 <i class="fas fa-star" data-rating="3"></i>
@@ -1746,7 +1746,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (hasReview) {
         const openRatingModal = document.getElementById('openRatingModal');
         const ratingModal = document.getElementById('ratingModal');
-        const stars = document.querySelectorAll('.rating-stars i');
+        const stars = document.querySelectorAll('.modal-rating-stars i');
         const selectedRating = document.getElementById('selectedRating');
         const submitRating = document.getElementById('submitRating');
         

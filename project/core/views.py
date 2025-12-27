@@ -542,9 +542,9 @@ def apply_coupon(request):
     if request.method == 'POST' and request.user.is_authenticated:
         try:
             data = json.loads(request.body)
-            coupon_code = data.get('coupon_code')
+            coupon_code = data.get('coupon_code', '').strip()
             plan_id = data.get('plan_id')
-            
+            coupon_code = ' '.join(coupon_code.split())
             plan = Plan.objects.get(id=plan_id)
             customer = Customer.objects.get(user=request.user)
             

@@ -1072,7 +1072,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const addressField = document.getElementById('addressField');
         const receivingMethodRadios = document.querySelectorAll('input[name="receiving_method"]');
 
-        // معالجة اختيار الألوان والمقاسات
         document.querySelectorAll('.color-btn, .size-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const container = this.closest('.option-buttons');
@@ -1081,11 +1080,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 this.classList.add('selected');
                 
-                // تخزين القيمة المحددة في الحقل المخفي
                 const hiddenField = this.closest('.option-group').querySelector('input[type="hidden"]');
                 hiddenField.value = this.getAttribute('data-value');
                 
-                // تفعيل زر إضافة إلى السلة إذا تم اختيار جميع الخيارات المطلوبة
                 const menuItem = this.closest('.menu-item');
                 checkAddToCartButton(menuItem);
             });
@@ -1095,14 +1092,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const addButton = menuItem.querySelector('.add-to-cart');
             let isDisabled = false;
             
-            // التحقق من الألوان إذا كانت مطلوبة
             const colorGroup = menuItem.querySelector('.colors-container');
             if (colorGroup) {
                 const selectedColor = menuItem.querySelector('.selected-color').value;
                 if (!selectedColor) isDisabled = true;
             }
             
-            // التحقق من المقاسات إذا كانت مطلوبة
             const sizeGroup = menuItem.querySelector('.sizes-container');
             if (sizeGroup) {
                 const selectedSize = menuItem.querySelector('.selected-size').value;
@@ -1112,7 +1107,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addButton.disabled = isDisabled;
         }
 
-        // إظهار/إخفاء حقل العنوان حسب طريقة الاستلام
         if (receivingMethodRadios) {
             receivingMethodRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -1170,7 +1164,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // الحصول على اللون والمقاس المحددين
             let itemColor = null;
             let itemSize = null;
             

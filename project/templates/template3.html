@@ -1268,11 +1268,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // كود تبديل الوضع الداكن
     const themeToggle = document.querySelector('.theme-toggle');
     const themeIcon = document.getElementById('themeIcon');
     
-    // تحقق من التفضيل المحفوظ
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     
@@ -1281,7 +1279,6 @@ document.addEventListener('DOMContentLoaded', function() {
         themeIcon.classList.add('fa-sun');
     }
     
-    // حدث النقر على زر التبديل
     themeToggle.addEventListener('click', function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -1298,7 +1295,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // كود تصفية المنتجات حسب التصنيف
     const categoryItems = document.querySelectorAll('.category-item');
     const menuItems = document.querySelectorAll('.menu-item');
     
@@ -1306,11 +1302,9 @@ document.addEventListener('DOMContentLoaded', function() {
         item.addEventListener('click', function() {
             const categoryId = this.getAttribute('data-category');
             
-            // تحديث التصنيف النشط
             categoryItems.forEach(cat => cat.classList.remove('active'));
             this.classList.add('active');
             
-            // تصفية المنتجات
             menuItems.forEach(product => {
                 if (categoryId === 'all' || product.getAttribute('data-category') === categoryId) {
                     product.style.display = 'flex';
@@ -1322,7 +1316,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     {% if subscription.plan.ordering %}
-    // كود السلة ونموذج الطلب
     let cart = [];
     let deliveryFee = 0;
 
@@ -1343,7 +1336,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const addressField = document.getElementById('addressField');
     const receivingMethodRadios = document.querySelectorAll('input[name="receiving_method"]');
 
-    // معالجة اختيار الألوان والمقاسات
     document.querySelectorAll('.color-btn, .size-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const container = this.closest('.option-buttons');
@@ -1352,11 +1344,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             this.classList.add('selected');
             
-            // تخزين القيمة المحددة في الحقل المخفي
             const hiddenField = this.closest('.option-group').querySelector('input[type="hidden"]');
             hiddenField.value = this.getAttribute('data-value');
             
-            // تفعيل زر إضافة إلى السلة إذا تم اختيار جميع الخيارات المطلوبة
             const menuItem = this.closest('.menu-item');
             checkAddToCartButton(menuItem);
         });
@@ -1366,14 +1356,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const addButton = menuItem.querySelector('.add-to-cart');
         let isDisabled = false;
         
-        // التحقق من الألوان إذا كانت مطلوبة
         const colorGroup = menuItem.querySelector('.colors-container');
         if (colorGroup) {
             const selectedColor = menuItem.querySelector('.selected-color').value;
             if (!selectedColor) isDisabled = true;
         }
         
-        // التحقق من المقاسات إذا كانت مطلوبة
         const sizeGroup = menuItem.querySelector('.sizes-container');
         if (sizeGroup) {
             const selectedSize = menuItem.querySelector('.selected-size').value;
@@ -1383,7 +1371,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addButton.disabled = isDisabled;
     }
 
-    // إظهار/إخفاء حقل العنوان حسب طريقة الاستلام
     if (receivingMethodRadios) {
         receivingMethodRadios.forEach(radio => {
             radio.addEventListener('change', function() {
@@ -1441,7 +1428,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // الحصول على اللون والمقاس المحددين
         let itemColor = null;
         let itemSize = null;
         
@@ -1712,7 +1698,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // تعطيل المنتجات التي كمية المخزون فيها صفر
     document.querySelectorAll('.menu-item').forEach(item => {
         const availableQuantity = parseInt(item.getAttribute('data-available-quantity')) || 9999;
         if (availableQuantity <= 0) {
@@ -1726,7 +1711,6 @@ document.addEventListener('DOMContentLoaded', function() {
     {% endif %}
 
     {% if subscription.plan.review %}
-    // كود التقييم
     const openRatingModal = document.getElementById('openRatingModal');
     const ratingModal = document.getElementById('ratingModal');
     const stars = document.querySelectorAll('.rating-stars i');
