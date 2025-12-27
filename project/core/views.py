@@ -544,7 +544,6 @@ def apply_coupon(request):
             data = json.loads(request.body)
             coupon_code = data.get('coupon_code', '').strip()
             plan_id = data.get('plan_id')
-            coupon_code = ' '.join(coupon_code.split())
             plan = Plan.objects.get(id=plan_id)
             customer = Customer.objects.get(user=request.user)
             
