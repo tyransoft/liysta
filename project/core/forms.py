@@ -35,7 +35,7 @@ class CPDiscountForm(forms.ModelForm):
     )
     percentage = forms.FloatField(
         widget=forms.NumberInput(attrs={'step': '0.01', 'min': '0', 'max': '1'}),
-        label="نسبة الخصم (مثلاً: 0.25 = 25%)"
+        label="نسبة الخصم (مثال: %25 اكتبها 0.25  )"
     )
     start_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),
