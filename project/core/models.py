@@ -330,10 +330,11 @@ class Plan(models.Model):
             if coupon:
              discount_amount = discounted_price * (coupon.percentage)
              discounted_price -= discount_amount
+             return discounted_price
             else:
                 return discounted_price
-        else:       
-          return discounted_price
+              
+        return discounted_price
     @property
     def is_forever(self):
        return self.duration == "forever"

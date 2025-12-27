@@ -50,6 +50,8 @@
             <input type="text" id="coupon-code" class="coupon-input" placeholder="أدخل كود الخصم">
             <button type="button" class="coupon-btn" onclick="applyCoupon()">تطبيق</button>
         </div>
+        <input type="hidden" name="coupon_code" id="coupon-input-hidden" value="">
+
         <div id="coupon-message" style="margin-top: 0.5rem;"></div>
     </div>
     
@@ -88,7 +90,7 @@
 </div>
 
 <script>
-function applyCoupon() {
+    function applyCoupon() {
     const couponCode = document.getElementById('coupon-code').value;
     const planId = {{ plan.id }};
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -107,14 +109,33 @@ function applyCoupon() {
     .then(response => response.json())
     .then(data => {
         const messageEl = document.getElementById('coupon-message');
+        
         if (data.valid) {
             document.getElementById('final-price').textContent = data.final_price + ' د.ل';
             document.getElementById('required-amount').textContent = data.final_price + ' د.ل';
-            document.getElementById('coupon-input').value = couponCode;
+            
+            const couponInput = document.getElementById('coupon-input');
+            const couponHidden = document.getElementById('coupon-input-hidden');
+            
+            if (couponInput) couponInput.value = couponCode;
+            if (couponHidden) couponHidden.value = couponCode;
+            
             messageEl.innerHTML = `<span class="success-msg">${data.message}</span>`;
+            
+            const walletBalance = {{ customer.wallet }};
+            if (walletBalance >= data.final_price) {
+               
+                location.reload(); 
+            }
+            
         } else {
             messageEl.innerHTML = `<span class="error-msg">${data.message}</span>`;
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('coupon-message').innerHTML = 
+            `<span class="error-msg">حدث خطأ في الاتصال</span>`;
     });
 }
 document.getElementById("payment-form").addEventListener("submit",function() {
