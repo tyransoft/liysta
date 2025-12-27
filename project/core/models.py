@@ -325,7 +325,7 @@ class Plan(models.Model):
         base_price = float(self.price)
         
         if coupon_code:
-            coupon_code = coupon_code.strip().upper()
+            coupon_code = coupon_code.strip()
             today = timezone.now().date()
             
             coupon = Coupon.objects.filter(
