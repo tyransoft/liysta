@@ -477,8 +477,6 @@
 </head>
 <body>
   
-  <!-- علامة نسخة المحل -->
-  <div class="store-copy-badge">نسخة المحل</div>
   
   <!-- حاوية الفاتورة -->
   <div class="receipt">
@@ -511,14 +509,8 @@
         <span class="info-label">نوع الطلب:</span>
         <span class="info-value">{{ bill.order_type|default:"توصيل" }}</span>
       </div>
-      <div class="info-row">
-        <span class="info-label">رقم الطاولة:</span>
-        <span class="info-value">{{ bill.table_number|default:"--" }}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">النادل:</span>
-        <span class="info-value">{{ bill.waiter|default:"أحمد" }}</span>
-      </div>
+     
+      
     </div>
     
     <!-- معلومات العميل -->
@@ -539,10 +531,7 @@
           <span class="customer-data">{{ bill.delivery_address.name|default:"حي الربيع، شارع الخليج، مبنى 12، شقة 5" }}</span>
         </div>
         {% endif %}
-        <div class="customer-item">
-          <span class="customer-label">وقت التسليم:</span>
-          <span class="customer-data">{{ bill.delivery_time|default:"30-45 دقيقة" }}</span>
-        </div>
+        
       </div>
     </div>
     
@@ -623,14 +612,7 @@
     
     <!-- تفاصيل الطلب -->
     <div class="order-details">
-      <div class="detail-item">
-        <span class="detail-label">طريقة الدفع:</span>
-        <span class="detail-value">{{ bill.payment_method|default:"نقداً" }}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">حالة الدفع:</span>
-        <span class="detail-value" style="color: #27ae60;">{{ bill.payment_status|default:"مدفوع" }}</span>
-      </div>
+
       <div class="detail-item">
         <span class="detail-label">طريقة التوصيل:</span>
         <span class="detail-value">{{ bill.delivery_method|default:"سائق خاص" }}</span>
@@ -653,42 +635,19 @@
         <span class="calc-label">المجموع الجزئي:</span>
         <span class="calc-value">188 <span class="currency">ر.س</span></span>
       </div>
-      <div class="calc-row">
-        <span class="calc-label">ضريبة القيمة المضافة (15%):</span>
-        <span class="calc-value">28.2 <span class="currency">ر.س</span></span>
-      </div>
+
       <div class="calc-row">
         <span class="calc-label">رسوم التوصيل:</span>
         <span class="calc-value">15 <span class="currency">ر.س</span></span>
       </div>
-      <div class="calc-row">
-        <span class="calc-label">خصم الولاء (5%):</span>
-        <span class="calc-value">-9.4 <span class="currency">ر.س</span></span>
-      </div>
+
       <div class="calc-row calc-total">
         <span class="calc-label">المجموع الكلي:</span>
         <span class="calc-value">221.8 <span class="currency">ر.س</span></span>
       </div>
     </div>
     
-    <!-- المعلومات الإضافية -->
-    <div class="extra-info">
-      <strong>معلومات إضافية:</strong><br>
-      • وقت إنشاء الفاتورة: {{ bill.created_at|time:"H:i:s"|default:"14:30:15" }}<br>
-      • تم إنشاء الفاتورة بواسطة: {{ bill.created_by|default:"النظام" }}<br>
-      • مرجع المعاملة: TXN-{{ bill.ordernumber|default:"157" }}-{{ bill.created_at|date:"Ymd"|default:"20240315" }}
-    </div>
-    
-    <!-- التوقيعات -->
-    <div class="signatures">
-      <div class="signature-box">
-        <div class="signature-line"></div>
-        <div class="signature-label">توقيع النادل</div>
-      </div>
-      <div class="signature-box">
-        <div class="signature-line"></div>
-        <div class="signature-label">توقيع العميل</div>
-      </div>
+>
     </div>
     
   </div>

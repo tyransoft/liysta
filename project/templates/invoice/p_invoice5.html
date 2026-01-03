@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فاتورة</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
+
+:root{
+  --black:#000;
+  --gray:#444;
+  --light:#f5f5f5;
+  --border:#ddd;
+}
+
+body{
+  font-family:'Tajawal',sans-serif;
+  width:80mm;
+  margin:0 auto;
+  padding:4mm 3mm;
+  background:#fff;
+  color:var(--black);
+  line-height:1.4;
+  font-size:10px;
+}
+
+.header{
+  text-align:center;
+  border-bottom:2px solid var(--black);
+  padding-bottom:10px;
+  margin-bottom:12px;
+}
+
+.store-name{
+  font-size:18px;
+  font-weight:700;
+}
+
+.store-tagline{
+  font-size:10px;
+  color:var(--gray);
+}
+
+.invoice-title{
+  font-size:14px;
+  font-weight:700;
+  margin-top:6px;
+}
+
+.invoice-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  background:var(--light);
+  padding:8px;
+  margin-bottom:10px;
+}
+
+.info-label{
+  font-weight:500;
+  color:var(--gray);
+}
+
+.info-value{
+  font-weight:700;
+  direction:ltr;
+  text-align:left;
+}
+
+.section{
+  border:1px solid var(--border);
+  padding:8px;
+  margin-bottom:10px;
+}
+
+.section-title{
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:6px;
+  border-bottom:1px dashed var(--border);
+  padding-bottom:4px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:4px;
+}
+
+.products-title{
+  text-align:center;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10px;
+}
+
+th,td{
+  border-bottom:1px solid var(--border);
+  padding:4px;
+  text-align:center;
+}
+
+th{
+  font-weight:700;
+}
+
+.product-name{
+  text-align:right;
+}
+
+.price{
+  direction:ltr;
+}
+
+.summary{
+  border:1px solid var(--border);
+  padding:10px;
+  margin-top:10px;
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  padding:4px 0;
+}
+
+.summary-row.final{
+  border-top:2px solid var(--black);
+  font-size:14px;
+  font-weight:700;
+  margin-top:6px;
+}
+
+.footer{
+  text-align:center;
+  margin-top:12px;
+  border-top:1px solid var(--border);
+  padding-top:8px;
+}
+
+.footer small{
+  font-size:9px;
+  color:var(--gray);
+}
+
+.controls{
+  margin-top:12px;
+  display:flex;
+  gap:6px;
+}
+
+button{
+  flex:1;
+  padding:8px;
+  font-family:'Tajawal',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:#fff;
+}
+
+.print{
+  background:#000;
+  color:#fff;
+}
+
+@media print{
+  .controls{display:none}
+  body{padding:0}
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="store-name">الأصالة</div>
+  <div class="store-tagline">متجر الأزياء</div>
+  <div class="invoice-title">فاتورة مبيعات</div>
+</div>
+
+<div class="invoice-info">
+  <div><span class="info-label">رقم الفاتورة:</span></div>
+  <div class="info-value">INV-2024-0875</div>
+
+  <div><span class="info-label">التاريخ:</span></div>
+  <div class="info-value">2024/03/15</div>
+</div>
+
+<div class="section">
+  <div class="section-title">بيانات العميل</div>
+  <div class="row"><span>الاسم</span><span>سارة أحمد</span></div>
+  <div class="row"><span>الهاتف</span><span>0551234567</span></div>
+  <div class="row"><span>العنوان</span><span>الرياض</span></div>
+</div>
+
+<div class="products-title">المنتجات</div>
+
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>المنتج</th>
+  <th>السعر</th>
+  <th>الكمية</th>
+  <th>الإجمالي</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td class="product-name">عباءة فاخرة</td>
+  <td class="price">1250</td>
+  <td>1</td>
+  <td class="price">1250</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td class="product-name">شال كشميري</td>
+  <td class="price">850</td>
+  <td>2</td>
+  <td class="price">1700</td>
+</tr>
+</tbody>
+</table>
+
+<div class="summary">
+  <div class="summary-row">
+    <span>المجموع</span><span class="price">2950</span>
+  </div>
+  <div class="summary-row">
+    <span>التوصيل</span><span class="price">50</span>
+  </div>
+  <div class="summary-row final">
+    <span>الإجمالي</span><span class="price">3000</span>
+  </div>
+</div>
+
+<div class="footer">
+  <div>شكراً لثقتكم</div>
+  <small>www.liysta.ly</small>
+</div>
+
+<div class="controls">
+  <button class="print" onclick="window.print()">طباعة</button>
+  <button onclick="history.back()">رجوع</button>
+</div>
+
+<script>
+if(location.search.includes('autoprint')){
+  window.onload=()=>window.print();
+}
+</script>
+
+</body>
+</html>
