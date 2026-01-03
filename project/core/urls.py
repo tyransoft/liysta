@@ -68,7 +68,11 @@ urlpatterns = [
     path('customer-dashboard/', customer_dashboard, name='customer_dashboard'),
     path('customer-dashboard/check-new-orders/',check_new_orders,name='check-new-orders'),
     path('preview-template/', preview_template, name='preview_template'),
+    path('preview-invoice/', preview_invoice, name='preview_invoice'),
+    
+
     path('customer-dashboard/print-invoice/<int:order_id>', print_invoice, name='invoice'),
+
     path('confirm-delivered/<int:order_id>', confirm_delivered, name='recive'),
     path('customer-dashboard/cancel-order/<int:order_id>', delete_order, name='order_delete'),
     path('orders/<int:menu_id>', manege_order, name='manege_order'),

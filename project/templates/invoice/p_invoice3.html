@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إيصال توصيل - {{ bill.id }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* إعدادات أساسية لورق A4 */
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #34495e;
+      --accent-color: #3498db;
+      --border-color: #bdc3c7;
+      --header-bg: #ecf0f1;
+      --row-alt-bg: #f8f9fa;
+      --text-dark: #2c3e50;
+      --text-light: #7f8c8d;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #fff;
+      color: var(--text-dark);
+      line-height: 1.5;
+      font-size: 13px;
+      padding: 20px;
+    }
+    
+    /* حاوية الفاتورة الرئيسية */
+    .invoice-container {
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    /* العنوان الرئيسي */
+    .invoice-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid var(--accent-color);
+      position: relative;
+    }
+    
+    .invoice-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .invoice-subtitle {
+      font-size: 18px;
+      color: var(--secondary-color);
+      font-weight: 500;
+    }
+    
+    /* قسم معلومات العميل */
+    .customer-section {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title::before {
+      content: "👤";
+      font-size: 16px;
+    }
+    
+    /* جدول معلومات العميل */
+    .customer-info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: var(--header-bg);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .customer-info-table tr {
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .customer-info-table tr:last-child {
+      border-bottom: none;
+    }
+    
+    .customer-info-table td {
+      padding: 12px 15px;
+      vertical-align: top;
+      border-left: 1px solid var(--border-color);
+    }
+    
+    .customer-info-table td:first-child {
+      border-left: none;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: var(--primary-color);
+      min-width: 140px;
+      text-align: right;
+    }
+    
+    .info-value {
+      color: var(--text-dark);
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    /* قسم تفاصيل الطلب */
+    .order-section {
+      margin-bottom: 30px;
+    }
+    
+    .order-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .order-table thead {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .order-table th {
+      padding: 15px 12px;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+      font-size: 14px;
+    }
+    
+    .order-table th:first-child {
+      border-top-right-radius: 8px;
+    }
+    
+    .order-table th:last-child {
+      border-top-left-radius: 8px;
+    }
+    
+    .order-table tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.2s;
+    }
+    
+    .order-table tbody tr:nth-child(even) {
+      background-color: var(--row-alt-bg);
+    }
+    
+    .order-table tbody tr:hover {
+      background-color: #e8f4fc;
+    }
+    
+    .order-table td {
+      padding: 12px;
+      text-align: center;
+      vertical-align: middle;
+      border: none;
+    }
+    
+    .product-name {
+      text-align: right;
+      font-weight: 500;
+    }
+    
+    .col-no { width: 5%; }
+    .col-name { width: 35%; }
+    .col-qty { width: 15%; }
+    .col-price { width: 20%; }
+    .col-amount { width: 25%; }
+    
+    .price-cell {
+      font-family: 'Tajawal', sans-serif;
+      direction: ltr;
+      font-weight: 600;
+    }
+    
+    /* قسم التوقيع والحسابات */
+    .summary-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 40px;
+      padding-top: 25px;
+      border-top: 2px solid var(--border-color);
+    }
+    
+    /* جانب التوقيع */
+    .signature-side {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .signature-box {
+      background: var(--header-bg);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .signature-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    
+    .signature-line {
+      height: 1px;
+      background: var(--text-dark);
+      margin: 30px 0 10px;
+    }
+    
+    .signature-name {
+      text-align: center;
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 13px;
+    }
+    
+    /* جانب الحسابات */
+    .calculations-side {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      padding: 25px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .calculation-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border-color);
+    }
+    
+    .calculation-row:last-child {
+      border-bottom: none;
+      border-top: 2px solid var(--primary-color);
+      margin-top: 10px;
+      padding-top: 15px;
+    }
+    
+    .calc-label {
+      font-size: 14px;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+    
+    .calc-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-color);
+      direction: ltr;
+    }
+    
+    .total-row .calc-label {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    .total-row .calc-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary-color);
+    }
+    
+    /* التذييل */
+    .invoice-footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      color: var(--text-light);
+      font-size: 12px;
+    }
+    
+    .company-name {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    
+    /* أزرار التحكم */
+    .controls {
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--header-bg);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 180px;
+      justify-content: center;
+    }
+    
+    .btn-print {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .btn-print:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+    }
+    
+    .btn-back {
+      background: white;
+      color: var(--primary-color);
+      border: 2px solid var(--border-color);
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: var(--accent-color);
+    }
+    
+    /* إعدادات الطباعة */
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+      
+      .invoice-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 15mm;
+        min-height: 0;
+      }
+      
+      .controls {
+        display: none !important;
+      }
+      
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+      
+      /* تحسين الطباعة */
+      .order-table th,
+      .order-table td {
+        padding: 10px 8px !important;
+      }
+      
+      .invoice-title {
+        font-size: 28px !important;
+      }
+    }
+    
+    /* تنسيقات خاصة */
+    .highlight {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+    
+    .currency {
+      font-family: 'Tajawal', sans-serif;
+      margin: 0 2px;
+    }
+    
+    /* شريط الحالة */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #2ecc71;
+      color: white;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    
+    /* معلومات إضافية */
+    .additional-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-light);
+      border-right: 4px solid var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- حاوية الفاتورة الرئيسية -->
+  <div class="invoice-container">
+    
+    <!-- العنوان الرئيسي -->
+    <div class="invoice-header">
+      <h1 class="invoice-title">إيصال توصيل</h1>
+      <div class="invoice-subtitle">وثيقة تسليم المنتجات للعميل</div>
+    </div>
+    
+    <!-- قسم معلومات العميل -->
+    <div class="customer-section">
+      <h2 class="section-title">معلومات العميل</h2>
+      
+      <table class="customer-info-table">
+        <tr>
+          <td class="info-label">الاسم:</td>
+          <td class="info-value">أحمد محمد عبدالله</td>
+          <td class="info-label">رقم الإيصال:</td>
+          <td class="info-value highlight">DLV-2024-0157</td>
+        </tr>
+        <tr>
+          <td class="info-label">البريد الإلكتروني:</td>
+          <td class="info-value">ahmed.mohammed@email.com</td>
+          <td class="info-label">تاريخ التوصيل:</td>
+          <td class="info-value">15 مارس 2024</td>
+        </tr>
+        <tr>
+          <td class="info-label">رقم الهاتف:</td>
+          <td class="info-value">+966 55 123 4567</td>
+          <td class="info-label">عنوان التوصيل:</td>
+          <td class="info-value">حي النخيل، شارع الملك فهد، مبنى ٥٦، شقة ٣٠١، الرياض ١٢٣٤٥</td>
+        </tr>
+        <tr>
+          <td class="info-label">العنوان الرئيسي:</td>
+          <td class="info-value" colspan="3">حي المروج، شارع الأمير محمد بن عبدالعزيز، الرياض ١١٣٤٢</td>
+        </tr>
+      </table>
+      
+      <div class="additional-info">
+        <span class="status-badge">✅ تم التوصيل</span>
+        <strong>معلومات إضافية:</strong> تم التوصيل في الوقت المحدد، استلم العميل الطلب شخصياً، حالة الطلب: مكتمل
+      </div>
+    </div>
+    
+    <!-- قسم تفاصيل الطلب -->
+    <div class="order-section">
+      <h2 class="section-title">تفاصيل الطلب</h2>
+      
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th class="col-no">#</th>
+            <th class="col-name">اسم المنتج</th>
+            <th class="col-qty">الكمية</th>
+            <th class="col-price">سعر الوحدة</th>
+            <th class="col-amount">المبلغ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="product-name">هاتف ذكي سامسونج جالاكسي S24 Ultra</td>
+            <td>2</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 4,999</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 9,998</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="product-name">لابتوب ديل اكس بي اس 15 بوصة</td>
+            <td>1</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 6,500</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 6,500</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="product-name">سماعات أبل ايربودز برو</td>
+            <td>3</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 1,099</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 3,297</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="product-name">ساعة أبل واتش سيريس 9</td>
+            <td>2</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 1,899</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 3,798</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td class="product-name">تابلت سامسونج جالاكسي تاب S9</td>
+            <td>1</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 3,750</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 3,750</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td class="product-name">كاميرا كانون EOS R6 مارك II</td>
+            <td>1</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 12,500</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 12,500</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td class="product-name">طابعة ليزر اتش بي بالألوان</td>
+            <td>1</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 1,250</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 1,250</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td class="product-name">شاحن لاسلكي سريع متعدد المنافذ</td>
+            <td>4</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 299</td>
+            <td class="price-cell"><span class="currency">ر.س</span> 1,196</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- قسم التوقيع والحسابات -->
+    <div class="summary-section">
+      <!-- جانب التوقيع -->
+      <div class="signature-side">
+        <div class="signature-box">
+          <div class="signature-label">استلم بواسطة:</div>
+          <div class="signature-line"></div>
+          <div class="signature-name">أحمد محمد عبدالله</div>
+        </div>
+        
+        <div class="signature-box">
+          <div class="signature-label">توقيع المستلم:</div>
+          <div class="signature-line"></div>
+          <div class="signature-name">________________</div>
+        </div>
+        
+        <div class="additional-info">
+          <strong>ملاحظات التوصيل:</strong><br>
+          • جميع المنتجات تم فحصها قبل التسليم<br>
+          • تم تسليم الوثائق والضمانات مع المنتجات<br>
+          • العميل راضٍ عن حالة المنتجات<br>
+          • وقت التسليم الفعلي: 14:45
+        </div>
+      </div>
+      
+      <!-- جانب الحسابات -->
+      <div class="calculations-side">
+        <div class="calculation-row">
+          <span class="calc-label">المجموع الجزئي:</span>
+          <span class="calc-value"><span class="currency">ر.س</span> 42,289</span>
+        </div>
+        <div class="calculation-row">
+          <span class="calc-label">ضريبة القيمة المضافة (15%):</span>
+          <span class="calc-value"><span class="currency">ر.س</span> 6,343.35</span>
+        </div>
+        <div class="calculation-row">
+          <span class="calc-label">رسوم التوصيل:</span>
+          <span class="calc-value"><span class="currency">ر.س</span> 75</span>
+        </div>
+        <div class="calculation-row">
+          <span class="calc-label">خصم الولاء (10%):</span>
+          <span class="calc-value"><span class="currency">ر.س</span> -4,228.90</span>
+        </div>
+        <div class="calculation-row total-row">
+          <span class="calc-label">المبلغ الإجمالي:</span>
+          <span class="calc-value"><span class="currency">ر.س</span> 44,478.45</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- التذييل -->
+    <div class="invoice-footer">
+      <div class="company-name">© 2024 نظام المبيعات الإلكترونية المتكامل</div>
+      <div>جميع الحقوق محفوظة لشركة أنظمة وتقنيات المبيعات المتقدمة</div>
+      <div style="margin-top: 5px; font-size: 11px;">
+        هاتف: 9200 12345 | البريد: info@estore.com | الموقع: www.estore.com
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- أزرار التحكم -->
+  <div class="controls">
+    <button class="btn btn-print" onclick="window.print()">
+      <span>🖨️</span> طباعة إيصال التوصيل
+    </button>
+    <a href="{% url 'customer_dashboard' %}" class="btn btn-back">
+      <span>←</span> العودة للوحة التحكم
+    </a>
+  </div>
+
+  <script>
+    // تحسينات تفاعلية
+    document.addEventListener('DOMContentLoaded', function() {
+      // إضافة تأثيرات للصفوف
+      const tableRows = document.querySelectorAll('.order-table tbody tr');
+      tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateX(-5px)';
+          this.style.boxShadow = '5px 5px 15px rgba(0,0,0,0.1)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateX(0)';
+          this.style.boxShadow = 'none';
+        });
+      });
+      
+      // تحسين تجربة الطباعة
+      const printBtn = document.querySelector('.btn-print');
+      if (printBtn) {
+        printBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const originalText = this.innerHTML;
+          this.innerHTML = '<span>⏳</span> جاري إعداد الطباعة...';
+          this.disabled = true;
+          
+          // إضافة رمز استجابة سريعة قبل الطباعة
+          addQRCode();
+          
+          setTimeout(() => {
+            window.print();
+            
+            setTimeout(() => {
+              this.innerHTML = originalText;
+              this.disabled = false;
+            }, 1500);
+          }, 800);
+        });
+      }
+      
+      // إضافة رمز استجابة سريعة
+      function addQRCode() {
+        const qrContainer = document.createElement('div');
+        qrContainer.className = 'qr-code';
+        qrContainer.style.cssText = `
+          position: absolute;
+          bottom: 20px;
+          left: 20px;
+          width: 80px;
+          height: 80px;
+          background: #f8f9fa;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          color: #666;
+          text-align: center;
+          padding: 5px;
+        `;
+        
+        // نص بديل لرمز الاستجابة السريعة
+        qrContainer.innerHTML = `
+          <div>
+            <div style="font-weight: bold; margin-bottom: 3px;">QR</div>
+            <div>رقم الإيصال</div>
+            <div style="font-family: monospace; letter-spacing: 1px;">DLV-2024-0157</div>
+          </div>
+        `;
+        
+        // إضافة فقط إذا لم تكن موجودة
+        if (!document.querySelector('.qr-code')) {
+          document.querySelector('.invoice-container').appendChild(qrContainer);
+        }
+      }
+      
+      // الطباعة التلقائية إذا كان في رابط
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('print')) {
+        setTimeout(() => {
+          window.print();
+        }, 1000);
+      }
+    });
+    
+    // دالة لتنسيق الأرقام
+    function formatCurrency(amount) {
+      return amount.toLocaleString('ar-SA', {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+  </script>
+</body>
+</html>

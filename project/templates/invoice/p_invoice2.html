@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فاتورة محفظة - {{ bill.id }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* إعدادات أساسية للطباعة 57مم */
+    :root {
+      --primary-color: #000;
+      --secondary-color: #333;
+      --accent-color: #666;
+      --border-color: #ccc;
+      --light-bg: #f8f8f8;
+      --highlight-bg: #f0f0f0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    body {
+      font-family: 'Tajawal', sans-serif;
+      width: 57mm;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 3mm 2mm;
+      background: #fff;
+      color: var(--primary-color);
+      font-size: 9px;
+      line-height: 1.25;
+    }
+    
+    /* حاوية الفاتورة */
+    .receipt {
+      width: 100%;
+      position: relative;
+    }
+    
+    /* رأس الفاتورة */
+    .header {
+      text-align: center;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      border-bottom: 2px solid var(--primary-color);
+      position: relative;
+    }
+    
+    .store-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary-color);
+    }
+    
+    .company-info {
+      font-size: 8px;
+      color: var(--secondary-color);
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+    
+    .website {
+      font-size: 8px;
+      color: var(--secondary-color);
+      direction: ltr;
+      text-align: center;
+    }
+    
+    /* الخط الفاصل المميز */
+    .divider {
+      height: 1px;
+      background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent 2px,
+        var(--primary-color) 2px,
+        var(--primary-color) 4px
+      );
+      margin: 5px 0;
+    }
+    
+    /* معلومات الفاتورة */
+    .invoice-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      margin: 8px 0;
+      padding: 6px;
+      background: var(--light-bg);
+      border-radius: 3px;
+      border-right: 3px solid var(--accent-color);
+    }
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .info-label {
+      font-size: 8px;
+      color: var(--secondary-color);
+      font-weight: 500;
+      min-width: 45px;
+    }
+    
+    .info-value {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: left;
+      direction: ltr;
+    }
+    
+    /* معلومات العميل */
+    .customer-section {
+      background: var(--highlight-bg);
+      padding: 6px;
+      margin: 8px 0;
+      border-radius: 3px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .section-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 4px;
+      padding-bottom: 2px;
+      border-bottom: 1px dotted var(--border-color);
+    }
+    
+    .customer-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+    }
+    
+    .customer-item {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .customer-label {
+      font-size: 8px;
+      color: var(--secondary-color);
+    }
+    
+    .customer-data {
+      font-size: 8px;
+      font-weight: 500;
+      color: var(--primary-color);
+      text-align: left;
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* جدول المنتجات المفصل */
+    .products-section {
+      margin: 10px 0;
+    }
+    
+    .products-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .products-table thead {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .products-table th {
+      padding: 5px 3px;
+      font-weight: 600;
+      text-align: center;
+      border: 1px solid var(--primary-color);
+    }
+    
+    .products-table th:first-child {
+      border-top-right-radius: 2px;
+    }
+    
+    .products-table th:last-child {
+      border-top-left-radius: 2px;
+    }
+    
+    .products-table td {
+      padding: 4px 3px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+    
+    .product-name {
+      text-align: right;
+      font-weight: 500;
+      max-width: 35mm;
+      word-break: break-word;
+    }
+    
+    .product-details {
+      font-size: 7px;
+      color: var(--secondary-color);
+      margin-top: 1px;
+      line-height: 1.1;
+    }
+    
+    .col-no { width: 8%; }
+    .col-name { width: 45%; }
+    .col-price { width: 12%; }
+    .col-qty { width: 10%; }
+    .col-total { width: 15%; }
+    
+    .price-cell {
+      font-family: 'Tajawal', sans-serif;
+      direction: ltr;
+      font-weight: 500;
+    }
+    
+    /* تفاصيل الطلب */
+    .order-details {
+      background: var(--light-bg);
+      padding: 6px;
+      margin: 8px 0;
+      border-radius: 3px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      border-top: 2px solid var(--accent-color);
+    }
+    
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .detail-label {
+      font-size: 8px;
+      color: var(--secondary-color);
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: left;
+      direction: ltr;
+    }
+    
+    /* قسم الحسابات */
+    .calculation-section {
+      margin: 10px 0;
+      padding: 8px;
+      background: linear-gradient(to bottom, #fefefe, #f5f5f5);
+      border-radius: 3px;
+      border: 1px solid var(--border-color);
+      position: relative;
+    }
+    
+    .calculation-section::before {
+      content: "الحسابات";
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      background: white;
+      padding: 0 5px;
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+    
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      padding-bottom: 3px;
+      border-bottom: 1px dotted var(--border-color);
+    }
+    
+    .calc-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .calc-label {
+      font-size: 9px;
+      color: var(--secondary-color);
+    }
+    
+    .calc-value {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--primary-color);
+      direction: ltr;
+    }
+    
+    .calc-total {
+      border-top: 2px solid var(--primary-color);
+      padding-top: 5px;
+      margin-top: 5px;
+    }
+    
+    .calc-total .calc-label {
+      font-size: 10px;
+      font-weight: 700;
+    }
+    
+    .calc-total .calc-value {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    /* المعلومات الإضافية */
+    .extra-info {
+      margin: 10px 0;
+      padding: 6px;
+      background: var(--light-bg);
+      border-radius: 3px;
+      font-size: 8px;
+      color: var(--secondary-color);
+      line-height: 1.3;
+      border-right: 2px solid var(--accent-color);
+    }
+    
+    /* التوقيعات والملاحظات */
+    .signatures {
+      margin-top: 15px;
+      padding-top: 8px;
+      border-top: 2px dashed var(--border-color);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    .signature-box {
+      text-align: center;
+    }
+    
+    .signature-line {
+      height: 1px;
+      background: var(--primary-color);
+      margin: 15px 0 5px;
+    }
+    
+    .signature-label {
+      font-size: 8px;
+      color: var(--secondary-color);
+      margin-top: 2px;
+    }
+    
+    /* أزرار التحكم */
+    .controls {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .btn {
+      padding: 9px;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      text-decoration: none;
+    }
+    
+    .btn-print {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-print:hover {
+      background: #222;
+      transform: translateY(-1px);
+    }
+    
+    .btn-back {
+      background: var(--light-bg);
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn-back:hover {
+      background: #eee;
+    }
+    
+    /* إعدادات الطباعة */
+    @media print {
+      body {
+        padding: 1mm;
+        width: 57mm !important;
+        font-size: 8px !important;
+      }
+      
+      .controls {
+        display: none !important;
+      }
+      
+      @page {
+        size: 57mm auto;
+        margin: 0;
+      }
+      
+      /* تحسين دقة الجداول عند الطباعة */
+      .products-table th,
+      .products-table td {
+        padding: 3px 2px !important;
+      }
+      
+      /* جعل الخلفيات تظهر عند الطباعة */
+      .products-table thead,
+      .customer-section,
+      .calculation-section {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+    
+    /* تخصيصات للشاشة */
+    @media screen {
+      body {
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        margin: 20px auto;
+        min-height: auto;
+      }
+      
+      .receipt {
+        padding-bottom: 20px;
+      }
+    }
+    
+    /* علامة نسخة المحل */
+    .store-copy-badge {
+      position: absolute;
+      top: -8px;
+      left: 10px;
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 7px;
+      font-weight: 600;
+      transform: rotate(-90deg);
+      transform-origin: left top;
+    }
+    
+    /* عملة */
+    .currency {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 8px;
+      margin: 0 1px;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- علامة نسخة المحل -->
+  <div class="store-copy-badge">نسخة المحل</div>
+  
+  <!-- حاوية الفاتورة -->
+  <div class="receipt">
+    
+    <!-- رأس الفاتورة -->
+    <div class="header">
+      <div class="store-name">{{ bill.menu.customer.store_ar_name|default:"مطعم النخبة" }}</div>
+      <div class="company-info">{{ bill.menu.customer.company_name|default:"شركة المطاعم المتطورة" }}</div>
+      <div class="company-info">{{ bill.menu.customer.address|default:"حي الصحافة، شارع العروبة، الرياض 12345" }}</div>
+      <div class="website">{{ bill.menu.customer.website|default:"www.elite-restaurant.com" }}</div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- معلومات الفاتورة -->
+    <div class="invoice-info">
+      <div class="info-row">
+        <span class="info-label">رقم الفاتورة:</span>
+        <span class="info-value">#{{ bill.ordernumber|default:"2024-00157" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">التاريخ:</span>
+        <span class="info-value">{{ bill.created_at|date:"Y/m/d"|default:"2024/03/15" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">الوقت:</span>
+        <span class="info-value">{{ bill.created_at|time:"H:i"|default:"14:30" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">نوع الطلب:</span>
+        <span class="info-value">{{ bill.order_type|default:"توصيل" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">رقم الطاولة:</span>
+        <span class="info-value">{{ bill.table_number|default:"--" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">النادل:</span>
+        <span class="info-value">{{ bill.waiter|default:"أحمد" }}</span>
+      </div>
+    </div>
+    
+    <!-- معلومات العميل -->
+    <div class="customer-section">
+      <div class="section-title">بيانات العميل</div>
+      <div class="customer-details">
+        <div class="customer-item">
+          <span class="customer-label">الاسم:</span>
+          <span class="customer-data">{{ bill.customer_name|default:"محمد عبدالله أحمد" }}</span>
+        </div>
+        <div class="customer-item">
+          <span class="customer-label">الهاتف:</span>
+          <span class="customer-data">{{ bill.customer_phone|default:"0551234567" }}</span>
+        </div>
+        {% if bill.delivery_address %}
+        <div class="customer-item" style="grid-column: 1 / -1;">
+          <span class="customer-label">عنوان التوصيل:</span>
+          <span class="customer-data">{{ bill.delivery_address.name|default:"حي الربيع، شارع الخليج، مبنى 12، شقة 5" }}</span>
+        </div>
+        {% endif %}
+        <div class="customer-item">
+          <span class="customer-label">وقت التسليم:</span>
+          <span class="customer-data">{{ bill.delivery_time|default:"30-45 دقيقة" }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- جدول المنتجات -->
+    <div class="products-section">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th class="col-no">#</th>
+            <th class="col-name">المنتج</th>
+            <th class="col-price">السعر</th>
+            <th class="col-qty">الكمية</th>
+            <th class="col-total">الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in items %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="product-name">
+              {{ i.product.name|default:"شاورما لحم دجاج" }}
+              <div class="product-details">
+                {% if i.size %}مقاس: {{ i.size }} | {% endif %}
+                {% if i.color %}لون: {{ i.color }} | {% endif %}
+                {% if i.notes %}ملاحظات: {{ i.notes|truncatechars:15 }}{% endif %}
+              </div>
+            </td>
+            <td class="price-cell">{{ i.product.price|default:"35" }} <span class="currency">ر.س</span></td>
+            <td>{{ i.quantity|default:"2" }}</td>
+            <td class="price-cell">{{ i.get_final_price|default:"70" }} <span class="currency">ر.س</span></td>
+          </tr>
+          {% endfor %}
+          
+          <!-- بيانات وهمية للمعاينة -->
+          <tr>
+            <td>1</td>
+            <td class="product-name">
+              شاورما لحم مكسيكية
+              <div class="product-details">مقاس: كبير | إضافات: صوص حار</div>
+            </td>
+            <td class="price-cell">45 <span class="currency">ر.س</span></td>
+            <td>1</td>
+            <td class="price-cell">45 <span class="currency">ر.س</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="product-name">
+              برجر لحم بالجبنة
+              <div class="product-details">مقاس: عائلي | بدون بصل</div>
+            </td>
+            <td class="price-cell">32 <span class="currency">ر.س</span></td>
+            <td>2</td>
+            <td class="price-cell">64 <span class="currency">ر.س</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="product-name">
+              بيتزا خضار كبيرة
+              <div class="product-details">حجم: كبير | إضافات: جبن إضافي</div>
+            </td>
+            <td class="price-cell">55 <span class="currency">ر.س</span></td>
+            <td>1</td>
+            <td class="price-cell">55 <span class="currency">ر.س</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="product-name">
+              مشروب طاقة
+              <div class="product-details">نوع: ريد بول</div>
+            </td>
+            <td class="price-cell">8 <span class="currency">ر.س</span></td>
+            <td>3</td>
+            <td class="price-cell">24 <span class="currency">ر.س</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- تفاصيل الطلب -->
+    <div class="order-details">
+      <div class="detail-item">
+        <span class="detail-label">طريقة الدفع:</span>
+        <span class="detail-value">{{ bill.payment_method|default:"نقداً" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">حالة الدفع:</span>
+        <span class="detail-value" style="color: #27ae60;">{{ bill.payment_status|default:"مدفوع" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">طريقة التوصيل:</span>
+        <span class="detail-value">{{ bill.delivery_method|default:"سائق خاص" }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">رقم الطلب:</span>
+        <span class="detail-value">ORD-{{ bill.ordernumber|default:"157" }}</span>
+      </div>
+      {% if bill.notes %}
+      <div class="detail-item" style="grid-column: 1 / -1;">
+        <span class="detail-label">ملاحظات:</span>
+        <span class="detail-value">{{ bill.notes|default:"التوصيل قبل الساعة 3 عصراً" }}</span>
+      </div>
+      {% endif %}
+    </div>
+    
+    <!-- قسم الحسابات -->
+    <div class="calculation-section">
+      <div class="calc-row">
+        <span class="calc-label">المجموع الجزئي:</span>
+        <span class="calc-value">188 <span class="currency">ر.س</span></span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">ضريبة القيمة المضافة (15%):</span>
+        <span class="calc-value">28.2 <span class="currency">ر.س</span></span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">رسوم التوصيل:</span>
+        <span class="calc-value">15 <span class="currency">ر.س</span></span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">خصم الولاء (5%):</span>
+        <span class="calc-value">-9.4 <span class="currency">ر.س</span></span>
+      </div>
+      <div class="calc-row calc-total">
+        <span class="calc-label">المجموع الكلي:</span>
+        <span class="calc-value">221.8 <span class="currency">ر.س</span></span>
+      </div>
+    </div>
+    
+    <!-- المعلومات الإضافية -->
+    <div class="extra-info">
+      <strong>معلومات إضافية:</strong><br>
+      • وقت إنشاء الفاتورة: {{ bill.created_at|time:"H:i:s"|default:"14:30:15" }}<br>
+      • تم إنشاء الفاتورة بواسطة: {{ bill.created_by|default:"النظام" }}<br>
+      • مرجع المعاملة: TXN-{{ bill.ordernumber|default:"157" }}-{{ bill.created_at|date:"Ymd"|default:"20240315" }}
+    </div>
+    
+    <!-- التوقيعات -->
+    <div class="signatures">
+      <div class="signature-box">
+        <div class="signature-line"></div>
+        <div class="signature-label">توقيع النادل</div>
+      </div>
+      <div class="signature-box">
+        <div class="signature-line"></div>
+        <div class="signature-label">توقيع العميل</div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- أزرار التحكم -->
+  <div class="controls">
+    <button class="btn btn-print" onclick="printReceipt()">
+      🖨️ طباعة نسخة المحل
+    </button>
+    <a href="{% url 'customer_dashboard' %}" class="btn btn-back">
+      ← العودة للوحة التحكم
+    </a>
+  </div>
+
+  <script>
+    // دالة الطباعة المخصصة لنسخة المحل
+    function printReceipt() {
+      const printBtn = document.querySelector('.btn-print');
+      const originalText = printBtn.innerHTML;
+      
+      // تغيير حالة الزر
+      printBtn.innerHTML = '⏳ جاري التحضير للطباعة...';
+      printBtn.disabled = true;
+      printBtn.style.opacity = '0.7';
+      
+      // إضافة باركود قبل الطباعة (اختياري)
+      addBarcodeIfNeeded();
+      
+      // تأخير ثم الطباعة
+      setTimeout(() => {
+        window.print();
+        
+        // استعادة حالة الزر بعد الطباعة
+        setTimeout(() => {
+          printBtn.innerHTML = originalText;
+          printBtn.disabled = false;
+          printBtn.style.opacity = '1';
+        }, 1000);
+      }, 500);
+    }
+    
+    // إضافة باركود للفاتورة
+    function addBarcodeIfNeeded() {
+      if (!document.querySelector('.barcode')) {
+        const barcodeContainer = document.createElement('div');
+        barcodeContainer.className = 'barcode';
+        barcodeContainer.style.cssText = `
+          text-align: center;
+          margin: 10px 0;
+          padding: 5px;
+          background: white;
+          font-family: monospace;
+          letter-spacing: 2px;
+          font-size: 10px;
+          border-top: 1px solid #ddd;
+          border-bottom: 1px solid #ddd;
+        `;
+        
+        // باركود نصي بسيط
+        const barcodeText = `*${bill.ordernumber || '2024-00157'}*`;
+        barcodeContainer.textContent = barcodeText;
+        
+        // إضافة قبل التوقيعات
+        const signatures = document.querySelector('.signatures');
+        if (signatures) {
+          signatures.parentNode.insertBefore(barcodeContainer, signatures);
+        }
+      }
+    }
+    
+    // الطباعة التلقائية إذا كان في رابط
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('print')) {
+        setTimeout(() => {
+          printReceipt();
+        }, 800);
+      }
+      
+      // إضافة تأثيرات تفاعلية
+      const rows = document.querySelectorAll('.products-table tbody tr');
+      rows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.backgroundColor = '#f9f9f9';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+          this.style.backgroundColor = '';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

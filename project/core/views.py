@@ -1033,6 +1033,14 @@ def preview_template(request):
     
     return render(request, f'p_{template_name}.html')
 
+
+def preview_invoice(request):
+    invoice_name = request.GET.get('invoice', 'ivoice1')
+    
+    return render(request, f'invoice/p_{invoice_name}.html')
+
+
+
 @login_required
 def choose_template(request, menu_id):
     if request.method == 'POST':

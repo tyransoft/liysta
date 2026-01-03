@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فاتورة فاخرة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&family=El+Messiri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* إعادة تعيين وإعدادات أساسية */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    :root {
+      --primary-color: #1a1a1a;
+      --accent-color: #d4af37;
+      --light-bg: #f8f8f8;
+      --border-color: #e0e0e0;
+      --text-dark: #222;
+      --text-light: #666;
+    }
+    
+    body {
+      font-family: 'Tajawal', 'El Messiri', sans-serif;
+      width: 80mm;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 4mm 3mm;
+      background: #ffffff;
+      color: var(--text-dark);
+      line-height: 1.35;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* تصميم الخلفية الدقيقة */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-color), transparent);
+      z-index: 1;
+    }
+    
+    /* الحاوية الرئيسية */
+    .invoice-container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* رأس الفاتورة الفاخر */
+    .header {
+      text-align: center;
+      padding-bottom: 12px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--accent-color);
+      position: relative;
+    }
+    
+    .header::after {
+      content: "•••";
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--accent-color);
+      font-size: 14px;
+      letter-spacing: 5px;
+      background: white;
+      padding: 0 10px;
+    }
+    
+    .store-name {
+      font-family: 'El Messiri', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    .store-tagline {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 400;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    
+    .invoice-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-top: 8px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .invoice-title::before,
+    .invoice-title::after {
+      content: "✧";
+      color: var(--accent-color);
+      margin: 0 8px;
+      font-size: 14px;
+    }
+    
+    /* معلومات الفاتورة */
+    .invoice-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+      padding: 12px;
+      background: var(--light-bg);
+      border-radius: 4px;
+      border-right: 3px solid var(--accent-color);
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      font-size: 10px;
+      color: var(--text-light);
+      min-width: 55px;
+    }
+    
+    .info-value {
+      font-weight: 500;
+      font-size: 10px;
+      color: var(--primary-color);
+      text-align: left;
+      direction: ltr;
+    }
+    
+    /* قسم العميل */
+    .customer-section {
+      background: linear-gradient(135deg, #fefefe 0%, #f9f9f9 100%);
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .section-title::before {
+      content: "👤";
+      font-size: 10px;
+    }
+    
+    .customer-details {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .customer-row {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .customer-label {
+      font-weight: 600;
+      font-size: 10px;
+      color: var(--text-light);
+    }
+    
+    .customer-data {
+      font-weight: 500;
+      font-size: 10px;
+      color: var(--primary-color);
+      text-align: left;
+    }
+    
+    /* جدول المنتجات الفاخر */
+    .products-section {
+      margin: 15px 0;
+    }
+    
+    .products-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .products-title::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: 25%;
+      right: 25%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    }
+    
+    .products-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 9px;
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+    
+    .products-table thead {
+      background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+      color: white;
+    }
+    
+    .products-table th {
+      padding: 8px 4px;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+    }
+    
+    .products-table th:first-child {
+      border-top-right-radius: 3px;
+    }
+    
+    .products-table th:last-child {
+      border-top-left-radius: 3px;
+    }
+    
+    .products-table tbody tr {
+      transition: background-color 0.2s;
+    }
+    
+    .products-table tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    
+    .products-table tbody tr:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .products-table td {
+      padding: 7px 4px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+    
+    .products-table .product-name {
+      text-align: right;
+      padding-right: 6px;
+      font-weight: 500;
+    }
+    
+    .products-table .price {
+      font-family: 'Tajawal', sans-serif;
+      direction: ltr;
+    }
+    
+    /* قسم الدفع والتوصيل */
+    .payment-section {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 15px 0;
+      padding: 12px;
+      background: var(--light-bg);
+      border-radius: 4px;
+      border-top: 1px solid var(--accent-color);
+    }
+    
+    .payment-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    
+    .payment-label {
+      font-size: 9px;
+      color: var(--text-light);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .payment-label.delivery::before { content: "🚚"; }
+    .payment-label.payment::before { content: "💳"; }
+    .payment-label.notes::before { content: "📝"; }
+    .payment-label.status::before { content: "✅"; }
+    
+    .payment-value {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    /* قسم المجموع الفاخر */
+    .totals-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #f0f0f0 100%);
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .totals-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-color);
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border-color);
+    }
+    
+    .total-row:last-child {
+      border-bottom: none;
+      border-top: 2px solid var(--primary-color);
+      padding-top: 10px;
+      margin-top: 5px;
+    }
+    
+    .total-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    
+    .total-value {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary-color);
+      font-family: 'Tajawal', sans-serif;
+      direction: ltr;
+    }
+    
+    .total-final .total-label {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    
+    .total-final .total-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    /* التذييل */
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-color);
+      position: relative;
+    }
+    
+    .footer::before {
+      content: "✧ ✧ ✧";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--accent-color);
+      font-size: 12px;
+      background: white;
+      padding: 0 10px;
+    }
+    
+    .thank-you {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 6px;
+      font-family: 'El Messiri', sans-serif;
+    }
+    
+    .footer-text {
+      font-size: 9px;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+    
+    .footer-contact {
+      margin-top: 8px;
+      padding: 6px;
+      background: var(--light-bg);
+      border-radius: 3px;
+      font-size: 9px;
+      color: var(--text-dark);
+    }
+    
+    /* أزرار التحكم */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 15px;
+      background: #fafafa;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .btn-print {
+      background: linear-gradient(135deg, var(--primary-color), #333);
+      color: white;
+    }
+    
+    .btn-print:hover {
+      background: linear-gradient(135deg, #333, #444);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+    
+    .btn-back {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn-back:hover {
+      background: #f5f5f5;
+      border-color: #ccc;
+    }
+    
+    /* تأثيرات الطباعة */
+    @media print {
+      body {
+        padding: 0;
+        width: 80mm !important;
+        max-width: 80mm !important;
+      }
+      
+      .controls,
+      .btn {
+        display: none !important;
+      }
+      
+      .invoice-container {
+        padding: 2mm;
+      }
+      
+      /* تحسين دقة الطباعة */
+      .products-table th {
+        padding: 6px 3px;
+      }
+      
+      .products-table td {
+        padding: 5px 3px;
+      }
+    }
+    
+    /* تأثيرات خاصة */
+    .highlight {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+    
+    .currency {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 9px;
+      margin-right: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    
+    <!-- رأس الفاتورة -->
+    <div class="header">
+      <div class="store-name">الأصــالــة</div>
+      <div class="store-tagline">متجر الأزياء الفاخرة</div>
+      <div class="invoice-title">فاتورة مبيعات</div>
+    </div>
+    
+    <!-- معلومات الفاتورة -->
+    <div class="invoice-info">
+      <div class="info-item">
+        <span class="info-label">رقم الفاتورة:</span>
+        <span class="info-value highlight">#INV-2024-0875</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">التاريخ:</span>
+        <span class="info-value">2024/03/15</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">الوقت:</span>
+        <span class="info-value">14:45</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">نوع الطلب:</span>
+        <span class="info-value">أونلاين</span>
+      </div>
+    </div>
+    
+    <!-- معلومات العميل -->
+    <div class="customer-section">
+      <div class="section-title">معلومات العميل</div>
+      <div class="customer-details">
+        <div class="customer-row">
+          <span class="customer-label">الاسم:</span>
+          <span class="customer-data">سارة أحمد المحمد</span>
+        </div>
+        <div class="customer-row">
+          <span class="customer-label">الهاتف:</span>
+          <span class="customer-data">+966 55 123 4567</span>
+        </div>
+        <div class="customer-row">
+          <span class="customer-label">البريد:</span>
+          <span class="customer-data">sara@example.com</span>
+        </div>
+        <div class="customer-row">
+          <span class="customer-label">العنوان:</span>
+          <span class="customer-data">حي الروضة، الرياض 12345</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- جدول المنتجات -->
+    <div class="products-section">
+      <div class="products-title">المنتجات المطلوبة</div>
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th width="8%">#</th>
+            <th>اسم المنتج</th>
+            <th width="15%">السعر</th>
+            <th width="12%">الكمية</th>
+            <th width="18%">الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="product-name">عباءة مطرزة بالذهب 24 قيراط</td>
+            <td class="price"><span class="currency">ر.س</span> 1,250</td>
+            <td>1</td>
+            <td class="price"><span class="currency">ر.س</span> 1,250</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="product-name">ثوب حرير إيطالي مزين بالكريستال</td>
+            <td class="price"><span class="currency">ر.س</span> 3,450</td>
+            <td>1</td>
+            <td class="price"><span class="currency">ر.س</span> 3,450</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="product-name">شال كشميري فاخر - لون كريمي</td>
+            <td class="price"><span class="currency">ر.س</span> 850</td>
+            <td>2</td>
+            <td class="price"><span class="currency">ر.س</span> 1,700</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="product-name">حقيبة يد جلدية مصممة</td>
+            <td class="price"><span class="currency">ر.س</span> 1,100</td>
+            <td>1</td>
+            <td class="price"><span class="currency">ر.س</span> 1,100</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td class="product-name">طقم مجوهرات فضي 925</td>
+            <td class="price"><span class="currency">ر.س</span> 2,300</td>
+            <td>1</td>
+            <td class="price"><span class="currency">ر.س</span> 2,300</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- قسم الدفع والتوصيل -->
+    <div class="payment-section">
+      <div class="payment-item">
+        <div class="payment-label delivery">طريقة التوصيل</div>
+        <div class="payment-value">توصيل سريع (24 ساعة)</div>
+      </div>
+      <div class="payment-item">
+        <div class="payment-label payment">طريقة الدفع</div>
+        <div class="payment-value">بطاقة ائتمان (Visa)</div>
+      </div>
+      <div class="payment-item">
+        <div class="payment-label status">حالة الطلب</div>
+        <div class="payment-value highlight">مكتمل</div>
+      </div>
+      <div class="payment-item">
+        <div class="payment-label notes">ملاحظات</div>
+        <div class="payment-value">التوصيل قبل الساعة 2 ظهراً</div>
+      </div>
+    </div>
+    
+    <!-- المجموع الكلي -->
+    <div class="totals-section">
+      <div class="total-row">
+        <span class="total-label">المجموع الجزئي:</span>
+        <span class="total-value"><span class="currency">ر.س</span> 9,800</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">خصم الولاء (10%):</span>
+        <span class="total-value"><span class="currency">ر.س</span> 980</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">ضريبة القيمة المضافة (15%):</span>
+        <span class="total-value"><span class="currency">ر.س</span> 1,470</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">رسوم التوصيل:</span>
+        <span class="total-value"><span class="currency">ر.س</span> 50</span>
+      </div>
+      <div class="total-row total-final">
+        <span class="total-label">المجموع الكلي:</span>
+        <span class="total-value"><span class="currency">ر.س</span> 10,340</span>
+      </div>
+    </div>
+    
+    <!-- التذييل -->
+    <div class="footer">
+      <div class="thank-you">شكراً لثقتكم الغالية</div>
+      <div class="footer-text">نعتز باختياركم لمنتجاتنا الفاخرة ونتمنى لكم تجربة تسوق مميزة</div>
+      <div class="footer-contact">
+        للاستفسار: 920012345 • البريد: info@al-asala.com
+        <br>
+        الموقع: www.al-asala-store.com
+      </div>
+    </div>
+    
+    <!-- أزرار التحكم -->
+    <div class="controls">
+      <button class="btn btn-print" onclick="window.print()">
+        <span>🖨️</span> طباعة الفاتورة
+      </button>
+      <button class="btn btn-back" onclick="window.history.back()">
+        <span>←</span> العودة
+      </button>
+    </div>
+    
+  </div>
+
+  <script>
+    // تحسينات تفاعلية
+    document.addEventListener('DOMContentLoaded', function() {
+      // إضافة تأثير عند الطباعة
+      const printBtn = document.querySelector('.btn-print');
+      if (printBtn) {
+        printBtn.addEventListener('click', function() {
+          this.innerHTML = '<span>⏳</span> جاري الطباعة...';
+          this.style.background = 'linear-gradient(135deg, #666, #888)';
+          
+          setTimeout(() => {
+            window.print();
+            setTimeout(() => {
+              this.innerHTML = '<span>🖨️</span> طباعة الفاتورة';
+              this.style.background = 'linear-gradient(135deg, #1a1a1a, #333)';
+            }, 1000);
+          }, 500);
+        });
+      }
+      
+      // إضافة تأثيرات بصرية
+      const rows = document.querySelectorAll('.products-table tbody tr');
+      rows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateX(-2px)';
+          this.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.05)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateX(0)';
+          this.style.boxShadow = 'none';
+        });
+      });
+      
+      // طباعة تلقائية إذا كان في رابط
+      if (window.location.search.includes('autoprint')) {
+        setTimeout(() => {
+          window.print();
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+</html>

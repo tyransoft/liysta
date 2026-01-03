@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فاتورة خدمات - {{ invoice.id }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* إعدادات أساسية لورق A4 عمودي */
+    :root {
+      --primary-color: #1a1a1a;
+      --secondary-color: #333333;
+      --accent-color: #666666;
+      --border-color: #cccccc;
+      --light-bg: #f5f5f5;
+      --highlight-color: #2c5282;
+      --text-dark: #222222;
+      --text-light: #666666;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #ffffff;
+      color: var(--text-dark);
+      line-height: 1.5;
+      font-size: 14px;
+      padding: 20px;
+    }
+    
+    /* حاوية الفاتورة الرئيسية */
+    .invoice-container {
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 25mm;
+      background: #ffffff;
+      box-shadow: 0 0 25px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    
+    /* شعار الشركة */
+    .logo-section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary-color);
+      position: relative;
+    }
+    
+    .logo-placeholder {
+      width: 120px;
+      height: 120px;
+      background: var(--light-bg);
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      color: var(--text-light);
+      font-family: 'Almarai', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .logo-text {
+      font-family: 'Almarai', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-color);
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-top: 10px;
+    }
+    
+    /* معلومات الشركة والعملاء */
+    .company-client-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 30px;
+      padding: 25px;
+      background: var(--light-bg);
+      border-radius: 8px;
+      border-right: 5px solid var(--highlight-color);
+    }
+    
+    .info-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .info-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+      padding-bottom: 3px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .info-label::before {
+      content: "📍";
+      font-size: 14px;
+    }
+    
+    .info-value {
+      font-size: 14px;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    
+    .info-value.address {
+      line-height: 1.8;
+    }
+    
+    /* معلومات الفاتورة */
+    .invoice-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 25px 0;
+      padding: 20px;
+      background: linear-gradient(to right, #f8f9fa, #ffffff);
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .invoice-number {
+      font-family: 'Almarai', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--highlight-color);
+      text-transform: uppercase;
+    }
+    
+    .date-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .date-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .date-label {
+      font-size: 13px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    
+    .date-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    /* الخط الفاصل */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+      margin: 30px 0;
+      position: relative;
+    }
+    
+    .divider::before {
+      content: "•••";
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 0 15px;
+      color: var(--primary-color);
+      font-size: 14px;
+      letter-spacing: 5px;
+    }
+    
+    /* قسم العناصر والخدمات */
+    .items-section {
+      margin: 30px 0;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 35%;
+      right: 35%;
+      height: 3px;
+      background: var(--highlight-color);
+    }
+    
+    /* قائمة الخدمات */
+    .services-list {
+      margin-bottom: 25px;
+      padding-left: 20px;
+    }
+    
+    .service-item {
+      font-size: 15px;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      padding-right: 10px;
+      position: relative;
+      line-height: 1.6;
+    }
+    
+    .service-item::before {
+      content: "▸";
+      color: var(--highlight-color);
+      font-size: 16px;
+      position: absolute;
+      right: -20px;
+      top: 2px;
+    }
+    
+    /* جدول الأسعار */
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .pricing-table thead {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .pricing-table th {
+      padding: 18px 15px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+    
+    .pricing-table tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.2s;
+    }
+    
+    .pricing-table tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    
+    .pricing-table tbody tr:hover {
+      background-color: #f0f7ff;
+    }
+    
+    .pricing-table td {
+      padding: 16px 15px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+    
+    .service-name {
+      text-align: right;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    
+    .quantity, .unit-price, .subtotal {
+      font-family: 'Tajawal', sans-serif;
+      direction: ltr;
+      font-weight: 500;
+    }
+    
+    .col-service { width: 55%; }
+    .col-quantity { width: 15%; }
+    .col-unit { width: 15%; }
+    .col-subtotal { width: 15%; }
+    
+    /* قسم المجموع الكلي */
+    .total-section {
+      margin-top: 30px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .total-box {
+      width: 300px;
+      padding: 25px;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 8px;
+      border: 2px solid var(--highlight-color);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border-color);
+    }
+    
+    .total-row:last-child {
+      border-bottom: none;
+      border-top: 2px solid var(--primary-color);
+      margin-top: 10px;
+      padding-top: 15px;
+    }
+    
+    .total-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .total-value {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-color);
+      direction: ltr;
+    }
+    
+    .total-amount .total-label {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    
+    .total-amount .total-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--highlight-color);
+    }
+    
+    /* قسم الدفع */
+    .payment-section {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px dashed var(--border-color);
+      text-align: center;
+    }
+    
+    .payment-info {
+      font-size: 13px;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    /* التذييل */
+    .invoice-footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      color: var(--text-light);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    
+    .footer-note {
+      font-size: 11px;
+      margin-top: 10px;
+      padding: 8px;
+      background: var(--light-bg);
+      border-radius: 4px;
+      display: inline-block;
+    }
+    
+    /* أزرار التحكم */
+    .controls {
+      margin-top: 40px;
+      padding: 25px;
+      background: var(--light-bg);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .btn {
+      padding: 14px 35px;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 200px;
+      justify-content: center;
+    }
+    
+    .btn-print {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-print:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    
+    .btn-back {
+      background: white;
+      color: var(--primary-color);
+      border: 2px solid var(--border-color);
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: var(--highlight-color);
+    }
+    
+    /* إعدادات الطباعة */
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+      
+      .invoice-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 20mm;
+        min-height: 0;
+      }
+      
+      .controls {
+        display: none !important;
+      }
+      
+      @page {
+        size: A4 portrait;
+        margin: 20mm;
+      }
+      
+      /* تحسين الطباعة */
+      .pricing-table th,
+      .pricing-table td {
+        padding: 12px 10px !important;
+      }
+      
+      .logo-text {
+        font-size: 22px !important;
+      }
+      
+      /* إخفاء العناصر غير ضرورية للطباعة */
+      .btn {
+        display: none !important;
+      }
+    }
+    
+    /* عناصر خاصة */
+    .currency {
+      font-family: 'Tajawal', sans-serif;
+      margin: 0 2px;
+    }
+    
+    .highlight {
+      color: var(--highlight-color);
+      font-weight: 700;
+    }
+    
+    /* رمز الدفع */
+    .payment-icon {
+      font-size: 16px;
+      margin-left: 5px;
+    }
+    
+    /* معلومات إضافية */
+    .notes-section {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border-right: 4px solid var(--highlight-color);
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    
+    /* رصيد مسبق */
+    .balance-due {
+      display: inline-block;
+      padding: 8px 20px;
+      background: #e74c3c;
+      color: white;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- حاوية الفاتورة الرئيسية -->
+  <div class="invoice-container">
+    
+    <!-- شعار الشركة -->
+    <div class="logo-section">
+      <div class="logo-placeholder">شعارك هنا</div>
+      <div class="logo-text">متجرك الإلكتروني</div>
+    </div>
+    
+    <!-- معلومات الشركة والعملاء -->
+    <div class="company-client-info">
+      <!-- معلومات الشركة -->
+      <div class="info-section">
+        <div class="info-label">من:</div>
+        <div class="info-value address">
+          <strong>شركة التقنيات المتقدمة</strong><br>
+          حي العليا، شارع الملك فهد<br>
+          الرياض 12345، المملكة العربية السعودية<br>
+          هاتف: +966 11 123 4567<br>
+          البريد: info@techstore.com
+        </div>
+      </div>
+      
+      <!-- معلومات العميل -->
+      <div class="info-section">
+        <div class="info-label">إلى:</div>
+        <div class="info-value address">
+          <strong>أحمد عبدالرحمن السديري</strong><br>
+          شركة النخبة للتجارة<br>
+          حي المروج، شارع الأمير محمد<br>
+          الرياض 67890، المملكة العربية السعودية<br>
+          هاتف: +966 55 987 6543<br>
+          البريد: a.alsudairi@elite.com
+        </div>
+      </div>
+    </div>
+    
+    <!-- معلومات الفاتورة -->
+    <div class="invoice-details">
+      <div class="invoice-number">فاتورة رقم #INV-2024-0089</div>
+      
+      <div class="date-section">
+        <div class="date-item">
+          <span class="date-label">تاريخ الإصدار:</span>
+          <span class="date-value">15 مارس 2024</span>
+        </div>
+        <div class="date-item">
+          <span class="date-label">تاريخ الاستحقاق:</span>
+          <span class="date-value highlight">15 أبريل 2024</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- الخط الفاصل -->
+    <div class="divider"></div>
+    
+    <!-- قسم العناصر والخدمات -->
+    <div class="items-section">
+      <h2 class="section-title">الخدمات المقدمة</h2>
+      
+      <!-- قائمة الخدمات -->
+      <div class="services-list">
+        <div class="service-item">تصميم واجهة متجر إلكتروني متكامل (15 صفحة)</div>
+        <div class="service-item">تطوير نظام إدارة المنتجات والمخزون</div>
+        <div class="service-item">تكامل بوابات الدفع الإلكتروني</div>
+        <div class="service-item">تصميم شعار وهوية بصرية للمتجر</div>
+        <div class="service-item">برمجة لوحة تحكم إدارية متقدمة</div>
+        <div class="service-item">تكامل خدمات الشحن والتوصيل</div>
+        <div class="service-item">ضمان وصيانة لمدة 6 أشهر</div>
+      </div>
+      
+      <!-- جدول الأسعار -->
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th class="col-service">الخدمة</th>
+            <th class="col-quantity">الكمية</th>
+            <th class="col-unit">سعر الوحدة</th>
+            <th class="col-subtotal">المجموع</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="service-name">تصميم واجهة المستخدم (UI/UX)</td>
+            <td class="quantity">50 ساعة</td>
+            <td class="unit-price"><span class="currency">ر.س</span> 200</td>
+            <td class="subtotal"><span class="currency">ر.س</span> 10,000</td>
+          </tr>
+          <tr>
+            <td class="service-name">برمجة الواجهة الأمامية (Frontend)</td>
+            <td class="quantity">80 ساعة</td>
+            <td class="unit-price"><span class="currency">ر.س</span> 150</td>
+            <td class="subtotal"><span class="currency">ر.س</span> 12,000</td>
+          </tr>
+          <tr>
+            <td class="service-name">برمجة الواجهة الخلفية (Backend)</td>
+            <td class="quantity">120 ساعة</td>
+            <td class="unit-price"><span class="currency">ر.س</span> 180</td>
+            <td class="subtotal"><span class="currency">ر.س</span> 21,600</td>
+          </tr>
+          <tr>
+            <td class="service-name">تصميم الهوية البصرية والشعار</td>
+            <td class="quantity">1 مشروع</td>
+            <td class="unit-price"><span class="currency">ر.س</span> 3,500</td>
+            <td class="subtotal"><span class="currency">ر.س</span> 3,500</td>
+          </tr>
+          <tr>
+            <td class="service-name">تكامل بوابات الدفع</td>
+            <td class="quantity">30 ساعة</td>
+            <td class="unit-price"><span class="currency">ر.س</span> 250</td>
+            <td class="subtotal"><span class="currency">ر.س</span> 7,500</td>
+          </tr>
+          <tr>
+            <td class="service-name">خدمات الاستضافة والإطلاق</td>
+            <td class="quantity">1 حزمة</td>
+            <td class="unit-price"><span class="currency">ر.س</span> 5,000</td>
+            <td class="subtotal"><span class="currency">ر.س</span> 5,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- قسم المجموع الكلي -->
+    <div class="total-section">
+      <div class="total-box">
+        <div class="total-row">
+          <span class="total-label">المجموع الجزئي:</span>
+          <span class="total-value"><span class="currency">ر.س</span> 59,600</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">ضريبة القيمة المضافة (15%):</span>
+          <span class="total-value"><span class="currency">ر.س</span> 8,940</span>
+        </div>
+        <div class="total-row total-amount">
+          <span class="total-label">المبلغ الإجمالي:</span>
+          <span class="total-value"><span class="currency">ر.س</span> 68,540</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- معلومات إضافية -->
+    <div class="notes-section">
+      <strong>ملاحظات:</strong>
+      • الدفعة الأولى (50%) مستحقة عند توقيع العقد<br>
+      • الدفعة الثانية (30%) مستحقة عند إتمام التصميم<br>
+      • الدفعة الأخيرة (20%) مستحقة عند التسليم النهائي<br>
+      • المشروع مقدر له 3 أشهر للانتهاء<br>
+      • يشمل السعر 6 أشهر صيانة ودعم فني
+    </div>
+    
+    <!-- قسم الدفع -->
+    <div class="payment-section">
+      <div class="balance-due">المبلغ المستحق: <span class="currency">ر.س</span> 68,540</div>
+      <div class="payment-info">
+        <span class="payment-icon">💳</span>
+        المعاملات الإلكترونية تتم عبر بوابة الدفع الإلكتروني
+      </div>
+    </div>
+    
+    <!-- التذييل -->
+    <div class="invoice-footer">
+      <div>© 2024 شركة التقنيات المتقدمة لخدمات التجارة الإلكترونية</div>
+      <div>جميع الحقوق محفوظة - هذا المستند سري ولا يجوز تداوله</div>
+      <div class="footer-note">
+        رقم السجل التجاري: 1010567890 | الرقم الضريبي: 310123456789123
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- أزرار التحكم -->
+  <div class="controls">
+    <button class="btn btn-print" onclick="window.print()">
+      <span>🖨️</span> طباعة الفاتورة
+    </button>
+    <a href="{% url 'customer_dashboard' %}" class="btn btn-back">
+      <span>←</span> العودة للوحة التحكم
+    </a>
+  </div>
+
+  <script>
+    // تحسينات تفاعلية
+    document.addEventListener('DOMContentLoaded', function() {
+      // إضافة تأثيرات للصفوف
+      const tableRows = document.querySelectorAll('.pricing-table tbody tr');
+      tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.01)';
+          this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = 'none';
+        });
+      });
+      
+      // تنسيق الأرقام
+      function formatNumbers() {
+        const numbers = document.querySelectorAll('.unit-price, .subtotal, .total-value');
+        numbers.forEach(el => {
+          const text = el.textContent;
+          const number = parseFloat(text.replace(/[^\d.]/g, ''));
+          if (!isNaN(number)) {
+            const formatted = number.toLocaleString('ar-SA');
+            el.innerHTML = el.innerHTML.replace(number.toFixed(2), formatted);
+          }
+        });
+      }
+      
+      // استدعاء تنسيق الأرقام
+      formatNumbers();
+      
+      // إضافة رمز الاستجابة السريعة للطباعة
+      const printBtn = document.querySelector('.btn-print');
+      if (printBtn) {
+        printBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const originalText = this.innerHTML;
+          this.innerHTML = '<span>⏳</span> جاري إعداد المستند للطباعة...';
+          this.disabled = true;
+          
+          // إضافة رمز الاستجابة السريعة
+          addQRCode();
+          
+          setTimeout(() => {
+            window.print();
+            
+            setTimeout(() => {
+              this.innerHTML = originalText;
+              this.disabled = false;
+            }, 1500);
+          }, 1000);
+        });
+      }
+      
+      // دالة إضافة رمز الاستجابة السريعة
+      function addQRCode() {
+        const qrContainer = document.createElement('div');
+        qrContainer.className = 'qr-code';
+        qrContainer.style.cssText = `
+          position: absolute;
+          bottom: 25px;
+          left: 25px;
+          width: 100px;
+          height: 100px;
+          background: white;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          padding: 10px;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+          z-index: 10;
+        `;
+        
+        qrContainer.innerHTML = `
+          <div style="font-size: 10px; font-weight: bold; color: #333; margin-bottom: 5px;">QR Code</div>
+          <div style="width: 70px; height: 70px; background: #f5f5f5; border: 1px solid #ccc; 
+               display: flex; align-items: center; justify-content: center; font-size: 8px; color: #666;">
+            <div style="text-align: center;">
+              <div style="font-weight: bold;">INV-2024-0089</div>
+              <div>ر.س 68,540</div>
+            </div>
+          </div>
+        `;
+        
+        // إضافة فقط إذا لم تكن موجودة
+        if (!document.querySelector('.qr-code')) {
+          document.querySelector('.invoice-container').appendChild(qrContainer);
+        }
+      }
+      
+      // الطباعة التلقائية إذا كان في رابط
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('print')) {
+        setTimeout(() => {
+          window.print();
+        }, 1200);
+      }
+      
+      // تحديث تاريخ الاستحقاق ديناميكيًا
+      const issueDate = new Date('2024-03-15');
+      const dueDate = new Date(issueDate);
+      dueDate.setMonth(dueDate.getMonth() + 1);
+      
+      const formattedDueDate = dueDate.toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      const dueDateElement = document.querySelector('.date-value.highlight');
+      if (dueDateElement) {
+        dueDateElement.textContent = formattedDueDate;
+      }
+    });
+  </script>
+</body>
+</html>
