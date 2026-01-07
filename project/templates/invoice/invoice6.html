@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>مطعم مشاوي -123 </title>
+<title>مطعم مشاوي -{{bill.ordernumber}} </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 @page {
@@ -251,8 +251,8 @@ body {
 <div class="receipt-container">
   <div class="receipt-content">
     <div class="header">
-      <div class="store-name">مطعم مشاوي</div>
-      <div class="store-info">0912345678</div>
+      <div class="store-name">{{bill.menu.customer.store_ar_name}}</div>
+      <div class="store-info">{{bill.menu.customer.phone}}</div>
     </div>
 
     <div class="divider"></div>
@@ -260,11 +260,11 @@ body {
     <div>
       <div class="info-row">
         <span>رقم الفاتورة:</span>
-        <span>00123</span>
+        <span>{{bill.ordernumber}}</span>
       </div>
       <div class="info-row">
         <span>التاريخ:</span>
-        <span>2026-01-03</span>
+        <span>{{ bill.created_at|date:"Y/m/d " }}</span>
       </div>
 
     </div>
@@ -276,24 +276,27 @@ body {
       <div class="customer-details">
         <div class="customer-item">
           <span>الاسم:</span>
-          <span>محمد أحمد</span>
+          <span>{{bill.customer_name}}</span>
         </div>
         <div class="customer-item">
           <span>الهاتف:</span>
-          <span>0912345678</span>
+          <span>{{bill.customer_phone}}</span>
         </div>
+        {% if bill.order_type %}
+
         <div class="customer-item">
           <span>نوع الطلب:</span>
-          <span class="order-type-box order-type-external">خارجي</span>
+          <span class="order-type-box order-type-external">{{bill.order_type}}</span>
         </div>
+        {% endif %}
       </div>
     </div>
-
+    {% if bill.notes %}
     <div class="notes-section">
       <div class="notes-title">ملاحظات:</div>
-      <div>عدم اضافة بصل </div>
+      <div>{{bill.notes}}</div>
     </div>
-
+    {% endif %}
     <div class="divider"></div>
 
     <table class="table">
@@ -305,42 +308,36 @@ body {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>بيتزا خضار</td>
-          <td class="col-qty">2</td>
-          <td class="col-price">18.000</td>
-        </tr>
-        <tr>
-          <td>عصير برتقال</td>
-          <td class="col-qty">1</td>
-          <td class="col-price">4.000</td>
-        </tr>
-        <tr>
-          <td>برجر لحم</td>
-          <td class="col-qty">1</td>
-          <td class="col-price">12.000</td>
-        </tr>
+      {% for i in items %}
+
+            <tr>
+                <td>{{ i.product.name }}{% if i.size %}{{ i.size }}المقاس:{% endif %}{% if i.color %}اللون:{{ i.color }}{% endif %}<div class="product-details"></div></td>
+
+                <td class="col-qty">{{ i.quantity }}</td>
+                <td class="col-price">{{ i.product.price }} </td>
+            </tr>
+      {% endfor %}
+      
       </tbody>
     </table>
 
     <div class="divider"></div>
 
     <div>
-      <div class="info-row">
-        <span>المجموع الفرعي</span>
-        <span class="col-price">34.000</span>
-      </div>
+    
+      {% if bill.delivery_address %}
       <div class="info-row">
         <span>التوصيل</span>
-        <span class="col-price">10.000</span>
+        <span class="col-price">{{bill.delivery_address.price}}</span>
       </div>
+      {% endif %}
     </div>
 
     <div class="divider"></div>
 
     <div class="info-row total-row">
       <span>الإجمالي</span>
-      <span class="col-price">35.000 د.ل</span>
+      <span class="col-price">{{bill.get_total}}</span>
     </div>
 
     <div class="footer">
@@ -354,9 +351,8 @@ body {
     <button class="btn btn-print" onclick="window.print()">
       🖨️ طباعة الفاتورة
     </button>
-    <button class="btn btn-back" onclick="goBack()">
-      ↩ العودة للخلف
-    </button>
+      <a href="{% url 'customer_dashboard' %}" class="back-btn">← العودة  </a>
+
   </div>
 </div>
 

@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتورة شراء - متجرك الإلكتروني</title>
+    <title>فاتورة  -  {{bill.ordernumber }}</title>
     <style>
         :root {
-            --invoice-color: rgb(17, 77, 134);
+            --invoice-color: {{bill.menu.second_color}};
             --invoice-secondary: #f8f9fa;
             --text-color: #333333;
             --text-on-color: #ffffff;
@@ -69,7 +69,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 1px solid rgba(17, 77, 134, 0.2);
+            border: 1px solid {{bill.menu.second_color}};
             box-shadow: 0 3px 6px rgba(0,0,0,0.08);
             background: white;
         }
@@ -197,7 +197,7 @@
         }
         
         .items-table th:not(:last-child) {
-            border-left: 1px solid rgba(17, 77, 134, 0.15);
+            border-left: 1px solid {{bill.menu.second_color}};
         }
         
         .items-table td {
@@ -208,15 +208,15 @@
         }
         
         .items-table tbody tr {
-            border-bottom: 1px solid rgba(17, 77, 134, 0.1);
+            border-bottom: 1px solid {{bill.menu.second_color}};
         }
         
         .items-table td:not(:last-child) {
-            border-left: 1px solid rgba(17, 77, 134, 0.08);
+            border-left: 1px solid {{bill.menu.second_color}};
         }
         
         .items-table tbody tr:hover {
-            background-color: rgba(17, 77, 134, 0.02);
+            background-color: {{bill.menu.second_color}};
         }
         
         .items-table td:first-child {
@@ -242,7 +242,7 @@
             justify-content: space-between;
             padding: 8px 0;
             font-size: 12px;
-            border-bottom: 1px dashed rgba(17, 77, 134, 0.15);
+            border-bottom: 1px dashed {{bill.menu.second_color}};
         }
         
         .total-row:last-child {
@@ -419,11 +419,11 @@
             
             .items-table th:not(:last-child),
             .items-table td:not(:last-child) {
-                border-left: 1px solid rgba(17, 77, 134, 0.15) !important;
+                border-left: 1px solid {{bill.menu.second_color}} !important;
             }
             
             .items-table tbody tr {
-                border-bottom: 1px solid rgba(17, 77, 134, 0.1) !important;
+                border-bottom: 1px solid {{bill.menu.second_color}} !important;
             }
             
             .total-container {
@@ -438,7 +438,7 @@
             }
             
             * {
-                border-color: rgba(17, 77, 134, 0.2) !important;
+                border-color: {{bill.menu.second_color}} !important;
             }
             
             .invoice-preview {
@@ -446,7 +446,7 @@
             }
             
             .invoice-footer {
-                border-top: 1px solid rgba(17, 77, 134, 0.1) !important;
+                border-top: 1px solid {{bill.menu.second_color}} !important;
             }
         }
         
@@ -535,16 +535,16 @@
             <div class="invoice-header">
                 <div class="logo-section">
                     <div class="logo-container">
-                        <img src="{% static 'img/smartlogo.png' %}" alt="شعار المتجر" class="logo-img">
+                        <img src="{{bill.menu.logo.url}}" alt="شعار المتجر" class="logo-img">
                     </div>
                     <div class="store-info">
-                        <h1> متجر الاناقة</h1>
+                        <h1>{{ bill.menu.customer.store_ar_name }}</h1>
                     </div>
                 </div>
                 
                 <div class="invoice-title">
                     <h2>فاتورة شراء</h2>
-                    <div class="invoice-id">رقم الفاتورة: #INV-0023</div>
+                    <div class="invoice-id">رقم الفاتورة:#{{bill.ordernumber}}</div>
                 </div>
             </div>
             
@@ -554,17 +554,14 @@
                     <div class="info-grid">
                         <div class="info-row">
                             <span class="info-label">اسم المتجر:</span>
-                            <span class="info-value highlight">متجر الاناقة</span>
+                            <span class="info-value highlight">{{ bill.menu.customer.store_ar_name }}</span>
                         </div>
                        
                         <div class="info-row">
                             <span class="info-label">الهاتف:</span>
-                            <span class="info-value">0919384672</span>
+                            <span class="info-value">{{ bill.menu.customer.phone}}</span>
                         </div>
-                        <div class="info-row">
-                            <span class="info-label">البريد الإلكتروني:</span>
-                            <span class="info-value">info@yourstore.com</span>
-                        </div>
+    
                     </div>
                 </div>
                 
@@ -573,20 +570,29 @@
                     <div class="info-grid">
                         <div class="info-row">
                             <span class="info-label">اسم العميل:</span>
-                            <span class="info-value highlight">أحمد محمد الدبيبة</span>
+                            <span class="info-value highlight">{{bill.customer_name}}</span>
                         </div>
-                        <div class="info-row">
-                            <span class="info-label">البريد الإلكتروني:</span>
-                            <span class="info-value">ahmed@example.com</span>
+                        {% if  bill.delivery_address  %}
+                       <div class="info-row">
+                            <span class="info-label">العنوان:</span>
+                            <span class="info-value">{{ bill.delivery_address.name }}</span>
                         </div>
+                        {% endif %}
                         <div class="info-row">
                             <span class="info-label">الهاتف:</span>
-                            <span class="info-value">09234965129</span>
+                            <span class="info-value">{{bill.customer_phone}}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">تاريخ الطلب:</span>
-                            <span class="info-value">05/12/2026</span>
+                            <span class="info-value">{{ bill.created_at|date:"Y/m/d " }}</span>
                         </div>
+                        {% if bill.order_type %}
+
+                        <div class="info-row">
+                            <span class="info-label">نوع الطلب:</span>
+                            <span class="info-value">{{bill.order_type}}</span>
+                        </div>
+                        {% endif %}  
                     </div>
                 </div>
             </div>
@@ -604,27 +610,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>هودي اوفر سايز |اللون:احمر، المقاس:46</td>
-                            <td>1</td>
-                            <td>80 د.ل</td>
-                            <td>80 د.ل</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>معطف شتوي |اللون:بني ،المقاس:49</td>
-                            <td>1</td>
-                            <td>42 د.ل</td>
-                            <td>42 د.ل</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>نظرة شمسية اصلية</td>
-                            <td>2</td>
-                            <td>149 د.ل</td>
-                            <td>298 د.ل</td>
-                        </tr>
+                    {% for i in items %}
+
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.product.name }}{% if i.size %}{{ i.size }}المقاس:{% endif %}{% if i.color %}اللون:{{ i.color }}{% endif %}</td>
+                        <td>{{ i.quantity }}</td>
+                        <td>{{ i.product.price }} د.ل</td>
+                        <td>{{ i.get_final_price }} د.ل</td>
+                    </tr>
+                   {% endfor %}
+                       
                         
                     </tbody>
                 </table>
@@ -632,18 +628,22 @@
             
             <div class="total-section">
                 <div class="total-container">
+                    {% if bill.notes %}
                     <div class="total-row">
-                        <span>المجموع الجزئي:</span>
-                        <span>420.00 د.ل</span>
+                        <span> ملاحظات:</span>
+                        <span>{{bill.notes}}</span>
                     </div>
-                
+                    {% endif %}
+                   {% if bill.delivery_address %}
+
                     <div class="total-row">
                         <span>تكاليف التوصيل:</span>
-                        <span>20 د.ل</span>
+                        <span>{{ bill.delivery_address.price  }}د.ل</span>
                     </div>
+                    {% endif %}
                     <div class="total-row grand-total">
                         <span>المجموع الكلي:</span>
-                        <span>420.00 د.ل</span>
+                        <span>{{ bill.get_total }} د.ل</span>
                     </div>
                 </div>
             </div>
@@ -653,7 +653,7 @@
                 
                 <div class="contact-info">
                     <p>لأي استفسارات أو أسئلة، يرجى التواصل معنا:</p>
-                    <p>هاتف: 09123537896</p>
+                    <p>هاتف: {{bill.menu.customer.phone}}</p>
                 </div>
                 
                 
@@ -661,16 +661,13 @@
         </div>
         
         <div class="controls">
-            <h3>فاتورة فخمة</h3>
-            <p style="margin-top: 10px; color: #666; font-size: 12px;">تصميم مصغر مع شعار مخصص</p>
-            
+           
             <div style="margin-top: 15px;">
                 <button class="btn btn-primary" onclick="window.print()">
                     طباعة الفاتورة
                 </button>        
-                <button class="btn btn-back" onclick="goBack()">
-                   ↩ العودة للخلف
-                </button>
+                <a href="{% url 'customer_dashboard' %}" class="back-btn">← العودة  </a>
+
             </div>
         </div>
     </div>

@@ -240,32 +240,43 @@ th, td {
 
 <div class="controls no-print">
     <button onclick="window.print()">🖨️ طباعة الفاتورة</button>
+    <a href="{% url 'customer_dashboard' %}" class="back-btn">← العودة  </a>
+
 </div>
 
 <div class="invoice">
-    <div class="watermark">التقنية المتطورة</div>
+    <div class="watermark">{{ bill.menu.customer.store_ar_name }}</div>
 
     <div class="header">
-        <h1>شركة التقنية المتطورة</h1>
-        <div class="invoice-number">فاتورة رقم #0096</div>
-        <div class="date-time">التاريخ: 20 / 11 / 2023</div>
+        <h1>{{ bill.menu.customer.store_ar_name }}</h1>
+        <div class="invoice-number">فاتورة رقم #{{bill.ordernumber}}</div>
+        <div class="date-time">تاريخ:{{ bill.created_at|date:"Y/m/d " }}</div>
     </div>
 
     <div class="info-section">
         <div class="info-box">
             <div class="info-title">بيانات العميل</div>
             <div class="info-content">
-                الاسم: احمد<br>
-                الهاتف: 093427865<br>
-                العنوان: طرابلس
+                {{ bill.customer_name}}
+                 هاتف: {{ bill.customer_phone }}<br>
+                {% if bill.delivery_address %}
+                   طريقة الاستلام: توصيل <br>
+
+                  العنوان: {{ bill.delivery_address.name }}<br>
+
+                {% else %}
+                  طريقة الاستلام: استلام من المحل<br>
+                {% endif %}
+                {% if bill.order_type %}
+                 نوع الطلب: {{ bill.order_type }}<br>
+                {% endif %}  
             </div>
         </div>
         <div class="info-box">
             <div class="info-title">بياناتنا</div>
             <div class="info-content">
-              التقنية المتطورة<br>
-                09489392: هاتفنا<br>
-                 
+              {{ bill.menu.customer.store_ar_name }}<br>
+                هاتف:{{ bill.menu.customer.phone }}<br>
             </div>
         </div>
     </div>
@@ -281,35 +292,38 @@ th, td {
             </tr>
         </thead>
         <tbody>
+            {% for i in items %}
+
             <tr>
-                <td>1</td>
-                <td class="desc"> ساعة يد يدوية</td>
-                <td>2</td>
-                <td>50</td>
-                <td>100</td>
+                <td>{{ forloop.counter }}</td>
+                <td class="desc">{{ i.product.name }}{% if i.size %}{{ i.size }}المقاس:{% endif %}{% if i.color %}اللون:{{ i.color }}{% endif %}</td>
+                <td>{{ i.quantity }}</td>
+                <td>{{ i.product.price }} د.ل</td>
+                <td>{{ i.get_final_price }} د.ل</td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td class="desc">ساعة رقمية شبابية|اللون:الاسود</td>
-                <td>1</td>
-                <td>30</td>
-                <td>30</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
     <div class="totals">
-        <div class="total-row"><span>المجموع</span><span>130</span></div>
-        <div class="total-row"><span>التوصيل</span><span>0</span></div>
-        <div class="grand-total"><span>الإجمالي النهائي</span> 130</div>
+        {% if bill.notes %}
+        <div class="total-row"><span>ملاحظات:</span><span>{{bill.notes}}</span></div>
+        {% endif %}
+        {% if bill.delivery_address %}
+        <div class="total-row"><span>التوصيل</span><span>{{ bill.delivery_address.price  }}</span></div>
+
+        {% endif %}
+        
+        
+        <div class="grand-total"><span>الإجمالي النهائي</span>{{ bill.get_total }} د.ل</div>
     </div>
 
     <div class="payment-method">شكرا لتعاملكم معنا</div>
 
     <div class="footer">
         <div class="footer-contacts">
-            <div>📞 0919709935 </div>
-            <div>🌐 https://liysta.ly/xxxxx</div>
+            <div>📞 {{bill.menu.customer.phone}} </div>
+            <div>🌐 https://liysta.ly/{{bill.menu.customer.store_slug}}</div>
             <div>📍 ليبيا</div>
         </div>
     </div>

@@ -111,6 +111,14 @@ class Menu(models.Model):
         ('الاستلام في المحل','التسليم فقط في المحل'),
         ('التوصيل او الاستلام في المحل',' التوصيل و التسليم في المحل'),
     }
+    invoices={
+     ('invoice1','invoice1'),
+     ('invoice2','invoice2'),
+     ('invoice3','invoice3'),
+     ('invoice4','invoice4'),
+     ('invoice5','invoice5'),
+     ('invoice6','invoice6'),
+    }
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     logo=models.ImageField(upload_to=get_upload_path,null=False)    
     image=models.ImageField(upload_to=get_upload_path,null=False)    
@@ -119,6 +127,9 @@ class Menu(models.Model):
     recivieing=models.CharField(max_length=50, choices=recivieing,default='التوصيل')
     desc=models.CharField(max_length=1000)
     qr_image=models.ImageField(null=True,upload_to='Qr_images')
+    invoice=models.CharField(max_length=50, choices=invoices,default='invoice1')
+
+
     def get_menu_url(self):
      return f'https://liysta.ly/{self.customer.store_slug}'
 

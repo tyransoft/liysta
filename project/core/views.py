@@ -1063,6 +1063,28 @@ def choose_template(request, menu_id):
         'menu_id': menu_id
     })
 
+@login_required
+def choose_invoice(request, menu_id):
+    if request.method == 'POST':
+        selected_template = request.POST.get('selected_template')  
+        try:
+            menu = Menu.objects.get(id=menu_id)
+            
+            if selected_template:
+                menu.invoice = selected_template
+                menu.save()
+                
+                messages.success(request, 'تم تحديث تصميم الفاتورة بنجاح!')
+                return redirect('customer_dashboard')
+                
+        except Menu.DoesNotExist:
+            messages.error(request,'لم يتم العثور على التصميم المطلوبة')
+            return redirect('/')
+    
+    return render(request, 'invoice/choose_invoice.html', {
+        'menu_id': menu_id
+    })
+
 
 @login_required
 def edit_customer_data(request):
@@ -1670,7 +1692,8 @@ def print_invoice(request, order_id):
         'items':items,
         'bill': order,
     }
-    return render(request, 'invoice.html', context)
+    return render(request, f'invoice/{order.menu.invoice}.html', context)
+
 
 def confirm_delivered(request, order_id):
     order = get_object_or_404(Order,id=order_id ,status='indeliver')

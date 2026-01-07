@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مأكولات فاتورة-57</title>
+  <title>مأكولات فاتورة-{{bill.ordernumber}}</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
@@ -477,10 +477,10 @@
   <div class="receipt">
     
     <div class="header">
-      <div class="store-name">ماكولات </div></div>
+      <div class="store-name">{{bill.menu.customer.store_ar_name}}</div></div>
      
-      <div class="company-info">0912345349</div>
-      <div class="website">https://liysta.ly</div>
+      <div class="company-info">{{bill.menu.customer.phone}}</div>
+      <div class="website">https://liysta.ly/{{bill.menu.customer.store_slug}}</div>
     </div>
     
     <div class="divider"></div>
@@ -488,17 +488,18 @@
     <div class="invoice-info">
       <div class="info-row">
         <span class="info-label">رقم الفاتورة:</span>
-        <span class="info-value">#LY-56</span>
+        <span class="info-value">#{{bill.ordernumber}}</span>
       </div>
       <div class="info-row">
         <span class="info-label">التاريخ:</span>
-        <span class="info-value">2026/03/15</span>
+        <span class="info-value">{{ bill.created_at|date:"Y/m/d " }}</span>
       </div>
-
+    {% if bill.order_type %}
       <div class="info-row">
         <span class="info-label">نوع الطلب:</span>
-        <span class="info-value">توصيل</span>
+        <span class="info-value">{{ bill.order_type }}</span>
       </div>
+    {% endif %} 
      
       
     </div>
@@ -508,16 +509,25 @@
       <div class="customer-details">
         <div class="customer-item">
           <span class="customer-label">الاسم:</span>
-          <span class="customer-data">محمد عبد الرحمن</span>
+          <span class="customer-data">{{bill.customer_name}}</span>
         </div>
         <div class="customer-item">
           <span class="customer-label">الهاتف:</span>
-          <span class="customer-data">0551234567</span>
+          <span class="customer-data">{{bill.customer_phone}}</span>
         </div>
+        {% if bill.delivery_address %}       
+          <div class="customer-item" style="grid-column: 1 / -1;">
+            <span class="customer-label">  طريقة الاستلام: توصيل</span>
+            <span class="customer-data"> {{ bill.delivery_address.name }} العنوان:</span>
+          </div>
+        {% else %}
         <div class="customer-item" style="grid-column: 1 / -1;">
-          <span class="customer-label">عنوان التوصيل:</span>
-          <span class="customer-data"> طرابلس</span>
+          <span class="customer-label"> :طريقة الاستلام</span>
+          <span class="customer-data"> استلام من المحل</span>
         </div>
+                  
+        {% endif %}
+   
 
       </div>
     </div>
@@ -535,37 +545,17 @@
         </thead>
         <tbody>
 
-          
-          <tr>
-            <td>1</td>
-            <td class="product-name">
-              شاورما لحم مكسيكية
-              <div class="product-details"></div>
-            </td>
-            <td class="price-cell">45 <span class="currency">د.ل</span></td>
-            <td>1</td>
-            <td class="price-cell">45 <span class="currency">د.ل</span></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td class="product-name">
-              برجر لحم بالجبنة
-              <div class="product-details"></div>
-            </td>
-            <td class="price-cell">32 <span class="currency">د.ل</span></td>
-            <td>2</td>
-            <td class="price-cell">64 <span class="currency">د.ل</span></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td class="product-name">
-              بيتزا خضار كبيرة
-              <div class="product-details"></div>
-            </td>
-            <td class="price-cell">55 <span class="currency">د.ل</span></td>
-            <td>1</td>
-            <td class="price-cell">55 <span class="currency"></span>د.ل</td>
-          </tr>
+            {% for i in items %}
+
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="product-name">{{ i.product.name }}{% if i.size %}{{ i.size }}المقاس:{% endif %}{% if i.color %}اللون:{{ i.color }}{% endif %}<div class="product-details"></div></td>
+                <td class="price-cell">{{ i.product.price }}<span class="currency">د.ل</span></td>
+
+                <td>{{ i.quantity }}</td>
+                <td class="price-cell">{{ i.get_final_price }} <span class="currency">د.ل</span></td>
+            </tr>
+           {% endfor %}
          
         </tbody>
       </table>
@@ -574,27 +564,25 @@
     <div class="order-details">
 
       
-      
+    {% if bill.notes %} 
       <div class="detail-item" style="grid-column: 1 / -1;">
         <span class="detail-label">ملاحظات:</span>
-        <span class="detail-value">دون اضافة صلصة حارة</span>
+        <span class="detail-value">{{bill.notes}}</span>
       </div>
     </div>
-    
+    {% endif %}
     <div class="calculation-section">
-      <div class="calc-row">
-        <span class="calc-label">المجموع الجزئي:</span>
-        <span class="calc-value">188 <span class="currency">د.ل</span></span>
-      </div>
+   
+      {% if bill.delivery_address %}
 
       <div class="calc-row">
         <span class="calc-label">رسوم التوصيل:</span>
-        <span class="calc-value">15 <span class="currency">د.ل</span></span>
+        <span class="calc-value">{{bill.delivery_address.price}}<span class="currency">د.ل</span></span>
       </div>
-
+      {% endif %}
       <div class="calc-row calc-total">
         <span class="calc-label">المجموع الكلي:</span>
-        <span class="calc-value">223 <span class="currency">د.ل</span></span>
+        <span class="calc-value">{{bill.get_total}} <span class="currency">د.ل</span></span>
       </div>
     </div>
     
@@ -606,10 +594,8 @@
   <div class="controls">
     <button class="btn btn-print" onclick="window.print()">
       🖨️ طباعة  
-    </button>
-        <button class="btn btn-back" onclick="goBack()">
-      ↩ العودة للخلف
-    </button>
+      <a href="{% url 'customer_dashboard' %}" class="back-btn">← العودة  </a>
+
   </div>
 
   <script>

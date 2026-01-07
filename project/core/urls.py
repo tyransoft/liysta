@@ -72,6 +72,7 @@ urlpatterns = [
     
 
     path('customer-dashboard/print-invoice/<int:order_id>', print_invoice, name='invoice'),
+    path('choose-invoice/<int:menu_id>', choose_invoice, name='choose_invoice'),
 
     path('confirm-delivered/<int:order_id>', confirm_delivered, name='recive'),
     path('customer-dashboard/cancel-order/<int:order_id>', delete_order, name='order_delete'),

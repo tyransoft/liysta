@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta -  اختيار فاتورة </title>
+    <link rel="stylesheet" href="{% static 'css/temp.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+
+</head>
+
+<body>
+<div class="template-selection-container">
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <h1 class="page-title">اختر  تصميم الفاتورة</h1>
+        <p style="color: #6B7280;">اختر التصميم الذي يناسب متجرك</p>
+    </div>
+    
+    <form id="myform" method="POST" action="{% url 'choose_invoice' menu_id=menu_id %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_template" id="selected-template" value="">
+        
+        <div class="template-cards">            <div class="template-card" data-template="invoice1" onclick="selectTemplate(this, 'invoice1')">
+                <div class="template-info">
+                    <h3 class="template-name">INV - 1</h3>
+                    <p class="template-desc">تصميم كلاسيكي بسيط(غير ملون) متوسط الحجم مناسب اكثر للمتاجر الالكترونية</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_invoice' %}?invoice=invoice1" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'invoice1')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="template-card" data-template="invoice2" onclick="selectTemplate(this, 'invoice2')">
+                <div class="template-info">
+                    <h3 class="template-name">INV - 2</h3>
+                    <p class="template-desc">تصميم معاصر وجذاب ملون (بلون متجرك) وشعارك مناسب للورق بالحجم الاكبر ومناسب للمتاجر الالكترونية</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_invoice' %}?invoice=invoice2" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'invoice2')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+              <div class="template-card" data-template="invoice3" onclick="selectTemplate(this, 'invoice3')">
+                <div class="template-info">
+                    <h3 class="template-name">INV - 3</h3>
+                    <p class="template-desc">تصميم كلاسيكي غير ملون متوسط الحجم مناسب لانواع الورق القابل للصق اي مناسب للمتاجر الالكترونية</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_invoice' %}?invoice=invoice3" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'invoice3')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="template-card" data-template="invoice4" onclick="selectTemplate(this, 'invoice4')">
+                <div class="template-info">
+                    <h3 class="template-name">INV - 4</h3>
+                    <p class="template-desc">تصميم معاصر وبسيط (غير ملون) يحتوي على شعار المتجر ويعتبر من الحجم الاقصى</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_invoice' %}?invoice=invoice4" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'invoice4')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="template-card" data-template="invoice5" onclick="selectTemplate(this, 'invoice5')">
+                <div class="template-info">
+                    <h3 class="template-name">INV - 5</h3>
+                    <p class="template-desc">تصميم كلاسيكي صغير الحجم مناسب للطابعات الحرارية وللمطاعم</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_invoice' %}?invoice=invoice5" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'invoice5')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>        
+            <div class="template-card" data-template="invoice6" onclick="selectTemplate(this, 'invoice6')">
+                <div class="template-info">
+                    <h3 class="template-name">INV - 6</h3>
+                    <p class="template-desc">تصميم كلاسيكي صغير الحجم مناسب للطابعات الحرارية وللمطاعم</p>
+                    <div class="template-actions">
+                        <a href="{% url 'preview_invoice' %}?invoice=invoice6" class="preview-btn" target="_blank">
+                            معاينة
+                        </a>
+                        <button type="button" class="select-btn" onclick="selectTemplate(this.parentElement.parentElement, 'invoice6')">
+                            اختيار
+                        </button>
+                    </div>
+                </div>
+            </div>        
+        
+        
+        
+        
+        
+        
+        
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="submit-btn" id="submit-btn" disabled>
+                حفظ الإعدادات والمتابعة
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function selectTemplate(cardElement, templateName) {
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        cardElement.classList.add('selected');
+        
+        document.getElementById('selected-template').value = templateName;
+        
+        document.getElementById('submit-btn').disabled = false;
+    }
+    
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!document.getElementById('selected-template').value) {
+            e.preventDefault();
+            alert('يرجى اختيار قالب قبل الحفظ');
+        }
+    });
+    document.getElementById("myform").addEventListener("submit",function() {
+            const btn =document.getElementById("submit-btn");
+            btn.disabled = true;
+            btn.innerText ="جاري الارسال.....";
+    });
+</script>
+</body>
+</html>

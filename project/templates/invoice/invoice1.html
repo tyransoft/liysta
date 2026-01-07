@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+{{% load static %}}
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>فاتورة</title>
+<title>فاتورة {{bill.ordernumber }}</title>
+<link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+
 <style>
 @page {
     size: A4;
@@ -164,35 +167,45 @@ td {
 <body>
 <div class="controls no-print">
     <button onclick="window.print()">🖨️ طباعة</button>
-    <button onclick="goBack()">رجوع</button>
+<a href="{% url 'customer_dashboard' %}" class="back-btn">← العودة  </a>
 </div>
 <div class="invoice">
     <div class="header">
-        <h1>التقنية المتطورة</h1>
-        <div class="invoice-number">رقم الفاتورة:#0096</div>
-        <div class="date">التاريخ: 20 / 11 / 2023</div>
+        <h1>{{ bill.menu.customer.store_ar_name }}</h1>
+        <div class="invoice-number"> {{bill.ordernumber }}رقم الفاتورة:#</div>
+        <div class="date">{{ bill.created_at|date:"Y/m/d " }}:التاريخ</div>
     </div>
     <div class="info-section">
         <div class="info-box">
             <div class="info-title">من:</div>
             <div class="info-content">
-                شركة التقنية المتطورة<br>
-                هاتف: 09112345678<br>
+               {{ bill.menu.customer.store_ar_name }}<br>
+                هاتف:{{ bill.menu.customer.phone }}<br>
             </div>
         </div>
         <div class="info-box">
             <div class="info-title">:إلى</div>
             <div class="info-content">
-                أحمد محمد عبدالله<br>
-                هاتف: 0509876543<br>
-                العنوان: طرابلس 
+               {{ bill.customer_name }}<br>
+                هاتف: {{ bill.customer_phone }}<br>
+                {% if bill.delivery_address %}
+                   طريقة الاستلام: توصيل <br>
+
+                  العنوان: {{ bill.delivery_address.name }}<br>
+
+                {% else %}
+                  طريقة الاستلام: استلام من المحل<br>
+                {% endif %}
+                {% if bill.order_type %}
+                 نوع الطلب: {{ bill.order_type }}<br>
+                {% endif %}
             </div>
         </div>
     </div>
     <table>
         <thead>
             <tr>
-                <th class="serial">م</th>
+                <th class="serial">#</th>
                 <th class="desc">الوصف</th>
                 <th class="qty">الكمية</th>
                 <th class="price">السعر</th>
@@ -200,57 +213,44 @@ td {
             </tr>
         </thead>
         <tbody>
+            {% for i in items %}
+
             <tr>
-                <td class="serial">1</td>
-                <td class="desc">لابتوب Dell XPS</td>
-                <td class="qty">1</td>
-                <td class="price">4,599.99</td>
-                <td class="total">4,599.99</td>
+                <td class="serial">{{ forloop.counter }}</td>
+                <td class="desc">{{ i.product.name }}{% if i.size %}{{ i.size }}المقاس:{% endif %}{% if i.color %}اللون:{{ i.color }}{% endif %}</td>
+                <td class="qty">{{ i.quantity }}</td>
+                <td class="price">{{ i.product.price }} د.ل</td>
+                <td class="total">{{ i.get_final_price }} د.ل</td>
             </tr>
-            <tr>
-                <td class="serial">2</td>
-                <td class="desc">ماوس لاسلكي</td>
-                <td class="qty">1</td>
-                <td class="price">89.99</td>
-                <td class="total">89.99</td>
-            </tr>
-            <tr>
-                <td class="serial">3</td>
-                <td class="desc">لوحة مفاتيح</td>
-                <td class="qty">1</td>
-                <td class="price">149.99</td>
-                <td class="total">149.99</td>
-            </tr>
+           {% endfor %}
         </tbody>
     </table>
     <div class="totals">
-        <div class="total-row">
-            <span>المجموع</span>
-            <span>4,839.97</span>
-        </div>
+
+        {% if bill.delivery_address %}
+
         <div class="total-row">
             <span>التوصيل</span>
-            <span>25.99</span>
+            <span>{{ bill.delivery_address.price }} د.ل</span>
         </div>
+       {% endif %}
+
         <div class="total-row grand-total">
             <span>الإجمالي</span>
-            <span>5,565.96</span>
+            <span>{{ bill.get_total }} د.ل</span>
         </div>
+        {% if bill.notes %}
+        <div class="total-row">
+            <span>ملاحظات:</span>
+            <span>{{bill.notes}}</span>
+        </div>
+        {% endif %} 
     </div>
     <div class="footer">
-        <div>📞 09112345678</div>
-        <div>✉️ info@company.com</div>
-        <div>🌐 https://liysta.ly/smart</div>
+        <div>📞{{ bill.customer_phone }}</div>
+        <div>🌐 https://liysta.ly/{{ bill.menu.customer.store_slug }}</div>
     </div>
 </div>
-<script>
-function goBack() {
-    if (window.history.length > 1) {
-        window.history.back();
-    } else {
-        window.location.href = '/';
-    }
-}
-</script>
+
 </body>
 </html>
