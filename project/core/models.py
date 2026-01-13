@@ -295,6 +295,7 @@ class Coupon(models.Model):
 
 
 class Plan(models.Model):
+    
     DURATION_CHOICES = [
         ('free_trial', 'تجربة مجانية'), 
         ('monthly', 'شهر'),

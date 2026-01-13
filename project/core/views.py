@@ -1455,6 +1455,10 @@ def renew_subscription(request, subscription_id):
     plan =sub.plan
     customer = Customer.objects.get(user=request.user)
 
+    if plan.duration =='free_trial':
+       messages.error(request,'عذرا باقتك غير فابلة للتجديد!')
+       return redirect('/')    
+    
     if request.method == 'POST':
         if request.user.is_authenticated:
             customer = Customer.objects.get(user=request.user)
@@ -1464,7 +1468,8 @@ def renew_subscription(request, subscription_id):
             year=now.year
 
             coupon_code = request.POST.get('coupon_code')
-
+            
+             
             final_price = plan.get_discounted_price_with_coupon(coupon_code)
 
             if customer.wallet >= final_price:

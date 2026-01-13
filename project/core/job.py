@@ -11,22 +11,30 @@ from django.db.models import Sum
 from django.core.files import File
 
 
-def deactivate_users_subs():
+
+def send_monthly_report():
     today=date.today()
-    last_day_num=calendar.monthrange(today.year,today.month)[1]
-    last_day_date=date(today.year,today.month,last_day_num)
+
+    previous_month = today.month - 1
+    previous_year = today.year
     
-    if today ==last_day_date:
-     now = timezone.now()
+    if previous_month == 0:
+      previous_month = 12
+      previous_year -= 1
+
+    if  not  Liystanumbers.objects.filter(year=previous_year, month=previous_month).exists():
+     
      # عدد الاشتراكات
      subs_count=Subscription.objects.count()
      #عدد النشطين في الشهر الجدد
-     new_active_users = Customer.objects.filter(customer_status='active', created_at__month=now.month).count()
+     new_active_users = Customer.objects.filter(customer_status='active',created_at__year=previous_year, created_at__month=previous_month).count()
      #عدد غير النشطاء في هذا الشهر
-     new_inactive_users = Customer.objects.filter(customer_status='inactive',created_at__month=now.month).count()
+     new_inactive_users = Customer.objects.filter(customer_status='inactive',created_at__year=previous_year,created_at__month=previous_month).count()
      #النشطين القدامى
      old_active_users= Customer.objects.filter(customer_status='active').count() -  new_active_users
+     
      #غير النشطين القدامى
+     
      old_inactive_users = Customer.objects.filter(customer_status='inactive').count() - new_inactive_users
      #نسبة النشطين في هذا الشهر
      month_actives_percentage = new_active_users / old_active_users * 100 if old_active_users else 0
@@ -49,30 +57,32 @@ def deactivate_users_subs():
      
      #الايرادات الشهرية
      monthly_income = AdminSales.objects.filter(
-        created_at__year=now.year,
-        created_at__month=now.month,
+        created_at__year=previous_year,
+        created_at__month=previous_month,
      ).aggregate(total=Sum('profit'))['total'] or 0
 
      #تكاليف تشغيلية شهرية 
-     operations=Coasts.objects.filter(coast_kind='Operations',  created_at__year=now.year,created_at__month=now.month)
+     operations=Coasts.objects.filter(coast_kind='Operations',  created_at__year=previous_year,created_at__month=previous_month)
      operations_amount=0
      if operations: 
       for i in operations:
-       if i.created_at.month==now.month or i.recurring:
+       if i.created_at.month==previous_month or i.recurring:
           operations_amount += i.amount 
      operations_amount += monthly_income * 0.1
+
      #نسبة مندوبي المبيعات
-     sellers=Coasts.objects.filter(coast_kind='sellermen',  created_at__year=now.year,created_at__month=now.month).first()
+     sellers=Coasts.objects.filter(coast_kind='sellermen',  created_at__year=previous_year,created_at__month=previous_month).first()
      seller_amount=sellers.amount if sellers else 0
-     
+      
+
      #تكاليف تسويقية شهرية
-     marketing=Coasts.objects.filter(coast_kind='Marketing&sells',  created_at__year=now.year,created_at__month=now.month)
+     marketing=Coasts.objects.filter(coast_kind='Marketing&sells',  created_at__year=previous_year,created_at__month=previous_month)
      marketing_amount=seller_amount
      if marketing:
       for i in marketing:
-       if i.created_at.month==now.month or i.recurring:
+       if i.created_at.month==previous_month or i.recurring:
          marketing_amount += i.amount
-
+     
      #هامش الربح
      gross_profit=monthly_income - operations_amount
      #نسبة هامش الربح
@@ -86,32 +96,47 @@ def deactivate_users_subs():
      
      wb=Workbook()
      ws=wb.active
-     ws.title=f"{now.year}لسنة-{now.month}-بيانات شهر"
+     ws.title=f"{previous_year}لسنة-{previous_month}-بيانات شهر"
      ws.append(['seller $','news coast $','NP %','NP $','GP %','GP $','sells $','M&S $','operations $','converted  %','free subs','activate %','all actives %','month actives %','olds inactive','olds active','news inactive','news active','active subs %','active subs','all subs'])
      ws.append([seller_amount,news_coast,net_percentage,net_profit,gross_percentage,gross_profit,monthly_income,marketing_amount,operations_amount,converted_percentage,free_users,activetion_converted_percentage,actives_percentage,month_actives_percentage,old_inactive_users,old_active_users,new_inactive_users,new_active_users,active_subs,active_subscriptions,subs_count])
      output=BytesIO()
      wb.save(output)
      output.seek(0)
-     filename=f'report_{now.year}_{now.month}.xlsx'
+     filename=f'report_{previous_year}_{previous_month}.xlsx'
      report=Liystanumbers.objects.create(
         month_data=File(output,name=filename)
      )
      report.save()
 
      email=EmailMessage(
-        subject=f"Liysta report for {now.month}/{now.year}",
+       
+        subject=f"Liysta report for {previous_month}/{previous_year}",
         body="Hi Mr.Moad this is a report about our results in the last month thank you for your effort.",
         from_email="liystacompany@gmail.com",
         to=["hamodamourad72@gmail.com"],
 
-                       )
+     )
+    
      email.attach(filename, output.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
      email.send()
     else:
-       pass   
-    cards=Paymentcard.objects.filter(is_used=True)
-    for card in cards:
-        card.delete()
+       pass    
+
+
+
+
+
+def clean_cards():
+    cards=Paymentcard.objects.filter(is_used=True).delete()
+
+    
+
+
+
+
+
+def deactivate_users_subs():
+    today=date.today()
     subs=Subscription.objects.filter(end_date__lt=today,is_active=True)
     for sub in subs:
         if sub.plan.duration != 'forever':
@@ -167,16 +192,36 @@ def deactivate_users_subs():
           fail_silently=False,
          )           
 
+
 def start():
     scheduler=BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(),"default")
     scheduler.add_job(
-        deactivate_users_subs, trigger='cron',
-        hour=2,
-        minute=0,
+        deactivate_users_subs, 
+        trigger='interval',
+        hours=6,
         id='deactive_subs',
-        replace_existing=True
+        replace_existing=True,
+        max_instances=1, 
     )
+    
+    scheduler.add_job(
+     send_monthly_report,
+      trigger='cron',
+      hour=3,
+      minute=0, 
+      id='send_monthly',
+      replace_existing=True,
+    )
+    scheduler.add_job(
+      clean_cards,
+      trigger='cron',
+      hour=2,
+      minute=0, 
+      id='clean_cards',
+      replace_existing=True,
+    )
+
     register_events(scheduler)
     scheduler.start()
 
