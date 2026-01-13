@@ -22,7 +22,7 @@ def send_monthly_report():
       previous_month = 12
       previous_year -= 1
 
-    if  not  Liystanumbers.objects.filter(year=previous_year, month=previous_month).exists():
+    if  not  Liystanumbers.objects.filter(created_at__year=previous_year, created_at__month=previous_month).exists():
      
      # عدد الاشتراكات
      subs_count=Subscription.objects.count()
