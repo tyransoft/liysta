@@ -529,52 +529,75 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-section">
-                        <div class="section-header">
-                            <h2 class="section-title">الطلبات الجديدة</h2>
+                   <div class="dashboard-section">
+    <div class="section-header">
+        <h2 class="section-title">الطلبات الجديدة</h2>
+        <div>
+            <button type="button" class="btn btn-primary" onclick="printSelectedOrders()" id="printSelectedBtn" disabled>
+                <i class="fas fa-print"></i> طباعة المحدد
+            </button>
+            <span id="selectedOrdersCount" style="margin-right: 10px; color: var(--primary);">0 طلب</span>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th width="50">
+                        <input type="checkbox" id="selectAllNew" class="form-check-input">
+                    </th>
+                    <th>رقم الطلب</th>
+                    <th>اسم العميل</th>
+                    <th>رقم العميل</th>
+                    <th>العنوان</th>
+                    <th>التاريخ</th>
+                    <th>المجموع</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="newOrdersTable">
+                {% for order in orders.new %}
+                <tr id="order-row-{{ order.id }}">
+                    <td>
+                        <input type="checkbox" 
+                               name="selected_orders" 
+                               value="{{ order.id }}" 
+                               class="order-checkbox form-check-input"
+                               data-order-id="{{ order.id }}"
+                               data-customer="{{ order.customer_name }}"
+                               data-total="{{ order.total_price|default:0 }}">
+                    </td>
+                    <td>#{{ order.ordernumber }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.customer_phone }}</td>
+                    {% if order.delivery_address %}
+                    <td>{{ order.delivery_address }}</td>
+                    {% else %}
+                    <td>استلام شخصي</td>
+                    {% endif %}
+                    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ order.total_price|default:0 }} د.ل</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                            <a href="{% url 'print_invoice' order.id %}" class="action-btn" target="_blank" title="طباعة الفاتورة">
+                                <i class="fas fa-print"></i>
+                            </a>
+                            <a href="{% url 'order_delete' order.id %}" class="action-btn" title="إلغاء الطلب" style="background: var(--danger-light); color: var(--danger);">
+                                <i class="fas fa-times"></i>
+                            </a>
                         </div>
-                        
-                        <div class="table-responsive">
-                            <table class="orders-table">
-                                <thead>
-                                    <tr>
-                                        <th>اسم العميل</th>
-                                        <th>رقم العميل</th>
-                                        <th>العنوان</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="newOrdersTable">
-                                    {% for order in orders.new %}
-                                    <tr>
-                                        <td>{{ order.customer_name }}</td>
-                                        <td>{{ order.customer_phone }}</td>
-                                        {% if order.delivery_address %}
-                                        <td>{{ order.delivery_address }}</td>
-                                        {% else %}
-                                        <td>استلام شخصي</td>
-                                        {% endif %}
-                                        <td>
-                                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                                <a href="{% url 'invoice' order.id %}" class="action-btn" title="طباعة الفاتورة">
-                                                    <i class="fas fa-print"></i>
-                                                </a>
-                                                <a href="{% url 'order_delete' order.id %}" class="action-btn" title="إلغاء الطلب" style="background: var(--danger-light); color: var(--danger);">
-                                                    <i class="fas fa-times"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="4" style="text-align: center;">لا توجد طلبات جديدة متاحة</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center;">لا توجد طلبات جديدة متاحة</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
                     <div class="dashboard-section">
                         <div class="section-header">
                             <h2 class="section-title">الطلبات قيد التسليم</h2>
@@ -1318,6 +1341,163 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 });
+document.addEventListener('DOMContentLoaded', function() {
+    initializeOrderSelection();
+});
+
+function initializeOrderSelection() {
+    const selectAllCheckbox = document.getElementById('selectAllNew');
+    const orderCheckboxes = document.querySelectorAll('.order-checkbox');
+    const printSelectedBtn = document.getElementById('printSelectedBtn');
+    const selectedCountSpan = document.getElementById('selectedOrdersCount');
+    const totalAmountSpan = document.getElementById('selectedOrdersTotal');
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            orderCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectionInfo();
+        });
+    }
+
+    function updateSelectionInfo() {
+        const selectedCheckboxes = Array.from(orderCheckboxes).filter(cb => cb.checked);
+        const selectedCount = selectedCheckboxes.length;
+        
+        let totalAmount = 0;
+        selectedCheckboxes.forEach(checkbox => {
+            totalAmount += parseFloat(checkbox.dataset.total) || 0;
+        });
+        
+        selectedCountSpan.textContent = selectedCount + ' طلب';
+        
+        if (printSelectedBtn) {
+            printSelectedBtn.disabled = selectedCount === 0;
+        }
+        
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = selectedCount > 0 && selectedCount === orderCheckboxes.length;
+            selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < orderCheckboxes.length;
+        }
+        
+        orderCheckboxes.forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            if (checkbox.checked) {
+                row.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                row.style.borderLeft = '3px solid var(--primary)';
+            } else {
+                row.style.backgroundColor = '';
+                row.style.borderLeft = '';
+            }
+        });
+    }
+
+    orderCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectionInfo);
+    });
+
+    updateSelectionInfo();
+}
+
+function printSelectedOrders() {
+    const selectedCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+    
+    if (selectedCheckboxes.length === 0) {
+        showAlert('يرجى اختيار طلب واحد على الأقل', 'warning');
+        return;
+    }
+    
+    const orderIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+    
+    if (orderIds.length === 1) {
+        window.open(`/customer-dashboard/print-invoice/${orderIds[0]}`, '_blank');
+        return;
+    }
+    
+    const url = `/orders/print-multiple/?orders=${orderIds.join(',')}`;
+    window.open(url, '_blank');
+    
+    showAlert(`تم فتح ${orderIds.length} فاتورة للطباعة`, 'success');
+}
+
+function showAlert(message, type = 'info') {
+    const existingAlerts = document.querySelectorAll('.selection-alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert-custom alert-${type} selection-alert`;
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        min-width: 300px;
+        text-align: center;
+        animation: slideDown 0.3s ease;
+    `;
+    
+    alertDiv.innerHTML = `
+        <div class="icon">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                              type === 'warning' ? 'exclamation-triangle' : 
+                              type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        </div>
+        <div class="content">${message}</div>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.style.opacity = '0';
+            alertDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 300);
+        }
+    }, 3000);
+}
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+    
+    .order-checkbox:checked + td {
+        font-weight: bold;
+    }
+    
+    .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        cursor: pointer;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    #selectAllNew {
+        margin: 0;
+    }
+`;
+document.head.appendChild(style);
     </script>
 </body>
 </html>

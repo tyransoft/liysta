@@ -463,7 +463,9 @@ class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'قيد الانتظار'),
         ('indeliver', 'قيد التجهيز'),
+        ('canceled', 'تم الالغاء'),
         ('delivered', 'تم التسليم'),
+
     ]
     ordernumber=models.IntegerField(null=True,blank=True)
     order_type=models.CharField(max_length=25,null=True,blank=True)

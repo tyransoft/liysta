@@ -4,10 +4,9 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from .models import *
 from .forms import *
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse ,HttpResponseForbidden,JsonResponse
 from django.utils.timezone import localdate
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -1690,15 +1689,34 @@ def order_success(request, order_id):
 def print_invoice(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
     items=OrderItem.objects.filter(order=order)
-    if order.status =='pending':
-        order.status = 'indeliver'
-        order.save()
+
     context = {
         'items':items,
         'bill': order,
     }
     return render(request, f'invoice/{order.menu.invoice}.html', context)
+@login_required
+def print_multiple_invoices(request):
+    order_ids = request.GET.get('orders', '').split(',')
+    orders = Order.objects.filter(id__in=order_ids)
+    customer=Customer.objects.get(user=request.user)
+    menu=Menu.objects.get(customer=customer)
+    if not orders.exists():
+        return HttpResponseForbidden()
 
+    template= f"invoice/{menu.invoice}.html"
+
+    return render(request, "invoice/multi_invoice.html", {
+        'orders': orders,'template':template
+    })
+
+def ship_order(request, order_id):
+    order = get_object_or_404(Order,id=order_id ,status='pending')
+    order.status = 'indeliver'
+    order.save()
+    messages.success(request,'تو وضع الطلب في الشحن بنجاح')
+
+    return redirect('customer_dashboard')
 
 def confirm_delivered(request, order_id):
     order = get_object_or_404(Order,id=order_id ,status='indeliver')
@@ -1715,7 +1733,8 @@ def delete_order(request, order_id):
         product=i.product
         product.quantity += i.quantity
         product.save()
-    order.delete()
+    order.status="canceled"
+    order.save()
     messages.success(request, 'تم حذف الطلب بنجاح.')
     return redirect('customer_dashboard')
 
