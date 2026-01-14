@@ -11,6 +11,192 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/mo.css' %}">
+    <style>
+        .status-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .status-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background: white;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .status-btn.active {
+            border-color: var(--primary);
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .bulk-actions-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .bulk-actions-container.show {
+            display: block;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .selected-count {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .bulk-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .bulk-action-btn.print {
+            background: #0dcaf0;
+            color: white;
+        }
+        
+        .bulk-action-btn.ship {
+            background: #198754;
+            color: white;
+        }
+        
+        .bulk-action-btn.receive {
+            background: #20c997;
+            color: white;
+        }
+        
+        .bulk-action-btn.return {
+            background: #fd7e14;
+            color: white;
+        }
+        
+        .bulk-action-btn.cancel {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .bulk-action-btn.clear {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .bulk-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .table th:first-child {
+            width: 50px;
+        }
+        
+        .table td:first-child {
+            text-align: center;
+        }
+        
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .order-row.selected {
+            background-color: rgba(249, 115, 22, 0.1);
+        }
+        
+        /* تخصيصات للجوال */
+        @media (max-width: 768px) {
+            .bulk-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .bulk-action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .selected-count {
+                align-self: flex-start;
+                margin-bottom: 10px;
+            }
+            
+            .status-selector {
+                overflow-x: auto;
+                padding-bottom: 10px;
+                white-space: nowrap;
+            }
+            
+            .status-btn {
+                display: inline-block;
+                white-space: nowrap;
+            }
+            
+            .mobile-order-card .mobile-order-checkbox {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .mobile-order-card.selected {
+                border: 2px solid var(--primary);
+                background-color: rgba(249, 115, 22, 0.05);
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .bulk-actions-container {
+                position: fixed;
+                top: 50%;
+                right: 20px;
+                transform: translateY(-50%);
+                width: 250px;
+            }
+        }
+        
+        /* ألوان الحالات */
+        .status-pending { background-color: #ffc107; color: #000; }
+        .status-indeliver { background-color: #0d6efd; color: #fff; }
+        .status-delivered { background-color: #198754; color: #fff; }
+        .status-returned { background-color: #fd7e14; color: #fff; }
+        .status-canceled { background-color: #dc3545; color: #fff; }
+    </style>
 </head>
 
 <body>
@@ -41,6 +227,38 @@
         </div>
         {% endif %}
 
+        <!-- إجراءات جماعية -->
+        <div class="bulk-actions-container" id="bulkActionsContainer">
+            <div class="bulk-actions">
+                <span class="selected-count" id="selectedCount">0 مختار</span>
+                
+                <button class="bulk-action-btn print" onclick="bulkAction('print')" id="bulkPrint" disabled>
+                    <i class="fas fa-print"></i> طباعة
+                </button>
+                
+                {% if current_status == 'pending' %}
+                <button class="bulk-action-btn ship" onclick="bulkAction('ship')" id="bulkShip" disabled>
+                    <i class="fas fa-truck"></i> شحن
+                </button>
+                {% elif current_status == 'indeliver' %}
+                <button class="bulk-action-btn receive" onclick="bulkAction('receive')" id="bulkReceive" disabled>
+                    <i class="fas fa-check-circle"></i> استلام
+                </button>
+                <button class="bulk-action-btn return" onclick="bulkAction('return')" id="bulkReturn" disabled>
+                    <i class="fas fa-undo"></i> إرجاع
+                </button>
+                {% endif %}
+                
+                <button class="bulk-action-btn cancel" onclick="bulkAction('cancel')" id="bulkCancel" disabled>
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                
+                <button class="bulk-action-btn clear" onclick="clearSelection()">
+                    <i class="fas fa-times-circle"></i> إلغاء التحديد
+                </button>
+            </div>
+        </div>
+
         <div class="card filter-card">
             <div class="card-header">
                 <i class="fas fa-filter me-2"></i> تصفية الطلبات
@@ -51,11 +269,11 @@
                     <div class="row g-3 align-items-end">
                         <div class="col-md-5">
                             <label for="date" class="form-label">التاريخ</label>
-                            <input type="date" class="form-control" id="date" name="date">
+                            <input type="date" class="form-control" id="date" name="date" value="{{ selected_date|default:'' }}">
                         </div>
                         <div class="col-md-5">
                             <label for="number" class="form-label">رقم الطلب</label>
-                            <input type="number" class="form-control" id="number" name="number" placeholder="أدخل رقم الطلب">
+                            <input type="number" class="form-control" id="number" name="number" placeholder="أدخل رقم الطلب" value="{{ selected_number|default:'' }}">
                         </div>
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-edit w-100">
@@ -63,20 +281,55 @@
                             </button>
                         </div>
                     </div>
+                    
+                    <div class="mt-3">
+                        <div class="status-selector">
+                            <button type="button" class="status-btn {% if current_status == 'all' %}active{% endif %}" data-status="all">
+                                <i class="fas fa-list me-1"></i> الكل
+                            </button>
+                            <button type="button" class="status-btn {% if current_status == 'pending' %}active{% endif %}" data-status="pending">
+                                <i class="fas fa-clock me-1"></i> قيد الانتظار
+                            </button>
+                            <button type="button" class="status-btn {% if current_status == 'indeliver' %}active{% endif %}" data-status="indeliver">
+                                <i class="fas fa-truck me-1"></i> في التوصيل
+                            </button>
+                            <button type="button" class="status-btn {% if current_status == 'delivered' %}active{% endif %}" data-status="delivered">
+                                <i class="fas fa-check-circle me-1"></i> مسلم
+                            </button>
+                            <button type="button" class="status-btn {% if current_status == 'returned' %}active{% endif %}" data-status="returned">
+                                <i class="fas fa-undo me-1"></i> راجع
+                            </button>
+                            <button type="button" class="status-btn {% if current_status == 'canceled' %}active{% endif %}" data-status="canceled">
+                                <i class="fas fa-times me-1"></i> ملغي
+                            </button>
+                        </div>
+                        <input type="hidden" name="status" id="statusInput" value="{{ current_status|default:'all' }}">
+                    </div>
                 </form>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-list-alt me-2"></i> قائمة الطلبات
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-list-alt me-2"></i> قائمة الطلبات
+                    <span class="badge bg-primary ms-2" id="totalOrders">{{ orders|length }} طلب</span>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="selectAll">
+                    <label class="form-check-label" for="selectAll">
+                        تحديد الكل
+                    </label>
+                </div>
             </div>
+            
             <div class="card-body p-0">
-                <div class="table-container desktop-table">
+                <div class="table-container desktop-table d-none d-lg-block">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead class="table-dark">
                                 <tr>
+                                    <th></th>
                                     <th>رقم الطلب</th>
                                     <th>اسم الزبون</th>
                                     <th>رقم الهاتف</th>
@@ -88,11 +341,18 @@
                             </thead>
                             <tbody>
                                 {% for order in orders %}
-                                <tr>
+                                <tr id="order-row-{{ order.id }}" class="order-row">
+                                    <td>
+                                        <input type="checkbox" 
+                                               class="form-check-input order-checkbox"
+                                               value="{{ order.id }}"
+                                               data-order-number="{{ order.ordernumber }}"
+                                               data-status="{{ order.status }}">
+                                    </td>
                                     <td><strong>{{ order.ordernumber }}</strong></td>
                                     <td>{{ order.customer_name }}</td>
                                     <td>{{ order.customer_phone }}</td>
-                                    <td>{{ order.created_at }}</td>
+                                    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
                                     <td><strong>{{ order.get_total }} د.ل</strong></td>
                                     <td>
                                         <span class="badge status-{{ order.status }}">
@@ -101,21 +361,37 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-wrap gap-2">
-                                            <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-edit" title="إلغاء الطلب">
-                                                <i class="fas fa-times me-1"></i> إلغاء
+                                            {% if order.status == 'pending' %}
+                                            <a href="{% url 'ship' order.id %}" class="btn btn-sm btn-success" title="شحن الطلب">
+                                                <i class="fas fa-truck"></i>
                                             </a>
-                                            <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-edit" title="تعديل الطلب">
-                                                <i class="bi bi-pencil-fill me-1"></i> تعديل
+                                            {% elif order.status == 'indeliver' %}
+                                            <a href="{% url 'recive' order.id %}" class="btn btn-sm btn-success" title="تأكيد الاستلام">
+                                                <i class="fas fa-check-circle"></i>
                                             </a>
-                                            <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-edit" title="عرض الفاتورة">
-                                                <i class="fas fa-file-invoice me-1"></i> فاتورة
+                                            <a href="{% url 'return' order.id %}" class="btn btn-sm btn-warning" title="إرجاع الطلب">
+                                                <i class="fas fa-undo"></i>
+                                            </a>
+                                            {% endif %}
+                                            
+                                            {% if order.status != 'canceled' %}
+                                            <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-danger" title="إلغاء الطلب">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                            {% endif %}
+                                            
+                                            <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-primary" title="تعديل الطلب">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                            <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-info" title="عرض الفاتورة" target="_blank">
+                                                <i class="fas fa-file-invoice"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="7">
+                                    <td colspan="8">
                                         <div class="empty-state">
                                             <i class="fas fa-clipboard-list"></i>
                                             <h5>لا توجد طلبات</h5>
@@ -129,10 +405,17 @@
                     </div>
                 </div>
 
-                <!-- عرض البطاقات للشاشات الصغيرة -->
-                <div class="mobile-orders p-3">
+                <div class="mobile-orders d-lg-none p-3">
                     {% for order in orders %}
-                    <div class="mobile-order-card">
+                    <div id="mobile-order-{{ order.id }}" class="mobile-order-card">
+                        <div class="mobile-order-checkbox">
+                            <input type="checkbox" 
+                                   class="form-check-input order-checkbox"
+                                   value="{{ order.id }}"
+                                   data-order-number="{{ order.ordernumber }}"
+                                   data-status="{{ order.status }}">
+                        </div>
+                        
                         <div class="mobile-order-header">
                             <div class="mobile-order-number">طلب #{{ order.ordernumber }}</div>
                             <div class="mobile-order-status">
@@ -154,7 +437,7 @@
                         
                         <div class="mobile-order-detail">
                             <span class="mobile-order-label">التاريخ:</span>
-                            <span class="mobile-order-value">{{ order.created_at }}</span>
+                            <span class="mobile-order-value">{{ order.created_at|date:"Y-m-d H:i" }}</span>
                         </div>
                         
                         <div class="mobile-order-detail">
@@ -163,15 +446,33 @@
                         </div>
                         
                         <div class="mobile-actions">
-                            <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-edit">
-                                <i class="fas fa-times me-1"></i> إلغاء
-                            </a>
-                            <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-edit">
-                                <i class="bi bi-pencil-fill me-1"></i> تعديل
-                            </a>
-                            <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-edit">
-                                <i class="fas fa-file-invoice me-1"></i> فاتورة
-                            </a>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                {% if order.status == 'pending' %}
+                                <a href="{% url 'ship' order.id %}" class="btn btn-sm btn-success" title="شحن الطلب">
+                                    <i class="fas fa-truck"></i>
+                                </a>
+                                {% elif order.status == 'indeliver' %}
+                                <a href="{% url 'recive' order.id %}" class="btn btn-sm btn-success" title="تأكيد الاستلام">
+                                    <i class="fas fa-check-circle"></i>
+                                </a>
+                                <a href="{% url 'return' order.id %}" class="btn btn-sm btn-warning" title="إرجاع الطلب">
+                                    <i class="fas fa-undo"></i>
+                                </a>
+                                {% endif %}
+                                
+                                {% if order.status != 'canceled' %}
+                                <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-danger" title="إلغاء الطلب">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                                {% endif %}
+                                
+                                <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-primary" title="تعديل الطلب">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-info" title="عرض الفاتورة" target="_blank">
+                                    <i class="fas fa-file-invoice"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% empty %}
@@ -189,24 +490,267 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        let selectedOrders = new Set();
+        let currentStatus = '{{ current_status|default:"all" }}';
+
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileCards = document.querySelectorAll('.mobile-order-card');
-            mobileCards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (!e.target.closest('.btn')) {
-                        this.classList.toggle('expanded');
-                    }
+            initSelectionSystem();
+            initStatusSelector();
+            updateTotalOrders();
+        });
+
+        function initSelectionSystem() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const orderCheckboxes = document.querySelectorAll('.order-checkbox');
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    orderCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                        updateOrderSelection(checkbox);
+                    });
+                    updateBulkActionsUI();
+                });
+            }
+            
+            orderCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateOrderSelection(this);
+                    updateBulkActionsUI();
+                    updateSelectAllState();
                 });
             });
+        }
+
+        function initStatusSelector() {
+            const statusButtons = document.querySelectorAll('.status-btn');
+            const statusInput = document.getElementById('statusInput');
             
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(button => {
+            statusButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    this.classList.add('loading');
-                    setTimeout(() => {
-                        this.classList.remove('loading');
-                    }, 1000);
+                    statusButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    
+                    const status = this.dataset.status;
+                    statusInput.value = status;
+                    
+                    this.closest('form').submit();
                 });
+            });
+        }
+
+        function updateOrderSelection(checkbox) {
+            const orderId = checkbox.value;
+            const row = document.getElementById(`order-row-${orderId}`) || 
+                       document.getElementById(`mobile-order-${orderId}`);
+            
+            if (checkbox.checked) {
+                selectedOrders.add(orderId);
+                if (row) row.classList.add('selected');
+            } else {
+                selectedOrders.delete(orderId);
+                if (row) row.classList.remove('selected');
+            }
+        }
+
+        function updateSelectAllState() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const orderCheckboxes = document.querySelectorAll('.order-checkbox');
+            
+            if (!selectAllCheckbox) return;
+            
+            const checkedCount = Array.from(orderCheckboxes).filter(cb => cb.checked).length;
+            const totalCount = orderCheckboxes.length;
+            
+            if (checkedCount === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (checkedCount === totalCount) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+
+        function updateBulkActionsUI() {
+            const selectedCount = selectedOrders.size;
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const bulkContainer = document.getElementById('bulkActionsContainer');
+            
+            if (selectedCountSpan) {
+                selectedCountSpan.textContent = selectedCount + ' مختار';
+            }
+            
+            if (bulkContainer) {
+                if (selectedCount > 0) {
+                    bulkContainer.classList.add('show');
+                } else {
+                    bulkContainer.classList.remove('show');
+                }
+            }
+            
+            const bulkPrint = document.getElementById('bulkPrint');
+            const bulkShip = document.getElementById('bulkShip');
+            const bulkReceive = document.getElementById('bulkReceive');
+            const bulkReturn = document.getElementById('bulkReturn');
+            const bulkCancel = document.getElementById('bulkCancel');
+            
+            const isDisabled = selectedCount === 0;
+            
+            if (bulkPrint) bulkPrint.disabled = isDisabled;
+            if (bulkShip) bulkShip.disabled = isDisabled;
+            if (bulkReceive) bulkReceive.disabled = isDisabled;
+            if (bulkReturn) bulkReturn.disabled = isDisabled;
+            if (bulkCancel) bulkCancel.disabled = isDisabled;
+        }
+
+        function clearSelection() {
+            selectedOrders.clear();
+            
+            const orderCheckboxes = document.querySelectorAll('.order-checkbox');
+            orderCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                
+                const orderId = checkbox.value;
+                const row = document.getElementById(`order-row-${orderId}`) || 
+                           document.getElementById(`mobile-order-${orderId}`);
+                if (row) row.classList.remove('selected');
+            });
+            
+            updateBulkActionsUI();
+            updateSelectAllState();
+        }
+
+        function bulkAction(actionType) {
+            const orderIds = Array.from(selectedOrders);
+            
+            if (orderIds.length === 0) {
+                showAlert('يرجى اختيار طلب واحد على الأقل', 'warning');
+                return;
+            }
+            
+            let confirmMessage = '';
+            let url = '';
+            
+            switch(actionType) {
+                case 'print':
+                    confirmMessage = `هل تريد طباعة ${orderIds.length} فاتورة؟`;
+                    break;
+                case 'ship':
+                    confirmMessage = `هل تريد شحن ${orderIds.length} طلب؟`;
+                    break;
+                case 'receive':
+                    confirmMessage = `هل تريد تأكيد استلام ${orderIds.length} طلب؟`;
+                    break;
+                case 'return':
+                    confirmMessage = `هل تريد إرجاع ${orderIds.length} طلب؟`;
+                    break;
+                case 'cancel':
+                    confirmMessage = `هل تريد إلغاء ${orderIds.length} طلب؟`;
+                    break;
+            }
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            switch(actionType) {
+                case 'print':
+                    if (orderIds.length === 1) {
+                        url = `/customer-dashboard/print-invoice/${orderIds[0]}`;
+                        window.open(url, '_blank');
+                    } else {
+                        url = `/orders/print-multiple/?orders=${orderIds.join(',')}`;
+                        window.open(url, '_blank');
+                    }
+                    break;
+                    
+                case 'ship':
+                    if (orderIds.length === 1) {
+                        url = `/ship-order/${orderIds[0]}`;
+                    } else {
+                        url = `/orders/ship-multiple/?orders=${orderIds.join(',')}`;
+                    }
+                    window.location.href = url;
+                    break;
+                    
+                case 'receive':
+                    if (orderIds.length === 1) {
+                        url = `/confirm-delivered/${orderIds[0]}`;
+                    } else {
+                        url = `/orders/confirm-delivered-multiple/?orders=${orderIds.join(',')}`;
+                    }
+                    window.location.href = url;
+                    break;
+                    
+                case 'return':
+                    if (orderIds.length === 1) {
+                        url = `/return-order/${orderIds[0]}`;
+                    } else {
+                        url = `/orders/return-multiple/?orders=${orderIds.join(',')}`;
+                    }
+                    window.location.href = url;
+                    break;
+                    
+                case 'cancel':
+                    if (orderIds.length === 1) {
+                        url = `/customer-dashboard/cancel-order/${orderIds[0]}`;
+                    } else {
+                        url = `/orders/cancel-order-multiple/?orders=${orderIds.join(',')}`;
+                    }
+                    window.location.href = url;
+                    break;
+            }
+        }
+
+        function updateTotalOrders() {
+            const totalOrders = document.querySelectorAll('.order-checkbox').length;
+            const totalOrdersSpan = document.getElementById('totalOrders');
+            if (totalOrdersSpan) {
+                totalOrdersSpan.textContent = totalOrders + ' طلب';
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                max-width: 400px;
+            `;
+            
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'warning' ? 'exclamation-triangle' : 
+                        type === 'error' ? 'exclamation-circle' : 'info-circle';
+            
+            alertDiv.innerHTML = `
+                <i class="fas fa-${icon} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+
+        const mobileCards = document.querySelectorAll('.mobile-order-card');
+        mobileCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.closest('.btn') && !e.target.closest('.form-check-input')) {
+                    this.classList.toggle('expanded');
+                }
             });
         });
     </script>

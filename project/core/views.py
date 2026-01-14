@@ -1720,13 +1720,50 @@ def ship_orders(request):
     
  
     for order in orders:
+      if order.status == 'canceled' or order.status == 'returned':
+        items=OrderItem.objects.filter(order=order)
+        for i in items:
+          product=i.product
+          if product.quantity >= i.quantity:
+           product.quantity -= i.quantity
+           product.save() 
+          else:
+            messages.error(
+                request, 
+                f'⚠️ تعذر شحن الطلب #{order.ordernumber} - {order.customer_name} '
+                f'بسبب عدم كفاية المخزون للمنتجات المطلوبة. '
+                f'يرجى تحديث المخزون أولاً ثم إعادة محاولة الشحن.'
+            )
+            return redirect('customer_dashboard')
+
+          order.status = 'indeliver'  
+          order.save()
+      else:
         order.status = 'indeliver'  
         order.save()
+    messages.success(request,'تو وضع الطلبات في الشحن بنجاح')
     return redirect('customer_dashboard')
     
 
 def ship_order(request, order_id):
     order = get_object_or_404(Order,id=order_id)
+    if order.status == 'canceled' or order.status == 'returned':
+      items=OrderItem.objects.filter(order=order)
+      for i in items:
+        product=i.product
+        if product.quantity >= i.quantity:
+
+         product.quantity -= i.quantity
+         product.save() 
+        else:
+         messages.error(
+                request, 
+                f'⚠️ تعذر شحن الطلب #{order.ordernumber} - {order.customer_name} '
+                f'بسبب عدم كفاية المخزون للمنتجات المطلوبة. '
+                f'يرجى تحديث المخزون أولاً ثم إعادة محاولة الشحن.'
+            )
+         return redirect('customer_dashboard')
+     
     order.status = 'indeliver'
     order.save()
     messages.success(request,'تو وضع الطلب في الشحن بنجاح')
@@ -1746,16 +1783,51 @@ def confirm_delivered_multiple(request):
     
  
     for order in orders:
-        order.status = 'delivered'  
-        order.save()
+      if order.status == 'canceled' or order.status == 'returned':
+        items=OrderItem.objects.filter(order=order)
+        for i in items:
+          product=i.product
+          if product.quantity >= i.quantity:
+            product.quantity -= i.quantity
+            product.save() 
+          else:
+            messages.error(
+                request, 
+                f'⚠️ تعذر شحن الطلب #{order.ordernumber} - {order.customer_name} '
+                f'بسبب عدم كفاية المخزون للمنتجات المطلوبة. '
+                f'يرجى تحديث المخزون أولاً ثم إعادة محاولة الشحن.'
+            )
+            return redirect('customer_dashboard') 
+          order.status = 'delivered'  
+          order.save()
+      else:      
+         order.status = 'delivered'  
+         order.save()
+    messages.success(request, 'تم تاكيد تسليم الطلبات بنجاح.')
     return redirect('customer_dashboard')
 
 def confirm_delivered(request, order_id):
     order = get_object_or_404(Order,id=order_id )
+    if order.status == 'canceled' or order.status == 'returned':
+      items=OrderItem.objects.filter(order=order)
+      for i in items:
+        product=i.product
+        if product.quantity >= i.quantity:
+
+         product.quantity -= i.quantity
+         product.save() 
+        else:
+         messages.error(
+                request, 
+                f'⚠️ تعذر شحن الطلب #{order.ordernumber} - {order.customer_name} '
+                f'بسبب عدم كفاية المخزون للمنتجات المطلوبة. '
+                f'يرجى تحديث المخزون أولاً ثم إعادة محاولة الشحن.'
+            )
+         return redirect('customer_dashboard')
+     
     order.status = 'delivered'
     order.save()
     messages.success(request, 'تم تاكيد تسليم الطلب بنجاح.')
-
     return redirect('customer_dashboard')
 
 
@@ -1778,6 +1850,7 @@ def delete_order_multiple(request):
         product.save()        
         order.status = 'canceled'  
         order.save()
+    messages.success(request, 'تم الغاء الطلبات بنجاح.')
     return redirect('customer_dashboard')
 
 
@@ -1824,6 +1897,7 @@ def  return_order_multiple(request):
         product.save()        
         order.status = 'returned'  
         order.save()
+    messages.success(request, 'تم ارجاع الطلبات بنجاح.')
     return redirect('customer_dashboard')
 
 
