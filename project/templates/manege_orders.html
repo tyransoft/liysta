@@ -140,7 +140,6 @@
             background-color: rgba(249, 115, 22, 0.1);
         }
         
-        /* تخصيصات للجوال */
         @media (max-width: 768px) {
             .bulk-actions {
                 flex-direction: column;
@@ -190,7 +189,6 @@
             }
         }
         
-        /* ألوان الحالات */
         .status-pending { background-color: #ffc107; color: #000; }
         .status-indeliver { background-color: #0d6efd; color: #fff; }
         .status-delivered { background-color: #198754; color: #fff; }
@@ -227,7 +225,6 @@
         </div>
         {% endif %}
 
-        <!-- إجراءات جماعية -->
         <div class="bulk-actions-container" id="bulkActionsContainer">
             <div class="bulk-actions">
                 <span class="selected-count" id="selectedCount">0 مختار</span>
@@ -236,18 +233,15 @@
                     <i class="fas fa-print"></i> طباعة
                 </button>
                 
-                {% if current_status == 'pending' %}
                 <button class="bulk-action-btn ship" onclick="bulkAction('ship')" id="bulkShip" disabled>
                     <i class="fas fa-truck"></i> شحن
                 </button>
-                {% elif current_status == 'indeliver' %}
                 <button class="bulk-action-btn receive" onclick="bulkAction('receive')" id="bulkReceive" disabled>
                     <i class="fas fa-check-circle"></i> استلام
                 </button>
                 <button class="bulk-action-btn return" onclick="bulkAction('return')" id="bulkReturn" disabled>
                     <i class="fas fa-undo"></i> إرجاع
                 </button>
-                {% endif %}
                 
                 <button class="bulk-action-btn cancel" onclick="bulkAction('cancel')" id="bulkCancel" disabled>
                     <i class="fas fa-times"></i> إلغاء
@@ -282,29 +276,7 @@
                         </div>
                     </div>
                     
-                    <div class="mt-3">
-                        <div class="status-selector">
-                            <button type="button" class="status-btn {% if current_status == 'all' %}active{% endif %}" data-status="all">
-                                <i class="fas fa-list me-1"></i> الكل
-                            </button>
-                            <button type="button" class="status-btn {% if current_status == 'pending' %}active{% endif %}" data-status="pending">
-                                <i class="fas fa-clock me-1"></i> قيد الانتظار
-                            </button>
-                            <button type="button" class="status-btn {% if current_status == 'indeliver' %}active{% endif %}" data-status="indeliver">
-                                <i class="fas fa-truck me-1"></i> في التوصيل
-                            </button>
-                            <button type="button" class="status-btn {% if current_status == 'delivered' %}active{% endif %}" data-status="delivered">
-                                <i class="fas fa-check-circle me-1"></i> مسلم
-                            </button>
-                            <button type="button" class="status-btn {% if current_status == 'returned' %}active{% endif %}" data-status="returned">
-                                <i class="fas fa-undo me-1"></i> راجع
-                            </button>
-                            <button type="button" class="status-btn {% if current_status == 'canceled' %}active{% endif %}" data-status="canceled">
-                                <i class="fas fa-times me-1"></i> ملغي
-                            </button>
-                        </div>
-                        <input type="hidden" name="status" id="statusInput" value="{{ current_status|default:'all' }}">
-                    </div>
+                  
                 </form>
             </div>
         </div>
@@ -313,7 +285,6 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
                     <i class="fas fa-list-alt me-2"></i> قائمة الطلبات
-                    <span class="badge bg-primary ms-2" id="totalOrders">{{ orders|length }} طلب</span>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="selectAll">
@@ -352,7 +323,7 @@
                                     <td><strong>{{ order.ordernumber }}</strong></td>
                                     <td>{{ order.customer_name }}</td>
                                     <td>{{ order.customer_phone }}</td>
-                                    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>{{ order.created_at|date:"Y-m-d" }}</td>
                                     <td><strong>{{ order.get_total }} د.ل</strong></td>
                                     <td>
                                         <span class="badge status-{{ order.status }}">
@@ -437,7 +408,7 @@
                         
                         <div class="mobile-order-detail">
                             <span class="mobile-order-label">التاريخ:</span>
-                            <span class="mobile-order-value">{{ order.created_at|date:"Y-m-d H:i" }}</span>
+                            <span class="mobile-order-value">{{ order.created_at|date:"Y-m-d" }}</span>
                         </div>
                         
                         <div class="mobile-order-detail">
