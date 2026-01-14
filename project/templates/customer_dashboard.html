@@ -576,7 +576,7 @@
                     {% else %}
                     <td>استلام شخصي</td>
                     {% endif %}
-                    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ order.created_at|date:"Y-m-d" }}</td>
                     <td>{{ order.total_price|default:0 }} د.ل</td>
                     <td>
                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
