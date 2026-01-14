@@ -582,7 +582,7 @@
                     <td>استلام شخصي</td>
                     {% endif %}
                     <td>{{ order.created_at|date:"Y-m-d" }}</td>
-                    <td>{{ order.total_price|default:0 }} د.ل</td>
+                    <td>{{ order.get_total|default:0 }} د.ل</td>
                     <td>
                         <div class="single-actions">
                             <a href="{% url 'ship' order.id %}" class="action-btn btn-sm btn-success" title="شحن">
@@ -655,7 +655,7 @@
                                data-order-number="{% if order.ordernumber %}#{{ order.ordernumber }}{% else %}#{{ order.id }}{% endif %}"
                                data-customer="{{ order.customer_name }}">
                     </td>
-                    <td>{% if order.ordernumber %}#{{ order.ordernumber }}{% else %}#{{ order.id }}{% endif %}</td>
+                    <td>#{{ order.ordernumber }}</td>
                     <td>{{ order.customer_name }}</td>
                     <td>{{ order.customer_phone }}</td>
                     {% if order.delivery_address %}
@@ -664,7 +664,7 @@
                     <td>استلام شخصي</td>
                     {% endif %}
                     <td>{{ order.created_at|date:"Y-m-d" }}</td>
-                    <td>{{ order.total_price|default:0 }} د.ل</td>
+                    <td>{{ order.get_total|default:0 }} د.ل</td>
                     <td>
                         <div class="single-actions">
                             <a href="{% url 'recive' order.id %}" class="action-btn btn-sm btn-success" title="تأكيد الاستلام">
