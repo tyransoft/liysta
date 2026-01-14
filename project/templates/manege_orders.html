@@ -275,7 +275,29 @@
                             </button>
                         </div>
                     </div>
-                    
+                          <div class="mt-3">
+                <div class="status-selector">
+                    <button type="button" class="status-btn {% if current_status == 'all' %}active{% endif %}" data-status="all">
+                        <i class="fas fa-list me-1"></i> الكل
+                    </button>
+                    <button type="button" class="status-btn {% if current_status == 'pending' %}active{% endif %}" data-status="pending">
+                        <i class="fas fa-clock me-1"></i> قيد الانتظار
+                    </button>
+                    <button type="button" class="status-btn {% if current_status == 'indeliver' %}active{% endif %}" data-status="indeliver">
+                        <i class="fas fa-truck me-1"></i> في التوصيل
+                    </button>
+                    <button type="button" class="status-btn {% if current_status == 'delivered' %}active{% endif %}" data-status="delivered">
+                        <i class="fas fa-check-circle me-1"></i> مسلم
+                    </button>
+                    <button type="button" class="status-btn {% if current_status == 'returned' %}active{% endif %}" data-status="returned">
+                        <i class="fas fa-undo me-1"></i> راجع
+                    </button>
+                    <button type="button" class="status-btn {% if current_status == 'canceled' %}active{% endif %}" data-status="canceled">
+                        <i class="fas fa-times me-1"></i> ملغي
+                    </button>
+                </div>
+                <input type="hidden" name="status" id="statusInput" value="{{ current_status|default:'all' }}">
+            </div>
                   
                 </form>
             </div>
