@@ -528,15 +528,21 @@
                             <div class="stat-value" style="text-align: center; font-size: 2rem;" id="deliveredOrdersCount">{{ orders.delivered.count }}</div>
                         </div>
                     </div>
-
-                   <div class="dashboard-section">
+<!-- الطلبات الجديدة -->
+<div class="dashboard-section">
     <div class="section-header">
         <h2 class="section-title">الطلبات الجديدة</h2>
-        <div>
-            <button type="button" class="btn btn-primary" onclick="printSelectedOrders()" id="printSelectedBtn" disabled>
-                <i class="fas fa-print"></i> طباعة المحدد
+        <div class="bulk-actions">
+            <span class="selected-count" id="newSelectedCount">0 مختار</span>
+            <button class="btn btn-primary btn-sm" onclick="bulkPrintNew()" id="newBulkPrint" disabled>
+                <i class="fas fa-print"></i> طباعة
             </button>
-            <span id="selectedOrdersCount" style="margin-right: 10px; color: var(--primary);">0 طلب</span>
+            <button class="btn btn-success btn-sm" onclick="bulkShipNew()" id="newBulkShip" disabled>
+                <i class="fas fa-truck"></i> شحن
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="bulkCancelNew()" id="newBulkCancel" disabled>
+                <i class="fas fa-times"></i> إلغاء
+            </button>
         </div>
     </div>
     
@@ -553,20 +559,19 @@
                     <th>العنوان</th>
                     <th>التاريخ</th>
                     <th>المجموع</th>
-                    <th>الإجراءات</th>
+                    <th width="150">الإجراءات</th>
                 </tr>
             </thead>
             <tbody id="newOrdersTable">
                 {% for order in orders.new %}
-                <tr id="order-row-{{ order.id }}">
+                <tr id="order-row-{{ order.id }}" class="order-row">
                     <td>
                         <input type="checkbox" 
                                name="selected_orders" 
                                value="{{ order.id }}" 
-                               class="order-checkbox form-check-input"
-                               data-order-id="{{ order.id }}"
-                               data-customer="{{ order.customer_name }}"
-                               data-total="{{ order.total_price|default:0 }}">
+                               class="order-checkbox new-checkbox form-check-input"
+                               data-order-number="{{ order.ordernumber }}"
+                               data-customer="{{ order.customer_name }}">
                     </td>
                     <td>#{{ order.ordernumber }}</td>
                     <td>{{ order.customer_name }}</td>
@@ -579,12 +584,15 @@
                     <td>{{ order.created_at|date:"Y-m-d" }}</td>
                     <td>{{ order.total_price|default:0 }} د.ل</td>
                     <td>
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <a href="{% url 'invoice' order.id %}" class="action-btn" target="_blank" title="طباعة الفاتورة">
-                                <i class="fas fa-print"></i>
+                        <div class="single-actions">
+                            <a href="{% url 'ship' order.id %}" class="action-btn btn-sm btn-success" title="شحن">
+                                <i class="fas fa-truck"></i>
                             </a>
-                            <a href="{% url 'order_delete' order.id %}" class="action-btn" title="إلغاء الطلب" style="background: var(--danger-light); color: var(--danger);">
+                            <a href="{% url 'order_delete' order.id %}" class="action-btn btn-sm btn-danger" title="إلغاء">
                                 <i class="fas fa-times"></i>
+                            </a>
+                            <a href="{% url 'invoice' order.id %}" class="action-btn btn-sm btn-info" target="_blank" title="طباعة">
+                                <i class="fas fa-print"></i>
                             </a>
                         </div>
                     </td>
@@ -598,61 +606,91 @@
         </table>
     </div>
 </div>
-                    <div class="dashboard-section">
-                        <div class="section-header">
-                            <h2 class="section-title">الطلبات قيد التسليم</h2>
-                        </div>
-                        
-                        <div class="table-responsive">
-                            <table class="orders-table">
-                                <thead>
-                                    <tr>
-                                        <th>اسم العميل</th>
-                                        <th>رقم العميل</th>
-                                        <th>العنوان</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="deliveringOrdersTable">
-                                    {% for order in orders.indeliver %}
-                                    <tr>
-                                        <td>{{ order.customer_name }}</td>
-                                        <td>{{ order.customer_phone }}</td>
-                                        {% if order.delivery_address %}
-                                        <td>{{ order.delivery_address }}</td>
-                                        {% else %}
-                                        <td>استلام شخصي</td>
-                                        {% endif %}
-                                        <td>
-                                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                                <a href="{% url 'recive' order.id %}" class="action-btn" title="تأكيد الاستلام">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </a>
-                                                <a href="{% url 'order_delete' order.id %}" class="action-btn" title="إلغاء الطلب" style="background: var(--danger-light); color: var(--danger);">
-                                                    <i class="fas fa-times"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="4" style="text-align: center;">لا توجد طلبات قيد التوصيل متاحة</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
+<!-- الطلبات قيد التسليم -->
+<div class="dashboard-section">
+    <div class="section-header">
+        <h2 class="section-title">الطلبات قيد التسليم</h2>
+        <div class="bulk-actions">
+            <span class="selected-count" id="deliveringSelectedCount">0 مختار</span>
+            <button class="btn btn-primary btn-sm" onclick="bulkPrintDelivering()" id="deliveringBulkPrint" disabled>
+                <i class="fas fa-print"></i> طباعة
+            </button>
+            <button class="btn btn-success btn-sm" onclick="bulkReceiveDelivering()" id="deliveringBulkReceive" disabled>
+                <i class="fas fa-check-circle"></i> استلام
+            </button>
+            <button class="btn btn-warning btn-sm" onclick="bulkReturnDelivering()" id="deliveringBulkReturn" disabled>
+                <i class="fas fa-undo"></i> إرجاع
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="bulkCancelDelivering()" id="deliveringBulkCancel" disabled>
+                <i class="fas fa-times"></i> إلغاء
+            </button>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th width="50">
+                        <input type="checkbox" id="selectAllDelivering" class="form-check-input">
+                    </th>
+                    <th>رقم الطلب</th>
+                    <th>اسم العميل</th>
+                    <th>رقم العميل</th>
+                    <th>العنوان</th>
+                    <th>التاريخ</th>
+                    <th>المجموع</th>
+                    <th width="180">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="deliveringOrdersTable">
+                {% for order in orders.indeliver %}
+                <tr id="delivering-row-{{ order.id }}" class="order-row">
+                    <td>
+                        <input type="checkbox" 
+                               name="selected_delivering_orders" 
+                               value="{{ order.id }}" 
+                               class="order-checkbox delivering-checkbox form-check-input"
+                               data-order-number="{% if order.ordernumber %}#{{ order.ordernumber }}{% else %}#{{ order.id }}{% endif %}"
+                               data-customer="{{ order.customer_name }}">
+                    </td>
+                    <td>{% if order.ordernumber %}#{{ order.ordernumber }}{% else %}#{{ order.id }}{% endif %}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.customer_phone }}</td>
+                    {% if order.delivery_address %}
+                    <td>{{ order.delivery_address }}</td>
                     {% else %}
-                    <div class="dashboard-section">
-                        <div class="section-header">
-                            <h2 class="section-title">ميزة الطلبات غير مفعلة</h2>
-                        </div>
-                        <p>باقتك الحالية لا تدعم إدارة الطلبات. قم <a href="{% url 'renew_subscription' subscription.id %}">بترقية اشتراكك</a> لتفعيل هذه الميزة.</p>
-                    </div>
+                    <td>استلام شخصي</td>
                     {% endif %}
-                </div>
-            </div>
+                    <td>{{ order.created_at|date:"Y-m-d" }}</td>
+                    <td>{{ order.total_price|default:0 }} د.ل</td>
+                    <td>
+                        <div class="single-actions">
+                            <a href="{% url 'recive' order.id %}" class="action-btn btn-sm btn-success" title="تأكيد الاستلام">
+                                <i class="fas fa-check-circle"></i>
+                            </a>
+                            <a href="{% url 'return' order.id %}" class="action-btn btn-sm btn-warning" title="إرجاع للجديدة">
+                                <i class="fas fa-undo"></i>
+                            </a>
+                            <a href="{% url 'order_delete' order.id %}" class="action-btn btn-sm btn-danger" title="إلغاء الطلب">
+                                <i class="fas fa-times"></i>
+                            </a>
+                            <a href="{% url 'invoice' order.id %}" class="action-btn btn-sm btn-info" target="_blank" title="طباعة">
+                                <i class="fas fa-print"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center;">لا توجد طلبات قيد التوصيل متاحة</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>                  
 
             <div id="products" class="content-section">
                 <div class="dashboard-section">
@@ -1344,98 +1382,225 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     initializeOrderSelection();
 });
+// ========== نظام التحديد والإجراءات الجماعية ==========
 
-function initializeOrderSelection() {
-    const selectAllCheckbox = document.getElementById('selectAllNew');
-    const orderCheckboxes = document.querySelectorAll('.order-checkbox');
-    const printSelectedBtn = document.getElementById('printSelectedBtn');
-    const selectedCountSpan = document.getElementById('selectedOrdersCount');
-    const totalAmountSpan = document.getElementById('selectedOrdersTotal');
-
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            orderCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            updateSelectionInfo();
+// إدارة التحديد للطلبات الجديدة
+function initNewOrdersSelection() {
+    const selectAllNew = document.getElementById('selectAllNew');
+    const newCheckboxes = document.querySelectorAll('.new-checkbox');
+    
+    if (selectAllNew) {
+        selectAllNew.addEventListener('change', function() {
+            newCheckboxes.forEach(cb => cb.checked = this.checked);
+            updateNewSelection();
         });
     }
-
-    function updateSelectionInfo() {
-        const selectedCheckboxes = Array.from(orderCheckboxes).filter(cb => cb.checked);
-        const selectedCount = selectedCheckboxes.length;
-        
-        let totalAmount = 0;
-        selectedCheckboxes.forEach(checkbox => {
-            totalAmount += parseFloat(checkbox.dataset.total) || 0;
-        });
-        
-        selectedCountSpan.textContent = selectedCount + ' طلب';
-        
-        if (printSelectedBtn) {
-            printSelectedBtn.disabled = selectedCount === 0;
-        }
-        
-        if (selectAllCheckbox) {
-            selectAllCheckbox.checked = selectedCount > 0 && selectedCount === orderCheckboxes.length;
-            selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < orderCheckboxes.length;
-        }
-        
-        orderCheckboxes.forEach(checkbox => {
-            const row = checkbox.closest('tr');
-            if (checkbox.checked) {
-                row.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
-                row.style.borderLeft = '3px solid var(--primary)';
-            } else {
-                row.style.backgroundColor = '';
-                row.style.borderLeft = '';
-            }
-        });
-    }
-
-    orderCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateSelectionInfo);
+    
+    newCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateNewSelection);
     });
-
-    updateSelectionInfo();
 }
 
-function printSelectedOrders() {
-    const selectedCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+// إدارة التحديد للطلبات قيد التسليم
+function initDeliveringOrdersSelection() {
+    const selectAllDelivering = document.getElementById('selectAllDelivering');
+    const deliveringCheckboxes = document.querySelectorAll('.delivering-checkbox');
     
-    if (selectedCheckboxes.length === 0) {
+    if (selectAllDelivering) {
+        selectAllDelivering.addEventListener('change', function() {
+            deliveringCheckboxes.forEach(cb => cb.checked = this.checked);
+            updateDeliveringSelection();
+        });
+    }
+    
+    deliveringCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateDeliveringSelection);
+    });
+}
+
+// تحديث حالة التحديد للطلبات الجديدة
+function updateNewSelection() {
+    const checkboxes = document.querySelectorAll('.new-checkbox:checked');
+    const count = checkboxes.length;
+    const countSpan = document.getElementById('newSelectedCount');
+    const printBtn = document.getElementById('newBulkPrint');
+    const shipBtn = document.getElementById('newBulkShip');
+    const cancelBtn = document.getElementById('newBulkCancel');
+    const selectAll = document.getElementById('selectAllNew');
+    
+    countSpan.textContent = `${count} مختار`;
+    
+    const isDisabled = count === 0;
+    printBtn.disabled = isDisabled;
+    shipBtn.disabled = isDisabled;
+    cancelBtn.disabled = isDisabled;
+    
+    if (selectAll) {
+        const allCheckboxes = document.querySelectorAll('.new-checkbox');
+        selectAll.checked = count > 0 && count === allCheckboxes.length;
+        selectAll.indeterminate = count > 0 && count < allCheckboxes.length;
+    }
+    
+    document.querySelectorAll('.new-checkbox').forEach(cb => {
+        const row = cb.closest('tr');
+        if (cb.checked) {
+            row.classList.add('selected');
+        } else {
+            row.classList.remove('selected');
+        }
+    });
+}
+
+// تحديث حالة التحديد للطلبات قيد التسليم
+function updateDeliveringSelection() {
+    const checkboxes = document.querySelectorAll('.delivering-checkbox:checked');
+    const count = checkboxes.length;
+    const countSpan = document.getElementById('deliveringSelectedCount');
+    const printBtn = document.getElementById('deliveringBulkPrint');
+    const receiveBtn = document.getElementById('deliveringBulkReceive');
+    const returnBtn = document.getElementById('deliveringBulkReturn');
+    const cancelBtn = document.getElementById('deliveringBulkCancel');
+    const selectAll = document.getElementById('selectAllDelivering');
+    
+    countSpan.textContent = `${count} مختار`;
+    
+    const isDisabled = count === 0;
+    printBtn.disabled = isDisabled;
+    receiveBtn.disabled = isDisabled;
+    returnBtn.disabled = isDisabled;
+    cancelBtn.disabled = isDisabled;
+    
+    if (selectAll) {
+        const allCheckboxes = document.querySelectorAll('.delivering-checkbox');
+        selectAll.checked = count > 0 && count === allCheckboxes.length;
+        selectAll.indeterminate = count > 0 && count < allCheckboxes.length;
+    }
+    
+    document.querySelectorAll('.delivering-checkbox').forEach(cb => {
+        const row = cb.closest('tr');
+        if (cb.checked) {
+            row.classList.add('selected');
+        } else {
+            row.classList.remove('selected');
+        }
+    });
+}
+
+// ========== دوال الإجراءات الجماعية ==========
+
+function openBulkAction(actionType, orderIds, confirmMessage = null) {
+    if (orderIds.length === 0) {
         showAlert('يرجى اختيار طلب واحد على الأقل', 'warning');
         return;
     }
     
-    const orderIds = Array.from(selectedCheckboxes).map(cb => cb.value);
-    
-    if (orderIds.length === 1) {
-        window.open(`/customer-dashboard/print-invoice/${orderIds[0]}`, '_blank');
+    if (confirmMessage && !confirm(confirmMessage)) {
         return;
     }
     
-    const url = `/orders/print-multiple/?orders=${orderIds.join(',')}`;
-    window.open(url, '_blank');
+    let url = '';
     
-    showAlert(`تم فتح ${orderIds.length} فاتورة للطباعة`, 'success');
+    switch(actionType) {
+        case 'print':
+            if (orderIds.length === 1) {
+                url = `/customer-dashboard/print-invoice/${orderIds[0]}`;
+            } else {
+                url = `/orders/print-multiple/?orders=${orderIds.join(',')}`;
+            }
+            window.open(url, '_blank');
+            showAlert(`تم فتح ${orderIds.length} فاتورة للطباعة`, 'success');
+            break;
+            
+        case 'ship':
+            if (orderIds.length === 1) {
+                window.location.href = `/ship-order/${orderIds[0]}`;
+            } else {
+                window.location.href = `/orders/ship-multiple/?orders=${orderIds.join(',')}`;
+            }
+            break;
+            
+        case 'receive':
+            if (orderIds.length === 1) {
+                window.location.href = `/confirm-delivered/${orderIds[0]}`;
+            } else {
+                window.location.href = `/orders/confirm-delivered-multiple/?orders=${orderIds.join(',')}`;
+            }
+            break;
+            
+        case 'return':
+            if (orderIds.length === 1) {
+                window.location.href = `/return-order/${orderIds[0]}`;
+            } else {
+                window.location.href = `/orders/return-multiple/?orders=${orderIds.join(',')}`;
+            }
+            break;
+            
+        case 'cancel':
+            if (orderIds.length === 1) {
+                window.location.href = `/customer-dashboard/cancel-order/${orderIds[0]}`;
+            } else {
+                window.location.href = `/orders/cancel-order-multiple/?orders=${orderIds.join(',')}`;
+            }
+            break;
+    }
 }
 
+// دوال مختصرة لكل إجراء
+function bulkPrintNew() {
+    const checkboxes = document.querySelectorAll('.new-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('print', orderIds);
+}
+
+function bulkShipNew() {
+    const checkboxes = document.querySelectorAll('.new-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('ship', orderIds, `هل تريد شحن ${orderIds.length} طلب؟`);
+}
+
+function bulkCancelNew() {
+    const checkboxes = document.querySelectorAll('.new-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('cancel', orderIds, `هل تريد إلغاء ${orderIds.length} طلب؟`);
+}
+
+function bulkPrintDelivering() {
+    const checkboxes = document.querySelectorAll('.delivering-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('print', orderIds);
+}
+
+function bulkReceiveDelivering() {
+    const checkboxes = document.querySelectorAll('.delivering-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('receive', orderIds, `هل تريد تأكيد استلام ${orderIds.length} طلب؟`);
+}
+
+function bulkReturnDelivering() {
+    const checkboxes = document.querySelectorAll('.delivering-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('return', orderIds, `هل تريد إرجاع ${orderIds.length} طلب للجديدة؟`);
+}
+
+function bulkCancelDelivering() {
+    const checkboxes = document.querySelectorAll('.delivering-checkbox:checked');
+    const orderIds = Array.from(checkboxes).map(cb => cb.value);
+    openBulkAction('cancel', orderIds, `هل تريد إلغاء ${orderIds.length} طلب قيد التسليم؟`);
+}
+
+// ========== دوال مساعدة ==========
+
 function showAlert(message, type = 'info') {
-    const existingAlerts = document.querySelectorAll('.selection-alert');
-    existingAlerts.forEach(alert => alert.remove());
-    
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert-custom alert-${type} selection-alert`;
+    alertDiv.className = `alert-custom alert-${type}`;
     alertDiv.style.cssText = `
         position: fixed;
         top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
+        right: 20px;
         z-index: 9999;
         min-width: 300px;
-        text-align: center;
-        animation: slideDown 0.3s ease;
+        max-width: 400px;
+        animation: slideInRight 0.3s ease;
     `;
     
     alertDiv.innerHTML = `
@@ -1455,7 +1620,7 @@ function showAlert(message, type = 'info') {
     setTimeout(() => {
         if (alertDiv.parentNode) {
             alertDiv.style.opacity = '0';
-            alertDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+            alertDiv.style.transform = 'translateX(100%)';
             setTimeout(() => {
                 if (alertDiv.parentNode) {
                     alertDiv.remove();
@@ -1465,39 +1630,109 @@ function showAlert(message, type = 'info') {
     }, 3000);
 }
 
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
+// ========== تهيئة النظام عند تحميل الصفحة ==========
+document.addEventListener('DOMContentLoaded', function() {
+    initNewOrdersSelection();
+    initDeliveringOrdersSelection();
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        
+        .selected-count {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
-    }
-    
-    .order-checkbox:checked + td {
-        font-weight: bold;
-    }
-    
-    .form-check-input {
-        width: 1.2em;
-        height: 1.2em;
-        cursor: pointer;
-    }
-    
-    .form-check-input:checked {
-        background-color: var(--primary);
-        border-color: var(--primary);
-    }
-    
-    #selectAllNew {
-        margin: 0;
-    }
-`;
-document.head.appendChild(style);
+        
+        .order-row.selected {
+            background-color: rgba(249, 115, 22, 0.1) !important;
+            border-left: 3px solid var(--primary) !important;
+        }
+        
+        .single-actions {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: flex-end;
+        }
+        
+        .action-btn.btn-sm {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        
+        .action-btn.btn-success {
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .action-btn.btn-danger {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .action-btn.btn-warning {
+            background: var(--warning-light);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+        
+        .action-btn.btn-info {
+            background: var(--info-light);
+            color: var(--info);
+            border: 1px solid var(--info);
+        }
+        
+        .action-btn.btn-primary {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            cursor: pointer;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    `;
+    document.head.appendChild(style);
+});
     </script>
 </body>
 </html>

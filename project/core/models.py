@@ -464,6 +464,8 @@ class Order(models.Model):
         ('pending', 'قيد الانتظار'),
         ('indeliver', 'قيد التجهيز'),
         ('canceled', 'تم الالغاء'),
+        ('returned', 'راجع'),
+
         ('delivered', 'تم التسليم'),
 
     ]

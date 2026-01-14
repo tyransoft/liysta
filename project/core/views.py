@@ -1710,21 +1710,76 @@ def print_multiple_invoices(request):
         'orders': orders,'template':template
     })
 
+def ship_orders(request):
+    order_ids = request.GET.get('orders', '').split(',')
+    orders = Order.objects.filter(id__in=order_ids)
+
+    
+    if not orders.exists():
+        return HttpResponseForbidden()
+    
+ 
+    for order in orders:
+        order.status = 'indeliver'  
+        order.save()
+    return redirect('customer_dashboard')
+    
+
 def ship_order(request, order_id):
-    order = get_object_or_404(Order,id=order_id ,status='pending')
+    order = get_object_or_404(Order,id=order_id)
     order.status = 'indeliver'
     order.save()
     messages.success(request,'تو وضع الطلب في الشحن بنجاح')
 
     return redirect('customer_dashboard')
 
+
+
+
+def confirm_delivered_multiple(request):
+    order_ids = request.GET.get('orders', '').split(',')
+    orders = Order.objects.filter(id__in=order_ids)
+
+    
+    if not orders.exists():
+        return HttpResponseForbidden()
+    
+ 
+    for order in orders:
+        order.status = 'delivered'  
+        order.save()
+    return redirect('customer_dashboard')
+
 def confirm_delivered(request, order_id):
-    order = get_object_or_404(Order,id=order_id ,status='indeliver')
+    order = get_object_or_404(Order,id=order_id )
     order.status = 'delivered'
     order.save()
     messages.success(request, 'تم تاكيد تسليم الطلب بنجاح.')
 
     return redirect('customer_dashboard')
+
+
+
+
+def delete_order_multiple(request):
+    order_ids = request.GET.get('orders', '').split(',')
+    orders = Order.objects.filter(id__in=order_ids)
+
+    
+    if not orders.exists():
+        return HttpResponseForbidden()
+    
+ 
+    for order in orders:
+      items=OrderItem.objects.filter(order=order)
+      for i in items:
+        product=i.product
+        product.quantity += i.quantity
+        product.save()        
+        order.status = 'canceled'  
+        order.save()
+    return redirect('customer_dashboard')
+
 
 def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -1735,8 +1790,43 @@ def delete_order(request, order_id):
         product.save()
     order.status="canceled"
     order.save()
-    messages.success(request, 'تم حذف الطلب بنجاح.')
+    messages.success(request, 'تم الغاء الطلب بنجاح.')
     return redirect('customer_dashboard')
+
+
+def return_order(request,order_id):
+    order = get_object_or_404(Order, id=order_id)
+    items=OrderItem.objects.filter(order=order_id)
+    for i in items:
+        product=i.product
+        product.quantity += i.quantity
+        product.save()
+    order.status="returned"
+    order.save()
+    messages.success(request, 'تم ارجاع الطلب بنجاح.')
+    return redirect('customer_dashboard')
+
+
+def  return_order_multiple(request):
+    order_ids = request.GET.get('orders', '').split(',')
+    orders = Order.objects.filter(id__in=order_ids)
+
+    
+    if not orders.exists():
+        return HttpResponseForbidden()
+    
+ 
+    for order in orders:
+      items=OrderItem.objects.filter(order=order)
+      for i in items:
+        product=i.product
+        product.quantity += i.quantity
+        product.save()        
+        order.status = 'returned'  
+        order.save()
+    return redirect('customer_dashboard')
+
+
 
 
 def check_new_orders(request):

@@ -69,16 +69,25 @@ urlpatterns = [
     path('customer-dashboard/check-new-orders/',check_new_orders,name='check-new-orders'),
     path('preview-template/', preview_template, name='preview_template'),
     path('preview-invoice/', preview_invoice, name='preview_invoice'),
+    path('choose-invoice/<int:menu_id>', choose_invoice, name='choose_invoice'),
     
 
     path('customer-dashboard/print-invoice/<int:order_id>', print_invoice, name='invoice'),
-    path('choose-invoice/<int:menu_id>', choose_invoice, name='choose_invoice'),
-    path('ship-order/<int:order_id>', ship_order, name='ship'),
-
     path('orders/print-multiple/', print_multiple_invoices, name='invoice'),
+    
+    path('ship-order/<int:order_id>', ship_order, name='ship'),
+    path('orders/ship-multiple/', ship_orders, name='ship_orders'),
 
     path('confirm-delivered/<int:order_id>', confirm_delivered, name='recive'),
+    path('orders/confirm-delivered-multiple/', confirm_delivered_multiple, name='recive_orders'),
+
+
     path('customer-dashboard/cancel-order/<int:order_id>', delete_order, name='order_delete'),
+    path('orders/cancel-order-multiple/', delete_order_multiple, name='order_delete_orders'),
+    
+    path('return-order/<int:order_id>', return_order, name='return'),
+    path('orders/return-multiple/', return_order_multiple, name='return_orders'),
+    
     path('orders/<int:menu_id>', manege_order, name='manege_order'),
     path('edite-order/<int:order_id>', edite_order, name='edite_order'),
     path('update-order/<int:order_id>/', update_order, name='update_order'),
