@@ -6,13 +6,25 @@
 <style>
 @page { size: A4; margin: 10mm; }
 body { margin: 0; font-family: Tahoma, Arial, sans-serif; background: #eee; }
-.invoice { width: 190mm; min-height: 277mm; background: #fff; padding: 10mm; margin: auto; color: #000; page-break-after: always; }
+.invoice {
+    width: 190mm;
+    min-height: 277mm;
+    background: #fff;
+    padding: 10mm;
+    margin: auto;
+    color: #000;
+
+    page-break-after: always;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block;
+}
 </style>
 </head>
 <body>
 
 {% for order in orders %}
-  {% include template with bill=order items=order.items.all %}
+  {% include template with bill=order items=order.orderitem_set.all %}
 {% endfor %}
 
 <script>
