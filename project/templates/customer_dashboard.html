@@ -580,7 +580,7 @@
                     <td>{{ order.total_price|default:0 }} د.ل</td>
                     <td>
                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <a href="{% url 'print_invoice' order.id %}" class="action-btn" target="_blank" title="طباعة الفاتورة">
+                            <a href="{% url 'invoice' order.id %}" class="action-btn" target="_blank" title="طباعة الفاتورة">
                                 <i class="fas fa-print"></i>
                             </a>
                             <a href="{% url 'order_delete' order.id %}" class="action-btn" title="إلغاء الطلب" style="background: var(--danger-light); color: var(--danger);">
