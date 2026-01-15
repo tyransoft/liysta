@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.db.models import Sum,F, ExpressionWrapper,DecimalField,Avg,IntegerField
+from django.db.models import Sum,F, ExpressionWrapper,DecimalField,Avg,IntegerField,Count
 from datetime import date
 from django.db.models.functions import ExtractMonth
 from django.core.mail import send_mail
@@ -1268,15 +1268,46 @@ def customer_dashboard(request):
                 month_index = data['month'] - 1
                 monthly_sales[month_index] = float(data['total_sales'] or 0)
                 monthly_profits[month_index] = float(data['total_profit'] or 0)
+            returned=Order.objects.filter(menu=menu,status='returned').count()
+            delivered=Order.objects.filter(menu=menu,status='delivered').count()
+            canceled=Order.objects.filter(menu=menu,status='canceled').count()
+            non_orders= canceled + returned
+            if delivered >0:
+             deliv_per=(non_orders/delivered)*100
+            else:
+             deliv_per=0
 
+            
+
+            monthly_products=OrderItem.objects.filter(
+             order__created_at__month=now.month,
+             order__created_at__year=now.year,
+             menu=menu
+             ).values('product__name').annotate(
+                 quantity=Sum('quantity'),
+                 orders=Count('order',distinct=True)
+             ).order_by('-quantity')[:5]
+            
+            general_products=OrderItem.objects.filter(menu=menu).values('product__name').annotate(
+                 quantity=Sum('quantity'),
+                 orders=Count('order',distinct=True)
+             ).order_by('-quantity')[:5]
+                        
             context.update({
                 'orders': orders,
+                'delivered_percent':deliv_per,
                 'total_sales': sales_stats['total'],
                 'monthly_sales_value': sales_stats['monthly'],
                 'total_profit': profit_stats['total'],
                 'monthly_profit': profit_stats['monthly'],
                 'monthly_sales': monthly_sales,
                 'monthly_profits': monthly_profits,
+                'monthly_products':list(monthly_products),
+                'general_products':list(general_products),
+                'delivered_orders_count': delivered,
+                'returned_orders_count': returned,
+                'canceled_orders_count': canceled,
+
                 'months': json.dumps(months_labels),  
             })
         if subscription.plan.review:

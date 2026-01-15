@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>مطعم مشاوي -{{bill.ordernumber}} </title>
+<title>فاتورة  -{{bill.id}}-{{bill.ordernumber}} </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 @page {
@@ -260,7 +260,7 @@ body {
     <div>
       <div class="info-row">
         <span>رقم الفاتورة:</span>
-        <span>{{bill.ordernumber}}</span>
+        <span>#{{bill.id}}-{{bill.ordernumber}}</span>
       </div>
       <div class="info-row">
         <span>التاريخ:</span>

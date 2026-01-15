@@ -612,7 +612,7 @@
                                                value="{{ order.id }}"
                                                onchange="updateSelection()">
                                     </td>
-                                    <td class="order-number">#{{ order.ordernumber }}</td>
+                                    <td class="order-number">#{{order.id}}-{{ order.ordernumber }}</td>
                                     <td>{{ order.customer_name }}</td>
                                     <td>{{ order.customer_phone }}</td>
                                     <td>{{ order.created_at|date:"Y-m-d" }}</td>

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>فاتورة رقم -{{bill.ordernumber}}</title>
+  <title>فاتورة رقم -{{bill.id}}-{{bill.ordernumber}}</title>
   
   <style>
     * {
@@ -384,7 +384,7 @@
     </div>
     
     <div class="invoice-details">
-      <div class="invoice-number">فاتورة رقم: #{{bill.ordernumber}}</div>
+      <div class="invoice-number">فاتورة رقم: #{{bill.id}}-{{bill.ordernumber}}</div>
       
       <div class="date-section">
         <div class="date-item">

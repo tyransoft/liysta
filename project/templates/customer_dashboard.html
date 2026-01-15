@@ -440,7 +440,123 @@
                         <p>باقتك الحالية لا تدعم الإحصائيات المتقدمة. قم <a href="{% url 'renew_subscription' subscription.id %}">بترقية اشتراكك</a> لتفعيل هذه الميزة.</p>
                     </div>
                     {% endif %}
-                    
+                    {% if subscription.plan.ordering %}
+<!-- قسم الإحصائيات الجديدة -->
+<div class="dashboard-section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="fas fa-chart-pie"></i> إحصائيات الطلبات
+        </h2>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--success-light); color: var(--success);">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="stat-info">
+                <p class="stat-title">نسبة التسليم</p>
+                <h3 class="stat-value">{{ delivered_percent|floatformat:1 }}%</h3>
+                <p class="stat-subtitle">
+                    <span style="color: var(--success);">{{ delivered_orders_count }}</span> مسلمة
+                </p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--danger-light); color: var(--danger);">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stat-info">
+                <p class="stat-title">الطلبات الملغية</p>
+                <h3 class="stat-value">{{ canceled_orders_count }}</h3>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+                <i class="fas fa-undo"></i>
+            </div>
+            <div class="stat-info">
+                <p class="stat-title">الطلبات المرتجعة</p>
+                <h3 class="stat-value">{{ returned_orders_count }}</h3>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--info-light); color: var(--info);">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="stat-info">
+                <p class="stat-title">إجمالي الطلبات المسلمة</p>
+                <h3 class="stat-value">{{ delivered_orders_count }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-section" style="margin-top: 2rem;">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-fire"></i> المنتجات الأكثر مبيعاً
+            </h2>
+            <div class="chart-actions">
+                <button class="chart-btn active" data-products="monthly">هذا الشهر</button>
+                <button class="chart-btn" data-products="general">جميع الأوقات</button>
+            </div>
+        </div>
+        
+        <div id="monthlyProducts" class="table-responsive" style="display: block;">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>اسم المنتج</th>
+                        <th>الكمية المباعة</th>
+                        <th>عدد الطلبات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in monthly_products %}
+                    <tr>
+                        <td>{{ product.product__name|default:"غير محدد" }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.orders }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center;">لا توجد مبيعات هذا الشهر</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="generalProducts" class="table-responsive" style="display: none;">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>اسم المنتج</th>
+                        <th>الكمية المباعة</th>
+                        <th>عدد الطلبات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in general_products %}
+                    <tr>
+                        <td>{{ product.product__name|default:"غير محدد" }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.orders }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center;">لا توجد منتجات مبيعاً</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
                     <div class="dashboard-section">
                         <div class="section-header">
                             <h2 class="section-title">إحصائيات الزيارات</h2>

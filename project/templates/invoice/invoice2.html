@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتورة  -  {{bill.ordernumber }}</title>
+    <title>فاتورة  - {{bill.id}}-{{bill.ordernumber }}</title>
     <style>
         :root {
             --invoice-color: {{bill.menu.second_color}};
@@ -544,7 +544,7 @@
                 
                 <div class="invoice-title">
                     <h2>فاتورة شراء</h2>
-                    <div class="invoice-id">رقم الفاتورة:#{{bill.ordernumber}}</div>
+                    <div class="invoice-id">رقم الفاتورة:#{{bill.id}}-{{bill.ordernumber}}</div>
                 </div>
             </div>
             

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مأكولات فاتورة-{{bill.ordernumber}}</title>
+  <title> فاتورة-{{bill.id}}-{{bill.ordernumber}}</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
@@ -488,7 +488,7 @@
     <div class="invoice-info">
       <div class="info-row">
         <span class="info-label">رقم الفاتورة:</span>
-        <span class="info-value">#{{bill.ordernumber}}</span>
+        <span class="info-value">#{{bill.id}}-{{bill.ordernumber}}</span>
       </div>
       <div class="info-row">
         <span class="info-label">التاريخ:</span>
