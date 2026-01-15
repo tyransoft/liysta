@@ -97,6 +97,61 @@
         padding: 1rem;
     }
 }
+.chart-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chart-btn {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.chart-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.chart-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.orders-table th {
+    background: var(--light);
+    padding: 1rem;
+    text-align: right;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+}
+
+.orders-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.orders-table tr:hover {
+    background: rgba(249, 115, 22, 0.05);
+}
+
+.stat-subtitle {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+}
     </style>
 </head>
 <body>
@@ -441,7 +496,6 @@
                     </div>
                     {% endif %}
                     {% if subscription.plan.ordering %}
-<!-- قسم الإحصائيات الجديدة -->
 <div class="dashboard-section">
     <div class="section-header">
         <h2 class="section-title">
@@ -644,7 +698,6 @@
                             <div class="stat-value" style="text-align: center; font-size: 2rem;" id="deliveredOrdersCount">{{ orders.delivered.count }}</div>
                         </div>
                     </div>
-<!-- الطلبات الجديدة -->
 <div class="dashboard-section">
     <div class="section-header">
         <h2 class="section-title">الطلبات الجديدة</h2>
@@ -723,7 +776,6 @@
     </div>
 </div>
 
-<!-- الطلبات قيد التسليم -->
 <div class="dashboard-section">
     <div class="section-header">
         <h2 class="section-title">الطلبات قيد التسليم</h2>
@@ -1496,9 +1548,7 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     initializeOrderSelection();
 });
-// ========== نظام التحديد والإجراءات الجماعية ==========
 
-// إدارة التحديد للطلبات الجديدة
 function initNewOrdersSelection() {
     const selectAllNew = document.getElementById('selectAllNew');
     const newCheckboxes = document.querySelectorAll('.new-checkbox');
@@ -1515,7 +1565,6 @@ function initNewOrdersSelection() {
     });
 }
 
-// إدارة التحديد للطلبات قيد التسليم
 function initDeliveringOrdersSelection() {
     const selectAllDelivering = document.getElementById('selectAllDelivering');
     const deliveringCheckboxes = document.querySelectorAll('.delivering-checkbox');
@@ -1532,7 +1581,6 @@ function initDeliveringOrdersSelection() {
     });
 }
 
-// تحديث حالة التحديد للطلبات الجديدة
 function updateNewSelection() {
     const checkboxes = document.querySelectorAll('.new-checkbox:checked');
     const count = checkboxes.length;
@@ -1565,7 +1613,6 @@ function updateNewSelection() {
     });
 }
 
-// تحديث حالة التحديد للطلبات قيد التسليم
 function updateDeliveringSelection() {
     const checkboxes = document.querySelectorAll('.delivering-checkbox:checked');
     const count = checkboxes.length;
@@ -1600,7 +1647,6 @@ function updateDeliveringSelection() {
     });
 }
 
-// ========== دوال الإجراءات الجماعية ==========
 
 function openBulkAction(actionType, orderIds, confirmMessage = null) {
     if (orderIds.length === 0) {
@@ -1659,7 +1705,6 @@ function openBulkAction(actionType, orderIds, confirmMessage = null) {
     }
 }
 
-// دوال مختصرة لكل إجراء
 function bulkPrintNew() {
     const checkboxes = document.querySelectorAll('.new-checkbox:checked');
     const orderIds = Array.from(checkboxes).map(cb => cb.value);
@@ -1702,7 +1747,6 @@ function bulkCancelDelivering() {
     openBulkAction('cancel', orderIds, `هل تريد إلغاء ${orderIds.length} طلب قيد التسليم؟`);
 }
 
-// ========== دوال مساعدة ==========
 
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
@@ -1744,7 +1788,6 @@ function showAlert(message, type = 'info') {
     }, 3000);
 }
 
-// ========== تهيئة النظام عند تحميل الصفحة ==========
 document.addEventListener('DOMContentLoaded', function() {
     initNewOrdersSelection();
     initDeliveringOrdersSelection();
@@ -1846,6 +1889,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const productBtns = document.querySelectorAll('[data-products]');
+    const monthlyProducts = document.getElementById('monthlyProducts');
+    const generalProducts = document.getElementById('generalProducts');
+    
+    if (productBtns.length > 0) {
+        productBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                productBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.dataset.products === 'monthly') {
+                    monthlyProducts.style.display = 'block';
+                    generalProducts.style.display = 'none';
+                } else {
+                    monthlyProducts.style.display = 'none';
+                    generalProducts.style.display = 'block';
+                }
+            });
+        });
+    }
 });
     </script>
 </body>

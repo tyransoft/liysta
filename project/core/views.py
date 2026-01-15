@@ -1271,9 +1271,9 @@ def customer_dashboard(request):
             returned=Order.objects.filter(menu=menu,status='returned').count()
             delivered=Order.objects.filter(menu=menu,status='delivered').count()
             canceled=Order.objects.filter(menu=menu,status='canceled').count()
-            non_orders= canceled + returned
+            allorders=Order.objects.filter(menu=menu).count()            
             if delivered >0:
-             deliv_per=(non_orders/delivered)*100
+             deliv_per=(delivered/allorders)*100
             else:
              deliv_per=0
 
