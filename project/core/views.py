@@ -1294,24 +1294,32 @@ def customer_dashboard(request):
         return redirect('/')
     
 def manege_order(request,menu_id):
-   orders=Order.objects.filter(menu=menu_id)
-
-   if request.method =='POST':
-     date=request.POST.get('date')
-     number=request.POST.get('number')
-     if date and number:
-       orders=Order.objects.filter(menu=menu_id,created_at=date,ordernumber=number)
-     elif date and not number:     
-       orders=Order.objects.filter(menu=menu_id,created_at=date)
-     elif not date and  number:     
-       orders=Order.objects.filter(menu=menu_id,ordernumber=number)
-          
-   context={
-        'orders':orders,
-        'menu_id':menu_id
-
+    orders = Order.objects.filter(menu=menu_id).order_by('-created_at')
+    
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        number = request.POST.get('number')
+        status = request.POST.get('status')
+        
+        filters = {'menu_id': menu_id}
+        
+        if date:
+            filters['created_at'] = date
+        
+        if number:
+            filters['ordernumber'] = number
+        
+        if status and status != 'all':
+            filters['status'] = status
+        
+        orders = Order.objects.filter(**filters).order_by('-created_at')
+    
+    context = {
+        'orders': orders,
+        'menu_id': menu_id,
+        'status_choices': Order.STATUS_CHOICES,
     }
-   return render(request, 'manege_orders.html', context)
+    return render(request, 'manege_orders.html', context)
 def edite_order(request,order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order)
