@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>liysta - إدارة الطلبات</title>
+    <title>liysta - إدارة الطلبات </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,59 +12,108 @@
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <style>
         :root {
-            --primary-color: #4361ee;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #17a2b8;
+            --primary-blue: #4361ee;
+            --primary-orange: #ff7b25;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --info-color: #118ab2;
+            --purple-color: #8a2be2;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3748;
         }
         
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #f8f9fa;
-            padding-bottom: 50px;
+            background-color: var(--light-bg);
         }
         
         .header {
-            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
             color: white;
-            padding: 20px 0;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 25px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.15);
+            border-bottom: 3px solid var(--primary-orange);
         }
         
         .header h1 {
             font-weight: 800;
             margin-bottom: 10px;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
         }
         
-        .header-actions .btn {
-            border-radius: 20px;
+        .header h1:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60%;
+            height: 3px;
+            background: var(--primary-orange);
+            border-radius: 2px;
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            border: none;
             padding: 8px 20px;
+            border-radius: 8px;
             font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 123, 37, 0.2);
+        }
+        
+        .btn-edit:hover {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.25);
+        }
+        
+        .btn-light-blue {
+            background-color: #e3f2fd;
+            color: var(--primary-blue);
+            border: 1px solid #bbdefb;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-light-blue:hover {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
         }
         
         .filter-card {
             margin-bottom: 20px;
             border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            border-top: 4px solid var(--primary-orange);
         }
         
         .filter-card .card-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             font-weight: 700;
-            color: var(--primary-color);
-            border-bottom: 2px solid #dee2e6;
-            border-radius: 10px 10px 0 0 !important;
+            color: var(--primary-blue);
+            border-bottom: 2px solid #e9ecef;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+            font-size: 1.1rem;
         }
         
         .bulk-actions-bar {
             background: white;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin: 15px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -73,15 +122,18 @@
             position: sticky;
             top: 10px;
             z-index: 100;
+            border-right: 4px solid var(--primary-blue);
+            border-left: 4px solid var(--primary-orange);
         }
         
         .selected-count {
-            background: #e3f2fd;
-            color: var(--primary-color);
-            padding: 6px 15px;
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            padding: 8px 20px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
+            box-shadow: 0 3px 10px rgba(255, 123, 37, 0.3);
         }
         
         .bulk-buttons {
@@ -91,57 +143,140 @@
         }
         
         .bulk-buttons .btn {
-            padding: 6px 15px;
+            padding: 8px 16px;
             font-size: 14px;
-            border-radius: 20px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-print {
+            background: linear-gradient(135deg, var(--info-color) 0%, #0d8bc2 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-ship {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-receive {
+            background: linear-gradient(135deg, var(--success-color) 0%, #05b388 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-return {
+            background: linear-gradient(135deg, var(--purple-color) 0%, #7a1fd6 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-cancel {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #e63946 100%);
+            color: white;
+            border: none;
+        }
+        
+        .bulk-buttons .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        
+        .main-card {
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border-top: 4px solid var(--primary-blue);
+        }
+        
+        .main-card .card-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            font-weight: 700;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
         .table-container {
             background: white;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            margin-top: 20px;
         }
         
-        .table th {
-            background-color: #f8f9fa;
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--primary-blue);
             font-weight: 700;
-            color: #495057;
-            border-top: none;
             padding: 15px;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.95rem;
         }
         
-        .table td {
+        .table tbody td {
             padding: 12px 15px;
             vertical-align: middle;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 0.9rem;
         }
         
-        .table-hover tbody tr:hover {
-            background-color: rgba(67, 97, 238, 0.05);
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(255, 123, 37, 0.05) 0%, rgba(67, 97, 238, 0.05) 100%);
         }
         
         .order-row.selected {
-            background-color: rgba(67, 97, 238, 0.1) !important;
-            border-left: 3px solid var(--primary-color) !important;
+            background: linear-gradient(135deg, rgba(255, 123, 37, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%) !important;
+            border-right: 3px solid var(--primary-orange);
         }
         
         .status-badge {
-            font-size: 12px;
-            padding: 5px 12px;
+            font-size: 11px;
+            padding: 4px 10px;
             border-radius: 20px;
             font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 80px;
+            text-align: center;
         }
         
-        .status-pending { background-color: var(--warning-color); color: #212529; }
-        .status-indeliver { background-color: var(--info-color); color: white; }
-        .status-delivered { background-color: var(--success-color); color: white; }
-        .status-canceled { background-color: var(--danger-color); color: white; }
-        .status-returned { background-color: #8a2be2; color: white; }
+        .status-pending { 
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border: 1px solid #ffd166;
+        }
+        
+        .status-indeliver { 
+            background: linear-gradient(135deg, #d1ecf1 0%, #b8e2e8 100%);
+            color: #0c5460;
+            border: 1px solid #118ab2;
+        }
+        
+        .status-delivered { 
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 1px solid #06d6a0;
+        }
+        
+        .status-canceled { 
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 1px solid #ef476f;
+        }
+        
+        .status-returned { 
+            background: linear-gradient(135deg, #e2d9f3 0%, #d6c8ec 100%);
+            color: #4b2c8a;
+            border: 1px solid #8a2be2;
+        }
         
         .single-actions {
             display: flex;
@@ -150,51 +285,185 @@
         }
         
         .single-actions .btn {
-            padding: 4px 10px;
-            font-size: 12px;
-            border-radius: 5px;
-            display: flex;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
         
-        .btn-edit {
-            background-color: var(--primary-color);
+        .btn-single-edit {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
             color: white;
             border: none;
         }
         
-        .btn-edit:hover {
-            background-color: #3a56d4;
+        .btn-single-edit:hover {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
             color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+        }
+        
+        .order-number {
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .order-total {
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 0.95rem;
         }
         
         .form-check-input {
             width: 18px;
             height: 18px;
             cursor: pointer;
+            border: 2px solid #dee2e6;
         }
         
         .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background-color: var(--primary-orange);
+            border-color: var(--primary-orange);
         }
         
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 50px 20px;
             color: #6c757d;
         }
         
         .empty-state i {
-            font-size: 70px;
+            font-size: 60px;
             color: #dee2e6;
             margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .empty-state h5 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+        }
+        
+        .form-label {
+            color: var(--primary-blue);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            width: 100%;
+        }
+        
+        .btn-search:hover {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .mobile-orders {
+            display: none;
+        }
+        
+        .mobile-order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            border-right: 4px solid var(--primary-orange);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-order-card.selected {
+            background: linear-gradient(135deg, rgba(255, 123, 37, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%);
+            border-color: var(--primary-orange);
+        }
+        
+        .mobile-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .mobile-order-checkbox {
+            margin-left: 10px;
+        }
+        
+        .mobile-order-number {
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+        
+        .mobile-order-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+        
+        .mobile-order-label {
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .mobile-order-value {
+            color: var(--dark-text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f1f1;
+            justify-content: center;
         }
         
         @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 14px;
+            .desktop-table {
+                display: none;
+            }
+            
+            .mobile-orders {
+                display: block;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
             }
             
             .bulk-actions-bar {
@@ -211,28 +480,29 @@
                 width: 100%;
                 justify-content: center;
             }
-            
-            .single-actions {
-                flex-direction: column;
-                width: 100%;
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-orders {
+                display: none;
             }
             
-            .single-actions .btn {
-                width: 100%;
-                justify-content: center;
+            .desktop-table {
+                display: block;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="header text-center">
         <div class="container">
-            <h1><i class="fas fa-clipboard-list me-2"></i>إدارة الطلبات</h1>
+            <h1><i class="fas fa-tasks me-2"></i>إدارة الطلبات المتقدمة</h1>
             <div class="header-actions">
-                <a href="{% url 'customer_dashboard' %}" class="btn btn-light me-2">
+                <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
                     <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
                 </a>
-                <a href="{% url 'home' %}" class="btn btn-light">
+                <a href="{% url 'home' %}" class="btn btn-light-blue">
                     <i class="fas fa-home me-1"></i> الرئيسية
                 </a>
             </div>
@@ -252,10 +522,9 @@
         </div>
         {% endif %}
 
-        <!-- فلترة الطلبات -->
         <div class="card filter-card">
             <div class="card-header">
-                <i class="fas fa-filter me-2"></i> فلترة الطلبات
+                <i class="fas fa-filter me-2"></i> تصفية متقدمة
             </div>
             <div class="card-body">
                 <form method="POST" action="{% url 'manege_order' menu_id %}">
@@ -270,7 +539,7 @@
                             <input type="number" class="form-control" id="number" name="number" placeholder="رقم الطلب">
                         </div>
                         <div class="col-md-3">
-                            <label for="status" class="form-label">الحالة</label>
+                            <label for="status" class="form-label">حالة الطلب</label>
                             <select class="form-select" id="status" name="status">
                                 <option value="all">جميع الحالات</option>
                                 {% for value, label in status_choices %}
@@ -279,7 +548,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-edit w-100">
+                            <button type="submit" class="btn btn-search">
                                 <i class="fas fa-search me-1"></i> بحث
                             </button>
                         </div>
@@ -288,23 +557,22 @@
             </div>
         </div>
 
-        <!-- شريط الإجراءات الجماعية -->
         <div class="bulk-actions-bar" id="bulkActionsBar" style="display: none;">
             <div class="selected-count" id="selectedCount">0 طلب محدد</div>
             <div class="bulk-buttons">
-                <button class="btn btn-info" onclick="bulkPrint()" id="bulkPrintBtn" disabled>
+                <button class="btn btn-print" onclick="bulkPrint()" id="bulkPrintBtn" disabled>
                     <i class="fas fa-print"></i> طباعة
                 </button>
-                <button class="btn btn-primary" onclick="bulkShip()" id="bulkShipBtn" disabled>
+                <button class="btn btn-ship" onclick="bulkShip()" id="bulkShipBtn" disabled>
                     <i class="fas fa-truck"></i> شحن
                 </button>
-                <button class="btn btn-success" onclick="bulkReceive()" id="bulkReceiveBtn" disabled>
+                <button class="btn btn-receive" onclick="bulkReceive()" id="bulkReceiveBtn" disabled>
                     <i class="fas fa-check-circle"></i> تسليم
                 </button>
-                <button class="btn btn-warning" onclick="bulkReturn()" id="bulkReturnBtn" disabled>
+                <button class="btn btn-return" onclick="bulkReturn()" id="bulkReturnBtn" disabled>
                     <i class="fas fa-undo"></i> ترجيع
                 </button>
-                <button class="btn btn-danger" onclick="bulkCancel()" id="bulkCancelBtn" disabled>
+                <button class="btn btn-cancel" onclick="bulkCancel()" id="bulkCancelBtn" disabled>
                     <i class="fas fa-times"></i> إلغاء
                 </button>
                 <button class="btn btn-secondary" onclick="clearSelection()">
@@ -313,95 +581,123 @@
             </div>
         </div>
 
-        <!-- جدول الطلبات -->
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th width="50">
-                                <input type="checkbox" class="form-check-input" id="selectAll" onclick="toggleSelectAll(this)">
-                            </th>
-                            <th>رقم الطلب</th>
-                            <th>اسم الزبون</th>
-                            <th>رقم الهاتف</th>
-                            <th>التاريخ</th>
-                            <th>المجموع</th>
-                            <th>الحالة</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in orders %}
-                        <tr class="order-row" id="order-row-{{ order.id }}">
-                            <td>
+        <div class="card main-card">
+            <div class="card-header">
+                <i class="fas fa-list-alt me-2"></i> قائمة الطلبات
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container desktop-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="50" class="text-center">
+                                        <input type="checkbox" class="form-check-input" id="selectAll" onclick="toggleSelectAll(this)">
+                                    </th>
+                                    <th>رقم الطلب</th>
+                                    <th>اسم الزبون</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>التاريخ</th>
+                                    <th>المجموع</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr class="order-row" id="order-row-{{ order.id }}">
+                                    <td class="text-center">
+                                        <input type="checkbox" 
+                                               class="form-check-input order-checkbox" 
+                                               value="{{ order.id }}"
+                                               onchange="updateSelection()">
+                                    </td>
+                                    <td class="order-number">#{{ order.ordernumber }}</td>
+                                    <td>{{ order.customer_name }}</td>
+                                    <td>{{ order.customer_phone }}</td>
+                                    <td>{{ order.created_at|date:"Y-m-d" }}</td>
+                                    <td class="order-total">{{ order.get_total }} د.ل</td>
+                                    <td>
+                                        <span class="status-badge status-{{ order.status }}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="single-actions">
+                                            <a href="{% url 'edite_order' order.id %}" class="btn btn-single-edit" title="تعديل الطلب">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="empty-state">
+                                            <i class="fas fa-clipboard-list"></i>
+                                            <h5>لا توجد طلبات</h5>
+                                            <p class="text-muted">لم يتم العثور على أي طلبات تطابق معايير البحث</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mobile-orders p-3">
+                    {% for order in orders %}
+                    <div class="mobile-order-card" id="mobile-order-{{ order.id }}">
+                        <div class="mobile-order-header">
+                            <div class="form-check mobile-order-checkbox">
                                 <input type="checkbox" 
-                                       class="form-check-input order-checkbox" 
+                                       class="form-check-input mobile-checkbox" 
                                        value="{{ order.id }}"
-                                       data-order-number="{{ order.ordernumber }}"
-                                       data-customer="{{ order.customer_name }}"
                                        onchange="updateSelection()">
-                            </td>
-                            <td><strong>#{{ order.ordernumber }}</strong></td>
-                            <td>{{ order.customer_name }}</td>
-                            <td>{{ order.customer_phone }}</td>
-                            <td>{{ order.created_at|date:"Y-m-d" }}</td>
-                            <td><strong>{{ order.get_total }} د.ل</strong></td>
-                            <td>
+                            </div>
+                            <div class="mobile-order-number">طلب #{{ order.ordernumber }}</div>
+                            <div class="mobile-order-status">
                                 <span class="status-badge status-{{ order.status }}">
                                     {{ order.get_status_display }}
                                 </span>
-                            </td>
-                            <td>
-                                <div class="single-actions">
-                                    <!-- إجراءات حسب الحالة -->
-                                    {% if order.status == 'pending' or order.status == 'returned' %}
-                                    <a href="{% url 'ship' order.id %}" class="btn btn-sm btn-primary" title="شحن">
-                                        <i class="fas fa-truck"></i>
-                                    </a>
-                                    {% endif %}
-                                    
-                                    {% if order.status == 'indeliver' %}
-                                    <a href="{% url 'recive' order.id %}" class="btn btn-sm btn-success" title="تسليم">
-                                        <i class="fas fa-check-circle"></i>
-                                    </a>
-                                    {% endif %}
-                                    
-                                    {% if order.status == 'indeliver' %}
-                                    <a href="{% url 'return' order.id %}" class="btn btn-sm btn-warning" title="ترجيع">
-                                        <i class="fas fa-undo"></i>
-                                    </a>
-                                    {% endif %}
-                                    
-                                    {% if order.status != 'delivered' and order.status != 'canceled' %}
-                                    <a href="{% url 'order_delete' order.id %}" class="btn btn-sm btn-danger" title="إلغاء">
-                                        <i class="fas fa-times"></i>
-                                    </a>
-                                    {% endif %}
-                                    
-                                    <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-info" target="_blank" title="طباعة">
-                                        <i class="fas fa-print"></i>
-                                    </a>
-                                    
-                                    <a href="{% url 'edite_order' order.id %}" class="btn btn-sm btn-edit" title="تعديل">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="8">
-                                <div class="empty-state">
-                                    <i class="fas fa-clipboard-list"></i>
-                                    <h5>لا توجد طلبات</h5>
-                                    <p class="text-muted">لم يتم العثور على أي طلبات تطابق معايير البحث</p>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">الزبون:</span>
+                            <span class="mobile-order-value">{{ order.customer_name }}</span>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">الهاتف:</span>
+                            <span class="mobile-order-value">{{ order.customer_phone }}</span>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">التاريخ:</span>
+                            <span class="mobile-order-value">{{ order.created_at|date:"Y-m-d" }}</span>
+                        </div>
+                        
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">المجموع:</span>
+                            <span class="mobile-order-value order-total">{{ order.get_total }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-actions">
+                            <a href="{% url 'edite_order' order.id %}" class="btn btn-single-edit">
+                                <i class="bi bi-pencil-fill"></i> تعديل
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h5>لا توجد طلبات</h5>
+                        <p class="text-muted">لم يتم العثور على أي طلبات تطابق معايير البحث</p>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -409,10 +705,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // ========== نظام التحديد والإجراءات الجماعية ==========
         
         function toggleSelectAll(selectAllCheckbox) {
-            const checkboxes = document.querySelectorAll('.order-checkbox');
+            const checkboxes = document.querySelectorAll('.order-checkbox, .mobile-checkbox');
             checkboxes.forEach(cb => {
                 cb.checked = selectAllCheckbox.checked;
             });
@@ -420,22 +715,23 @@
         }
         
         function updateSelection() {
-            const checkboxes = document.querySelectorAll('.order-checkbox:checked');
-            const count = checkboxes.length;
+            const desktopCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+            const mobileCheckboxes = document.querySelectorAll('.mobile-checkbox:checked');
+            const allCheckboxes = document.querySelectorAll('.order-checkbox, .mobile-checkbox');
+            const checkedCheckboxes = document.querySelectorAll('.order-checkbox:checked, .mobile-checkbox:checked');
+            
+            const count = checkedCheckboxes.length;
             const selectedCountElement = document.getElementById('selectedCount');
             const bulkActionsBar = document.getElementById('bulkActionsBar');
             
-            // تحديث العداد
             selectedCountElement.textContent = `${count} طلب محدد`;
             
-            // إظهار/إخفاء شريط الإجراءات
             if (count > 0) {
                 bulkActionsBar.style.display = 'flex';
             } else {
                 bulkActionsBar.style.display = 'none';
             }
             
-            // تفعيل/تعطيل الأزرار
             const buttons = ['Print', 'Ship', 'Receive', 'Return', 'Cancel'];
             buttons.forEach(btn => {
                 const button = document.getElementById(`bulk${btn}Btn`);
@@ -444,41 +740,54 @@
                 }
             });
             
-            // تحديد تحديد الكل
             const selectAll = document.getElementById('selectAll');
-            const allCheckboxes = document.querySelectorAll('.order-checkbox');
-            selectAll.checked = count > 0 && count === allCheckboxes.length;
-            selectAll.indeterminate = count > 0 && count < allCheckboxes.length;
+            if (selectAll) {
+                selectAll.checked = count > 0 && count === allCheckboxes.length;
+                selectAll.indeterminate = count > 0 && count < allCheckboxes.length;
+            }
             
-            // إضافة/إزالة class للتحديد
-            checkboxes.forEach(cb => {
+            desktopCheckboxes.forEach(cb => {
                 const row = cb.closest('.order-row');
                 if (row) {
-                    row.classList.add('selected');
+                    if (cb.checked) {
+                        row.classList.add('selected');
+                    } else {
+                        row.classList.remove('selected');
+                    }
                 }
             });
             
-            // إزالة class من غير المحدد
-            document.querySelectorAll('.order-checkbox:not(:checked)').forEach(cb => {
-                const row = cb.closest('.order-row');
-                if (row) {
-                    row.classList.remove('selected');
+            mobileCheckboxes.forEach(cb => {
+                const card = cb.closest('.mobile-order-card');
+                if (card) {
+                    if (cb.checked) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
                 }
             });
         }
         
         function clearSelection() {
-            const checkboxes = document.querySelectorAll('.order-checkbox');
+            const checkboxes = document.querySelectorAll('.order-checkbox, .mobile-checkbox');
             checkboxes.forEach(cb => cb.checked = false);
-            document.getElementById('selectAll').checked = false;
+            
+            const selectAll = document.getElementById('selectAll');
+            if (selectAll) {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+            }
+            
             updateSelection();
         }
         
-        // ========== دوال الإجراءات الجماعية ==========
         
         function getSelectedOrders() {
-            const checkboxes = document.querySelectorAll('.order-checkbox:checked');
-            return Array.from(checkboxes).map(cb => cb.value);
+            const desktopCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+            const mobileCheckboxes = document.querySelectorAll('.mobile-checkbox:checked');
+            const allChecked = [...desktopCheckboxes, ...mobileCheckboxes];
+            return Array.from(allChecked).map(cb => cb.value);
         }
         
         function openBulkAction(actionType, confirmMessage = null) {
@@ -543,7 +852,6 @@
             }
         }
         
-        // دوال مختصرة لكل إجراء
         function bulkPrint() {
             openBulkAction('print');
         }
@@ -568,11 +876,20 @@
             openBulkAction('cancel', `هل تريد إلغاء ${orderIds.length} طلب؟`);
         }
         
-        // ========== تهيئة النظام ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // إضافة event listeners للفلترة
             document.querySelector('form').addEventListener('submit', function() {
                 clearSelection();
+            });
+            
+            const buttons = document.querySelectorAll('.btn-edit, .btn-single-edit, .bulk-buttons .btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
             });
         });
     </script>

@@ -1728,6 +1728,10 @@ def ship_orders(request):
     
  
     for order in orders:
+      if order.status=='delivered':
+          messages.error(request,f'هناك طلب تم تسليمه ولايمكن شحنه اعد المحاولة بعد استثنائه وهو{order.ordernumber} - {order.customer_name}.')
+
+          return redirect('customer_dashboard')
       if order.status == 'canceled' or order.status == 'returned':
         items=OrderItem.objects.filter(order=order)
         for i in items:
@@ -1754,7 +1758,12 @@ def ship_orders(request):
     
 
 def ship_order(request, order_id):
-    order = get_object_or_404(Order,id=order_id)
+   order = get_object_or_404(Order,id=order_id)
+   if order.status=='delivered':
+    messages.error(request,'هذا الطلب تم تسليمه ولايمكن شحنه .')
+
+    return redirect('customer_dashboard')
+   else:    
     if order.status == 'canceled' or order.status == 'returned':
       items=OrderItem.objects.filter(order=order)
       for i in items:
@@ -1851,21 +1860,27 @@ def delete_order_multiple(request):
     
  
     for order in orders:
-      items=OrderItem.objects.filter(order=order)
-      for i in items:
-        product=i.product
-        product.quantity += i.quantity
-        product.save()        
-        order.status = 'canceled'  
-        order.save()
+      if order.status != 'canceled' or order.status != 'returned':
+       items=OrderItem.objects.filter(order=order)
+       for i in items:
+         product=i.product
+         product.quantity += i.quantity
+         product.save()        
+         order.status = 'canceled'  
+         order.save()
+      else:
+         order.status = 'canceled'  
+         order.save()
     messages.success(request, 'تم الغاء الطلبات بنجاح.')
     return redirect('customer_dashboard')
 
 
 def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    items=OrderItem.objects.filter(order=order_id)
-    for i in items:
+    if order.status != 'canceled' or order.status != 'returned':
+     items=OrderItem.objects.filter(order=order_id)
+
+     for i in items:
         product=i.product
         product.quantity += i.quantity
         product.save()
@@ -1877,8 +1892,10 @@ def delete_order(request, order_id):
 
 def return_order(request,order_id):
     order = get_object_or_404(Order, id=order_id)
-    items=OrderItem.objects.filter(order=order_id)
-    for i in items:
+    if order.status != 'canceled' or order.status != 'returned':
+
+     items=OrderItem.objects.filter(order=order_id)
+     for i in items:
         product=i.product
         product.quantity += i.quantity
         product.save()
@@ -1898,13 +1915,18 @@ def  return_order_multiple(request):
     
  
     for order in orders:
-      items=OrderItem.objects.filter(order=order)
-      for i in items:
-        product=i.product
-        product.quantity += i.quantity
-        product.save()        
-        order.status = 'returned'  
-        order.save()
+      if order.status != 'canceled' or order.status != 'returned':
+
+       items=OrderItem.objects.filter(order=order)
+       for i in items:
+         product=i.product
+         product.quantity += i.quantity
+         product.save()        
+         order.status = 'returned'  
+         order.save()
+      else:
+         order.status = 'returned'  
+         order.save()   
     messages.success(request, 'تم ارجاع الطلبات بنجاح.')
     return redirect('customer_dashboard')
 
