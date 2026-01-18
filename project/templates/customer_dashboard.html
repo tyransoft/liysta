@@ -602,7 +602,7 @@
                                                    data-order-number="{{ order.ordernumber }}"
                                                    data-customer="{{ order.customer_name }}">
                                         </td>
-                                        <td>#{{ order.ordernumber }}</td>
+                                        <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
                                         <td>{{ order.customer_phone }}</td>
                                         {% if order.delivery_address %}
@@ -683,7 +683,7 @@
                                                    data-order-number="{% if order.ordernumber %}#{{ order.ordernumber }}{% else %}#{{ order.id }}{% endif %}"
                                                    data-customer="{{ order.customer_name }}">
                                         </td>
-                                        <td>#{{ order.ordernumber }}</td>
+                                        <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
                                         <td>{{ order.customer_phone }}</td>
                                         {% if order.delivery_address %}
