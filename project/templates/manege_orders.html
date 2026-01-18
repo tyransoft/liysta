@@ -656,7 +656,7 @@
                                        value="{{ order.id }}"
                                        onchange="updateSelection()">
                             </div>
-                            <div class="mobile-order-number">طلب #{{ order.ordernumber }}</div>
+                            <div class="mobile-order-number">طلب #{{order.id}}-{{ order.ordernumber }}</div>
                             <div class="mobile-order-status">
                                 <span class="status-badge status-{{ order.status }}">
                                     {{ order.get_status_display }}
