@@ -2077,7 +2077,7 @@ def add_quantity(request,product_id):
           return redirect('add_quantity',product_id)          
         
         
-        if product.quantity == 0 :
+        elif product.quantity == 0 :
           product.quantity += new_quantity
           product.bought_price=buying_price
           product.save()
