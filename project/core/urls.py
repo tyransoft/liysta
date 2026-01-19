@@ -88,6 +88,9 @@ urlpatterns = [
     path('return-order/<int:order_id>', return_order, name='return'),
     path('orders/return-multiple/', return_order_multiple, name='return_orders'),
     
+    path('add-quantity-to-product/<int:product_id>', add_quantity, name='add_quantity'),
+    path('manage-storage/<int:menu_id>', manage_storage, name='storage'),
+
     path('orders/<int:menu_id>', manege_order, name='manege_order'),
     path('edite-order/<int:order_id>', edite_order, name='edite_order'),
     path('update-order/<int:order_id>/', update_order, name='update_order'),

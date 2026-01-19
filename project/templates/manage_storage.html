@@ -1,0 +1,705 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>liysta - إدارة المخزون</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <style>
+        :root {
+            --primary-blue: #4361ee;
+            --primary-orange: #ff7b25;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --info-color: #118ab2;
+            --purple-color: #8a2be2;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3748;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light-bg);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            padding: 25px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.15);
+            border-bottom: 3px solid var(--primary-orange);
+        }
+        
+        .header h1 {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .header h1:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60%;
+            height: 3px;
+            background: var(--primary-orange);
+            border-radius: 2px;
+        }
+        
+        .stats-card {
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-top: 4px solid;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .stats-card.total {
+            border-top-color: var(--primary-blue);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+        }
+        
+        .stats-card.finished {
+            border-top-color: var(--danger-color);
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+        }
+        
+        .stats-card.soon {
+            border-top-color: var(--warning-color);
+            background: linear-gradient(135deg, #ffffff 0%, #fffcf0 100%);
+        }
+        
+        .stats-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-left: 15px;
+        }
+        
+        .stats-icon.total {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+        }
+        
+        .stats-icon.finished {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #e63946 100%);
+            color: white;
+        }
+        
+        .stats-icon.soon {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #ffc107 100%);
+            color: #856404;
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .stats-number.total {
+            color: var(--primary-blue);
+        }
+        
+        .stats-number.finished {
+            color: var(--danger-color);
+        }
+        
+        .stats-number.soon {
+            color: #856404;
+        }
+        
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .main-card {
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 25px;
+        }
+        
+        .main-card .card-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            font-weight: 700;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--primary-blue);
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.95rem;
+        }
+        
+        .table tbody td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 0.9rem;
+        }
+        
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(255, 123, 37, 0.05) 0%, rgba(67, 97, 238, 0.05) 100%);
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 123, 37, 0.2);
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-edit:hover {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.25);
+        }
+        
+        .btn-light-blue {
+            background-color: #e3f2fd;
+            color: var(--primary-blue);
+            border: 1px solid #bbdefb;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-light-blue:hover {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+        
+        .quantity-badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .quantity-normal {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 1px solid #06d6a0;
+        }
+        
+        .quantity-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border: 1px solid #ffd166;
+        }
+        
+        .quantity-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 1px solid #ef476f;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: #dee2e6;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .empty-state h5 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .price-label {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        
+        .product-name {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+        
+        .mobile-products {
+            display: none;
+        }
+        
+        .mobile-product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            border-right: 4px solid var(--primary-orange);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .mobile-product-name {
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+        
+        .mobile-product-quantity {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .mobile-product-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+        
+        .mobile-product-label {
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .mobile-product-value {
+            color: var(--dark-text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f1f1;
+            justify-content: center;
+        }
+        
+        .section-title {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 100px;
+            height: 2px;
+            background: var(--primary-orange);
+            border-radius: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-table {
+                display: none;
+            }
+            
+            .mobile-products {
+                display: block;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-card {
+                margin-bottom: 15px;
+            }
+            
+            .stats-number {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-products {
+                display: none;
+            }
+            
+            .desktop-table {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header text-center">
+        <div class="container">
+            <h1><i class="fas fa-boxes me-2"></i>إدارة المخزون</h1>
+            <div class="header-actions">
+                <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
+                    <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-light-blue">
+                    <i class="fas fa-home me-1"></i> الرئيسية
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stats-card total">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon total">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="stats-number total">{{ all_products_count }}</div>
+                            <div class="stats-label">إجمالي المنتجات</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stats-card finished">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon finished">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="stats-number finished">{{ finished_count }}</div>
+                            <div class="stats-label">المنتجات المنتهية</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stats-card soon">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon soon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="stats-number soon">{{ soon_finish_count }}</div>
+                            <div class="stats-label">قريب تنتهي (5 أو أقل)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="section-title">جميع المنتجات</h3>
+        
+        <div class="card main-card">
+            <div class="card-header">
+                <i class="fas fa-list-alt me-2"></i> قائمة المنتجات
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container desktop-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>اسم المنتج</th>
+                                    <th>الكمية المتاحة</th>
+                                    <th>سعر التكلفة</th>
+                                    <th>سعر البيع</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in all_products %}
+                                <tr>
+                                    <td class="product-name">{{ product.name }}</td>
+                                    <td>
+                                        {% if product.quantity == 0 %}
+                                        <span class="quantity-badge quantity-danger">منتهي</span>
+                                        {% elif product.quantity <= 5 %}
+                                        <span class="quantity-badge quantity-warning">{{ product.quantity }}</span>
+                                        {% else %}
+                                        <span class="quantity-badge quantity-normal">{{ product.quantity }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="price-label">{{ product.bought_price }} د.ل</td>
+                                    <td class="price-label">{{ product.price }} د.ل</td>
+                                    <td>
+                                        <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
+                                            <i class="fas fa-plus-circle"></i> زيادة الكمية
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <i class="fas fa-box-open"></i>
+                                            <h5>لا توجد منتجات</h5>
+                                            <p class="text-muted">لم يتم العثور على أي منتجات في المخزون</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mobile-products p-3">
+                    {% for product in all_products %}
+                    <div class="mobile-product-card">
+                        <div class="mobile-product-header">
+                            <div class="mobile-product-name">{{ product.name }}</div>
+                            <div>
+                                {% if product.quantity == 0 %}
+                                <span class="quantity-badge quantity-danger">منتهي</span>
+                                {% elif product.quantity <= 5 %}
+                                <span class="quantity-badge quantity-warning">{{ product.quantity }}</span>
+                                {% else %}
+                                <span class="quantity-badge quantity-normal">{{ product.quantity }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">سعر التكلفة:</span>
+                            <span class="mobile-product-value">{{ product.bought_price }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">سعر البيع:</span>
+                            <span class="mobile-product-value">{{ product.price }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-actions">
+                            <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
+                                <i class="fas fa-plus-circle"></i> زيادة الكمية
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h5>لا توجد منتجات</h5>
+                        <p class="text-muted">لم يتم العثور على أي منتجات في المخزون</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% if finished.count > 0 %}
+        <h3 class="section-title" style="color: var(--danger-color);">
+            <i class="fas fa-times-circle me-2"></i>المنتجات المنتهية
+        </h3>
+        
+        <div class="card main-card">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--danger-color) 0%, #e63946 100%);">
+                <i class="fas fa-times-circle me-2"></i> المنتجات المنتهية من المخزون
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container desktop-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>اسم المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>سعر التكلفة</th>
+                                    <th>سعر البيع</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in finished %}
+                                <tr>
+                                    <td class="product-name">{{ product.name }}</td>
+                                    <td>
+                                        <span class="quantity-badge quantity-danger">منتهي</span>
+                                    </td>
+                                    <td class="price-label">{{ product.bought_price }} د.ل</td>
+                                    <td class="price-label">{{ product.price }} د.ل</td>
+                                    <td>
+                                        <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
+                                            <i class="fas fa-plus-circle"></i> زيادة الكمية
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mobile-products p-3">
+                    {% for product in finished %}
+                    <div class="mobile-product-card">
+                        <div class="mobile-product-header">
+                            <div class="mobile-product-name">{{ product.name }}</div>
+                            <div>
+                                <span class="quantity-badge quantity-danger">منتهي</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">سعر التكلفة:</span>
+                            <span class="mobile-product-value">{{ product.bought_price }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">سعر البيع:</span>
+                            <span class="mobile-product-value">{{ product.price }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-actions">
+                            <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
+                                <i class="fas fa-plus-circle"></i> زيادة الكمية
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if soon_finish.count > 0 %}
+        <h3 class="section-title" style="color: #856404;">
+            <i class="fas fa-exclamation-triangle me-2"></i>المنتجات قريب تنتهي
+        </h3>
+        
+        <div class="card main-card">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--warning-color) 0%, #ffc107 100%); color: #856404;">
+                <i class="fas fa-exclamation-triangle me-2"></i> المنتجات قريب تنتهي (5 أو أقل)
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container desktop-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>اسم المنتج</th>
+                                    <th>الكمية المتبقية</th>
+                                    <th>سعر التكلفة</th>
+                                    <th>سعر البيع</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in soon_finish %}
+                                <tr>
+                                    <td class="product-name">{{ product.name }}</td>
+                                    <td>
+                                        <span class="quantity-badge quantity-warning">{{ product.quantity }}</span>
+                                    </td>
+                                    <td class="price-label">{{ product.bought_price }} د.ل</td>
+                                    <td class="price-label">{{ product.price }} د.ل</td>
+                                    <td>
+                                        <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
+                                            <i class="fas fa-plus-circle"></i> زيادة الكمية
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mobile-products p-3">
+                    {% for product in soon_finish %}
+                    <div class="mobile-product-card">
+                        <div class="mobile-product-header">
+                            <div class="mobile-product-name">{{ product.name }}</div>
+                            <div>
+                                <span class="quantity-badge quantity-warning">{{ product.quantity }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">سعر التكلفة:</span>
+                            <span class="mobile-product-value">{{ product.bought_price }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">سعر البيع:</span>
+                            <span class="mobile-product-value">{{ product.price }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-actions">
+                            <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
+                                <i class="fas fa-plus-circle"></i> زيادة الكمية
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

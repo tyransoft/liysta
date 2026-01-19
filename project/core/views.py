@@ -2032,3 +2032,56 @@ def saler_man_info(request, man_id):
          messages.error(request,'لم يتم التعرف عليك حاول مرة اخرى او تواصل معنا .') 
          return redirect('/')    
      return render(request, 'saler_info.html',{'coupon':man})     
+@login_required
+def manage_storage(request,menu_id):
+    
+    products=Products.objects.filter(menu__id=menu_id) 
+    finished_products=Products.objects.filter(menu__id=menu_id,quantity=0) 
+    soon_finish_products=Products.objects.filter(menu__id=menu_id,quantity__lte=5)
+
+
+    context={
+        'all_products':products,
+        'all_products_count':products.count(),  
+        'finished_count':finished_products.count(),
+        'soon_finish_count':soon_finish_products.count(),
+        'finished':finished_products,
+        'soon_finish':soon_finish_products,
+  
+    }
+
+
+    return render(request, 'manage_storage.html',context)     
+
+@login_required
+def add_quantity(request,product_id):
+    product=Products.objects.get(id=product_id) 
+    if request.method == 'POST':
+        new_quantity=request.POST.get('new_quantity')
+        buying_price=request.POST.get('buying_price')
+        
+        
+        if not new_quantity or not buying_price:
+          messages.error(request,'نرجو ادخال الكمية الجديد وسعر التكلفة .') 
+          return redirect('add_quantity',product_id)          
+        
+        
+        if  new_quantity<=0 or  buying_price<=0 :
+          messages.error(request,'ادخل قيم اكبر من الصفر ثم اعد المحاولة.') 
+          return redirect('add_quantity',product_id)          
+        
+        
+        if product.quantity == 0 :
+          product.quantity += new_quantity
+          product.bought_price=buying_price
+          product.save()
+        else:
+          total_coast=(product.bought_price*product.quantity)+(new_quantity*buying_price)
+          total_quantity=new_quantity + product.quantity    
+          new_bought_price=total_coast / total_quantity if total_quantity else 0
+          product.quantity = total_quantity
+          product.bought_price=new_bought_price
+          product.save() 
+        messages.success(request,'تم اضاقة الكمية بنجاح.') 
+        return redirect('storage')   
+    return render(request, 'add_quantity.html',{'product':product})     
