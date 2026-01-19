@@ -2084,4 +2084,4 @@ def add_quantity(request,product_id):
           product.save() 
         messages.success(request,'تم اضاقة الكمية بنجاح.') 
         return redirect('storage')   
-    return render(request, 'add_quantity.html',{'product':product})     
+    return render(request, 'add_quantity.html',{'product':product,'menu_id':product.menu.id})     

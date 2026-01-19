@@ -747,11 +747,10 @@
                                     <td>{{ product.name }}</td>
                                     <td>{{ product.price }} د.ل</td>
                                     <td>
-                                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                            <a href="{% url 'update_product' product.id %}" class="action-btn" title="تعديل">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </div>
+                                        
+                                     <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                     </a>
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -790,8 +789,8 @@
                                     <td>{{ dis.end_date }}</td>
                                     <td>
                                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                            <a href="{% url 'edit_cpcdiscount' dis.id %}" class="action-btn" title="تعديل">
-                                                <i class="fas fa-edit"></i>
+                                            <a href="{% url 'update_cpdiscount' dis.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                                             <i class="fas fa-edit"></i>
                                             </a>
                                             <a href="{% url 'delete_cpdiscount' dis.id %}" class="action-btn" style="background: var(--danger-light); color: var(--danger);" title="حذف">
                                                 <i class="fas fa-trash"></i>
@@ -833,8 +832,9 @@
                                     <td>{{ cat.name }}</td>
                                     <td>
                                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                            <a href="{% url 'update_catogery' cat.id %}" class="action-btn" title="تعديل">
-                                                <i class="fas fa-edit"></i>
+                                            
+                                            <a href="{% url 'update_catogery' cat.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                                                  <i class="fas fa-edit"></i>
                                             </a>
                                             <a href="{% url 'delete_catogery' cat.id %}" class="action-btn" style="background: var(--danger-light); color: var(--danger);" title="حذف">
                                                 <i class="fas fa-trash"></i>
@@ -878,8 +878,8 @@
                                     <td>{{ city.price }} د.ل</td>
                                     <td>
                                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                            <a href="{% url 'update_city' city.id %}" class="action-btn" title="تعديل">
-                                                <i class="fas fa-edit"></i>
+                                            <a href="{% url 'update_city' city.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                                                  <i class="fas fa-edit"></i>
                                             </a>
                                             <a href="{% url 'delete_city' city.id %}" class="action-btn" style="background: var(--danger-light); color: var(--danger);" title="حذف">
                                                 <i class="fas fa-trash"></i>

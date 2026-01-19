@@ -318,14 +318,10 @@
                 </div>
             </div>
             
-            <div class="product-detail-row">
-                <span class="detail-label">سعر التكلفة الحالي:</span>
-                <span class="detail-value price-value">{{ product.cost_price }} د.ل</span>
-            </div>
             
             <div class="product-detail-row">
                 <span class="detail-label">سعر البيع:</span>
-                <span class="detail-value price-value">{{ product.selling_price }} د.ل</span>
+                <span class="detail-value price-value">{{ product.price }} د.ل</span>
             </div>
             
             <div class="product-detail-row">
@@ -335,7 +331,7 @@
             
             <div class="product-detail-row">
                 <span class="detail-label">سعر الشراء الحالي:</span>
-                <span class="detail-value price-value">{{ product.bought_price|default:0 }} د.ل</span>
+                <span class="detail-value price-value">{{ product.bought_price }} د.ل</span>
             </div>
         </div>
 
