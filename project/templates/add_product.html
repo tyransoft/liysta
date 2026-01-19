@@ -13,16 +13,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/edite_cust.css' %}">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
-
+    <style>
+        .current-price-display {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .price-display-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .price-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .price-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .info-note {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 <div class="add-product-container">
-         <div class="brand-header">
-            <div class="brand-logo">Liysta</div>
-            <div class="brand-subtitle">منصتك الذكية لتنقل عملك الى العالم الرقمي </div>
-        </div>
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <div class="brand-subtitle">منصتك الذكية لتنقل عملك الى العالم الرقمي</div>
+    </div>
+    
     <div class="page-header">
-        <h1 class="page-title"> إدارة المنتجات </h1>
+        <h1 class="page-title">إدارة المنتجات</h1>
     </div>
     
     <form method="POST" enctype="multipart/form-data" id="myform">
@@ -36,6 +69,7 @@
                 <div class="error">{{ form.name.errors }}</div>
             {% endif %}
         </div>
+        
         <div class="form-group">
             <label for="id_catogery" class="form-label">فئة المنتج</label>
             {{ form.catogery }}
@@ -43,9 +77,9 @@
                 <div class="error">{{ form.catogery.errors }}</div>
             {% endif %}
         </div>
+        
         <div class="form-group">
             <label class="form-label">صورة المنتج</label>
-            
             <div class="file-input-container">
                 <label class="file-input-label">
                     <i class="fas fa-cloud-upload-alt"></i>
@@ -58,41 +92,79 @@
                 <div class="error">{{ form.image.errors }}</div>
             {% endif %}
         </div>
-   <div class="form-group">
-    <label for="id_bought_price" class="form-label">سعر تكلفة المنتج</label>
-    <div class="price-input-container">
-        <span class="price-symbol">د.ل</span>
-        <input type="number" name="bought_price" id="id_bought_price" 
-               class="form-input price-input" step="0.01" min="0" 
-               value="{% if form.bought_price.value %}{{ form.bought_price.value }}{% else %}{% endif %}" 
-               placeholder="0.00">
-    </div>
-    {% if form.bought_price.errors %}
-        <div class="error">{{ form.bought_price.errors }}</div>
-    {% endif %}
-</div>
-
-<div class="form-group">
-    <label for="id_price" class="form-label">سعر بيع المنتج</label>
-    <div class="price-input-container">
-        <span class="price-symbol">د.ل</span>
-        <input type="number" name="price" id="id_price" class="form-input price-input" 
-               required step="0.01" min="0" 
-               value="{% if form.price.value %}{{ form.price.value }}{% elif product.price %}{{ product.price }}{% endif %}" 
-               placeholder="0.00">
-    </div>
-    {% if form.price.errors %}
-        <div class="error">{{ form.price.errors }}</div>
-    {% endif %}
-</div>
+        
+        <div class="form-group">
+            <label for="id_bought_price" class="form-label">سعر تكلفة المنتج (يفضل ادخاله للحصول على بيانات دقيقة)</label>
+            
+            {% if form.bought_price.value %}
+            <div class="current-price-display">
+                <div class="price-display-row">
+                    <span class="price-label">القيمة الحالية:</span>
+                    <span class="price-value">{{ form.bought_price.value }} د.ل</span>
+                </div>
+            </div>
+            <span class="info-note">يمكنك تعديل السعر الحالي أو تركه كما هو</span>
+            {% endif %}
+            
+            <div class="price-input-container">
+                <span class="price-symbol">د.ل</span>
+                <input type="number" name="bought_price" id="id_bought_price" 
+                       class="form-input price-input" step="0.01" min="0" 
+                       value="{{ form.bought_price.value|default:'' }}" 
+                       placeholder="أدخل سعر تكلفة المنتج">
+            </div>
+            {% if form.bought_price.errors %}
+                <div class="error">{{ form.bought_price.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_price" class="form-label">سعر بيع المنتج</label>
+            
+            {% if form.price.value %}
+            <div class="current-price-display">
+                <div class="price-display-row">
+                    <span class="price-label">القيمة الحالية:</span>
+                    <span class="price-value">{{ form.price.value }} د.ل</span>
+                </div>
+            </div>
+            <span class="info-note">يمكنك تعديل السعر الحالي أو تركه كما هو</span>
+            {% endif %}
+            
+            <div class="price-input-container">
+                <span class="price-symbol">د.ل</span>
+                <input type="number" name="price" id="id_price" class="form-input price-input" required
+                       step="0.01" min="0" value="{{ form.price.value|default:'' }}" 
+                       placeholder="أدخل سعر بيع المنتج">
+            </div>
+            {% if form.price.errors %}
+                <div class="error">{{ form.price.errors }}</div>
+            {% endif %}
+        </div>
+        
         <div class="form-group">
             <label for="id_quantity" class="form-label">الكمية (يجب ادخالها للتحكم في الطلبات)</label>
+            
+            {% if form.quantity.value %}
+            <div class="current-price-display">
+                <div class="price-display-row">
+                    <span class="price-label">القيمة الحالية:</span>
+                    <span class="price-value">{{ form.quantity.value }}</span>
+                </div>
+            </div>
+            <span class="info-note">يمكنك تعديل الكمية الحالية أو تركه كما هو</span>
+            {% endif %}
+            
             <div class="price-input-container">
                 <input type="number" name="quantity" id="id_quantity" class="form-input price-input" 
-                       step="0.01" min="0" value="{{ form.quantity.value|default:'' }}" placeholder="0.00">
+                       step="1" min="0" value="{{ form.quantity.value|default:'' }}" 
+                       placeholder="أدخل كمية المنتج">
             </div>
-            
+            {% if form.quantity.errors %}
+                <div class="error">{{ form.quantity.errors }}</div>
+            {% endif %}
         </div>
+        
         <div class="form-group">
             <label for="id_description" class="form-label">وصف المنتج</label>
             <textarea name="description" id="id_description" class="form-input form-textarea"
@@ -101,28 +173,45 @@
                 <div class="error">{{ form.description.errors }}</div>
             {% endif %}
         </div>
+        
         <div class="form-group">
-         <label for="id_available_colors" class="form-label">ألوان المنتج(اختياري)</label>
-         <input type="text" name="available_colors" id="id_available_colors" class="form-input"
-           value="{{ form.available_colors.value|default:'' }}" placeholder="مثال: أحمر، أزرق، أخضر">
-         <small class="current-data">يرجى إدخال الألوان مفصولة بفاصلة (،)</small>
-         {% if form.available_colors.errors %}
-          <div class="error">{{ form.available_colors.errors }}</div>
-         {% endif %}
+            <label for="id_available_colors" class="form-label">ألوان المنتج (اختياري)</label>
+            {% if form.available_colors.value %}
+            <div class="current-price-display">
+                <div class="price-display-row">
+                    <span class="price-label">القيمة الحالية:</span>
+                    <span class="price-value">{{ form.available_colors.value }}</span>
+                </div>
+            </div>
+            {% endif %}
+            <input type="text" name="available_colors" id="id_available_colors" class="form-input"
+                   value="{{ form.available_colors.value|default:'' }}" placeholder="مثال: أحمر، أزرق، أخضر">
+            <small class="current-data">يرجى إدخال الألوان مفصولة بفاصلة (،)</small>
+            {% if form.available_colors.errors %}
+                <div class="error">{{ form.available_colors.errors }}</div>
+            {% endif %}
         </div>
-
+        
         <div class="form-group">
-         <label for="id_available_sizes" class="form-label">المقاسات المتوفرة(اختياري )</label>
-         <input type="text" name="available_sizes" id="id_available_sizes" class="form-input"
-           value="{{ form.available_sizes.value|default:'' }}" placeholder="مثال: S، M، L، XL">
-         <small class="current-data">يرجى إدخال المقاسات مفصولة بفاصلة (،)</small>
-          {% if form.available_sizes.errors %}
-          <div class="error">{{ form.available_sizes.errors }}</div>
-          {% endif %}
+            <label for="id_available_sizes" class="form-label">المقاسات المتوفرة (اختياري)</label>
+            {% if form.available_sizes.value %}
+            <div class="current-price-display">
+                <div class="price-display-row">
+                    <span class="price-label">القيمة الحالية:</span>
+                    <span class="price-value">{{ form.available_sizes.value }}</span>
+                </div>
+            </div>
+            {% endif %}
+            <input type="text" name="available_sizes" id="id_available_sizes" class="form-input"
+                   value="{{ form.available_sizes.value|default:'' }}" placeholder="مثال: S، M، L، XL">
+            <small class="current-data">يرجى إدخال المقاسات مفصولة بفاصلة (،)</small>
+            {% if form.available_sizes.errors %}
+                <div class="error">{{ form.available_sizes.errors }}</div>
+            {% endif %}
         </div>
-
+        
         <button type="submit" class="submit-btn" id="submitBtn">
-            <i class="fas fa-plus-circle"></i>  حفظ
+            <i class="fas fa-plus-circle"></i> حفظ
         </button>
     </form>
 </div>
@@ -142,11 +231,12 @@
             }, 100);
         });
     });
+    
     document.getElementById("myform").addEventListener("submit",function() {
         const btn =document.getElementById("submitBtn");
         btn.disabled = true;
         btn.innerText ="جاري الارسال.....";
-    });    
+    });
 </script>
 </body>
 </html>
