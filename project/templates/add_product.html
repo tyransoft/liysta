@@ -133,7 +133,7 @@
             
             <div class="price-input-container">
                 <span class="price-symbol">د.ل</span>
-                <input type="number" name="price" id="id_price" class="form-input price-input" required
+                <input type="number" name="price" id="id_price" class="form-input price-input" {% if not form.price.value %}required{% endif %}
                        step="0.01" min="0" value="{{ form.price.value|default:'' }}" 
                        placeholder="أدخل سعر بيع المنتج">
             </div>
