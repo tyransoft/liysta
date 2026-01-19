@@ -2047,6 +2047,7 @@ def manage_storage(request,menu_id):
         'soon_finish_count':soon_finish_products.count(),
         'finished':finished_products,
         'soon_finish':soon_finish_products,
+        'menu_id':menu_id,
   
     }
 
@@ -2064,8 +2065,13 @@ def add_quantity(request,product_id):
         if not new_quantity or not buying_price:
           messages.error(request,'نرجو ادخال الكمية الجديد وسعر التكلفة .') 
           return redirect('add_quantity',product_id)          
-        
-        
+        try:
+            new_quantity=int(new_quantity)
+            buying_price=float(buying_price)
+        except Exception as e :
+          messages.error(request,f'{e}:ادخل قيم رقمية من فضلك') 
+          return redirect('add_quantity',product_id)          
+                
         if  new_quantity<=0 or  buying_price<=0 :
           messages.error(request,'ادخل قيم اكبر من الصفر ثم اعد المحاولة.') 
           return redirect('add_quantity',product_id)          
