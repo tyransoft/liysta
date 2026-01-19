@@ -21,12 +21,36 @@ class ProductForm(forms.ModelForm):
         customer_instance = kwargs.pop('customer_instance', None)
         
         super().__init__(*args, **kwargs)
-
+        if self.instance and self.instance.pk: 
+            fields_to_make_optional = ['price', 'quantity', 'bought_price']
+            for field in fields_to_make_optional:
+                if field in self.fields:
+                    self.fields[field].required = False
+        
         if customer_instance:
             self.fields['catogery'].queryset = Catogery.objects.filter(customer=customer_instance)
         else:
             self.fields['catogery'].queryset = Catogery.objects.none()
-
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        if not self.instance.pk:
+            if not cleaned_data.get('price'):
+                self.add_error('price', 'سعر البيع مطلوب للمنتج الجديد')
+            if not cleaned_data.get('quantity'):
+                self.add_error('quantity', 'الكمية مطلوبة للمنتج الجديد')
+        
+        else:
+            if not cleaned_data.get('price'):
+                cleaned_data['price'] = self.instance.price
+            if not cleaned_data.get('quantity'):
+                cleaned_data['quantity'] = self.instance.quantity
+            if not cleaned_data.get('bought_price'):
+                cleaned_data['bought_price'] = self.instance.bought_price
+        
+        return cleaned_data
+       
 class CPDiscountForm(forms.ModelForm):
     products = forms.ModelMultipleChoiceField(
         queryset=Products.objects.none(),
