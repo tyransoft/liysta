@@ -1008,3 +1008,195 @@
                 transform: scale(1) translateY(0);
             }
         }
+
+        
+
+.delivery-status-container {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+
+.delivery-company-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.company-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C73E6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.company-details {
+    flex: 1;
+}
+
+.company-name {
+    margin: 0;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.status-connected {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.status-disconnected {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.expiry-time {
+    color: var(--gray);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+
+.company-actions {
+    display: flex;
+    align-items: center;
+}
+
+.btn-manage,
+.btn-connect {
+    padding: 0.5rem 1.5rem !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
+.benefits-container {
+    background: var(--light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-right: 3px solid var(--primary);
+}
+
+.benefits-title {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.benefits-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.benefit-item {
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.action-btn.btn-danger {
+    background: var(--danger-light);
+    color: var(--danger);
+    border: none;
+}
+
+.action-btn.btn-danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.benefit-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.company-icon:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+
+@media (max-width: 768px) {
+    .delivery-company-status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .company-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .benefits-list {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .benefit-item {
+        width: 100%;
+        justify-content: center;
+    }
+}        

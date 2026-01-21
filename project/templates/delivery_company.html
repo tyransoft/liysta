@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - شركات التوصيل</title>
+    <link rel="stylesheet" href="{% static 'css/temp.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .delivery-companies-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .brand-logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4F46E5;
+            margin-bottom: 15px;
+        }
+        
+        .page-title {
+            color: #1F2937;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .page-subtitle {
+            color: #6B7280;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .delivery-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+        }
+        
+        .delivery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #4F46E5;
+        }
+        
+        .company-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .company-logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #E5E7EB;
+            overflow: hidden;
+            margin-left: 15px;
+        }
+        
+        .company-logo img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-name {
+            color: #1F2937;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .company-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+        
+        .status-inactive {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+        
+        .status-available {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border: 1px solid #BFDBFE;
+        }
+        
+        .company-features {
+            margin-bottom: 25px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #4B5563;
+            font-size: 14px;
+        }
+        
+        .feature-item i {
+            color: #10B981;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .connect-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C73E6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .connect-btn:hover {
+            background: linear-gradient(135deg, #4338CA 0%, #6D63E0 100%);
+            transform: scale(1.02);
+        }
+        
+        .disconnect-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: #FEF2F2;
+            color: #DC2626;
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .disconnect-btn:hover {
+            background: #FEE2E2;
+            border-color: #FCA5A5;
+        }
+        
+        .btn-disabled {
+            background: #F3F4F6;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        
+        .btn-disabled:hover {
+            background: #F3F4F6;
+            transform: none;
+        }
+        
+        .info-message {
+            background: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            color: #0369A1;
+        }
+        
+        .info-message i {
+            margin-left: 8px;
+        }
+        
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .confirmation-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .delivery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="delivery-companies-container">
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <h1 class="page-title">شركات التوصيل المتاحة</h1>
+        <p class="page-subtitle">اختر شركة التوصيل التي تناسب متجرك واربط حسابك</p>
+    </div>
+    
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="info-message">
+        <i class="fas fa-info-circle"></i>
+     الربط مع شركات التوصيل يمكنك من شحن الطلبات تلقائياً وتتبعها مباشرة من منصتنا
+    </div>
+    
+    <div class="delivery-grid">
+        <div class="delivery-card">
+            <div class="company-header">
+                <div class="company-logo">
+                    {% if darb_connection and darb_connection.is_active %}
+                        <img src="{% static 'img/darb.png' %}" alt="درب السبيل" 
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='🚚';">
+                    {% else %}
+                        <i class="fas fa-truck" style="font-size: 32px; color: #4F46E5;"></i>
+                    {% endif %}
+                </div>
+                <div class="company-info">
+                    <h3 class="company-name">درب السبيل</h3>
+                    {% if darb_connection %}
+                        {% if darb_connection.is_active %}
+                            <span class="company-status status-active">
+                                <i class="fas fa-check-circle"></i> مرتبط
+                            </span>
+                        {% else %}
+                            <span class="company-status status-inactive">
+                                <i class="fas fa-times-circle"></i> غير نشط
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span class="company-status status-available">
+                            <i class="fas fa-plug"></i> متاح للربط
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            
+            <div class="action-buttons">
+                {% if  darb_connection.is_active %}
+                    <a href="{% url 'disconnect_asabil' %}" class="disconnect-btn">
+                        <i class="fas fa-unlink"></i>
+                        فك الارتباط
+                    </a>
+                    
+
+                {% else %}
+                    <a href="{% url 'connect_asabil' %}" class="connect-btn" style="text-decoration: none;">
+                        <i class="fas fa-link"></i>
+                        ربط الحساب
+                    </a>
+                    
+
+                {% endif %}
+            </div>
+            
+        </div>
+
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+        <a href="{% url 'customer_dashboard' %}" style="color: #4F46E5; text-decoration: none; font-weight: 500;">
+            <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            العودة للوحة التحكم
+        </a>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

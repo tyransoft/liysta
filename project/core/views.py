@@ -27,6 +27,9 @@ from datetime import timedelta
 from django.utils.dateparse import parse_datetime
 from django.utils.text import slugify
 import re
+import hashlib
+import base64
+import requests
 #guest user and so on
 
 
@@ -2091,3 +2094,154 @@ def add_quantity(request,product_id):
         messages.success(request,'تم اضاقة الكمية بنجاح.') 
         return redirect('storage', product.menu.id)   
     return render(request, 'add_quantity.html',{'product':product,'menu_id':product.menu.id})     
+
+
+
+@login_required
+def delivery_companies(request):
+    customer=Customer.objects.get(user=request.user)
+    try:
+       darb=DarbAsabilConnection.objects.get(customer=customer)
+    except:
+       darb=None   
+    return render(request, 'delivery_company.html',{'darb_connection':darb,})     
+
+
+
+
+
+@login_required
+def connect_darbasabil(request):
+    
+    customer=Customer.objects.get(user=request.user)
+    if DarbAsabilConnection.objects.filter(customer=customer,is_active=True).exists():
+        messages.error(request,'لقد قمت بربط حسابك بشركة توصيل مسبقا.الغي الربط واعد المحاولة مجددا') 
+        return redirect('customer_dashboard') 
+
+    appid=settings.DARB_APPID
+  
+    darb, created=DarbAsabilConnection.objects.get_or_create(
+      customer=customer,
+      defualts={'is_active':False},
+    )
+     
+    darb.state = DarbAsabilConnection.generate_state()   
+    darb.save()
+      
+
+    code_verifier=secrets.token_urlsafe(32)
+    request.session['darb_code_verifier']=code_verifier
+
+
+    code_hash=hashlib.sha256(code_verifier.encode()).digest()
+    code_challenge=base64.urlsafe_b64encode(code_hash).decode().rstrip('=')
+    callback='https://liysta.ly/integrations/darbasabil/callback'
+    
+    
+    login_url=(
+    f"https://v2.sabil.ly/oauth/login/?"
+    f"appId={appid}&"
+    f"codeChallenge={code_challenge}&"
+    f"codeChallengeMethod=sha-256&"
+    f"callbackURL={callback}&"
+    f"state={darb.state}&"
+    f"theme=light&"
+    f"lng=ar"
+    )
+    return redirect(login_url)
+      
+
+
+def darbasabil_callback(request):
+    customer=Customer.objects.get(user=request.user)
+
+    get_code=request.GET.get('code') 
+    get_state=request.GET.get('state') 
+
+    try:
+       darb=DarbAsabilConnection.objects.get(
+           customer=customer,
+           state=get_state,
+       )
+    except DarbAsabilConnection.DoesNotExist:
+      messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
+      return redirect('customer_dashboard') 
+    
+    code_verifier=request.session.get('darb_code_verifier')
+    if not code_verifier:
+      messages.error(request,'انتهت الجلسة الخاصة بك.') 
+      return redirect('customer_dashboard')  
+    response=requests.post(
+        'https://v2.sabil.ly/api/oauth/exchange/code/',
+        json={
+          'code':get_code,
+          'codeVerifier':code_verifier,
+        },
+        headers={'Content-Type':'application/json'},
+    )
+    if response.status_code ==200:
+      data=response.json()
+      
+      customer.connected_del_method='darbasabil'
+      customer.save()
+
+
+      token_expires=timezone.datetime.fromtimestamp(data['data']['access']['expiresAtSeconds'])
+      refresh_expires=timezone.datetime.fromtimestamp(data['data']['refresh']['expiresAtSeconds'])
+
+      darb.access_token=data['data']['access']['token']
+      darb.refresh_token=data['data']['refresh']['token'] if data['data']['refresh']['token'] else None
+      darb.token_expire_at=token_expires
+      darb.refresh_expire_at=refresh_expires  if refresh_expires else None
+
+      darb.is_active= True
+      
+      darb.save()
+
+      del request.session['darb_code_verifier']
+
+      messages.success(request,'تم الربط مع درب السبيل بنجاح.') 
+      return redirect('customer_dashboard') 
+    else:
+      messages.error(request,'فشل في الحصول على صلاحيات التسجيل مع درب السبيل حاول مرة اخر.') 
+      return redirect('customer_dashboard')   
+
+
+
+@login_required
+def disconnect_darbasabil(request):
+    
+    customer=Customer.objects.get(user=request.user)
+
+    try:
+     darb=DarbAsabilConnection.objects.get(
+      customer=customer,
+       is_active=True,
+     )
+   
+
+     if darb.access_token:
+        try:
+           requests.delete(
+              'https://v2.sabil.ly/api/oauth/session',
+              headers={'Authorization':f'Bearer {darb.access_token}'},
+              timeout=10
+           )
+        except:
+           pass   
+
+        darb.delete()
+
+        customer.connected_del_method='normal'
+        customer.save()
+
+        messages.success(request,'تم فك الربط مع شركة درب السبيل') 
+
+    except DarbAsabilConnection.DoesNotExist:
+        messages.error(request,'ليس لديك ربط حالي مع شركة  درب السبيل') 
+    
+    
+    
+    return redirect('customer_dashboard')        
+
+

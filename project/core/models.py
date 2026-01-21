@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from django.utils.encoding import force_str
 import os
 import uuid
-
+import requests
 
 def get_upload_path(instance, filename):
     name, ext = os.path.splitext(filename)
@@ -35,6 +35,12 @@ class Customer(models.Model):
         ('متجر', 'متجر'),
         ('غير ذلك', 'غير ذلك'),
     }
+    connect={
+        ('darbasabil','darbasabil'),
+        ('vanex', 'vanex'),
+        ('normal','normal'),
+
+    }
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20)
     store_ar_name = models.CharField(max_length=250)
@@ -46,6 +52,7 @@ class Customer(models.Model):
     location_url = models.URLField(blank=True, null=True)
     created_at=models.DateField(auto_now_add=True)
     store_slug = models.SlugField(max_length=250,null=True)
+    connected_del_method=models.CharField(max_length=50, choices=connect,default='normal')
 
 
     @property
@@ -565,3 +572,87 @@ class Coasts(models.Model):
            models.Index(fields=['created_at']),
         
         ] 
+
+class DarbAsabilConnection(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+    state=models.CharField(max_length=200,unique=True,null=True,blank=True)
+    access_token=models.TextField(null=True,blank=True)
+    refresh_token=models.TextField(null=True,blank=True)
+    token_expire_at=models.DateTimeField(null=True,blank=True)
+    refresh_expire_at=models.DateTimeField(null=True,blank=True)
+    
+    is_active=models.BooleanField(default=False)
+    connected_at=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f'{self.customer.store_en_name} -{self.connected_at}'
+    @staticmethod
+    def generate_state():
+        while True:
+            state =secrets.token_urlsafe(24)
+
+            if not DarbAsabilConnection.objects.filter(state=state).exists():
+
+                return state
+            
+    def is_connection_active(self):
+        if  not self.is_active:
+         return False,'الربط مع درب السبيل غير فعال'
+        if  not self.access_token:
+         return False,'صلاحيات الربط غير موجودة اعد الربط من جديد'
+        if  timezone.now() > self.token_expire_at:
+         return False,'الربط مع درب السبيل غير فعال لان صلاحيته منتهية'
+         
+        return True, 'متصل' 
+    
+    
+    def should_refresh(self):    
+        if  not self.is_connection_active():
+         return False,'لايمكن'
+        if  not self.refresh_token:
+         return False,'لايمكن'
+        if  timezone.now() > self.refresh_expire_at:
+         return False,'لايمكن'
+        if  not self.refresh_expire_at:
+         return False,'لايمكن'          
+        
+        time_left=self.token_expire_at - timezone.now()
+
+        if time_left > timedelta(hours=24):
+            return False
+        elif  time_left < timedelta(seconds=0):
+            return False
+        else: 
+            return True
+        
+
+
+    def refresh_token(self):
+        if not self.should_refresh(): 
+         return False
+        else:
+         try:
+          response=requests.post(
+              'https://v2.sabil.ly/api/oauth/token/refresh/',
+              json={'refreshToken':self.refresh_token},
+              headers={'Content-Type':'application/json'},
+              timeout=10             
+            )                    
+          if response.status_code != 200:
+              return False,f"error:{response.status_code}"
+          data=response.json()
+          if not data.get('status'):
+                return False, f"فشل من الخادم: {data.get('message', 'خطأ غير معروف')}"
+          self.access_token=data['data']['access']['token']                
+          self.token_expire_at=timezone.datetime.fromtimestamp(
+              ['data']['access']['expiresAtSeconds'] 
+
+          )
+          self.save()
+        
+         except requests.exceptions.Timeout:
+             return False,"انتهت مدة الاتصال"
+         except requests.exceptions.ConnectionError:
+             return False,"فشل الاتصال بالخادم"
+         except Exception as e:            
+              return False,f"error:{str(e)}"
+                                                     

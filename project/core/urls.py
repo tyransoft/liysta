@@ -63,6 +63,7 @@ urlpatterns = [
     path('customer-discount/edit/<int:cpdiscount_id>/', edit_cpdiscount, name='edit_cpcdiscount'),
     path('customer-discount/delete/<int:cpdiscount_id>/', delete_cpdiscount, name='delete_cpdiscount'),   
 
+    path('delivery-companies/', delivery_companies, name='delivery_companies'),
 
     path('submit-review/', submit_review, name='submit_review'),
     path('customer-dashboard/', customer_dashboard, name='customer_dashboard'),
@@ -70,6 +71,9 @@ urlpatterns = [
     path('preview-template/', preview_template, name='preview_template'),
     path('preview-invoice/', preview_invoice, name='preview_invoice'),
     path('choose-invoice/<int:menu_id>', choose_invoice, name='choose_invoice'),
+    path('integrations/darbasabil/login', connect_darbasabil, name='connect_asabil'),
+    path('integrations/darbasabil/callback',darbasabil_callback, name='asabil_callback'),
+    path('integrations/darbasabil/logout', disconnect_darbasabil, name='disconnect_asabil'),
     
 
     path('customer-dashboard/print-invoice/<int:order_id>', print_invoice, name='invoice'),

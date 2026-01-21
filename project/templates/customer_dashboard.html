@@ -854,6 +854,64 @@
             </div>
 
             <div id="delivery" class="content-section">
+             <div class="dashboard-section">
+                <div class="section-header">
+                 <h2 class="section-title">
+                  <i class="fas fa-truck"></i>
+                    شركات التوصيل
+                 </h2>
+            
+                  <a href="{% url 'delivery_companies' %}" class="btn btn-primary">
+                      <i class="fas fa-truck-loading"></i>
+                        كل الشركات         
+                  </a>
+                </div>
+        
+                <div class="delivery-status-container">
+                   <div class="delivery-company-status">
+                    <div class="company-info">
+                    <div class="company-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    
+                    <div class="company-details">
+                        <h4 class="company-name">درب السبيل</h4>
+                        <div class="status-container">
+                            {% if darb_connection and darb_connection.is_active %}
+                                <span class="status-badge status-connected">
+                                    <i class="fas fa-check-circle"></i>
+                                    مرتبط
+                                </span>
+
+                            {% else %}
+                                <span class="status-badge status-disconnected">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    غير مرتبط
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="company-actions">
+                    {% if darb_connection and darb_connection.is_active %}
+                        <a href="{% url 'delivery_companies' %}" class="btn btn-success btn-manage">
+                            <i class="fas fa-cog"></i>
+                            إدارة الربط
+                        </a>
+                    {% else %}
+                        <a href="{% url 'connect_darbasabil' %}" class="btn btn-primary btn-connect">
+                            <i class="fas fa-link"></i>
+                            ربط الحساب
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+          
+        </div>
+    </div>
+               {% if menus.customer.connected_del_method == 'normal' %}
                 <div class="dashboard-section">
                     <div class="section-header">
                         <h2 class="section-title">مدن/مناطق التوصيل</h2>
@@ -896,6 +954,7 @@
                         </table>
                     </div>
                 </div>
+               {% endif %}
             </div>
 
             <div id="qrcode" class="content-section">

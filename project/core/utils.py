@@ -37,3 +37,5 @@ def verification(request, user):
     [user.email],
     fail_silently=False,
     )
+
+    
