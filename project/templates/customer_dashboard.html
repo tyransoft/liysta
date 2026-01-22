@@ -853,37 +853,37 @@
                 </div>
             </div>
 
-            <div id="delivery" class="content-section">
-             <div class="dashboard-section">
-                <div class="section-header">
-                 <h2 class="section-title">
-                  <i class="fas fa-truck"></i>
-                    شركات التوصيل
-                 </h2>
+<div id="delivery" class="content-section">
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-truck"></i>
+                شركات التوصيل
+            </h2>
             
-                  <a href="{% url 'delivery_companies' %}" class="btn btn-primary">
-                      <i class="fas fa-truck-loading"></i>
-                        كل الشركات         
-                  </a>
-                </div>
-                {% if darb_connection  %}
+            <a href="{% url 'delivery_companies' %}" class="btn btn-primary">
+                <i class="fas fa-truck-loading"></i>
+                كل الشركات         
+            </a>
+        </div>
         
-                <div class="delivery-status-container">
-                   <div class="delivery-company-status">
-                    <div class="company-info">
-                     <div class="company-logo">
+        {% if darb_connection %}
+        <div class="delivery-status-container">
+            <div class="delivery-company-status">
+                <div class="company-info">
+                    <div class="company-logo">
                         <img src="{% static 'img/darb.png' %}" alt="درب السبيل" 
                              onerror="this.style.display='none'; this.parentElement.innerHTML='🚚';">
-                     </div>                        
+                    </div>
                     
                     <div class="company-details">
                         <h4 class="company-name">درب السبيل</h4>
                         <div class="status-container">
-                            {% if darb_connection and darb_connection.is_active %}
+                            {% if darb_connection.is_active %}
                                 <span class="status-badge status-connected">
+                                    <i class="fas fa-check-circle"></i>
                                     مرتبط
                                 </span>
-
                             {% else %}
                                 <span class="status-badge status-disconnected">
                                     <i class="fas fa-exclamation-circle"></i>
@@ -895,7 +895,7 @@
                 </div>
                 
                 <div class="company-actions">
-                    {% if darb_connection and darb_connection.is_active %}
+                    {% if darb_connection.is_active %}
                         <a href="{% url 'delivery_companies' %}" class="btn btn-success btn-manage">
                             <i class="fas fa-cog"></i>
                             إدارة الربط
@@ -907,80 +907,82 @@
                         </a>
                     {% endif %}
                 </div>
-                {% else %}
-            
-                <div class="delivery-status-container">
-                   <div class="delivery-company-status">
-                    <div class="company-info">
-                     <div class="company-icon">
+            </div>
+        </div>
+        {% else %}
+        <div class="delivery-status-container">
+            <div class="delivery-company-status">
+                <div class="company-info">
+                    <div class="company-icon">
                         <i class="fas fa-truck"></i>
-
-                    </div>                        
+                    </div>
                     
                     <div class="company-details">
                         <h4 class="company-name">توصيل يدوي</h4>
+                        <p class="company-description" style="color: var(--gray); font-size: 0.9rem; margin-top: 0.25rem;">
+                            تقوم بإدارة التوصيل بنفسك بدون شركة توصيل
+                        </p>
                     </div>
                 </div>
                 
                 <div class="company-actions">
-                        <a href="{% url 'delivery_companies' %}" class="btn btn-success btn-manage">
-                            <i class="fas fa-cog"></i>
-                            إدارة الربط
-                        </a>
+                    <a href="{% url 'delivery_companies' %}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i>
+                        ربط شركة توصيل
+                    </a>
                 </div>
-                {% endif %}
-            
             </div>
             
-             
-           
-           
-               {% if menus.customer.connected_del_method == 'normal' %}
-                <div class="dashboard-section">
-                    <div class="section-header">
-                        <h2 class="section-title">مدن/مناطق التوصيل</h2>
-                        <a href="{% url 'add_city' menus.id %}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> اضافة منطقة/مدينة
-                        </a>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="orders-table">
-                            <thead>
-                                <tr>
-                                    <th>اسم المدينة/المنطقة</th>
-                                    <th>سعر التوصيل</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for city in citys %}
-                                <tr>
-                                    <td>{{ city.name }}</td>
-                                    <td>{{ city.price }} د.ل</td>
-                                    <td>
-                                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                            <a href="{% url 'update_city' city.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
-                                                  <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="{% url 'delete_city' city.id %}" class="action-btn" style="background: var(--danger-light); color: var(--danger);" title="حذف">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="3" style="text-align: center;">لا توجد مدن متاحة</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-               {% endif %}
+          
+        </div>
+        {% endif %}
+        
+        {% if not darb_connection or menus.customer.connected_del_method == 'normal' %}
+        <div class="dashboard-section" style="margin-top: 2rem;">
+            <div class="section-header">
+                <h2 class="section-title">مدن/مناطق التوصيل</h2>
+                <a href="{% url 'add_city' menus.id %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> اضافة منطقة/مدينة
+                </a>
             </div>
-
+            
+            <div class="table-responsive">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>اسم المدينة/المنطقة</th>
+                            <th>سعر التوصيل</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for city in citys %}
+                        <tr>
+                            <td>{{ city.name }}</td>
+                            <td>{{ city.price }} د.ل</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'update_city' city.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete_city' city.id %}" class="action-btn btn-danger" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">لا توجد مدن متاحة</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
             <div id="qrcode" class="content-section">
                 <div class="dashboard-section">
                     <div class="section-header">
