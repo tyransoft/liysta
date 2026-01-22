@@ -1295,7 +1295,10 @@ def customer_dashboard(request):
                  quantity=Sum('quantity'),
                  orders=Count('order',distinct=True)
              ).order_by('-quantity')[:5]
-                        
+            try:            
+              darb=DarbAsabilConnection.objects.get(customer=customer)
+            except:
+                darb=None
             context.update({
                 'orders': orders,
                 'delivered_percent':deliv_per,
@@ -1310,7 +1313,7 @@ def customer_dashboard(request):
                 'delivered_orders_count': delivered,
                 'returned_orders_count': returned,
                 'canceled_orders_count': canceled,
-
+                'darb_connection':darb,
                 'months': json.dumps(months_labels),  
             })
         if subscription.plan.review:
@@ -2122,7 +2125,6 @@ def connect_darbasabil(request):
   
     darb, created=DarbAsabilConnection.objects.get_or_create(
       customer=customer,
-      defualts={'is_active':False},
     )
      
     darb.state = DarbAsabilConnection.generate_state()   
@@ -2171,6 +2173,8 @@ def darbasabil_callback(request):
     if not code_verifier:
       messages.error(request,'انتهت الجلسة الخاصة بك.') 
       return redirect('customer_dashboard')  
+   
+   
     response=requests.post(
         'https://v2.sabil.ly/api/oauth/exchange/code/',
         json={
@@ -2179,31 +2183,43 @@ def darbasabil_callback(request):
         },
         headers={'Content-Type':'application/json'},
     )
+    data=response.json()
+
     if response.status_code ==200:
       data=response.json()
       
-      customer.connected_del_method='darbasabil'
-      customer.save()
+      refreshexpires=data['data']['refresh']['expiresAtSeconds']
+      if refreshexpires:
+        refresh_expires=timezone.datetime.fromtimestamp(refreshexpires)
+        darb.refresh_expire_at=refresh_expires 
 
+      tokenexpires=data['data']['access']['expiresAtSeconds']
+      if tokenexpires:
+        token_expires=timezone.datetime.fromtimestamp(tokenexpires)
+        darb.token_expire_at=token_expires 
+      refreshtoken=data['data']['refresh']['token']
+      if refreshtoken:
+         darb.refresh_token=refreshtoken
+     
+      try: 
+       token=data['data']['access']['token']
+       if token: 
+         darb.access_token=token
+         darb.is_active= True  
+         darb.save()
 
-      token_expires=timezone.datetime.fromtimestamp(data['data']['access']['expiresAtSeconds'])
-      refresh_expires=timezone.datetime.fromtimestamp(data['data']['refresh']['expiresAtSeconds'])
-
-      darb.access_token=data['data']['access']['token']
-      darb.refresh_token=data['data']['refresh']['token'] if data['data']['refresh']['token'] else None
-      darb.token_expire_at=token_expires
-      darb.refresh_expire_at=refresh_expires  if refresh_expires else None
-
-      darb.is_active= True
+         del request.session['darb_code_verifier']
       
-      darb.save()
-
-      del request.session['darb_code_verifier']
-
-      messages.success(request,'تم الربط مع درب السبيل بنجاح.') 
-      return redirect('customer_dashboard') 
+         customer.connected_del_method='darbasabil'
+         customer.save()
+      
+         messages.success(request,"تم الربط مع درب السبيل بنجاح.") 
+         return redirect('customer_dashboard') 
+      except:
+        messages.error(request,"فشل في الحصول على صلاحيات الربط مع درب السبيل حاول مرة اخرى.")
+        return redirect('customer_dashboard')       
     else:
-      messages.error(request,'فشل في الحصول على صلاحيات التسجيل مع درب السبيل حاول مرة اخر.') 
+      messages.error(request,"فشلت عملية الربط حاول مرة اخرى")
       return redirect('customer_dashboard')   
 
 

@@ -626,7 +626,7 @@ class DarbAsabilConnection(models.Model):
         
 
 
-    def refresh_token(self):
+    def refreshtoken(self):
         if not self.should_refresh(): 
          return False
         else:

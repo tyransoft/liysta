@@ -285,12 +285,8 @@
         <div class="delivery-card">
             <div class="company-header">
                 <div class="company-logo">
-                    {% if darb_connection and darb_connection.is_active %}
                         <img src="{% static 'img/darb.png' %}" alt="درب السبيل" 
                              onerror="this.style.display='none'; this.parentElement.innerHTML='🚚';">
-                    {% else %}
-                        <i class="fas fa-truck" style="font-size: 32px; color: #4F46E5;"></i>
-                    {% endif %}
                 </div>
                 <div class="company-info">
                     <h3 class="company-name">درب السبيل</h3>
