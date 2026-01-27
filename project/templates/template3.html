@@ -1113,12 +1113,12 @@
                         <div class="menu-item-title">
                             <h4>{{ product.name }}</h4>
                             <div>
-                                {% if product.get_discounted_price() != product.price %}
-                                 <span class="price"  data-price="{{ product.get_discounted_price() }}">{{ product.get_discounted_price() }} د.ل</span>
+                                {% if product.get_discounted_price != product.price %}
+                                 <span class="price"  data-price="{{ product.get_discounted_price }}">{{ product.get_discounted_price }} د.ل</span>
  
                                  <span class="original-price">{{ product.price }} د.ل</span>
-                                {% elif product.get_discounted_price() == product.price %}
-                                    <span class="price"  data-price="{{ product.get_discounted_price() }}">{{ product.price }} د.ل</span>
+                                {% elif product.get_discounted_price == product.price %}
+                                    <span class="price"  data-price="{{ product.get_discounted_price }}">{{ product.price }} د.ل</span>
                                 
                                 {% endif %}
                             </div>
@@ -1476,7 +1476,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const menuItem = this.closest('.menu-item');
         const itemName = menuItem.querySelector('h4').textContent;
         const priceElement = menuItem.querySelector('.price');
-        const itemPrice = parseFloat(priceElement.getAttribute('data-price'));
+        const itemPrice = parseFloat(priceElement.getAttribute('data-price').replace(',', '.'));
         const itemQuantity = parseInt(menuItem.querySelector('.quantity').textContent);
         const itemImage = menuItem.querySelector('img').src;
         const availableQuantity = parseInt(menuItem.getAttribute('data-available-quantity')) || 9999;
