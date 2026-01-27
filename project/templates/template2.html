@@ -1155,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const menuItem = this.closest('.menu-item');
             const itemName = menuItem.querySelector('h4').textContent;
             const priceElement = menuItem.querySelector('.price');
-            const itemPrice = parseFloat(priceElement.getAttribute('data-price'));
+            const itemPrice = parseFloat(priceElement.getAttribute('data-price').replace(',', '.'));
             const itemQuantity = parseInt(menuItem.querySelector('.quantity').textContent);
             const itemImage = menuItem.querySelector('img').src;
             const availableQuantity = parseInt(menuItem.getAttribute('data-available-quantity')) || 9999;
