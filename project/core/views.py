@@ -2207,6 +2207,7 @@ def darbasabil_callback(request):
        if token: 
          darb.access_token=token
          darb.is_active= True  
+         darb.refresh_token=data
          darb.save()
 
          del request.session['darb_code_verifier']
