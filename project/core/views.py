@@ -876,6 +876,7 @@ def edit_cpdiscount(request, cpdiscount_id):
         form = CPDForm(instance=discount)
     return render(request, 'home/edit_cp.html', {'form': form, 'discount': discount})
 
+
 @login_required
 def delete_cpdiscount(request, cpdiscount_id):
     if request.method == 'POST':
@@ -1668,8 +1669,8 @@ def create_order(request):
 
                 )
                 
-                item_total = product.price * quantity
-                item_profit = (product.price - product.bought_price) * quantity
+                item_total = product.get_discounted_price() * quantity
+                item_profit = (product.get_discounted_price() - product.bought_price) * quantity
                 total_sales += item_total
                 total_profit += item_profit
 
