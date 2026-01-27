@@ -164,7 +164,6 @@
             100% { transform: translateY(0px); }
         }
 
-        /* قسم الفلترة */
         .filter-section {
             padding: 20px 5%;
             background: var(--card-bg);
@@ -366,7 +365,6 @@
             margin-left: 5px;
         }
 
-        /* خيارات المنتج */
         .product-options {
             margin: 15px 0;
         }
@@ -873,7 +871,6 @@
             background-color: rgba(255,255,255,0.1);
         }
 
-        /* إشعارات السلة */
         .cart-notification {
             position: fixed;
             bottom: 100px;
@@ -1046,11 +1043,11 @@
                             <h4>{{ product.name }}</h4>
                             <div>
                                 {% if product.get_discounted_price != product.price %}
-                                 <span class="price">{{ product.get_discounted_price }} د.ل</span>
+                                 <span class="price" data-price="{{ product.get_discounted_price }}">{{ product.get_discounted_price }} د.ل</span>
  
                                  <span class="original-price">{{ product.price }} د.ل</span>
                                 {% elif product.get_discounted_price == product.price %}
-                                    <span class="price">{{ product.price }} د.ل</span>
+                                    <span class="price" data-price="{{ product.get_discounted_price }}">{{ product.price }} د.ل</span>
                                 
                                 {% endif %}
                             </div>
@@ -1258,11 +1255,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // كود تبديل الوضع الداكن
     const themeToggle = document.querySelector('.theme-toggle');
     const themeIcon = document.getElementById('themeIcon');
     
-    // تحقق من التفضيل المحفوظ
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     
@@ -1271,7 +1266,6 @@ document.addEventListener('DOMContentLoaded', function() {
         themeIcon.classList.add('fa-sun');
     }
     
-    // حدث النقر على زر التبديل
     themeToggle.addEventListener('click', function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -1288,7 +1282,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // كود تصفية المنتجات حسب التصنيف
     const categorySelect = document.getElementById('category');
     if (categorySelect) {
         categorySelect.addEventListener('change', function() {
@@ -1308,7 +1301,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     {% if subscription.plan.ordering %}
-    // كود السلة ونموذج الطلب
     let cart = [];
     let deliveryFee = 0;
 
@@ -1329,7 +1321,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const addressField = document.getElementById('addressField');
     const receivingMethodRadios = document.querySelectorAll('input[name="receiving_method"]');
 
-    // معالجة اختيار الألوان والمقاسات
     document.querySelectorAll('.color-btn, .size-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const container = this.closest('.option-buttons');
@@ -1338,11 +1329,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             this.classList.add('selected');
             
-            // تخزين القيمة المحددة في الحقل المخفي
             const hiddenField = this.closest('.option-group').querySelector('input[type="hidden"]');
             hiddenField.value = this.getAttribute('data-value');
             
-            // تفعيل زر إضافة إلى السلة إذا تم اختيار جميع الخيارات المطلوبة
             const menuItem = this.closest('.menu-item');
             checkAddToCartButton(menuItem);
         });
@@ -1352,14 +1341,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const addButton = menuItem.querySelector('.add-to-cart');
         let isDisabled = false;
         
-        // التحقق من الألوان إذا كانت مطلوبة
         const colorGroup = menuItem.querySelector('.colors-container');
         if (colorGroup) {
             const selectedColor = menuItem.querySelector('.selected-color').value;
             if (!selectedColor) isDisabled = true;
         }
         
-        // التحقق من المقاسات إذا كانت مطلوبة
         const sizeGroup = menuItem.querySelector('.sizes-container');
         if (sizeGroup) {
             const selectedSize = menuItem.querySelector('.selected-size').value;
@@ -1369,7 +1356,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addButton.disabled = isDisabled;
     }
 
-    // إظهار/إخفاء حقل العنوان حسب طريقة الاستلام
     if (receivingMethodRadios) {
         receivingMethodRadios.forEach(radio => {
             radio.addEventListener('change', function() {
@@ -1417,7 +1403,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const productId = this.getAttribute('data-product-id');
         const menuItem = this.closest('.menu-item');
         const itemName = menuItem.querySelector('h4').textContent;
-        const itemPrice = parseFloat(menuItem.querySelector('.price').textContent);
+        const priceElement = menuItem.querySelector('.price');
+        const itemPrice = parseFloat(priceElement.getAttribute('data-price'));
         const itemQuantity = parseInt(menuItem.querySelector('.quantity').textContent);
         const itemImage = menuItem.querySelector('img').src;
         const availableQuantity = parseInt(menuItem.getAttribute('data-available-quantity')) || 9999;
@@ -1427,7 +1414,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // الحصول على اللون والمقاس المحددين
         let itemColor = null;
         let itemSize = null;
         
@@ -1534,7 +1520,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="cart-item-details">
                         <h5>${item.name}</h5>
-                        <p>${item.price} د.ل × ${item.quantity} ${optionsText}</p>
+                        <p>${item.price.toFixed(1)} د.ل × ${item.quantity} ${optionsText}</p>
+
                         ${item.availableQuantity < 10 ? `<p class="stock-warning">الكمية المتبقية: ${item.availableQuantity}</p>` : ''}
                     </div>
                 </div>
@@ -1589,12 +1576,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
         const total = subtotal + deliveryFee;
         
-        subtotalPriceElement.textContent = subtotal.toFixed(2) + ' د.ل';
+        subtotalPriceElement.textContent = subtotal.toFixed(1) + ' د.ل';
+        
         if (deliveryPriceElement) {
             deliveryPriceElement.textContent = deliveryFee.toFixed(2) + ' د.ل';
         }
-        totalPriceElement.textContent = total.toFixed(2) + ' د.ل';
-        
+        totalPriceElement.textContent = total.toFixed(1) + ' د.ل';
         const totalCount = cart.reduce((count, item) => count + item.quantity, 0);
         cartCountElements.forEach(el => {
             el.textContent = totalCount;
@@ -1698,7 +1685,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // تعطيل المنتجات التي كمية المخزون فيها صفر
     document.querySelectorAll('.menu-item').forEach(item => {
         const availableQuantity = parseInt(item.getAttribute('data-available-quantity')) || 9999;
         if (availableQuantity <= 0) {
@@ -1712,7 +1698,6 @@ document.addEventListener('DOMContentLoaded', function() {
     {% endif %}
 
     {% if subscription.plan.review %}
-    // كود التقييم
     const openRatingModal = document.getElementById('openRatingModal');
     const ratingModal = document.getElementById('ratingModal');
     const stars = document.querySelectorAll('.rating-stars i');
@@ -1784,7 +1769,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     {% endif %}
 
-    // إغلاق النموذج عند النقر خارج المحتوى
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('checkoutModal');
         if (event.target === modal) {

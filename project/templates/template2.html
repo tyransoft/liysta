@@ -836,11 +836,11 @@
                             <h4>{{ product.name }}</h4>
                             <div>
                                 {% if product.get_discounted_price != product.price %}
-                                 <span class="price">{{ product.get_discounted_price }} د.ل</span>
+                                 <span class="price" data-price="{{ product.get_discounted_price}}">{{ product.get_discounted_price }} د.ل</span>
  
                                  <span class="original-price">{{ product.price }} د.ل</span>
                                 {% elif product.get_discounted_price == product.price %}
-                                    <span class="price">{{ product.price }} د.ل</span>
+                                    <span class="price" data-price="{{ product.get_discounted_price }}">{{ product.price }} د.ل</span>
                                 
                                 {% endif %}
                             </div>
@@ -1154,7 +1154,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const productId = this.getAttribute('data-product-id');
             const menuItem = this.closest('.menu-item');
             const itemName = menuItem.querySelector('h4').textContent;
-            const itemPrice = parseFloat(menuItem.querySelector('.price').textContent);
+            const priceElement = menuItem.querySelector('.price');
+            const itemPrice = parseFloat(priceElement.getAttribute('data-price'));
             const itemQuantity = parseInt(menuItem.querySelector('.quantity').textContent);
             const itemImage = menuItem.querySelector('img').src;
             const availableQuantity = parseInt(menuItem.getAttribute('data-available-quantity')) || 9999;
@@ -1270,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="cart-item-details">
                             <h5>${item.name}</h5>
-                            <p>${item.price} د.ل × ${item.quantity} ${optionsText}</p>
+                            <p>${item.price.toFixed(1)} د.ل × ${item.quantity} ${optionsText}</p>
                             ${item.availableQuantity < 10 ? `<p class="stock-warning">الكمية المتبقية: ${item.availableQuantity}</p>` : ''}
                         </div>
                     </div>
