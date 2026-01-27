@@ -1113,12 +1113,12 @@
                         <div class="menu-item-title">
                             <h4>{{ product.name }}</h4>
                             <div>
-                                {% if product.get_discounted_price != product.price %}
-                                 <span class="price"  data-price="{{ product.get_discounted_price }}">{{ product.get_discounted_price }} د.ل</span>
+                                {% if product.get_discounted_price() != product.price %}
+                                 <span class="price"  data-price="{{ product.get_discounted_price() }}">{{ product.get_discounted_price() }} د.ل</span>
  
                                  <span class="original-price">{{ product.price }} د.ل</span>
-                                {% elif product.get_discounted_price == product.price %}
-                                    <span class="price"  data-price="{{ product.get_discounted_price }}">{{ product.price }} د.ل</span>
+                                {% elif product.get_discounted_price() == product.price %}
+                                    <span class="price"  data-price="{{ product.get_discounted_price() }}">{{ product.price }} د.ل</span>
                                 
                                 {% endif %}
                             </div>
