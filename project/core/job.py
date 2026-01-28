@@ -103,8 +103,10 @@ def send_monthly_report():
      wb.save(output)
      output.seek(0)
      filename=f'report_{previous_year}_{previous_month}.xlsx'
+     report_date=date(previous_year,previous_month,28)
      report=Liystanumbers.objects.create(
-        month_data=File(output,name=filename)
+        month_data=File(output,name=filename),
+        created_at=report_date
      )
      report.save()
 

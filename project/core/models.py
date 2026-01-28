@@ -544,7 +544,7 @@ class AdminSales(models.Model):
 
 class Liystanumbers(models.Model):
     month_data=models.FileField(upload_to='data/')
-    created_at=models.DateField(auto_now_add=True)
+    created_at=models.DateField()
     def __str__(self):
         return f"{self.created_at}"
     class Meta:
