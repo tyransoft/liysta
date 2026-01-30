@@ -596,33 +596,33 @@ class DarbAsabilConnection(models.Model):
             
     def is_connection_active(self):
         if  not self.is_active:
-         return False,'الربط مع درب السبيل غير فعال'
+         return False
         if  not self.access_token:
-         return False,'صلاحيات الربط غير موجودة اعد الربط من جديد'
+         return False
         if  timezone.now() > self.token_expire_at:
-         return False,'الربط مع درب السبيل غير فعال لان صلاحيته منتهية'
-         
-        return True, 'متصل' 
+         return False
+        
+        return True 
     
     
     def should_refresh(self):    
         if  not self.is_connection_active():
-         return False,'لايمكن'
+         return False
         if  not self.refresh_token:
-         return False,'لايمكن'
+         return False
         if  timezone.now() > self.refresh_expire_at:
-         return False,'لايمكن'
+         return False
         if  not self.refresh_expire_at:
-         return False,'لايمكن'          
+         return False          
         
         time_left=self.token_expire_at - timezone.now()
 
-        if time_left > timedelta(hours=24):
-            return False
-        elif  time_left < timedelta(seconds=0):
-            return False
-        else: 
+        if time_left < timedelta(days=10):
             return True
+        elif  time_left < timedelta(seconds=0):
+            return True
+        else: 
+            return False
         
 
 
@@ -642,13 +642,26 @@ class DarbAsabilConnection(models.Model):
           data=response.json()
           if not data.get('status'):
                 return False, f"فشل من الخادم: {data.get('message', 'خطأ غير معروف')}"
-          self.access_token=data['data']['access']['token']                
-          self.token_expire_at=timezone.datetime.fromtimestamp(
-              ['data']['access']['expiresAtSeconds'] 
+         
+          refreshexpires=data['data']['refresh']['expiresAtSeconds']
+          if refreshexpires:
+            refresh_expires=timezone.datetime.fromtimestamp(refreshexpires)
+            self.refresh_expire_at=refresh_expires 
 
-          )
-          self.save()
+          tokenexpires=data['data']['access']['expiresAtSeconds']
+          if tokenexpires:
+             token_expires=timezone.datetime.fromtimestamp(tokenexpires)
+             self.token_expire_at=token_expires 
+          refreshtoken=data['data']['refresh']['token']
+          if refreshtoken:
+             self.refresh_token=refreshtoken
+     
+          token=data['data']['access']['token']
+          if token: 
+             self.access_token=token
         
+          self.save()
+
          except requests.exceptions.Timeout:
              return False,"انتهت مدة الاتصال"
          except requests.exceptions.ConnectionError:

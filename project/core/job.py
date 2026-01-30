@@ -195,6 +195,16 @@ def deactivate_users_subs():
          )           
 
 
+def refresh_tokens():
+   darbs=DarbAsabilConnection.objects.all()
+   for darb in darbs:
+     if darb.should_refresh():
+       darb.refreshtoken()
+     else:
+       pass
+   
+   
+
 def start():
     scheduler=BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(),"default")
@@ -224,6 +234,14 @@ def start():
       replace_existing=True,
     )
 
+    scheduler.add_job(
+        refresh_tokens, 
+        trigger='interval',
+        hours=8,
+        id='deactive_subs',
+        replace_existing=True,
+        max_instances=1, 
+    )
     register_events(scheduler)
     scheduler.start()
 
