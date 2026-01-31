@@ -2367,15 +2367,15 @@ def dilver_darbasabil(request,order_id):
 
 
 
-       if response.status_code ==201:
+       if response.status_code ==200:
          data=response.json()
          order.refrence =data['data']['_id']
          order.status = 'indeliver'
          order.save()
-         messages.success(request,'تم شحن الطلب الى درب السبيل بنجاح.') 
+         messages.success(request,'تم ارسال الطلبية الى درب السبيل') 
          return redirect('customer_dashboard')  
        else:
-         messages.error(request,'لم تتم العملية بنجاح') 
+         messages.error(request,f"خطا:{data}") 
          return redirect('customer_dashboard')     
     
     
