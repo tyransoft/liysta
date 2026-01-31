@@ -2366,8 +2366,9 @@ def dilver_darbasabil(request,order_id):
        )
 
 
+       data=response.json()
 
-       if response.status_code ==200:
+       if response.status_code == 201:
          data=response.json()
          order.refrence =data['data']['_id']
          order.status = 'indeliver'
