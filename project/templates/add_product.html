@@ -45,6 +45,343 @@
             margin-top: 5px;
             display: block;
         }
+        .delivery-settings-section {
+        background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        border: 2px solid #FF6B35;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .delivery-settings-section::before {
+        content: '🚚';
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 24px;
+        opacity: 0.2;
+    }
+    
+    .delivery-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #FF6B35;
+    }
+    
+    .delivery-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #C2410C;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .required-tag {
+        background: #FF6B35;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .toggle-switches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .toggle-item-card {
+        background: white;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .toggle-item-card:hover {
+        border-color: #FF6B35;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.1);
+    }
+    
+    .toggle-item-card.active {
+        border-color: #FF6B35;
+        background: #FFF7ED;
+    }
+    
+    .toggle-item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .toggle-item-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .toggle-item-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FF6B35;
+        font-size: 20px;
+        border: 2px solid #FF6B35;
+    }
+    
+    .toggle-item-name {
+        font-weight: 600;
+        color: #1F2937;
+        font-size: 16px;
+    }
+    
+    .toggle-item-desc {
+        color: #6B7280;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 8px;
+    }
+    
+    .dimensions-container {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        border: 2px dashed #FF6B35;
+    }
+    
+    .dimensions-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .dimensions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    
+    .dimension-group {
+        position: relative;
+    }
+    
+    .dimension-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #1F2937;
+        font-size: 14px;
+    }
+    
+    .dimension-input-wrapper {
+        position: relative;
+    }
+    
+    .dimension-input {
+        width: 100%;
+        padding: 12px 40px 12px 15px;
+        border: 2px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .dimension-input:focus {
+        border-color: #FF6B35;
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        outline: none;
+    }
+    
+    .dimension-unit {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6B7280;
+        font-weight: 500;
+    }
+    
+    .delivery-info-box {
+        background: #FEF3C7;
+        border: 1px solid #F59E0B;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #92400E;
+    }
+    
+    .delivery-info-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+ 
+    
+    .delivery-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+    }
+    
+
+    
+    .validate-btn:hover {
+        background: #E55A2B;
+    }
+    
+    @media (max-width: 768px) {
+        .toggle-switches-grid {
+            grid-template-columns: 1fr;
+        }
+        
+     
+    }
+     .toggle-switch-small {
+        position: relative;
+        width: 50px;
+        height: 26px;
+    }
+    
+    .toggle-input-hidden {
+        display: none;
+    }
+    
+    .toggle-slider-small {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #E5E7EB;
+        border-radius: 34px;
+        transition: .4s;
+    }
+    
+    .toggle-slider-small:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        right: 4px;
+        bottom: 4px;
+        background-color: white;
+        border-radius: 50%;
+        transition: .4s;
+    }
+    
+    .toggle-input-hidden:checked + .toggle-slider-small {
+        background-color: #FF6B35;
+    }
+    
+    .toggle-input-hidden:checked + .toggle-slider-small:before {
+        transform: translateX(-24px);
+    }
+        .current-dimensions-display {
+        background: #F0F9FF;
+        border: 1px solid #BAE6FD;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .current-dims-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #0369A1;
+    }
+    
+    .current-dims-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .current-dim-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #E5E7EB;
+    }
+    
+    .dim-label {
+        color: #4B5563;
+        font-weight: 500;
+    }
+    
+    .dim-value {
+        color: #FF6B35;
+        font-weight: 600;
+    }
+    
+    .current-dims-note {
+        font-size: 12px;
+        color: #6B7280;
+        text-align: center;
+        padding-top: 8px;
+        border-top: 1px dashed #D1D5DB;
+    }
+    
+    .dimension-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .current-value-hint {
+        font-size: 12px;
+        color: #10B981;
+        background: #D1FAE5;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .current-dims-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .dimension-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        
+        .current-value-hint {
+            align-self: flex-start;
+        }
+    }
     </style>
 </head>
 <body>
@@ -209,7 +546,190 @@
                 <div class="error">{{ form.available_sizes.errors }}</div>
             {% endif %}
         </div>
+<div class="delivery-settings-section">
+    <div class="delivery-header">
+        <h3 class="delivery-title">
+            <i class="fas fa-shipping-fast"></i>
+            إعدادات التوصيل
+        </h3>
+        <span class="required-tag">مهم للتوصيل</span>
+    </div>
+    
+    <div class="toggle-switches-grid">
+        <div class="toggle-item-card" onclick="toggleDeliveryOption(this, 'measurable')">
+            <div class="toggle-item-header">
+                <div class="toggle-item-info">
+                    <div class="toggle-item-icon">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
+                    <div>
+                        <span class="toggle-item-name"> القياس والتجريب</span>
+                    </div>
+                </div>
+                <div class="toggle-switch-small">
+                    <input type="checkbox" name="measurable" id="measurable" 
+                           class="toggle-input-hidden" {% if form.measurable.value %}checked{% endif %}>
+                    <span class="toggle-slider-small"></span>
+                </div>
+            </div>
+            <p class="toggle-item-desc">
+             هل تسمح بقياس وتجريب المنتج عند التوصيل
+            </p>
+        </div>
         
+        <div class="toggle-item-card" onclick="toggleDeliveryOption(this, 'openable')">
+            <div class="toggle-item-header">
+                <div class="toggle-item-info">
+                    <div class="toggle-item-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div>
+                        <span class="toggle-item-name">قابل للفتح</span>
+                    </div>
+                </div>
+                <div class="toggle-switch-small">
+                    <input type="checkbox" name="openable" id="openable" 
+                           class="toggle-input-hidden" {% if form.openable.value %}checked{% endif %}>
+                    <span class="toggle-slider-small"></span>
+                </div>
+            </div>
+            <p class="toggle-item-desc">
+                 هل تسمح بفتح المنتج عند التوصيل
+            </p>
+        </div>
+        
+        <div class="toggle-item-card" onclick="toggleDeliveryOption(this, 'breakable')">
+            <div class="toggle-item-header">
+                <div class="toggle-item-info">
+                    <div class="toggle-item-icon">
+                        <i class="fas fa-glass-whiskey"></i>
+                    </div>
+                    <div>
+                        <span class="toggle-item-name">قابل للكسر</span>
+                    </div>
+                </div>
+                <div class="toggle-switch-small">
+                    <input type="checkbox" name="breakable" id="breakable" 
+                           class="toggle-input-hidden" {% if form.breakable.value %}checked{% endif %}>
+                    <span class="toggle-slider-small"></span>
+                </div>
+            </div>
+            <p class="toggle-item-desc">
+                المنتج هش ويحتاج إلى تغليف خاص
+            </p>
+        </div>
+    </div>
+    
+    <div class="dimensions-container">
+        <h4 class="dimensions-title">
+            <i class="fas fa-cube"></i>
+            أبعاد المنتج (مطلوبة للتوصيل)
+        </h4>
+        
+            {% if form.high.value or form.length.value or form.latitude.value %}
+    <div class="current-dimensions-display">
+        <div class="current-dims-header">
+            <i class="fas fa-history" style="margin-left: 8px; color: #FF6B35;"></i>
+            <span>الأبعاد الحالية:</span>
+        </div>
+        <div class="current-dims-grid">
+            {% if form.high.value %}
+            <div class="current-dim-item">
+                <span class="dim-label">الارتفاع:</span>
+                <span class="dim-value">{{ form.high.value }} سم</span>
+            </div>
+            {% endif %}
+            
+            {% if form.length.value %}
+            <div class="current-dim-item">
+                <span class="dim-label">الطول:</span>
+                <span class="dim-value">{{ form.length.value }} سم</span>
+            </div>
+            {% endif %}
+            
+            {% if form.latitude.value %}
+            <div class="current-dim-item">
+                <span class="dim-label">العرض:</span>
+                <span class="dim-value">{{ form.latitude.value }} سم</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="current-dims-note">
+            <i class="fas fa-info-circle" style="margin-left: 5px;"></i>
+            يمكنك تعديل هذه القيم في الحقول أدناه
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="dimensions-grid">
+        <div class="dimension-group">
+            <div class="dimension-header">
+                <label class="dimension-label">
+                    <i class="fas fa-arrows-alt-v" style="color: #FF6B35; margin-left: 5px;"></i>
+                    الارتفاع
+                </label>
+                {% if form.high.value %}
+                <span class="current-value-hint">الحالي: {{ form.high.value }} سم</span>
+                {% endif %}
+            </div>
+            <div class="dimension-input-wrapper">
+                <input type="number" name="high" id="high" class="dimension-input"
+                       step="0.1" min="0" value="{{ form.high.value|default_if_none:'' }}"
+                       placeholder="أدخل الارتفاع">
+                <span class="dimension-unit">سم</span>
+            </div>
+        </div>
+        
+        <div class="dimension-group">
+            <div class="dimension-header">
+                <label class="dimension-label">
+                    <i class="fas fa-arrows-alt-h" style="color: #FF6B35; margin-left: 5px;"></i>
+                    الطول
+                </label>
+                {% if form.length.value %}
+                <span class="current-value-hint">الحالي: {{ form.length.value }} سم</span>
+                {% endif %}
+            </div>
+            <div class="dimension-input-wrapper">
+                <input type="number" name="length" id="length" class="dimension-input"
+                       step="0.1" min="0" value="{{ form.length.value|default_if_none:'' }}"
+                       placeholder="أدخل الطول">
+                <span class="dimension-unit">سم</span>
+            </div>
+        </div>
+        
+        <div class="dimension-group">
+            <div class="dimension-header">
+                <label class="dimension-label">
+                    <i class="fas fa-expand-alt" style="color: #FF6B35; margin-left: 5px;"></i>
+                    العرض
+                </label>
+                {% if form.latitude.value %}
+                <span class="current-value-hint">الحالي: {{ form.latitude.value }} سم</span>
+                {% endif %}
+            </div>
+            <div class="dimension-input-wrapper">
+                <input type="number" name="latitude" id="latitude" class="dimension-input"
+                       step="0.1" min="0" value="{{ form.latitude.value|default_if_none:'' }}"
+                       placeholder="أدخل العرض">
+                <span class="dimension-unit">سم</span>
+            </div>
+        </div>
+    </div>
+        
+        <div class="delivery-info-box">
+            <div class="delivery-info-title">
+                <i class="fas fa-info-circle"></i>
+                معلومات مهمة:
+            </div>
+            <p>• الأبعاد الدقيقة تساعد في حساب تكلفة الشحن المناسبة</p>
+            <p>• المنتجات القابلة للكسر تحتاج إلى تغليف خاص</p>
+            <p>• القياسات الصحيحة تضمن وصول المنتج بحالة سليمة</p>
+        </div>
+        
+       
+    </div>
+</div>        
         <button type="submit" class="submit-btn" id="submitBtn">
             <i class="fas fa-plus-circle"></i> حفظ
         </button>
@@ -218,6 +738,43 @@
 
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
+   function initDeliveryToggles() {
+        document.querySelectorAll('.toggle-input-hidden').forEach(toggle => {
+            const slider = toggle.nextElementSibling;
+            const card = toggle.closest('.toggle-item-card');
+            
+            updateToggleAppearance(toggle, slider, card);
+            
+            toggle.addEventListener('change', () => {
+                updateToggleAppearance(toggle, slider, card);
+            });
+        });
+    }
+    
+    function updateToggleAppearance(toggle, slider, card) {
+        if (toggle.checked) {
+            slider.style.backgroundColor = '#FF6B35';
+            card.classList.add('active');
+        } else {
+            slider.style.backgroundColor = '#E5E7EB';
+            card.classList.remove('active');
+        }
+    }
+    
+    function toggleDeliveryOption(card, inputName) {
+        const input = card.querySelector(`input[name="${inputName}"]`);
+        if (input) {
+            input.checked = !input.checked;
+            input.dispatchEvent(new Event('change'));
+            
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                card.style.transform = 'scale(1)';
+            }, 150);
+        }
+    }
+    
+ 
     document.addEventListener('DOMContentLoaded', () => {
         const formGroups = document.querySelectorAll('.form-group');
         formGroups.forEach((group, index) => {

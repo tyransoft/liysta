@@ -388,20 +388,20 @@
             }
         }
         .btn-add-product {
-            background: linear-gradient(135deg, var(--success-color) 0%, #05c593 100%) !important;
+            background: #ff7b25 !important;
             color: white !important;
             border: none !important;
             padding: 8px 20px !important;
             border-radius: 8px !important;
             font-weight: 600 !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3) !important;
+            box-shadow: #ff7b25  !important;
         }
         
         .btn-add-product:hover {
-            background: linear-gradient(135deg, #05c593 0%, #04b486 100%) !important;
+            background:  #ff7b25 !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(6, 214, 160, 0.4) !important;
+            box-shadow:#ff7b25 !important;
         }
         
         .add-product-section {
@@ -419,9 +419,7 @@
                 <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
                     <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
                 </a>
-                 <a href="{% url 'add_product' menu_id %}" class="btn btn-add-product me-2">
-                    <i class="fas fa-plus-circle me-1"></i> إضافة منتج 
-                </a>
+                 
             </div>
         </div>
     </div>

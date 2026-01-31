@@ -4,7 +4,10 @@ from .models import *
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Products
-        fields = ['name', 'image','quantity','catogery' ,'bought_price','price', 'description','available_colors','available_sizes','high','length','latitude','openable','breakable','measurable']
+        fields = ['name', 'image','quantity','catogery' ,'bought_price'
+        ,'price', 'description','available_colors','available_sizes','high'
+        ,'length','latitude','openable','breakable','measurable']
+        
         labels = {
             'name': 'الاسم',
             'image': 'الصورة',
