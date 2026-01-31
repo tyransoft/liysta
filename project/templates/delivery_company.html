@@ -316,17 +316,17 @@
                         فك الارتباط
                     </a>
                     
-
+                    <a href="{% url 'darbasabil_settings' %}" class="btn btn-primary" style="text-decoration: none;">
+                        <i class="fas fa-cog"></i>
+                        الاعدادات 
+                    </a>
                 {% else %}
                     <a href="{% url 'connect_asabil' %}" class="connect-btn" style="text-decoration: none;">
                         <i class="fas fa-link"></i>
                         ربط الحساب
                     </a>
                     
-                    <a href="{% url 'darbasabil_settings' %}" class="btn btn-primary" style="text-decoration: none;">
-                        <i class="fas fa-cog"></i>
-                        الاعدادات 
-                    </a>
+                   
                 {% endif %}
             </div>
             
