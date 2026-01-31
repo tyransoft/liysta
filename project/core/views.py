@@ -2313,7 +2313,7 @@ def dilver_darbasabil(request,order_id):
 
        )
 
-       if contacts_response.status_code ==200:
+       if contacts_response.status_code ==201:
          contacts_data=contacts_response.json()
 
          contact_object=contacts_data['data']['_id']
@@ -2358,7 +2358,7 @@ def dilver_darbasabil(request,order_id):
             shipping_data["products"].append(product_json)
        
        response=requests.post(
-         'https://v2.sabil.ly/api/oauth/exchange/code/',
+         'https://v2.sabil.ly/api/local/shipments',
           json=shipping_data,
           headers={'Content-Type':'application/json','Authorization':f'Bearer {darb.access_token}'},
           timeout=30
@@ -2367,7 +2367,7 @@ def dilver_darbasabil(request,order_id):
 
 
 
-       if response.status_code ==200:
+       if response.status_code ==201:
          data=response.json()
          order.refrence =data['data']['_id']
          order.status = 'indeliver'
