@@ -2251,7 +2251,7 @@ def darbasabil_settings(request):
        'darb_connection':darb,
     }
     
-    return render(request, 'darba_settings.html',context)     
+    return render(request, 'darb_settings.html',context)     
 
 
 @login_required
