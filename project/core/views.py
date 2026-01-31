@@ -2360,7 +2360,7 @@ def dilver_darbasabil(request,order_id):
        response=requests.post(
          'https://v2.sabil.ly/api/oauth/exchange/code/',
           json=shipping_data,
-          headers={'Content-Type':'application/json'},
+          headers={'Content-Type':'application/json','Authorization':f'Bearer {darb.access_token}'},
           timeout=30
 
        )
