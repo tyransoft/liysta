@@ -486,6 +486,7 @@ class Order(models.Model):
 
     ]
     refrence=models.CharField(max_length=100,null=True,blank=True)
+    serviceid=models.CharField(max_length=100,null=True,blank=True)
 
     ordernumber=models.IntegerField(null=True,blank=True)
     order_type=models.CharField(max_length=25,null=True,blank=True)

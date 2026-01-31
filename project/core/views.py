@@ -2290,4 +2290,99 @@ def disconnect_darbasabil(request):
     
     return redirect('customer_dashboard')        
 
+@login_required
+def dilver_darbasabil(request,order_id):
 
+    try:
+       darb=DarbAsabilConnection.objects.get(
+           customer=customer,
+       )
+       customer=Customer.objects.get(user=request.user) 
+       order=Order.objects.get(id=order_id,menu__customer=customer)
+
+       contacts_response=requests.post(
+         'https://v2.sabil.ly/api/contacts/',
+          json={
+             "name":order.customer_name,
+             "phone":order.customer_phone,
+             
+          },
+          headers={'Content-Type':'application/json'},
+          timeout=10
+
+       )
+
+       if contacts_response.status_code ==200:
+         contacts_data=contacts_response.json()
+
+         contact_object=contacts_data['data']['_id']
+       
+       shipping_data = {
+        "isPickup": darb.collecting,
+        "service":"6783c612dcf305c9e775c987",
+        "paymentBy":darb.paymentby,  
+        "allowCardPayment": darb.epay,  
+        "allowSplitting": False,
+        "allowedBankNotes": {"50": False},
+        "to": {
+            "countryCode": "lby",
+            "city": "قصر خيار",
+            "area": "قصر خيار",
+            "address": ""
+        },
+        "notes": order.notes if hasattr(order, 'notes') else "",
+        "tags": [],
+        "products": [],
+        "contacts": [contact_object],
+        "metadata": {}
+       }
+      
+       for item in  order.orderitem_set.all():
+            product = item.product
+        
+            product_json = {
+             "title": product.name,  
+             "quantity": item.quantity,
+             "widthCM": float(product.latitude or 10.0),
+             "heightCM": float(product.high or 10.0),
+             "lengthCM": float(product.length or 10.0),
+             "allowInspection": product.openable,
+             "allowTesting": False,
+             "isFragile": product.breakable,
+             "amount": product.get_discounted_price(),
+             "currency": "lyd",
+             "isChargeable": True
+            }
+        
+            shipping_data["products"].append(product_json)
+       
+       response=requests.post(
+         'https://v2.sabil.ly/api/oauth/exchange/code/',
+          json=shipping_data,
+          headers={'Content-Type':'application/json'},
+          timeout=30
+
+       )
+
+
+
+       if response.status_code ==200:
+         data=response.json()
+         order.refrence =data['data']['_id']
+         order.status = 'indeliver'
+         order.save()
+         messages.success(request,'تم شحن الطلب الى درب السبيل بنجاح.') 
+         return redirect('customer_dashboard')  
+       else:
+         messages.error(request,'لم تتم العملية بنجاح') 
+         return redirect('customer_dashboard')     
+    
+    
+    except DarbAsabilConnection.DoesNotExist:
+      messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
+      return redirect('customer_dashboard') 
+    except Order.DoesNotExist:
+      messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
+      return redirect('customer_dashboard')     
+
+ 
