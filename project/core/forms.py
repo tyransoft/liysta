@@ -4,7 +4,7 @@ from .models import *
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Products
-        fields = ['name', 'image','quantity','catogery' ,'bought_price','price', 'description','available_colors','available_sizes']
+        fields = ['name', 'image','quantity','catogery' ,'bought_price','price', 'description','available_colors','available_sizes','high','length','latitude','openable','breakable','measurable']
         labels = {
             'name': 'الاسم',
             'image': 'الصورة',
@@ -233,3 +233,17 @@ class OrderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if menu:
             self.fields['delivery_address'].queryset = City.objects.filter(menu=menu)
+
+class DarbasabilForm(forms.ModelForm):
+    class Meta:
+        model = DarbAsabilConnection
+        exclude = ['customer', 'state', 'access_token', 'refresh_token', 
+                   'token_expire_at', 'refresh_expire_at', 'is_active']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['collecting'].widget.attrs.update({'class': 'custom-checkbox'})
+        self.fields['epay'].widget.attrs.update({'class': 'custom-checkbox'})
+        self.fields['paymentby'].widget.attrs.update({'class': 'radio-group'})
+        self.fields['epay_coast'].widget.attrs.update({'class': 'radio-group'})
+        self.fields['epay_coast'].required = False

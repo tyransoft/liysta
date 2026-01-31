@@ -2214,8 +2214,8 @@ def darbasabil_callback(request):
          customer.connected_del_method='darbasabil'
          customer.save()
       
-         messages.success(request,"تم الربط مع درب السبيل بنجاح.") 
-         return redirect('customer_dashboard') 
+         messages.success(request,"تم الربط مع درب السبيل بنجاح.نرجو اكمال لاعدادات الخاصة بالتوصيل") 
+         return redirect('darbasabil_settings') 
       except:
         messages.error(request,"فشل في الحصول على صلاحيات الربط مع درب السبيل حاول مرة اخرى.")
         return redirect('customer_dashboard')       
@@ -2223,6 +2223,35 @@ def darbasabil_callback(request):
       messages.error(request,"فشلت عملية الربط حاول مرة اخرى")
       return redirect('customer_dashboard')   
 
+@login_required
+def darbasabil_settings(request):
+    try:
+       customer=Customer.objects.get(user=request.user)
+       darb=DarbAsabilConnection.objects.get(customer=customer)
+       if request.method == 'POST':
+          form=DarbasabilForm(request.POST,instance=darb)
+          if form.is_valid():
+            form.save()
+            messages.success(request,"تم الربط مع درب السبيل بنجاح.") 
+            return redirect('customer_dashboard')   
+          else:
+            messages.error(request,"فشلت عملية ضبط الاعدادات حاول مرة اخرى")
+            return redirect('darbasabil_settings')             
+       else:
+          form=DarbasabilForm(instance=darb)
+    
+    except DarbAsabilConnection.DoesNotExist:
+      messages.error(request,"لم يتم  العثور على اتصالك في درب السبيل")
+      return redirect('delivery_companies') 
+    except Exception as e:
+      messages.error(request,f"خطأ:{e}")
+      return redirect('delivery_companies')  
+    context={
+       'form':form,
+       'darb_connection':darb,
+    }
+    
+    return render(request, 'darb_settings.html',context)     
 
 
 @login_required

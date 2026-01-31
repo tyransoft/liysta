@@ -215,6 +215,15 @@ class Products(models.Model):
     description=models.TextField()
     available_colors = models.CharField(max_length=1000,null=True,blank=True, help_text="أدخل الألوان مفصولة بفاصلة مثل: أحمر, أخضر, أزرق")
     available_sizes = models.CharField(max_length=1000,null=True ,blank=True, help_text="أدخل المقاسات مفصولة بفاصلة مثل: S, M, L, XL")
+    
+    high=models.FloatField(default=0.0)
+    length=models.FloatField(default=0.0)
+    latitude=models.FloatField(default=0.0)
+    
+    breakable= models.BooleanField(default=False)
+    measurable= models.BooleanField(default=False)
+    openable=models.BooleanField(default=False)
+    
     def get_discounted_price(self):
         
          active_discount = CPDiscount.objects.filter(product=self, start_date__lte=timezone.now(), end_date__gte=timezone.now()).first()
@@ -476,6 +485,8 @@ class Order(models.Model):
         ('delivered', 'تم التسليم'),
 
     ]
+    refrence=models.CharField(max_length=100,null=True,blank=True)
+
     ordernumber=models.IntegerField(null=True,blank=True)
     order_type=models.CharField(max_length=25,null=True,blank=True)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
@@ -574,13 +585,25 @@ class Coasts(models.Model):
         ] 
 
 class DarbAsabilConnection(models.Model):
+    PAY_CHOICES={
+        ('sales','sales'),
+        ('sender','sender'),
+        ('reciver','reciver'),
+    }
+    EPAY_CHOICES={
+        ('sender','sender'),
+        ('reciver','reciver'),
+    }
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     state=models.CharField(max_length=200,unique=True,null=True,blank=True)
     access_token=models.TextField(null=True,blank=True)
     refresh_token=models.TextField(null=True,blank=True)
     token_expire_at=models.DateTimeField(null=True,blank=True)
     refresh_expire_at=models.DateTimeField(null=True,blank=True)
-    
+    collecting=models.BooleanField(default=False)
+    paymentby=models.CharField(max_length=10, choices=PAY_CHOICES,default='reciver')
+    epay=models.BooleanField(default=False)
+    epay_coast=models.CharField(max_length=10, choices=EPAY_CHOICES,null=True,blank=True)
     is_active=models.BooleanField(default=False)
     connected_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
@@ -615,7 +638,7 @@ class DarbAsabilConnection(models.Model):
         if  not self.refresh_expire_at:
          return False          
         
-        time_left=self.token_expire_at - timezone.now()
+        time_left=self.refresh_expire_at - timezone.now()
 
         if time_left < timedelta(days=10):
             return True

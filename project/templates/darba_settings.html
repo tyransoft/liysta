@@ -1,0 +1,675 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - إعدادات درب السبيل</title>
+    <link rel="stylesheet" href="{% static 'css/temp.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .brand-logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4F46E5;
+            margin-bottom: 15px;
+        }
+        
+        .page-title {
+            color: #1F2937;
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .page-subtitle {
+            color: #6B7280;
+            font-size: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E5E7EB;
+            margin-bottom: 30px;
+        }
+        
+        .company-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #E5E7EB;
+            overflow: hidden;
+            margin-left: 20px;
+        }
+        
+        .company-logo img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-name {
+            color: #1F2937;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .company-status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+        
+        .status-inactive {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+        
+        .settings-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #1F2937;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .form-label i {
+            margin-left: 8px;
+            color: #4F46E5;
+        }
+        
+        .custom-radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .custom-radio-option {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .custom-radio-input {
+            display: none;
+        }
+        
+        .custom-radio-label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            width: 100%;
+        }
+        
+        .custom-radio-label:hover {
+            border-color: #4F46E5;
+            background: #F5F5FF;
+        }
+        
+        .custom-radio-input:checked + .custom-radio-label {
+            border-color: #4F46E5;
+            background: #F5F5FF;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+        
+        .custom-radio-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #E5E7EB;
+            margin-left: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .custom-radio-input:checked + .custom-radio-label .custom-radio-icon {
+            border-color: #4F46E5;
+            background: #4F46E5;
+        }
+        
+        .custom-radio-input:checked + .custom-radio-label .custom-radio-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .custom-radio-text {
+            flex: 1;
+        }
+        
+        .custom-radio-title {
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 5px;
+        }
+        
+        .custom-radio-description {
+            font-size: 14px;
+            color: #6B7280;
+        }
+        
+        .custom-checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+        
+        .custom-checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .custom-checkbox-input {
+            display: none;
+        }
+        
+        .custom-checkbox-visual {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #E5E7EB;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            background: white;
+            flex-shrink: 0;
+        }
+        
+        .custom-checkbox-input:checked + .custom-checkbox-visual {
+            background: #4F46E5;
+            border-color: #4F46E5;
+        }
+        
+        .custom-checkbox-input:checked + .custom-checkbox-visual::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .custom-checkbox-label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #1F2937;
+        }
+        
+        .checkbox-description {
+            font-size: 14px;
+            color: #6B7280;
+            margin-top: 5px;
+            margin-right: 30px;
+        }
+        
+        .conditional-field {
+            margin-top: 20px;
+            margin-right: 30px;
+            padding: 20px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            border-right: 3px solid #4F46E5;
+            display: none;
+        }
+        
+        .conditional-field.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #F3F4F6;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C73E6 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4338CA 0%, #6D63E0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #4B5563;
+            border: 1px solid #E5E7EB;
+        }
+        
+        .btn-secondary:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+        
+        .messages-container {
+            margin-bottom: 25px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: #D1FAE5;
+            border: 1px solid #A7F3D0;
+            color: #065F46;
+        }
+        
+        .alert-error {
+            background: #FEE2E2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
+        }
+        
+        .alert-info {
+            background: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            color: #0369A1;
+        }
+        
+        .alert-warning {
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            color: #92400E;
+        }
+        
+        .form-errors {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #991B1B;
+        }
+        
+        .form-errors ul {
+            margin: 0;
+            padding-right: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 20px 15px;
+            }
+            
+            .settings-card {
+                padding: 20px;
+            }
+            
+            .company-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .company-logo {
+                margin-left: 0;
+                margin-bottom: 15px;
+            }
+            
+            .custom-radio-group {
+                flex-direction: column;
+            }
+            
+            .custom-radio-option {
+                min-width: 100%;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="settings-container">
+    <div class="brand-header">
+        <div class="brand-logo">Liysta</div>
+        <h1 class="page-title">
+            <i class="fas fa-cogs"></i>
+            إعدادات التوصيل
+        </h1>
+        <p class="page-subtitle">قم بضبط إعدادات درب السبيل حسب احتياجات متجرك</p>
+    </div>
+    
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="settings-card">
+        <div class="company-header">
+            <div class="company-logo">
+                <img src="{% static 'img/darb.png' %}" alt="درب السبيل" 
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='🚚';">
+            </div>
+            <div class="company-info">
+                <h2 class="company-name">درب السبيل</h2>
+                {% if darb_connection %}
+                    {% if darb_connection.is_active %}
+                        <span class="company-status status-active">
+                            <i class="fas fa-check-circle"></i> مرتبط
+                        </span>
+                    {% else %}
+                        <span class="company-status status-inactive">
+                            <i class="fas fa-times-circle"></i> غير نشط
+                        </span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        
+        <form method="POST" class="settings-form" id="darbSettingsForm">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="form-errors">
+                <strong>يرجى تصحيح الأخطاء التالية:</strong>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-money-bill-wave"></i>
+                    من يدفع قيمة الشحن؟
+                </label>
+                <div class="custom-radio-group">
+                    {% for value, label in form.fields.paymentby.choices %}
+                    <div class="custom-radio-option">
+                        <input type="radio" name="paymentby" id="paymentby_{{ value }}" 
+                               value="{{ value }}" 
+                               {% if form.paymentby.value == value %}checked{% endif %}
+                               class="custom-radio-input">
+                        <label for="paymentby_{{ value }}" class="custom-radio-label">
+                            <div class="custom-radio-icon"></div>
+                            <div class="custom-radio-text">
+                                <div class="custom-radio-title">
+                                    {% if value == 'sales' %}
+                                        المبيعات
+                                    {% elif value == 'sender' %}
+                                        المرسل
+                                    {% else %}
+                                        المستلم
+                                    {% endif %}
+                                </div>
+                                <div class="custom-radio-description">
+                                    {% if value == 'sales' %}
+                                        يتم دفع قيمة الشحن من المبيعات
+                                    {% elif value == 'sender' %}
+                                        يتم دفع قيمة الشحن من قبل المرسل
+                                    {% else %}
+                                        يتم دفع قيمة الشحن عند الاستلام
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <input type="hidden" id="paymentby_hidden" value="{{ form.paymentby.value }}">
+            </div>
+            
+            <div class="form-group">
+                <div class="custom-checkbox-group">
+                    <div class="custom-checkbox-option">
+                        <input type="checkbox" name="collecting" id="collecting" 
+                               {% if form.collecting.value %}checked{% endif %}
+                               class="custom-checkbox-input">
+                        <span class="custom-checkbox-visual"></span>
+                        <label for="collecting" class="custom-checkbox-label">
+                            تفعيل خدمة التحصيل
+                        </label>
+                    </div>
+                </div>
+                <div class="checkbox-description">
+                    تتيح هذه الخدمة لشركة التوصيل تحصيل المبالغ النقدية من العملاء نيابة عنك
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="custom-checkbox-group">
+                    <div class="custom-checkbox-option">
+                        <input type="checkbox" name="epay" id="epay" 
+                               {% if form.epay.value %}checked{% endif %}
+                               class="custom-checkbox-input">
+                        <span class="custom-checkbox-visual"></span>
+                        <label for="epay" class="custom-checkbox-label">
+                            تفعيل الدفع الإلكتروني
+                        </label>
+                    </div>
+                </div>
+                <div class="checkbox-description">
+                    تمكين خيار الدفع الإلكتروني للعملاء خلال عملية التوصيل
+                </div>
+                
+                <div class="conditional-field" id="epayOptions">
+                    <label class="form-label">
+                        <i class="fas fa-credit-card"></i>
+                        من يتحمل تكلفة الدفع الإلكتروني؟
+                    </label>
+                    <div class="custom-radio-group">
+                        {% for value, label in form.fields.epay_coast.choices %}
+                        <div class="custom-radio-option">
+                            <input type="radio" name="epay_coast" id="epaycoast_{{ value }}" 
+                                   value="{{ value }}" 
+                                   {% if form.epay_coast.value == value %}checked{% endif %}
+                                   class="custom-radio-input">
+                            <label for="epaycoast_{{ value }}" class="custom-radio-label">
+                                <div class="custom-radio-icon"></div>
+                                <div class="custom-radio-text">
+                                    <div class="custom-radio-title">
+                                        {% if value == 'sender' %}
+                                            المرسل
+                                        {% else %}
+                                            المستلم
+                                        {% endif %}
+                                    </div>
+                                    <div class="custom-radio-description">
+                                        {% if value == 'sender' %}
+                                            المرسل يتحمل تكلفة العمولة
+                                        {% else %}
+                                            المستلم يتحمل تكلفة العمولة
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-lightbulb"></i>
+                سيتم تطبيق هذه الإعدادات على جميع طلبات التوصيل الخاصة بمتجرك
+            </div>
+            
+            <div class="form-actions">
+                <a href="{% url 'delivery_companies' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    حفظ الإعدادات
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+        <a href="{% url 'customer_dashboard' %}" style="color: #4F46E5; text-decoration: none; font-weight: 500;">
+            <i class="fas fa-home" style="margin-left: 8px;"></i>
+            العودة للوحة التحكم الرئيسية
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const epayCheckbox = document.getElementById('epay');
+        const epayOptions = document.getElementById('epayOptions');
+        
+        function toggleEpayOptions() {
+            if (epayCheckbox.checked) {
+                epayOptions.classList.add('show');
+                document.querySelectorAll('input[name="epay_coast"]').forEach(function(radio) {
+                    radio.required = true;
+                });
+            } else {
+                epayOptions.classList.remove('show');
+                document.querySelectorAll('input[name="epay_coast"]').forEach(function(radio) {
+                    radio.required = false;
+                });
+            }
+        }
+        
+        toggleEpayOptions();
+        
+        epayCheckbox.addEventListener('change', toggleEpayOptions);
+        
+        const paymentbyValue = document.getElementById('paymentby_hidden').value;
+        if (paymentbyValue) {
+            document.getElementById('paymentby_' + paymentbyValue).checked = true;
+        }
+        
+        const checkboxes = document.querySelectorAll('.custom-checkbox-input');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const visual = this.nextElementSibling;
+                if (this.checked) {
+                    visual.style.background = '#4F46E5';
+                    visual.style.borderColor = '#4F46E5';
+                } else {
+                    visual.style.background = 'white';
+                    visual.style.borderColor = '#E5E7EB';
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

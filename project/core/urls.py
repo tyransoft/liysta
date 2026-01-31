@@ -64,6 +64,7 @@ urlpatterns = [
     path('customer-discount/delete/<int:cpdiscount_id>/', delete_cpdiscount, name='delete_cpdiscount'),   
 
     path('delivery-companies/', delivery_companies, name='delivery_companies'),
+    path('delivery-darbasabil-settings/', darbasabil_settings, name='darbasabil_settings'),
 
     path('submit-review/', submit_review, name='submit_review'),
     path('customer-dashboard/', customer_dashboard, name='customer_dashboard'),
