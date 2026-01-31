@@ -2305,7 +2305,7 @@ def dilver_darbasabil(request,order_id):
          'https://v2.sabil.ly/api/contacts/',
           json={
              "name":order.customer_name,
-             "phone":order.customer_phone,
+             "phone":"+218923345967",
              
           },
           headers={'Content-Type':'application/json'},
