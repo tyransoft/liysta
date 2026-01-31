@@ -2308,7 +2308,7 @@ def dilver_darbasabil(request,order_id):
              "phone":"+218923345967",
              
           },
-          headers={'Content-Type':'application/json'},
+          headers={'Content-Type':'application/json','Authorization':f'Bearer {darb.access_token}'},
           timeout=10
 
        )
