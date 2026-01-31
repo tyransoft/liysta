@@ -2294,10 +2294,11 @@ def disconnect_darbasabil(request):
 def dilver_darbasabil(request,order_id):
 
     try:
+       customer=Customer.objects.get(user=request.user) 
+
        darb=DarbAsabilConnection.objects.get(
            customer=customer,
        )
-       customer=Customer.objects.get(user=request.user) 
        order=Order.objects.get(id=order_id,menu__customer=customer)
 
        contacts_response=requests.post(
