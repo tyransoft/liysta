@@ -1476,6 +1476,7 @@ def menu_page_view(request, store_slug):
          product.colors_list = [s.strip() for s in re.split(delim,product.available_colors) if s.strip()]    
     try:
         darb=DarbAsabilConnection.objects.get(customer=menu.customer)
+        darb_cities=Darbasabilbranches.objects.all()
     except:
        darb=None       
  
@@ -1495,6 +1496,7 @@ def menu_page_view(request, store_slug):
         'ordering': subscription.plan.ordering,
         'subscription':subscription,
         'darbasabil':darb,
+        'darb_cities':darb_cities,
     }
     return render(request, f'{menu.template}.html', context)
     
@@ -2397,4 +2399,76 @@ def dilver_darbasabil(request,order_id):
       messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
       return redirect('customer_dashboard')     
 
- 
+def calucate_delivery_price(request,order_id):
+    try:
+       customer=Customer.objects.get(user=request.user) 
+
+       darb=DarbAsabilConnection.objects.get(
+           customer=customer,
+       )
+       order=Order.objects.get(id=order_id,menu__customer=customer)
+       
+       city=request.GET.get('city')
+       area=request.GET.get('area')
+       service=request.GET.get('service')
+    
+
+       order_data = {
+       
+        "service":service,
+        "products":[],
+        "to":{"area":area if area else city,"city":city,"countryCode":"lby","address":""}
+        ,"paymentBy":darb.paymentby
+        }
+      
+       for item in  order.orderitem_set.all():
+            product = item.product
+        
+            product_json = {
+             "title": product.name,  
+             "quantity": item.quantity,
+             "widthCM": float(product.latitude or 10.0),
+             "heightCM": float(product.high or 10.0),
+             "lengthCM": float(product.length or 10.0),
+             "amount": product.get_discounted_price(),
+             "currency": "lyd",
+             "isChargeable": False
+            }
+        
+            order_data["products"].append(product_json)
+       
+       response=requests.post(
+         'https://v2.sabil.ly/api/local/shipments/calculate/shipping',
+          json=order_data,
+          headers={'Content-Type':'application/json','Authorization':f'Bearer {darb.access_token}'},
+          timeout=30
+
+       )
+
+
+       data=response.json()
+
+       if response.status_code == 200:
+         data=response.json()
+         price= data['data']['remainings'][0]['remainings']['amount']
+         return  JsonResponse({
+            'success':True,
+            'price':price
+         })
+       else:
+         return  JsonResponse({
+            'success':False,
+            'error':'we can not get the price'
+         }) 
+    
+    
+    except DarbAsabilConnection.DoesNotExist:
+        return  JsonResponse({
+            'success':False,
+            'error':'you do not hava darbasabil'
+         }) 
+    except Order.DoesNotExist:
+        return  JsonResponse({
+            'success':False,
+            'error':'invalid order id '
+         })     

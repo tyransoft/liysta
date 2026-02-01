@@ -699,3 +699,11 @@ class DarbAsabilConnection(models.Model):
          except Exception as e:            
               return False,f"error:{str(e)}"
                                                      
+class Darbasabilbranches(models.Model):
+    branch_id=models.CharField(max_length=200)                                                    
+    city=models.CharField(max_length=200)                                                    
+    area=models.CharField(max_length=200)
+    price=models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.city}-{self.area}'                                                                                                                    

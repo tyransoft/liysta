@@ -67,6 +67,7 @@ urlpatterns = [
     path('delivery-companies/', delivery_companies, name='delivery_companies'),
     path('delivery-darbasabil-settings/', darbasabil_settings, name='darbasabil_settings'),
     path('delivery-darbasabil-shipping/<int:order_id>', dilver_darbasabil, name='dilver_darbasabil'),
+    path('calucate-delivery-price-darbasabil/<int:order_id>', calucate_delivery_price, name='calucate_delivery_price'),
 
 
     path('submit-review/', submit_review, name='submit_review'),
