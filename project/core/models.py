@@ -493,13 +493,19 @@ class Order(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=100)
     customer_phone = models.CharField(max_length=20)
+    #for normal delivery
     delivery_address = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
+    #when using darbasabil
+    company_delivery_address=models.CharField(max_length=100,null=True,blank=True)
+    company_delivery_price=models.FloatField(default=0.0)       
+    
     notes = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateField(auto_now_add=True)
     sales_total=models.FloatField(null=True,blank=True)
     profit_total=models.FloatField(null=True,blank=True)
-    last_check = models.DateTimeField(default=timezone.now) 
+    last_check = models.DateTimeField(default=timezone.now)
+     
     def get_total(self):
         if self.delivery_address:
             total= self.sales_total + self.delivery_address.price
@@ -527,7 +533,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.SET_NULL)
     quantity=models.IntegerField(null=True,blank=True)
     color=models.CharField(max_length=30,null=True,blank=True)
     size=models.CharField(max_length=30,null=True,blank=True)
@@ -589,11 +595,11 @@ class DarbAsabilConnection(models.Model):
     PAY_CHOICES={
         ('sales','sales'),
         ('sender','sender'),
-        ('reciver','reciver'),
+        ('receiver','receiver'),
     }
     EPAY_CHOICES={
         ('sender','sender'),
-        ('reciver','reciver'),
+        ('receiver','receiver'),
     }
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     state=models.CharField(max_length=200,unique=True,null=True,blank=True)

@@ -1604,6 +1604,9 @@ def create_order(request):
 
             notes = request.POST.get('notes')
             menu = request.POST.get('menu_id')
+            company_delivery=request.POST.get('company_delivery_address')
+            
+            
             menu_id=Menu.objects.get(id=menu)
             if not all([customer_name, customer_phone, menu]):
                 return JsonResponse({
@@ -1638,6 +1641,7 @@ def create_order(request):
                 customer_phone=customer_phone,
                 delivery_address_id=delivery_address if delivery_address else None,
                 notes=notes or '',
+                company_delivery_address=company_delivery if company_delivery else None,
                 menu=menu_id,
                 sales_total=0,
                 profit_total=0,
@@ -1696,6 +1700,8 @@ def create_order(request):
             }, status=500)
     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 @csrf_exempt
 def submit_review(request):
     if request.method == 'POST':
@@ -2320,7 +2326,7 @@ def dilver_darbasabil(request,order_id):
        
        shipping_data = {
         "isPickup": darb.collecting,
-        "service":"6783c612dcf305c9e775c987",
+        "service":order.serviceid,
         "paymentBy":darb.paymentby,  
         "allowCardPayment": darb.epay,  
         "allowSplitting": False,
@@ -2331,7 +2337,7 @@ def dilver_darbasabil(request,order_id):
             "area": "قصر خيار",
             "address": ""
         },
-        "notes": order.notes if hasattr(order, 'notes') else "",
+        "notes": "",
         "tags": [],
         "products": [],
         "contacts": [contact_object],
@@ -2348,7 +2354,7 @@ def dilver_darbasabil(request,order_id):
              "heightCM": float(product.high or 10.0),
              "lengthCM": float(product.length or 10.0),
              "allowInspection": product.openable,
-             "allowTesting": False,
+             "allowTesting":product.measurable,
              "isFragile": product.breakable,
              "amount": product.get_discounted_price(),
              "currency": "lyd",
@@ -2376,7 +2382,7 @@ def dilver_darbasabil(request,order_id):
          messages.success(request,'تم ارسال الطلبية الى درب السبيل') 
          return redirect('customer_dashboard')  
        else:
-         messages.error(request,f"خطا:{data}") 
+         messages.error(request,'لم يتم شح الطلبية حاول مرة اخرى.') 
          return redirect('customer_dashboard')     
     
     
