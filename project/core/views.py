@@ -2402,7 +2402,7 @@ def dilver_darbasabil(request,order_id):
 
 
 @csrf_exempt
-def calculate_delivery_price(request):
+def calucate_delivery_price(request):
     try:
         menu_id = request.GET.get('menu_id')
         if not menu_id:
