@@ -1518,7 +1518,7 @@
                 </div>
                 {% endif %}
                 
-                {% if menu.recivieing == 'التوصيل والتسليم في المحل' %}
+                {% if menu.recivieing == 'التوصيل اوالتسليم في المحل' %}
                 <div class="form-group">
                     <label>طريقة الاستلام:</label>
                     <div class="service-options">
@@ -1535,7 +1535,7 @@
                 {% endif %}
                 
                 <div class="form-group delivery-fields" id="deliveryFields" style="display: {% if menu.recivieing == 'التوصيل' %}block{% else %}none{% endif %};">
-                    {% if menu.recivieing == 'التوصيل والتسليم في المحل' or menu.recivieing == 'التوصيل فقط' %}
+                    {% if menu.recivieing == 'التوصيل اوالتسليم في المحل' or menu.recivieing == 'التوصيل' %}
                         {% if darbasabil %}
                         <label for="darb_sabil_area">اختر العنوان:</label>
                         <select id="darb_sabil_area" name="darb_sabil_area" class="form-control">
