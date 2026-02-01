@@ -1518,24 +1518,27 @@
                 </div>
                 {% endif %}
                 
-                {% if menu.recivieing == 'التوصيل اوالتسليم في المحل' %}
+                {% if menu.recivieing == 'التوصيل والتسليم في المحل' %}
                 <div class="form-group">
                     <label>طريقة الاستلام:</label>
                     <div class="service-options">
                         <div class="service-option">
-                            <input type="radio" name="receiving_method" value="delivery" id="delivery_method">
+                            <input type="radio" name="receiving_method" value="delivery" id="delivery_method" required>
                             <label for="delivery_method">توصيل</label>
                         </div>
                         <div class="service-option">
-                            <input type="radio" name="receiving_method" value="pickup" id="pickup_method">
+                            <input type="radio" name="receiving_method" value="pickup" id="pickup_method" required>
                             <label for="pickup_method">استلام من المحل</label>
                         </div>
                     </div>
                 </div>
                 {% endif %}
                 
-                <div class="form-group delivery-fields" id="deliveryFields" style="display: {% if menu.recivieing == 'التوصيل' %}block{% else %}none{% endif %};">
-                    {% if menu.recivieing == 'التوصيل او التسليم في المحل' or menu.recivieing == 'التوصيل' %}
+                <div class="form-group delivery-fields" id="deliveryFields" style="display: 
+                    {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}block
+                    {% else %}none{% endif %};">
+                    
+                    {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}
                         {% if darbasabil %}
                         <label for="darb_sabil_area">اختر العنوان:</label>
                         <select id="darb_sabil_area" name="darb_sabil_area" class="form-control">
@@ -1544,8 +1547,8 @@
                             <option value="{{ city.id }}" 
                                     data-city-name="{{ city.city }}" 
                                     data-area-name="{{ city.area }}"
-                                    data-display-name="{{ city.city }}-{{city.area}}">
-                                {{ city.city }}-{{city.area}}
+                                    data-display-name="{{ city.get_display_name }}">
+                                {{ city.get_display_name }}
                             </option>
                             {% empty %}
                             <option value="">لا توجد مدن متاحة</option>
@@ -1701,6 +1704,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hasOrdering = {% if subscription.plan.ordering %}true{% else %}false{% endif %};
     const hasReview = {% if subscription.plan.review %}true{% else %}false{% endif %};
     const isDarbSabil = {% if darbasabil %}true{% else %}false{% endif %};
+    const menuReceiving = '{{ menu.recivieing }}';
     
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
@@ -1723,6 +1727,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 5000);
     }
+    
+    function closeModal() {
+        document.getElementById('checkoutModal').style.display = 'none';
+    }
+    
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('checkoutModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
     
     if (hasOrdering) {
         let cart = [];
@@ -1785,7 +1800,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addButton.disabled = isDisabled;
         }
 
-        if (deliveryMethodRadios.length > 0 && deliveryFields) {
+        if (deliveryMethodRadios.length > 0) {
             deliveryMethodRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (this.value === 'delivery') {
@@ -1819,7 +1834,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        if (darbSabilAreaSelect && serviceOptions.length > 0) {
+        if (isDarbSabil && darbSabilAreaSelect && serviceOptions.length > 0) {
             darbSabilAreaSelect.addEventListener('change', function() {
                 if (this.value) {
                     serviceTypeSection.style.display = 'block';
@@ -2136,10 +2151,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        function closeModal() {
-            document.getElementById('checkoutModal').style.display = 'none';
-        }
-
         async function calculateFinalPrice(serviceId, serviceTitle, cityName, areaName) {
             try {
                 if (!cityName || !areaName) {
@@ -2147,7 +2158,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                const response = await fetch(`/calculate-delivery-price-darbasabil/0/?city=${encodeURIComponent(cityName)}&area=${encodeURIComponent(areaName)}&service=${serviceId}`);
+                const productsData = cart.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    price: item.price,
+                    name: item.name
+                }));
+                
+                const requestData = {
+                    menu_id: {{ menu.id }},
+                    city: cityName,
+                    area: areaName,
+                    service: serviceId,
+                    products: productsData
+                };
+                
+                const response = await fetch('/calculate-delivery-price/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify(requestData)
+                });
                 
                 const data = await response.json();
                 
@@ -2172,7 +2205,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             } catch (error) {
                 console.error('خطأ في حساب سعر التوصيل:', error);
-                showNotification('حدث خطأ في حساب سعر التوصيل، حاول مرة أخرى', 'error');
+                showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل، حاول مرة أخرى', 'error');
+                
+                document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => {
+                    radio.checked = false;
+                });
             }
         }
 
@@ -2191,22 +2228,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const formData = new FormData(orderForm);
                 const orderData = JSON.parse(sessionStorage.getItem('currentOrder'));
-                
                 const receivingMethod = document.querySelector('input[name="receiving_method"]:checked');
                 
-                if ((receivingMethod && receivingMethod.value === 'delivery') || '{{ menu.recivieing }}' === 'التوصيل') {
-                    if (isDarbSabil && darbSabilAreaSelect && darbSabilAreaSelect.value) {
-                        const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
-                        const city = selectedOption.getAttribute('data-city-name');
-                        const area = selectedOption.getAttribute('data-area-name');
+                if (menuReceiving === 'التوصيل') {
+                    formData.append('receiving_method', 'delivery');
+                    
+                    if (isDarbSabil) {
+                        if (!darbSabilAreaSelect || !darbSabilAreaSelect.value) {
+                            showNotification('الرجاء اختيار العنوان', 'error');
+                            return;
+                        }
+                        
                         const serviceId = document.getElementById('darb_sabil_service_id').value;
-                        const serviceType = document.getElementById('darb_sabil_service_type').value;
                         const price = document.getElementById('darb_sabil_price').value;
                         
                         if (!serviceId || !price || price === "0") {
                             showNotification('يرجى حساب سعر التوصيل أولاً', 'error');
                             return;
                         }
+                        
+                        const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
+                        const city = selectedOption.getAttribute('data-city-name');
+                        const area = selectedOption.getAttribute('data-area-name');
+                        const serviceType = document.getElementById('darb_sabil_service_type').value;
                         
                         formData.append('darb_sabil_city', city);
                         formData.append('darb_sabil_area', area);
@@ -2216,24 +2260,64 @@ document.addEventListener('DOMContentLoaded', function() {
                         formData.append('company_delivery_address', `${city} - ${area}`);
                         formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');
                         formData.append('delivery_type', 'darb_sabil');
-                        if (receivingMethod) {
-                            formData.append('receiving_method', 'delivery');
-                        }
-                    } else if (deliveryAddressSelect && deliveryAddressSelect.value) {
-                        formData.append('delivery_type', 'normal');
-                        if (receivingMethod) {
-                            formData.append('receiving_method', 'delivery');
-                        }
                     } else {
-                        showNotification('الرجاء اختيار عنوان التوصيل', 'error');
+                        if (!deliveryAddressSelect || !deliveryAddressSelect.value) {
+                            showNotification('الرجاء اختيار العنوان', 'error');
+                            return;
+                        }
+                        formData.append('delivery_type', 'normal');
+                    }
+                    
+                } else if (menuReceiving === 'التسليم في المحل') {
+                    formData.append('receiving_method', 'pickup');
+                    formData.append('delivery_type', 'none');
+                    
+                } else if (menuReceiving === 'التوصيل والتسليم في المحل') {
+                    if (!receivingMethod) {
+                        showNotification('الرجاء اختيار طريقة الاستلام', 'error');
                         return;
                     }
-                } else if (receivingMethod && receivingMethod.value === 'pickup') {
-                    formData.append('receiving_method', 'pickup');
-                    formData.append('delivery_type', 'none');
-                } else if ('{{ menu.recivieing }}' === 'التسليم في المحل فقط') {
-                    formData.append('receiving_method', 'pickup');
-                    formData.append('delivery_type', 'none');
+                    
+                    if (receivingMethod.value === 'delivery') {
+                        if (isDarbSabil) {
+                            if (!darbSabilAreaSelect || !darbSabilAreaSelect.value) {
+                                showNotification('الرجاء اختيار العنوان', 'error');
+                                return;
+                            }
+                            
+                            const serviceId = document.getElementById('darb_sabil_service_id').value;
+                            const price = document.getElementById('darb_sabil_price').value;
+                            
+                            if (!serviceId || !price || price === "0") {
+                                showNotification('يرجى حساب سعر التوصيل أولاً', 'error');
+                                return;
+                            }
+                            
+                            const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
+                            const city = selectedOption.getAttribute('data-city-name');
+                            const area = selectedOption.getAttribute('data-area-name');
+                            const serviceType = document.getElementById('darb_sabil_service_type').value;
+                            
+                            formData.append('darb_sabil_city', city);
+                            formData.append('darb_sabil_area', area);
+                            formData.append('darb_sabil_price', price);
+                            formData.append('darb_sabil_service_id', serviceId);
+                            formData.append('darb_sabil_service_type', serviceType);
+                            formData.append('company_delivery_address', `${city} - ${area}`);
+                            formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');
+                            formData.append('delivery_type', 'darb_sabil');
+                        } else {
+                            if (!deliveryAddressSelect || !deliveryAddressSelect.value) {
+                                showNotification('الرجاء اختيار العنوان', 'error');
+                                return;
+                            }
+                            formData.append('delivery_type', 'normal');
+                        }
+                    } else {
+                        formData.append('delivery_type', 'none');
+                    }
+                    
+                    formData.append('receiving_method', receivingMethod.value);
                 }
                 
                 formData.append('order_data', JSON.stringify(orderData));
@@ -2343,13 +2427,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('checkoutModal');
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
 
     document.querySelectorAll('.menu-card').forEach(card => {
         const availableQuantity = parseInt(card.getAttribute('data-available-quantity')) || 9999;

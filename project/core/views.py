@@ -2399,76 +2399,146 @@ def dilver_darbasabil(request,order_id):
       messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
       return redirect('customer_dashboard')     
 
-def calucate_delivery_price(request,order_id):
+
+
+@csrf_exempt
+def calculate_delivery_price(request):
     try:
-       customer=Customer.objects.get(user=request.user) 
-
-       darb=DarbAsabilConnection.objects.get(
-           customer=customer,
-       )
-       order=Order.objects.get(id=order_id,menu__customer=customer)
-       
-       city=request.GET.get('city')
-       area=request.GET.get('area')
-       service=request.GET.get('service')
-    
-
-       order_data = {
-       
-        "service":service,
-        "products":[],
-        "to":{"area":area if area else city,"city":city,"countryCode":"lby","address":""}
-        ,"paymentBy":darb.paymentby
+        menu_id = request.GET.get('menu_id')
+        if not menu_id:
+            return JsonResponse({
+                'success': False,
+                'error': 'معرف القائمة مطلوب'
+            })
+        
+        menu = Menu.objects.get(id=menu_id)
+        customer = menu.customer
+        
+        darb = DarbAsabilConnection.objects.get(
+            customer=customer,
+            is_active=True
+        )
+        
+        if request.method == 'POST':
+            data = json.loads(request.body)
+        else:
+            data = request.GET
+        
+        city = data.get('city')
+        area = data.get('area')
+        service = data.get('service')
+        products_data = data.get('products', [])
+        
+        if not city or not area or not service:
+            return JsonResponse({
+                'success': False,
+                'error': 'المدينة والمنطقة ونوع الخدمة مطلوبة'
+            })
+        
+        order_data = {
+            "service": service,
+            "products": [],
+            "to": {
+                "area": area,
+                "city": city,
+                "countryCode": "lby",
+                "address": data.get('address_details', '')
+            },
+            "paymentBy": darb.paymentby
         }
-      
-       for item in  order.orderitem_set.all():
-            product = item.product
         
-            product_json = {
-             "title": product.name,  
-             "quantity": item.quantity,
-             "widthCM": float(product.latitude or 10.0),
-             "heightCM": float(product.high or 10.0),
-             "lengthCM": float(product.length or 10.0),
-             "amount": product.get_discounted_price(),
-             "currency": "lyd",
-             "isChargeable": False
-            }
+        if products_data:
+            for product_item in products_data:
+                try:
+                    product = Product.objects.get(
+                        id=product_item['product_id'],
+                        menu=menu
+                    )
+                    
+                    product_json = {
+                        "title": product.name,
+                        "quantity": product_item['quantity'],
+                        "widthCM": float(product.width or 10.0),
+                        "heightCM": float(product.height or 10.0),
+                        "lengthCM": float(product.length or 10.0),
+                        "amount": float(product.get_discounted_price()),
+                        "currency": "lyd",
+                        "isChargeable": False
+                    }
+                    
+                    order_data["products"].append(product_json)
+                    
+                except Product.DoesNotExist:
+                    continue
+        else:
+            order_data["products"] = [{
+                "title": "منتجات المتجر",
+                "quantity": 1,
+                "widthCM": 10.0,
+                "heightCM": 10.0,
+                "lengthCM": 10.0,
+                "amount": 0,
+                "currency": "lyd",
+                "isChargeable": False
+            }]
         
-            order_data["products"].append(product_json)
-       
-       response=requests.post(
-         'https://v2.sabil.ly/api/local/shipments/calculate/shipping',
-          json=order_data,
-          headers={'Content-Type':'application/json','Authorization':f'Bearer {darb.access_token}'},
-          timeout=30
-
-       )
-
-
-       data=response.json()
-
-       if response.status_code == 200:
-         data=response.json()
-         price= data['data']['remainings'][0]['remainings']['amount']
-         return  JsonResponse({
-            'success':True,
-            'price':price
-         })
-       else:
-         return  JsonResponse({
-            'success':False,
-            'error':'we can not get the price'
-         }) 
+        response = requests.post(
+            'https://v2.sabil.ly/api/local/shipments/calculate/shipping',
+            json=order_data,
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {darb.access_token}'
+            },
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            if data.get('status') and data.get('data'):
+                if 'invoices' in data['data'] and data['data']['invoices']:
+                    price = data['data']['invoices'][0]['_sums']['shipping']['sum']
+                elif 'remainings' in data['data'] and data['data']['remainings']:
+                    price = data['data']['remainings'][0]['remainings']['amount']
+                else:
+                    price = 0
+                
+                return JsonResponse({
+                    'success': True,
+                    'price': price,
+                    'service_type': service
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'لم يتم حساب السعر'
+                })
+        else:
+            error_msg = f'خطأ في الحساب: {response.status_code}'
+            try:
+                error_data = response.json()
+                if 'message' in error_data:
+                    error_msg = error_data['message']
+            except:
+                pass
+            
+            return JsonResponse({
+                'success': False,
+                'error': error_msg
+            })
     
-    
+    except Menu.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'القائمة غير موجودة'
+        })
     except DarbAsabilConnection.DoesNotExist:
-        return  JsonResponse({
-            'success':False,
-            'error':'you do not hava darbasabil'
-         }) 
-    except Order.DoesNotExist:
-        return  JsonResponse({
-            'success':False,
-            'error':'invalid order id '
-         })     
+        return JsonResponse({
+            'success': False,
+            'error': 'لم يتم العثور على اتصال درب السبيل'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
