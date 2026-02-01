@@ -1474,7 +1474,10 @@ def menu_page_view(request, store_slug):
          product.sizes_list = [s.strip() for s in re.split(delim,product.available_sizes) if s.strip()]    
         if product.available_colors:
          product.colors_list = [s.strip() for s in re.split(delim,product.available_colors) if s.strip()]    
-        
+    try:
+        darb=DarbAsabilConnection.objects.get(customer=menu.customer)
+    except:
+       darb=None       
  
     cities = City.objects.filter(menu=menu) 
     menu.review_count = Reviews.objects.filter(menu=menu).count()
@@ -1491,6 +1494,7 @@ def menu_page_view(request, store_slug):
         'revewing': subscription.plan.review,
         'ordering': subscription.plan.ordering,
         'subscription':subscription,
+        'darbasabil':darb,
     }
     return render(request, f'{menu.template}.html', context)
     
