@@ -533,7 +533,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Products, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity=models.IntegerField(null=True,blank=True)
     color=models.CharField(max_length=30,null=True,blank=True)
     size=models.CharField(max_length=30,null=True,blank=True)
