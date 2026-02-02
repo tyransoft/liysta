@@ -1621,6 +1621,12 @@
                     <h4>ملخص الطلب</h4>
                     <div id="modalOrderItems"></div>
                     
+                    <!-- ⭐ إضافة قسم رسوم التوصيل في نموذج الطلب -->
+                    <div class="order-summary-item" id="modalDeliveryFee" style="display: none;">
+                        <span>رسوم التوصيل:</span>
+                        <span id="modalDeliveryPrice">0 د.ل</span>
+                    </div>
+                    
                     <div class="order-total">
                         <span>المجموع الكلي:</span>
                         <span id="modalTotalPrice">0 د.ل</span>
@@ -1757,6 +1763,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const orderForm = document.getElementById('orderForm');
         const modalOrderItems = document.getElementById('modalOrderItems');
         const modalTotalPrice = document.getElementById('modalTotalPrice');
+        const modalDeliveryFee = document.getElementById('modalDeliveryFee');
+        const modalDeliveryPrice = document.getElementById('modalDeliveryPrice');
         const deliveryAddressSelect = document.getElementById('delivery_address');
         const darbSabilAreaSelect = document.getElementById('darb_sabil_area');
         const darbSabilPriceInput = document.getElementById('darb_sabil_price');
@@ -1820,6 +1828,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         deliveryFields.style.display = 'none';
                         deliveryFee = 0;
                         updateCartTotals();
+                        updateModalOrderSummary(); // ⭐ تحديث الملخص
                         
                         if (isDarbSabil && darbSabilAreaSelect) {
                             darbSabilAreaSelect.removeAttribute('required');
@@ -1847,6 +1856,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     darbSabilPriceInput.value = 0;
                     deliveryFee = 0;
                     updateCartTotals();
+                    updateModalOrderSummary(); // ⭐ تحديث الملخص
                     
                     if (deliveryAddressSelect) {
                         deliveryAddressSelect.style.display = 'none';
@@ -2102,6 +2112,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedOption = this.options[this.selectedIndex];
             deliveryFee = selectedOption ? parseFloat(selectedOption.getAttribute('data-price')) : 0;
             updateCartTotals();
+            updateModalOrderSummary(); // ⭐ تحديث الملخص
         }
 
         function showCheckoutForm(event) {
@@ -2121,13 +2132,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     color: item.color,
                     size: item.size
                 })),
-                subtotal: parseFloat(subtotalPriceElement.textContent),
+                subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
                 delivery_fee: deliveryFee,
-                total: parseFloat(totalPriceElement.textContent)
+                total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) + deliveryFee
             };
 
             updateModalOrderItems(orderData.items);
-            modalTotalPrice.textContent = orderData.total.toFixed(2) + ' د.ل';
+            updateModalOrderSummary(); // ⭐ تحديث الملخص مع التوصيل
             
             sessionStorage.setItem('currentOrder', JSON.stringify(orderData));
             
@@ -2150,6 +2161,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 modalOrderItems.appendChild(itemElement);
             });
+        }
+
+        // ⭐ دالة جديدة لتحديث ملخص الطلب مع التوصيل
+        function updateModalOrderSummary() {
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const total = subtotal + deliveryFee;
+            
+            // عرض أو إخفاء رسوم التوصيل
+            if (deliveryFee > 0 && modalDeliveryFee) {
+                modalDeliveryFee.style.display = 'flex';
+                modalDeliveryPrice.textContent = deliveryFee.toFixed(2) + ' د.ل';
+            } else if (modalDeliveryFee) {
+                modalDeliveryFee.style.display = 'none';
+            }
+            
+            // تحديث المجموع الكلي
+            modalTotalPrice.textContent = total.toFixed(2) + ' د.ل';
         }
 
         async function calculateFinalPrice(serviceId, serviceTitle, cityName, areaName) {
@@ -2184,7 +2212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 
                 if (data.success) {
-                    const finalPrice = data.price;
+                    const finalPrice = parseFloat(data.price);
                     
                     document.getElementById('darb_sabil_price').value = finalPrice;
                     document.getElementById('darb_sabil_service_id').value = serviceId;
@@ -2193,8 +2221,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('darb_sabil_area_name').value = areaName;
                     document.getElementById('darb_sabil_area_id').value = document.getElementById('darb_sabil_area').value;
                     
-                    deliveryFee = parseFloat(finalPrice);
+                    // تحديث سعر التوصيل
+                    deliveryFee = finalPrice;
+                    
+                    // تحديث السلة
                     updateCartTotals();
+                    
+                    // ⭐ تحديث ملخص الطلب في النموذج
+                    updateModalOrderSummary();
                     
                     showNotification(`سعر التوصيل: ${finalPrice} د.ل (${serviceTitle})`, 'success');
                     
@@ -2334,6 +2368,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (response.ok) {
                     cart = [];
+                    deliveryFee = 0;
                     updateCart();
                     closeModal();
                     
