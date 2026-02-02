@@ -2269,11 +2269,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         formData.append('delivery_type', 'normal');
                     }
                     
-                } else if (menuReceiving === 'التسليم في المحل') {
+                } else if (menuReceiving === 'التوصيل والتسليم في المحل') {
                     formData.append('receiving_method', 'pickup');
                     formData.append('delivery_type', 'none');
                     
-                } else if (menuReceiving === 'التوصيل والتسليم في المحل') {
+                } else if (menuReceiving === 'و') {
                     if (!receivingMethod) {
                         showNotification('الرجاء اختيار طريقة الاستلام', 'error');
                         return;
