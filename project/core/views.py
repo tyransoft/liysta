@@ -2394,7 +2394,9 @@ def dilver_darbasabil(request,order_id):
          messages.success(request,'تم ارسال الطلبية الى درب السبيل') 
          return redirect('customer_dashboard')  
        else:
-         messages.error(request,'لم يتم شح الطلبية حاول مرة اخرى.') 
+         messages.error(request,f'error:{data}') 
+
+         #messages.error(request,'لم يتم شحن الطلبية حاول مرة اخرى.') 
          return redirect('customer_dashboard')     
     
     
