@@ -2348,7 +2348,7 @@ def dilver_darbasabil(request,order_id):
         "to": {
             "countryCode": "lby",
             "city": order.company_delivery_city,
-            "area": order.company_delivery+area,
+            "area": order.company_delivery_area,
             "address": ""
         },
         "notes": "",
