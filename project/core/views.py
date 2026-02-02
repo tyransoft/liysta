@@ -1476,9 +1476,10 @@ def menu_page_view(request, store_slug):
          product.colors_list = [s.strip() for s in re.split(delim,product.available_colors) if s.strip()]    
     try:
         darb=DarbAsabilConnection.objects.get(customer=menu.customer)
-        darb_cities=Darbasabilbranches.objects.all()
     except:
        darb=None       
+    
+    darb_cities=Darbasabilbranches.objects.all()
  
     cities = City.objects.filter(menu=menu) 
     menu.review_count = Reviews.objects.filter(menu=menu).count()
