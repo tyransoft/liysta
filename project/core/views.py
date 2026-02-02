@@ -1611,7 +1611,9 @@ def create_order(request):
 
             notes = request.POST.get('notes')
             menu = request.POST.get('menu_id')
-            company_delivery=request.POST.get('company_delivery_address')
+            company_area=request.POST.get('darb_sabil_area')
+            company_city=request.POST.get('darb_sabil_city')
+
             company_price=request.POST.get('company_delivery_price')
             service=request.POST.get('darb_sabil_service_id')
             
@@ -1649,7 +1651,9 @@ def create_order(request):
                 customer_phone=customer_phone,
                 delivery_address_id=delivery_address if delivery_address else None,
                 notes=notes or '',
-                company_delivery_address=company_delivery if company_delivery else None,
+                company_delivery_city=company_city if company_city else None,
+                company_delivery_area=company_area if company_area else None,
+
                 company_delivery_price=company_price if company_price else 0.0,
                 menu=menu_id,
                 sales_total=0,
@@ -2334,8 +2338,6 @@ def dilver_darbasabil(request,order_id):
 
          contact_object=contacts_data['data']['_id']
        
-       value=order.company_delivery_address
-       city, area = value.split('-')
        shipping_data = {
         "isPickup": darb.collecting,
         "service":order.serviceid,
@@ -2345,8 +2347,8 @@ def dilver_darbasabil(request,order_id):
         "allowedBankNotes": {"50": False},
         "to": {
             "countryCode": "lby",
-            "city": city,
-            "area": area,
+            "city": order.company_delivery_city,
+            "area": order.company_delivery+area,
             "address": ""
         },
         "notes": "",
@@ -2499,9 +2501,7 @@ def calucate_delivery_price(request):
             data = response.json()
             
             if data.get('status') and data.get('data'):
-                if 'invoices' in data['data'] and data['data']['invoices']:
-                    price = data['data']['invoices'][0]['_sums']['shipping']['sum']
-                elif 'remainings' in data['data'] and data['data']['remainings']:
+                if 'remainings' in data['data'] and data['data']['remainings']:
                     price = data['data']['remainings'][0]['remainings']['amount']
                 else:
                     price = 0

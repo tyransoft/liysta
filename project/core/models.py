@@ -496,7 +496,9 @@ class Order(models.Model):
     #for normal delivery
     delivery_address = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     #when using darbasabil
-    company_delivery_address=models.CharField(max_length=100,null=True,blank=True)
+    company_delivery_area=models.CharField(max_length=100,null=True,blank=True)
+    company_delivery_city=models.CharField(max_length=100,null=True,blank=True)
+
     company_delivery_price=models.FloatField(default=0.0)       
     
     notes = models.TextField(null=True, blank=True)
