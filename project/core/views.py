@@ -2460,12 +2460,12 @@ def calucate_delivery_price(request):
                     product_json = {
                         "title": product.name,
                         "quantity": product_item['quantity'],
-                        "widthCM": float(product.latitude or 10.0),
-                        "heightCM": float(product.high or 10.0),
-                        "lengthCM": float(product.length or 10.0),
-                        "amount": float(product.get_discounted_price()),
+                        "widthCM": product.latitude if  product.latitude != 0 else 10,
+                        "heightCM": product.high if  product.high != 0 else 10,
+                        "lengthCM": product.length if  product.length != 0 else 10,
+                        "amount": 0,
                         "currency": "lyd",
-                        "isChargeable": False
+                        "isChargeable": True
                     }
                     
                     order_data["products"].append(product_json)
@@ -2476,9 +2476,9 @@ def calucate_delivery_price(request):
             order_data["products"] = [{
                 "title": "منتجات المتجر",
                 "quantity": 1,
-                "widthCM": 10.0,
-                "heightCM": 10.0,
-                "lengthCM": 10.0,
+                "widthCM": 10,
+                "heightCM": 10,
+                "lengthCM": 10,
                 "amount": 0,
                 "currency": "lyd",
                 "isChargeable": False
