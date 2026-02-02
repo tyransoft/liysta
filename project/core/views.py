@@ -2453,8 +2453,8 @@ def calucate_delivery_price(request):
                     product_json = {
                         "title": product.name,
                         "quantity": product_item['quantity'],
-                        "widthCM": float(product.width or 10.0),
-                        "heightCM": float(product.height or 10.0),
+                        "widthCM": float(product.latitude or 10.0),
+                        "heightCM": float(product.high or 10.0),
                         "lengthCM": float(product.length or 10.0),
                         "amount": float(product.get_discounted_price()),
                         "currency": "lyd",
