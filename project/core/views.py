@@ -1476,7 +1476,7 @@ def menu_page_view(request, store_slug):
          product.colors_list = [s.strip() for s in re.split(delim,product.available_colors) if s.strip()]    
     try:
         darb=DarbAsabilConnection.objects.get(customer=menu.customer)
-    except:
+    except: 
        darb=None       
     
     darb_cities=Darbasabilbranches.objects.all()
@@ -1612,6 +1612,7 @@ def create_order(request):
             notes = request.POST.get('notes')
             menu = request.POST.get('menu_id')
             company_delivery=request.POST.get('company_delivery_address')
+            company_price=request.POST.get('company_delivery_price')
             
             
             menu_id=Menu.objects.get(id=menu)
@@ -1649,6 +1650,7 @@ def create_order(request):
                 delivery_address_id=delivery_address if delivery_address else None,
                 notes=notes or '',
                 company_delivery_address=company_delivery if company_delivery else None,
+                company_delivery_price=company_price if company_price else None,
                 menu=menu_id,
                 sales_total=0,
                 profit_total=0,
