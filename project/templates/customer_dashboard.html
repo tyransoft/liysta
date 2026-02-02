@@ -688,6 +688,9 @@
                                         <td>{{ order.customer_phone }}</td>
                                         {% if order.delivery_address %}
                                         <td>{{ order.delivery_address }}</td>
+                                        {% elif order.company_delivery_price %}
+                                        <td>{{ order.company_delivery_price }}</td> 
+ 
                                         {% else %}
                                         <td>استلام شخصي</td>
                                         {% endif %}

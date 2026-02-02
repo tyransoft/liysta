@@ -1582,7 +1582,10 @@
                                 </div>
                             </div>
                         </div>
+
                         
+                        <input type="hidden" id="company_delivery_price" name="darb_sabil_price" value="0">
+
                         <input type="hidden" id="darb_sabil_price" name="darb_sabil_price" value="0">
                         <input type="hidden" id="darb_sabil_service_id" name="darb_sabil_service_id" value="">
                         <input type="hidden" id="darb_sabil_service_type" name="darb_sabil_service_type" value="">
@@ -1828,7 +1831,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         deliveryFields.style.display = 'none';
                         deliveryFee = 0;
-                        selectedServiceId = ''; // ⭐ إعادة تعيين ID الخدمة
+                        selectedServiceId = ''; 
                         updateCartTotals();
                         updateModalOrderSummary();
                         
@@ -1857,7 +1860,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     darbSabilPriceInput.value = 0;
                     deliveryFee = 0;
-                    selectedServiceId = ''; // ⭐ إعادة تعيين ID الخدمة
+                    selectedServiceId = ''; 
                     updateCartTotals();
                     updateModalOrderSummary();
                     
@@ -1886,10 +1889,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
                     const cityName = selectedOption.getAttribute('data-city-name');
                     const areaName = selectedOption.getAttribute('data-area-name');
-                    const serviceId = this.value; // ⭐ هذا هو الـ ID المطلوب
+                    const serviceId = this.value;
                     const serviceTitle = this.getAttribute('data-title');
                     
-                    // ⭐ حفظ ID الخدمة المختارة
                     selectedServiceId = serviceId;
                     
                     await calculateFinalPrice(serviceId, serviceTitle, cityName, areaName);
@@ -2200,7 +2202,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const requestData = {
                     city: cityName,
                     area: areaName,
-                    service: serviceId, // ⭐ إرسال ID الخدمة هنا
+                    service: serviceId, 
                     products: productsData
                 };
                 
@@ -2219,12 +2221,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const finalPrice = parseFloat(data.price);
                     
                     document.getElementById('darb_sabil_price').value = finalPrice;
-                    document.getElementById('darb_sabil_service_id').value = serviceId; // ⭐ حفظ الـ ID
+                    document.getElementById('darb_sabil_service_id').value = serviceId; 
                     document.getElementById('darb_sabil_service_type').value = serviceTitle;
                     document.getElementById('darb_sabil_city').value = cityName;
                     document.getElementById('darb_sabil_area_name').value = areaName;
                     document.getElementById('darb_sabil_area_id').value = document.getElementById('darb_sabil_area').value;
-                    
+                    document.getElementById('company_delivery_price').value = finalPrice;
                     deliveryFee = finalPrice;
                     updateCartTotals();
                     updateModalOrderSummary();
@@ -2242,7 +2244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => {
                     radio.checked = false;
                 });
-                selectedServiceId = ''; // ⭐ إعادة تعيين ID عند الخطأ
+                selectedServiceId = ''; 
             }
         }
 
@@ -2263,18 +2265,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const orderData = JSON.parse(sessionStorage.getItem('currentOrder'));
                 const receivingMethod = document.querySelector('input[name="receiving_method"]:checked');
                 
-                // ⭐ البيانات الأساسية
                 formData.append('customer_name', document.getElementById('customer_name').value);
                 formData.append('customer_phone', hiddenPhoneField.value);
                 formData.append('notes', document.getElementById('notes').value || '');
                 
-                // ⭐ بيانات نوع الطلب للمطاعم
                 const orderTypeRadio = document.querySelector('input[name="type"]:checked');
                 if (orderTypeRadio) {
                     formData.append('type', orderTypeRadio.value);
                 }
                 
-                // ⭐ بيانات طريقة الاستلام
                 if (receivingMethod) {
                     formData.append('receiving_method', receivingMethod.value);
                 }
@@ -2288,7 +2287,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             return;
                         }
                         
-                        // ⭐⭐ هذا هو المهم: إرسال ID الخدمة
                         if (!selectedServiceId) {
                             showNotification('يرجى اختيار خدمة التوصيل', 'error');
                             return;
@@ -2305,11 +2303,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         const city = selectedOption.getAttribute('data-city-name');
                         const area = selectedOption.getAttribute('data-area-name');
                         
-                        // ⭐ إرسال البيانات
                         formData.append('darb_sabil_city', city);
                         formData.append('darb_sabil_area', area);
                         formData.append('company_delivery_price', price);
-                        formData.append('darb_sabil_service_id', selectedServiceId); // ⭐⭐ الـ ID هنا
+                        formData.append('darb_sabil_service_id', selectedServiceId); 
                         formData.append('company_delivery_address', `${city} - ${area}`);
                         formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');
                         formData.append('delivery_type', 'darb_sabil');
@@ -2332,7 +2329,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     return;
                                 }
                                 
-                                // ⭐⭐ هذا هو المهم: إرسال ID الخدمة
                                 if (!selectedServiceId) {
                                     showNotification('يرجى اختيار خدمة التوصيل', 'error');
                                     return;
@@ -2352,7 +2348,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 formData.append('darb_sabil_city', city);
                                 formData.append('darb_sabil_area', area);
                                 formData.append('company_delivery_price', price);
-                                formData.append('darb_sabil_service_id', selectedServiceId); // ⭐⭐ الـ ID هنا
+                                formData.append('darb_sabil_service_id', selectedServiceId); 
                                 formData.append('company_delivery_address', `${city} - ${area}`);
                                 formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');
                                 formData.append('delivery_type', 'darb_sabil');
@@ -2369,10 +2365,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // ⭐ بيانات الطلب
                 formData.append('order_data', JSON.stringify(orderData));
                 
-                // ⭐ إرسال الطلب
                 const response = await fetch(orderForm.action, {
                     method: 'POST',
                     body: formData,
@@ -2387,7 +2381,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     cart = [];
                     deliveryFee = 0;
-                    selectedServiceId = ''; // ⭐ إعادة تعيين بعد النجاح
+                    selectedServiceId = ''; 
                     updateCart();
                     closeModal();
                     
