@@ -1613,7 +1613,7 @@ def create_order(request):
             menu = request.POST.get('menu_id')
             company_delivery=request.POST.get('company_delivery_address')
             company_price=request.POST.get('company_delivery_price')
-            
+            service=request.POST.get('darb_sabil_service_id')
             
             menu_id=Menu.objects.get(id=menu)
             if not all([customer_name, customer_phone, menu]):
@@ -1655,7 +1655,8 @@ def create_order(request):
                 sales_total=0,
                 profit_total=0,
                 ordernumber=num,
-                order_type=type
+                order_type=type,
+                serviceid=service
             )
             order.save()
             total_sales = 0
@@ -2320,7 +2321,7 @@ def dilver_darbasabil(request,order_id):
          'https://v2.sabil.ly/api/contacts/',
           json={
              "name":order.customer_name,
-             "phone":"+218923345967",
+             "phone":order.customer_phone,
              
           },
           headers={'Content-Type':'application/json','Authorization':f'Bearer {darb.access_token}'},
@@ -2333,6 +2334,8 @@ def dilver_darbasabil(request,order_id):
 
          contact_object=contacts_data['data']['_id']
        
+       value=order.company_delivery_price
+       city, area = value.split('-')
        shipping_data = {
         "isPickup": darb.collecting,
         "service":order.serviceid,
@@ -2342,8 +2345,8 @@ def dilver_darbasabil(request,order_id):
         "allowedBankNotes": {"50": False},
         "to": {
             "countryCode": "lby",
-            "city": "قصر خيار",
-            "area": "قصر خيار",
+            "city": city,
+            "area": area,
             "address": ""
         },
         "notes": "",
