@@ -2404,18 +2404,17 @@ def dilver_darbasabil(request,order_id):
 @csrf_exempt
 def calucate_delivery_price(request):
     try:
-        menu_id = request.GET.get('menu_id')
         if not menu_id:
             return JsonResponse({
                 'success': False,
                 'error': 'معرف القائمة مطلوب'
             })
         
-        menu = Menu.objects.get(id=menu_id)
-        customer = menu.customer
+
+        menu = Menu.objects.get(customer__user=request.user)
         
         darb = DarbAsabilConnection.objects.get(
-            customer=customer,
+            customer=menu.customer,
             is_active=True
         )
         
