@@ -1644,6 +1644,70 @@
     {% endif %}
 
 <script>
+document.getElementById('customer_phone').addEventListener('input', function(e) {
+    const phoneInput = this;
+    const phoneError = document.getElementById('phoneError');
+    const phoneValid = document.getElementById('phoneValid');
+    const hiddenField = document.getElementById('customer_phone_final');
+    
+    let phone = phoneInput.value.trim();
+    
+    phone = phone.replace(/\D/g, '');
+    
+    phoneInput.value = phone;
+    
+    if (phone.length === 9) {
+        const validPrefixes = ['91', '92', '93', '94', '95', '96', '97', '98', '99'];
+        const prefix = phone.substring(0, 2);
+        
+        if (validPrefixes.includes(prefix)) {
+            const fullPhone = '+218' + phone;
+            hiddenField.value = fullPhone;
+            
+            phoneError.style.display = 'none';
+            phoneValid.style.display = 'inline';
+            phoneValid.textContent = `✅ ${fullPhone}`;
+            
+            phoneInput.style.borderColor = '#10B981';
+            phoneInput.style.backgroundColor = '#F0FDF4';
+        } else {
+            phoneError.style.display = 'inline';
+            phoneError.textContent = '❌ 93- 94 - يجب أن يبدأ الرقم بـ 91 - 92...';
+            phoneValid.style.display = 'none';
+            hiddenField.value = '';
+            
+            phoneInput.style.borderColor = '#EF4444';
+            phoneInput.style.backgroundColor = '#FEF2F2';
+        }
+    } else if (phone.length > 0 && phone.length < 9) {
+        phoneError.style.display = 'inline';
+        phoneError.textContent = `❌ ناقص ${9 - phone.length} أرقام`;
+        phoneValid.style.display = 'none';
+        hiddenField.value = '';
+        
+        phoneInput.style.borderColor = '#F59E0B';
+        phoneInput.style.backgroundColor = '#FFFBEB';
+    } else {
+        phoneError.style.display = 'none';
+        phoneValid.style.display = 'none';
+        hiddenField.value = '';
+        
+        phoneInput.style.borderColor = '';
+        phoneInput.style.backgroundColor = '';
+    }
+});
+
+document.getElementById('customer_phone').addEventListener('blur', function() {
+    const phone = this.value.trim();
+    const hiddenField = document.getElementById('customer_phone_final');
+    
+    if (phone.length === 9) {
+        hiddenField.value = '+218' + phone;
+    } else {
+        hiddenField.value = '';
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     const hasOrdering = {% if subscription.plan.ordering %}true{% else %}false{% endif %};
     const hasReview = {% if subscription.plan.review %}true{% else %}false{% endif %};
