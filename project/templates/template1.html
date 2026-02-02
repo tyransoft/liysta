@@ -2165,9 +2165,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     price: item.price,
                     name: item.name
                 }));
-                
+                const menuId = {{ menu.id }};
                 const requestData = {
-                    menu_id: {{ menu.id }},
+                    menu_id: menuId ,
                     city: cityName,
                     area: areaName,
                     service: serviceId,
