@@ -113,12 +113,12 @@ class Paymentcard(models.Model):
 
 
 class Menu(models.Model):
-    recivieing= {
+    recivieing_choices= {
         ('التوصيل', 'التوصيل فقط'),
         ('التسليم في المحل', 'التسليم في المحل فقط'),
         ('التوصيل والتسليم في المحل', 'التوصيل والتسليم في المحل'),
     }
-    invoices={
+    invoices_choices={
      ('invoice1','invoice1'),
      ('invoice2','invoice2'),
      ('invoice3','invoice3'),
@@ -131,10 +131,10 @@ class Menu(models.Model):
     image=models.ImageField(upload_to=get_upload_path,null=False)    
     second_color=models.CharField(max_length=20,null=True)
     template=models.CharField(max_length=20,null=True)
-    recivieing=models.CharField(max_length=50, choices=recivieing,default='التوصيل')
+    recivieing=models.CharField(max_length=50, choices=recivieing_choices,default='التوصيل')
     desc=models.CharField(max_length=1000)
     qr_image=models.ImageField(null=True,upload_to='Qr_images')
-    invoice=models.CharField(max_length=50, choices=invoices,default='invoice1')
+    invoice=models.CharField(max_length=50, choices=invoices_choices,default='invoice1')
 
 
     def get_menu_url(self):

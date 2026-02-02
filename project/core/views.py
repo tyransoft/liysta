@@ -2450,7 +2450,7 @@ def calucate_delivery_price(request):
         if products_data:
             for product_item in products_data:
                 try:
-                    product = Product.objects.get(
+                    product = Products.objects.get(
                         id=product_item['product_id'],
                         menu=menu
                     )
@@ -2468,7 +2468,7 @@ def calucate_delivery_price(request):
                     
                     order_data["products"].append(product_json)
                     
-                except Product.DoesNotExist:
+                except Products.DoesNotExist:
                     continue
         else:
             order_data["products"] = [{
