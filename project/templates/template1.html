@@ -1548,8 +1548,8 @@
                             <option value="{{ city.id }}" 
                                     data-city-name="{{ city.city }}" 
                                     data-area-name="{{ city.area }}"
-                                    data-display-name="{{ city.get_display_name }}">
-                                {{ city.get_display_name }}
+                                    data-display-name="{{ city.city }}-{{city.area}}">
+                                {{ city.city }}-{{city.area}}
                             </option>
                             {% empty %}
                             <option value="">لا توجد مدن متاحة</option>

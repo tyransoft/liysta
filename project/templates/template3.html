@@ -1239,7 +1239,7 @@
                 <div class="form-group">
                     <label>طريقة الاستلام:</label>
                     <div class="delivery-options">
-                        {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل او الاستلام في المحل' %}
+                        {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}
                         <div class="delivery-option">
                             <input type="radio" id="delivery" name="receiving_method" value="delivery" 
                                 {% if menu.recivieing == 'التوصيل' %}checked{% endif %}>
@@ -1247,10 +1247,10 @@
                         </div>
                         {% endif %}
                         
-                        {% if menu.recivieing == 'الاستلام في المحل' or menu.recivieing == 'التوصيل او الاستلام في المحل' %}
+                        {% if menu.recivieing == 'التوصيل والتسليم في المحل'  %}
                         <div class="delivery-option">
                             <input type="radio" id="pickup" name="receiving_method" value="pickup" 
-                                {% if menu.recivieing == 'الاستلام في المحل' %}checked{% endif %}>
+                                {% if menu.recivieing == 'التوصيل والتسليم في المحل' %}checked{% endif %}>
                             <label for="pickup">استلام من المحل</label>
                         </div>
                         {% endif %}
