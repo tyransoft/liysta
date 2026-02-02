@@ -2334,7 +2334,7 @@ def dilver_darbasabil(request,order_id):
 
          contact_object=contacts_data['data']['_id']
        
-       value=order.company_delivery_price
+       value=order.company_delivery_address
        city, area = value.split('-')
        shipping_data = {
         "isPickup": darb.collecting,
