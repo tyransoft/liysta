@@ -1650,7 +1650,7 @@ def create_order(request):
                 delivery_address_id=delivery_address if delivery_address else None,
                 notes=notes or '',
                 company_delivery_address=company_delivery if company_delivery else None,
-                company_delivery_price=company_price if company_price else None,
+                company_delivery_price=company_price if company_price else 0.0,
                 menu=menu_id,
                 sales_total=0,
                 profit_total=0,
