@@ -330,6 +330,12 @@ body {
         <span>التوصيل</span>
         <span class="col-price">{{bill.delivery_address.price}}</span>
       </div>
+      {% elif bill.company_delivery_city %}
+      <div class="info-row">
+        <span>التوصيل</span>
+        <span class="col-price">{{bill.company_delivery_price}}</span>
+      </div>
+      
       {% endif %}
     </div>
 
@@ -341,7 +347,6 @@ body {
     </div>
 
     <div class="footer">
-    صحة وهنا 
       <br>
        لاتنسوا الطلب منا مجددا
     </div>

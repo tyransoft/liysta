@@ -512,6 +512,10 @@ class Order(models.Model):
         if self.delivery_address:
             total= self.sales_total + self.delivery_address.price
             return total
+        elif self.company_delivery_price:
+            total= self.sales_total + self.company_delivery_price
+            return total
+        
         else:
             total=self.sales_total
             return total

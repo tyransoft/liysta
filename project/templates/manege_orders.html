@@ -563,9 +563,12 @@
                 <button class="btn btn-print" onclick="bulkPrint()" id="bulkPrintBtn" disabled>
                     <i class="fas fa-print"></i> طباعة
                 </button>
+                {% if not darb_connection %}
+
                 <button class="btn btn-ship" onclick="bulkShip()" id="bulkShipBtn" disabled>
                     <i class="fas fa-truck"></i> شحن
                 </button>
+                {% endif %}
                 <button class="btn btn-receive" onclick="bulkReceive()" id="bulkReceiveBtn" disabled>
                     <i class="fas fa-check-circle"></i> تسليم
                 </button>

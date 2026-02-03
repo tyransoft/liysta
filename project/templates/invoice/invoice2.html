@@ -528,7 +528,7 @@
 <body>
     <div class="container">
         <div class="invoice-preview" id="invoice">
-            <div class="watermark">INVOICE</div>
+            <div class="watermark">{{ bill.menu.customer.store_ar_name }}</div>
             
             <div class="color-strip"></div>
             
@@ -576,6 +576,15 @@
                        <div class="info-row">
                             <span class="info-label">العنوان:</span>
                             <span class="info-value">{{ bill.delivery_address.name }}</span>
+                        </div>
+                        {% elif  bill.company_delivery_city %}
+                       <div class="info-row">
+                            <span class="info-label">العنوان:</span>
+                            <span class="info-value">{{ bill.company_delivery_city }}</span>
+                        </div>
+                        {% else %}
+                       <div class="info-row">
+                            <span class="info-label">استلام شخصي</span>
                         </div>
                         {% endif %}
                         <div class="info-row">
@@ -640,6 +649,14 @@
                         <span>تكاليف التوصيل:</span>
                         <span>{{ bill.delivery_address.price  }}د.ل</span>
                     </div>
+                    {% elif bill.company_delivery_city %}
+
+                    <div class="total-row">
+                        <span>تكاليف التوصيل:</span>
+                        <span>{{ bill.company_delivery_price  }}د.ل</span>
+                    </div>
+                    
+                    
                     {% endif %}
                     <div class="total-row grand-total">
                         <span>المجموع الكلي:</span>

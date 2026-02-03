@@ -203,6 +203,10 @@ td {
                 {% if bill.delivery_address %}
                    طريقة الاستلام: توصيل <br>
                   العنوان: {{ bill.delivery_address.name }}<br>
+                {% elif bill.company_delivery_city %}
+                   طريقة الاستلام: توصيل <br>
+                  العنوان: {{ bill.company_delivery_city}}<br>
+                                
                 {% else %}
                   طريقة الاستلام: استلام من المحل<br>
                 {% endif %}
@@ -240,7 +244,12 @@ td {
             <span>التوصيل</span>
             <span>{{ bill.delivery_address.price }} د.ل</span>
         </div>
-       {% endif %}
+        {% elif bill.company_delivery_city %}
+        <div class="total-row">
+            <span>التوصيل</span>
+            <span>{{ bill.company_delivery_price}} د.ل</span>
+        </div>
+        {% endif %}
         <div class="total-row grand-total">
             <span>الإجمالي</span>
             <span>{{ bill.get_total }} د.ل</span>

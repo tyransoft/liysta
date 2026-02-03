@@ -263,7 +263,10 @@ th, td {
                    طريقة الاستلام: توصيل <br>
 
                   العنوان: {{ bill.delivery_address.name }}<br>
+                {% elif bill.company_delivery_city %}
+                   طريقة الاستلام: توصيل <br>
 
+                  العنوان: {{ bill.company_delivery_city }}<br>                
                 {% else %}
                   طريقة الاستلام: استلام من المحل<br>
                 {% endif %}
@@ -311,7 +314,9 @@ th, td {
         {% endif %}
         {% if bill.delivery_address %}
         <div class="total-row"><span>التوصيل</span><span>{{ bill.delivery_address.price  }}</span></div>
-
+        {% elif bill.company_delivery_city %}
+        <div class="total-row"><span>التوصيل</span><span>{{ bill.company_delivery_price  }}</span></div>
+        
         {% endif %}
         
         

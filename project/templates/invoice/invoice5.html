@@ -520,6 +520,11 @@
             <span class="customer-label">  طريقة الاستلام: توصيل</span>
             <span class="customer-data"> {{ bill.delivery_address.name }} العنوان:</span>
           </div>
+        {% elif bill.company_delivery_city %}       
+          <div class="customer-item" style="grid-column: 1 / -1;">
+            <span class="customer-label">  طريقة الاستلام: توصيل</span>
+            <span class="customer-data"> {{ bill.company_delivery_city }} العنوان:</span>
+          </div>        
         {% else %}
         <div class="customer-item" style="grid-column: 1 / -1;">
           <span class="customer-label"> :طريقة الاستلام</span>
@@ -579,6 +584,13 @@
         <span class="calc-label">رسوم التوصيل:</span>
         <span class="calc-value">{{bill.delivery_address.price}}<span class="currency">د.ل</span></span>
       </div>
+      {% elif bill.company_delivery_city %}
+
+      <div class="calc-row">
+        <span class="calc-label">رسوم التوصيل:</span>
+        <span class="calc-value">{{bill.company_delivery_price}}<span class="currency">د.ل</span></span>
+      </div>
+     
       {% endif %}
       <div class="calc-row calc-total">
         <span class="calc-label">المجموع الكلي:</span>

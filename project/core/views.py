@@ -1692,8 +1692,9 @@ def create_order(request):
                 total_sales += item_total
                 total_profit += item_profit
 
+             
             order.sales_total = total_sales
-            order.profit_total = total_profit
+            order.profit_total = total_profit 
             order.save()
             
             return JsonResponse({
@@ -2396,8 +2397,7 @@ def dilver_darbasabil(request,order_id):
          messages.success(request,'تم ارسال الطلبية الى درب السبيل') 
          return redirect('customer_dashboard')  
        else:
-         messages.error(request,f'error:{data}') 
-         #messages.error(request,'لم يتم شحن الطلبية حاول مرة  اخرى') 
+         messages.error(request,'لم يتم شحن الطلبية حاول مرة  اخرى') 
 
          return redirect('customer_dashboard')     
     
@@ -2414,8 +2414,6 @@ def dilver_darbasabil(request,order_id):
 @csrf_exempt
 def calucate_delivery_price(request):
     try:
-       
-        
 
         menu = Menu.objects.get(customer__user=request.user)
         
@@ -2545,3 +2543,4 @@ def calucate_delivery_price(request):
             'success': False,
             'error': str(e)
         })
+

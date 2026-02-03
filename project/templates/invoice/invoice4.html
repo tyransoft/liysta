@@ -372,7 +372,10 @@
                    طريقة الاستلام: توصيل <br>
 
                   العنوان: {{ bill.delivery_address.name }}<br>
+                {% elif bill.company_delivery_city %}
+                   طريقة الاستلام: توصيل <br>
 
+                  العنوان: {{ bill.company_delivery_city }}<br>
                 {% else %}
                   طريقة الاستلام: استلام من المحل<br>
                 {% endif %}
@@ -439,6 +442,12 @@
           <span class="total-label"> توصيل:</span>
           <span class="total-value">{{bill.delivery_address.price}} <span class="currency">د.ل</span></span>
         </div>
+        {% elif bill.company_delivery_city %}
+        <div class="total-row">
+          <span class="total-label"> توصيل:</span>
+          <span class="total-value">{{bill.company_delivery_price}} <span class="currency">د.ل</span></span>
+        </div>        
+        
         {% endif %}
         <div class="total-row total-amount">
           <span class="total-label">المبلغ الإجمالي:</span>
