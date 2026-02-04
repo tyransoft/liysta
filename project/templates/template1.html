@@ -1585,6 +1585,8 @@
 
                         
                         <input type="hidden" id="darb_sabil_price" name="darb_sabil_price" value="0">
+                        <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="0">
+
                         <input type="hidden" id="company_delivery_price_final" name="company_delivery_price" value="0">
                         <input type="hidden" id="darb_sabil_service_id" name="darb_sabil_service_id" value="">
                         <input type="hidden" id="darb_sabil_service_type" name="darb_sabil_service_type" value="">
@@ -2217,9 +2219,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (data.success) {
                     const finalPrice = parseFloat(data.price);
+                    const chargePrice = parseFloat(data.charge);
                     
                     document.getElementById('darb_sabil_price').value = finalPrice;
                     document.getElementById('company_delivery_price_final').value = finalPrice;
+                    document.getElementById('company_delivery_charge_final').value = chargePrice;
+
                     document.getElementById('darb_sabil_service_id').value = serviceId;
                     document.getElementById('darb_sabil_service_type').value = serviceTitle;
                     document.getElementById('darb_sabil_city').value = cityName;
@@ -2291,6 +2296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             return;
                         }
                         
+                        
                         if (!deliveryFee || deliveryFee <= 0) {
                             const price1 = document.getElementById('darb_sabil_price').value;
                             const price2 = document.getElementById('company_delivery_price_final').value;
@@ -2308,11 +2314,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             deliveryFee = finalPrice;
                         }
-                        
+                        const chargePrice = document.getElementById('company_delivery_charge_final').value;
+
                         const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
                         const city = selectedOption.getAttribute('data-city-name');
                         const area = selectedOption.getAttribute('data-area-name');
-                        
+                        formData.append('company_delivery_charge', chargePrice);
                         formData.append('darb_sabil_city', city);
                         formData.append('darb_sabil_area', area);
                         formData.append('company_delivery_price', deliveryFee.toString());
@@ -2361,7 +2368,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                     deliveryFee = finalPrice;
                                 }
-                                
+                                const chargePrice = document.getElementById('company_delivery_charge_final').value;
+
                                 const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
                                 const city = selectedOption.getAttribute('data-city-name');
                                 const area = selectedOption.getAttribute('data-area-name');
@@ -2369,6 +2377,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 formData.append('darb_sabil_city', city);
                                 formData.append('darb_sabil_area', area);
                                 formData.append('company_delivery_price', deliveryFee.toString());
+                                formData.append('company_delivery_charge', chargePrice); 
                                 formData.append('darb_sabil_service_id', selectedServiceId);
                                 formData.append('company_delivery_address', `${city} - ${area}`);
                                 formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');

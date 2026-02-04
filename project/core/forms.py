@@ -249,4 +249,5 @@ class DarbasabilForm(forms.ModelForm):
         self.fields['epay'].widget.attrs.update({'class': 'custom-checkbox'})
         self.fields['paymentby'].widget.attrs.update({'class': 'radio-group'})
         self.fields['epay_coast'].widget.attrs.update({'class': 'radio-group'})
+
         self.fields['epay_coast'].required = False

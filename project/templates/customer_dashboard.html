@@ -10,6 +10,41 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/cusdash.css' %}">
+    <style>
+          .rate-ring {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 4px;
+            vertical-align: middle;
+            position: relative;
+        }
+        
+        .rate-ring::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid; 
+            box-sizing: border-box;
+        }
+        
+        .rate-ring.good::before { border-color: #10b981; }
+        .rate-ring.medium::before { border-color: #f59e0b; }
+        .rate-ring.bad::before { border-color: #ef4444; }
+        
+        .ring-number {
+            position: relative;
+            z-index: 1;
+            font-size: 9px;
+            font-weight: bold;
+            color: black; 
+        }
+    </style>
    
 </head>
 <body>
@@ -323,6 +358,15 @@
                                 <h3 class="stat-value">{{ monthly_sales_value|default:0 }} د.ل</h3>
                             </div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--success-light); color: var(--success);">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-title">مبيعات اليوم</p>
+                                <h3 class="stat-value">{{ daily_sales|default:0 }} د.ل</h3>
+                            </div>
+                        </div>
                         
                         <div class="stat-card">
                             <div class="stat-icon" style="background: var(--accent-light); color: var(--accent);">
@@ -342,6 +386,28 @@
                                 <p class="stat-title">أرباح الشهر</p>
                                 <h3 class="stat-value">{{ monthly_profit|default:0 }} د.ل</h3>
                             </div>
+                            <div class="stat-info">
+                                <p class="stat-title">أرباح اليوم</p>
+                                <h3 class="stat-value">{{ daily_profit|default:0 }} د.ل</h3>
+                            </div>
+                        </div>
+                         <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-title">إجمالي تكاليف الشحن المضافة</p>
+                                <h3 class="stat-value">{{ total_charge |default:0 }} د.ل</h3>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-title">تكاليف الشح الاضافية اليوم</p>
+                                <h3 class="stat-value">{{ daily_charge|default:0 }} د.ل</h3>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-title">تكاليف الشح الاضافية الشهر</p>
+                                <h3 class="stat-value">{{ monthly_charge|default:0 }} د.ل</h3>
+                            </div>
+
                         </div>
                     </div>
                     {% else %}
@@ -590,6 +656,7 @@
                                         <th>العنوان</th>
                                         <th>التاريخ</th>
                                         <th>المجموع</th>
+                                        <th>تكاليف إضافية</th>
                                         <th width="150">الإجراءات</th>
                                     </tr>
                                 </thead>
@@ -606,7 +673,8 @@
                                         </td>
                                         <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
-                                        <td>{{ order.customer_phone }}</td>
+                                        <td>{{ order.customer_phone }} <span class="rate-ring{% if customer_rate > 75 %}good{% elif customer_rate > 40 %}medium {% else %}bad{% endif %}"><span class="ring-number"> {{ order.customer_delivery_rate|floatformat:0 }}%</span></span></td>
+
                                         {% if order.delivery_address %}
                                         <td>{{ order.delivery_address }}</td>
                                         {% elif order.company_delivery_city %}
@@ -617,6 +685,8 @@
                                         {% endif %}
                                         <td>{{ order.created_at|date:"Y-m-d" }}</td>
                                         <td>{{ order.get_total|default:0 }} د.ل</td>
+                                        <td>{{ order.compny_delivery_charge |default:0 }} د.ل</td>
+                                       
                                         <td>
                                             <div class="single-actions">
                                                 {% if darb_connection %}
@@ -680,6 +750,8 @@
                                         <th>العنوان</th>
                                         <th>التاريخ</th>
                                         <th>المجموع</th>
+                                        <th>تكاليف إضافية</th>
+
                                         <th width="180">الإجراءات</th>
                                     </tr>
                                 </thead>
@@ -696,7 +768,7 @@
                                         </td>
                                         <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
-                                        <td>{{ order.customer_phone }}</td>
+                                        <td>{{ order.customer_phone }} <span class="rate-ring{% if customer_rate > 75 %}good{% elif customer_rate > 40 %}medium {% else %}bad{% endif %}"><span class="ring-number"> {{ order.customer_delivery_rate|floatformat:0 }}%</span></span></td>
                                         {% if order.delivery_address %}
                                         <td>{{ order.delivery_address }}</td>
                                         {% elif order.company_delivery_city %}
@@ -707,6 +779,8 @@
                                         {% endif %}
                                         <td>{{ order.created_at|date:"Y-m-d" }}</td>
                                         <td>{{ order.get_total|default:0 }} د.ل</td>
+                                        <td>{{ order.compny_delivery_charge |default:0 }} د.ل</td>
+
                                         <td>
                                             <div class="single-actions">
                                                 <a href="{% url 'recive' order.id %}" class="action-btn btn-sm btn-success" title="تأكيد الاستلام">

@@ -1238,7 +1238,10 @@ def customer_dashboard(request):
                 F('profit_total'),
                 output_field=DecimalField()
             )
-
+            charge_exp = ExpressionWrapper(
+                F('company_delivery_charge'),
+                output_field=DecimalField()
+            )
             sales_stats = {
                 'total': Order.objects.filter(menu=menu,status='delivered').aggregate(total=Sum(sales_exp))['total'] or 0,
                 'daily': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_day).aggregate(total=Sum(sales_exp))['total'] or 0,
@@ -1250,7 +1253,11 @@ def customer_dashboard(request):
                 'daily': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_day).aggregate(profit=Sum(profit_exp))['profit'] or 0,
                 'monthly': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_month).aggregate(profit=Sum(profit_exp))['profit'] or 0,
             }
-
+            charge_stats = {
+                'total': Order.objects.filter(menu=menu,status='delivered').aggregate(charge=Sum())['charge'] or 0,
+                'daily': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_day).aggregate(charge=Sum(charge_exp))['charge'] or 0,
+                'monthly': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_month).aggregate(charge=Sum(charge_exp))['charge'] or 0,
+            }
             months_labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
                           'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
 
@@ -1306,6 +1313,11 @@ def customer_dashboard(request):
                 'total_sales': sales_stats['total'],
                 'monthly_sales_value': sales_stats['monthly'],
                 'total_profit': profit_stats['total'],
+                'daily_sales': sales_stats['daily'],
+                'daily_profit': profit_stats['daily'],
+                'daily_charge':charge_stats['daily'],
+                'monthly_charge':charge_stats['monthly'],
+                'total_charge':charge_stats['total'],
                 'monthly_profit': profit_stats['monthly'],
                 'monthly_sales': monthly_sales,
                 'monthly_profits': monthly_profits,
@@ -1613,11 +1625,19 @@ def create_order(request):
             menu = request.POST.get('menu_id')
             company_area=request.POST.get('darb_sabil_area')
             company_city=request.POST.get('darb_sabil_city')
+            company_charge = request.POST.get('company_delivery_charge', 0)
 
             company_price=request.POST.get('company_delivery_price')
             service=request.POST.get('darb_sabil_service_id')
             
             menu_id=Menu.objects.get(id=menu)
+            try:
+               darb=DarbAsabilConnection.objects.get(
+                customer=menu.customer
+               )
+            except:
+              darb=None
+            
             if not all([customer_name, customer_phone, menu]):
                 return JsonResponse({
                     'success': False,
@@ -1653,7 +1673,7 @@ def create_order(request):
                 notes=notes or '',
                 company_delivery_city=company_city if company_city else None,
                 company_delivery_area=company_area if company_area else None,
-
+                company_delivery_charge=company_charge,
                 company_delivery_price=company_price if company_price else 0.0,
                 menu=menu_id,
                 sales_total=0,
@@ -1691,8 +1711,14 @@ def create_order(request):
                 item_profit = (product.get_discounted_price() - product.bought_price) * quantity
                 total_sales += item_total
                 total_profit += item_profit
-
-             
+            if darb.paymentby == 'sender' or darb.paymentby == 'sales ':
+               if order.company_delivery_price > 0:
+                 total_profit -= order.company_delivery_price 
+            else:
+               pass
+            if order.company_delivery_charge > 0:
+               total_profit -= order.company_delivery_charge 
+                
             order.sales_total = total_sales
             order.profit_total = total_profit 
             order.save()
@@ -2421,7 +2447,7 @@ def calucate_delivery_price(request):
             customer=menu.customer,
             is_active=True
         )
-        
+    
         if request.method == 'POST':
             data = json.loads(request.body)
         else:
@@ -2431,7 +2457,16 @@ def calucate_delivery_price(request):
         area = data.get('area')
         service = data.get('service')
         products_data = data.get('products', [])
-        
+       
+       
+        if darb.paymentby=='sales' or darb.paymentby =='sender': 
+         return JsonResponse({
+                    'success': True,
+                    'price': 0,
+                    'service_type':service 
+                })
+        else:
+           pass
         if not city or not area or not service:
             return JsonResponse({
                 'success': False,
@@ -2500,15 +2535,27 @@ def calucate_delivery_price(request):
             
             if data.get('status') and data.get('data'):
                 if 'remainings' in data['data'] and data['data']['remainings']:
-                    price = data['data']['remainings'][0]['remainings']['amount']
+                    price = data['data']['remainings'][0]['sums']['shipping']['sum']
+                    charge = data['data']['remainings'][0]['sums']['package-charge']['sum']
+
                 else:
                     price = 0
                 
-                return JsonResponse({
+                if darb.paymentby=='sales' or darb.paymentby =='sender': 
+                   return JsonResponse({
+                    'success': True,
+                    'price': 0,
+                    'charge':charge,
+                    'service_type':service 
+                   })
+                else:
+           
+                  return JsonResponse({
                     'success': True,
                     'price': price,
+                    'charge':charge,
                     'service_type': service
-                })
+                  })
             else:
                 return JsonResponse({
                     'success': False,

@@ -500,6 +500,7 @@ class Order(models.Model):
     company_delivery_city=models.CharField(max_length=100,null=True,blank=True)
 
     company_delivery_price=models.FloatField(default=0.0)       
+    company_delivery_charge=models.IntegerField(default=0)       
     
     notes = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -525,6 +526,18 @@ class Order(models.Model):
         self.last_check = timezone.now()
         super().save(*args, **kwargs)
 
+    @property
+    def customer_delivery_rate(self):
+        total=Order.objects.filter(customer_phone=self.customer_phone).count()
+        if total == 0:
+            return '--'
+        
+        delivered=Order.objects.filter(
+            customer_phone=self.customer_phone,
+            status='delivered'                           
+            ).count()
+        return (delivered / total ) * 100
+    
     def __str__(self):
         return f"طلب  - {self.menu.customer.store_en_name} - {self.customer_name}"
     class Meta:
@@ -617,6 +630,7 @@ class DarbAsabilConnection(models.Model):
     paymentby=models.CharField(max_length=10, choices=PAY_CHOICES,default='reciver')
     epay=models.BooleanField(default=False)
     epay_coast=models.CharField(max_length=10, choices=EPAY_CHOICES,null=True,blank=True)
+    
     is_active=models.BooleanField(default=False)
     connected_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):

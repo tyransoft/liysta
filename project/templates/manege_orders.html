@@ -602,6 +602,7 @@
                                     <th>رقم الهاتف</th>
                                     <th>التاريخ</th>
                                     <th>المجموع</th>
+                                    <th>تكلفة اضافية</th>
                                     <th>الحالة</th>
                                     <th>الإجراءات</th>
                                 </tr>
@@ -620,6 +621,9 @@
                                     <td>{{ order.customer_phone }}</td>
                                     <td>{{ order.created_at|date:"Y-m-d" }}</td>
                                     <td class="order-total">{{ order.get_total }} د.ل</td>
+                                    
+                                    <td class="order-total">{{ order.company_delivery_charge }} د.ل</td>
+
                                     <td>
                                         <span class="status-badge status-{{ order.status }}">
                                             {{ order.get_status_display }}
@@ -685,8 +689,15 @@
                         <div class="mobile-order-detail">
                             <span class="mobile-order-label">المجموع:</span>
                             <span class="mobile-order-value order-total">{{ order.get_total }} د.ل</span>
+                       
                         </div>
-                        
+                        {% if order.company_delivery_charge > 0 %}
+                        <div class="mobile-order-detail">
+                            <span class="mobile-order-label">تكاليف الشحن الاضافية:</span>
+                            <span class="mobile-order-value order-total">{{ order.company_delivery_charge }} د.ل</span>
+                       
+                        </div>
+                        {% endif %}
                         <div class="mobile-actions">
                             <a href="{% url 'edite_order' order.id %}" class="btn btn-single-edit">
                                 <i class="bi bi-pencil-fill"></i> تعديل
