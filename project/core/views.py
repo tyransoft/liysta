@@ -1254,7 +1254,7 @@ def customer_dashboard(request):
                 'monthly': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_month).aggregate(profit=Sum(profit_exp))['profit'] or 0,
             }
             charge_stats = {
-                'total': Order.objects.filter(menu=menu,status='delivered').aggregate(charge=Sum())['charge'] or 0,
+                'total': Order.objects.filter(menu=menu,status='delivered').aggregate(charge=Sum(charge_exp))['charge'] or 0,
                 'daily': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_day).aggregate(charge=Sum(charge_exp))['charge'] or 0,
                 'monthly': Order.objects.filter(menu=menu,status='delivered' ,created_at__gte=start_of_month).aggregate(charge=Sum(charge_exp))['charge'] or 0,
             }
