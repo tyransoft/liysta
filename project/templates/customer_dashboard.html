@@ -386,12 +386,19 @@
                                 <p class="stat-title">أرباح الشهر</p>
                                 <h3 class="stat-value">{{ monthly_profit|default:0 }} د.ل</h3>
                             </div>
+                           
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            
                             <div class="stat-info">
                                 <p class="stat-title">أرباح اليوم</p>
                                 <h3 class="stat-value">{{ daily_profit|default:0 }} د.ل</h3>
                             </div>
-                        </div>
-                         <div class="stat-card">
+                        </div> 
+                        <div class="stat-card">
                             <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
                                 <i class="fas fa-coins"></i>
                             </div>
@@ -673,7 +680,17 @@
                                         </td>
                                         <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
-                                        <td>{{ order.customer_phone }} <span class="rate-ring{% if customer_rate > 75 %}good{% elif customer_rate > 40 %}medium {% else %}bad{% endif %}"><span class="ring-number"> {{ order.customer_delivery_rate|floatformat:0 }}%</span></span></td>
+                                        <td>{{ order.customer_phone }} 
+                                          {% with rate=order.customer_delivery_rate %}
+                                           <span class="rate-ring 
+                                             {% if rate > 75 %}good
+                                             {% elif rate > 40 %}medium
+                                             {% else %}bad
+                                             {% endif %}">
+                                             <span class="ring-number">{{ rate|floatformat:0 }}</span>
+                                           </span>
+                                          {% endwith %}
+                                        </td>
 
                                         {% if order.delivery_address %}
                                         <td>{{ order.delivery_address }}</td>
@@ -768,7 +785,19 @@
                                         </td>
                                         <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
-                                        <td>{{ order.customer_phone }} <span class="rate-ring{% if customer_rate > 75 %}good{% elif customer_rate > 40 %}medium {% else %}bad{% endif %}"><span class="ring-number"> {{ order.customer_delivery_rate|floatformat:0 }}%</span></span></td>
+                                        <td>{{ order.customer_phone }} 
+                                        {% if order.customer_delivery_rate  %}
+                                        {% with rate=order.customer_delivery_rate %}
+                                       <span class="rate-ring 
+                                         {% if rate > 75 %}good
+                                         {% elif rate > 40 %}medium
+                                         {% else %}bad
+                                         {% endif %}">
+                                       <span class="ring-number">{{ rate|floatformat:0 }}</span>
+                                       </span>
+                                       {% endwith %}
+                                       {% endif %}
+                                         </td>
                                         {% if order.delivery_address %}
                                         <td>{{ order.delivery_address }}</td>
                                         {% elif order.company_delivery_city %}
