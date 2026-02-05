@@ -1673,8 +1673,8 @@ def create_order(request):
                 notes=notes or '',
                 company_delivery_city=company_city if company_city else None,
                 company_delivery_area=company_area if company_area else None,
-                company_delivery_charge=company_charge,
-                company_delivery_price=company_price if company_price else 0.0,
+                company_delivery_charge=int(company_charge),
+                company_delivery_price=float(company_price) if company_price else 0.0,
                 menu=menu_id,
                 sales_total=0,
                 profit_total=0,
@@ -1713,10 +1713,10 @@ def create_order(request):
                 total_profit += item_profit
             if darb: 
              if darb.paymentby == 'sender' or darb.paymentby == 'sales ':
-                 total_profit -= order.company_delivery_price 
+                 total_profit -= float(order.company_delivery_price) 
             else:
                pass
-            total_profit -= order.company_delivery_charge 
+            total_profit -= float(order.company_delivery_charge)
                 
             order.sales_total = total_sales
             order.profit_total = total_profit 
