@@ -540,7 +540,7 @@ class Order(models.Model):
             return '--'
         
         rate=(delivered / total ) * 100
-        return rate
+        return round(rate)
     
     def __str__(self):
         return f"طلب  - {self.menu.customer.store_en_name} - {self.customer_name}"
