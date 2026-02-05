@@ -1713,12 +1713,10 @@ def create_order(request):
                 total_profit += item_profit
             if darb: 
              if darb.paymentby == 'sender' or darb.paymentby == 'sales ':
-               if order.company_delivery_price > 0:
                  total_profit -= order.company_delivery_price 
             else:
                pass
-            if order.company_delivery_charge > 0:
-               total_profit -= order.company_delivery_charge 
+            total_profit -= order.company_delivery_charge 
                 
             order.sales_total = total_sales
             order.profit_total = total_profit 
