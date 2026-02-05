@@ -1625,9 +1625,9 @@ def create_order(request):
             menu = request.POST.get('menu_id')
             company_area=request.POST.get('darb_sabil_area')
             company_city=request.POST.get('darb_sabil_city')
-            company_charge = request.POST.get('company_delivery_charge', 0)
+            company_charge = int(request.POST.get('company_delivery_charge', 0))
 
-            company_price=request.POST.get('company_delivery_price')
+            company_price=float(request.POST.get('company_delivery_price'))
             service=request.POST.get('darb_sabil_service_id')
             
             menu_id=Menu.objects.get(id=menu)
