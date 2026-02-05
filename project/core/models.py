@@ -536,7 +536,11 @@ class Order(models.Model):
             customer_phone=self.customer_phone,
             status='delivered'                           
             ).count()
-        return (delivered / total ) * 100
+        if delivered == 0:
+            return '--'
+        
+        rate=(delivered / total ) * 100
+        return rate
     
     def __str__(self):
         return f"طلب  - {self.menu.customer.store_en_name} - {self.customer_name}"
