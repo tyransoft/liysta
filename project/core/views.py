@@ -1633,7 +1633,7 @@ def create_order(request):
             menu_id=Menu.objects.get(id=menu)
             try:
                darb=DarbAsabilConnection.objects.get(
-                customer=menu.customer
+                customer=menu_id.customer
                )
             except:
               darb=None
@@ -1711,7 +1711,8 @@ def create_order(request):
                 item_profit = (product.get_discounted_price() - product.bought_price) * quantity
                 total_sales += item_total
                 total_profit += item_profit
-            if darb.paymentby == 'sender' or darb.paymentby == 'sales ':
+            if darb: 
+             if darb.paymentby == 'sender' or darb.paymentby == 'sales ':
                if order.company_delivery_price > 0:
                  total_profit -= order.company_delivery_price 
             else:
