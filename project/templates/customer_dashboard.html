@@ -400,16 +400,31 @@
                         </div> 
                         <div class="stat-card">
                             <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
-                                <i class="fas fa-coins"></i>
+                                <i class="fas fa-weight-hanging"></i>
                             </div>
                             <div class="stat-info">
                                 <p class="stat-title">إجمالي تكاليف الشحن المضافة</p>
                                 <h3 class="stat-value">{{ total_charge |default:0 }} د.ل</h3>
                             </div>
+                            
+
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+                                <i class="fas fa-weight-hanging"></i>
+                            </div>
+                           
                             <div class="stat-info">
                                 <p class="stat-title">تكاليف الشح الاضافية اليوم</p>
                                 <h3 class="stat-value">{{ daily_charge|default:0 }} د.ل</h3>
                             </div>
+                            
+                        </div>                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+                                <i class="fas fa-weight-hanging"></i>
+                            </div>
+                            
                             <div class="stat-info">
                                 <p class="stat-title">تكاليف الشح الاضافية الشهر</p>
                                 <h3 class="stat-value">{{ monthly_charge|default:0 }} د.ل</h3>
@@ -687,7 +702,7 @@
                                              {% elif rate > 40 %}medium
                                              {% else %}bad
                                              {% endif %}">
-                                             <span class="ring-number">{{ rate|floatformat:0 }}</span>
+                                             <span class="ring-number">{{ rate }}</span>
                                            </span>
                                           {% endwith %}
                                         </td>
@@ -786,17 +801,15 @@
                                         <td>#{{order.id}}-{{ order.ordernumber }}</td>
                                         <td>{{ order.customer_name }}</td>
                                         <td>{{ order.customer_phone }} 
-                                        {% if order.customer_delivery_rate  %}
                                         {% with rate=order.customer_delivery_rate %}
                                        <span class="rate-ring 
                                          {% if rate > 75 %}good
                                          {% elif rate > 40 %}medium
                                          {% else %}bad
                                          {% endif %}">
-                                       <span class="ring-number">{{ rate|floatformat:0 }}</span>
+                                       <span class="ring-number">{{ rate}}</span>
                                        </span>
                                        {% endwith %}
-                                       {% endif %}
                                          </td>
                                         {% if order.delivery_address %}
                                         <td>{{ order.delivery_address }}</td>
