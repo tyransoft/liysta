@@ -702,7 +702,7 @@
                                              {% elif rate > 40 %}medium
                                              {% else %}bad
                                              {% endif %}">
-                                             <span class="ring-number">{{ rate }}</span>
+                                             <span class="ring-number">{{ rate }}%</span>
                                            </span>
                                           {% endwith %}
                                         </td>
@@ -717,7 +717,7 @@
                                         {% endif %}
                                         <td>{{ order.created_at|date:"Y-m-d" }}</td>
                                         <td>{{ order.get_total|default:0 }} د.ل</td>
-                                        <td>{{ order.compny_delivery_charge |default:0 }} د.ل</td>
+                                        <td>{{ order.company_delivery_charge }} د.ل</td>
                                        
                                         <td>
                                             <div class="single-actions">
@@ -807,7 +807,7 @@
                                          {% elif rate > 40 %}medium
                                          {% else %}bad
                                          {% endif %}">
-                                       <span class="ring-number">{{ rate}}</span>
+                                       <span class="ring-number">{{ rate }}%</span>
                                        </span>
                                        {% endwith %}
                                          </td>
@@ -821,7 +821,7 @@
                                         {% endif %}
                                         <td>{{ order.created_at|date:"Y-m-d" }}</td>
                                         <td>{{ order.get_total|default:0 }} د.ل</td>
-                                        <td>{{ order.compny_delivery_charge |default:0 }} د.ل</td>
+                                        <td>{{ order.company_delivery_charge  }} د.ل</td>
 
                                         <td>
                                             <div class="single-actions">
