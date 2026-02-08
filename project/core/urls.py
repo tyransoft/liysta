@@ -20,7 +20,7 @@ urlpatterns = [
     path('terms/',terms,name='terms'),
     path('Privacy/',privacy,name='privacy'),
     path('start-free-trial/',start_free_trial,name='start_free_trial'),
-
+    path('verify-recaptcha/', verify_recaptcha, name='verify_recaptcha'),
     path('cards/', card_list_view, name='card_list'),
     path('generate-cards/', generate_cards_view, name='generate_cards'),
     path('customers/', customer_list_view, name='customers_list'),

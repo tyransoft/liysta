@@ -1347,13 +1347,13 @@ document.getElementById('customer_phone').addEventListener('input', function(e) 
             
             phoneError.style.display = 'none';
             phoneValid.style.display = 'inline';
-            phoneValid.textContent = `✅ ${fullPhone}`;
+            phoneValid.textContent = ` ${fullPhone}`;
             
             phoneInput.style.borderColor = '#10B981';
             phoneInput.style.backgroundColor = '#F0FDF4';
         } else {
             phoneError.style.display = 'inline';
-            phoneError.textContent = '❌ 93- 94 - يجب أن يبدأ الرقم بـ 91 - 92...';
+            phoneError.textContent = ' 93- 94 - يجب أن يبدأ الرقم بـ 91 - 92...';
             phoneValid.style.display = 'none';
             hiddenField.value = '';
             
@@ -1362,7 +1362,7 @@ document.getElementById('customer_phone').addEventListener('input', function(e) 
         }
     } else if (phone.length > 0 && phone.length < 9) {
         phoneError.style.display = 'inline';
-        phoneError.textContent = `❌ ناقص ${9 - phone.length} أرقام`;
+        phoneError.textContent = ` ناقص ${9 - phone.length} أرقام`;
         phoneValid.style.display = 'none';
         hiddenField.value = '';
         

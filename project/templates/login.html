@@ -4,157 +4,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liysta - تسجيل الدخول </title>
+    <title>Liysta - تسجيل الدخول</title>
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
-
+    
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
 <style>
-
 :root {
-        --primary: #2563EB;
-        --action: #F97316;
-        --text: #1F2937;
-        --light-bg: #F9FAFB;
+    --primary: #2563EB;
+    --action: #F97316;
+    --text: #1F2937;
+    --light-bg: #F9FAFB;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Tajawal', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem;
+}
+
+.brand-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.brand-logo {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(to right, var(--primary), var(--action));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.brand-subtitle {
+    color: #6B7280;
+    font-size: 1.1rem;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-input.error {
+    border-color: #ef4444;
+    background-color: #fff5f5;
+}
+
+.submit-btn {
+    width: 100%;
+    background: var(--action);
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+
+.submit-btn:hover {
+    background: #E06515;
+}
+
+.submit-btn:disabled {
+    background: #9CA3AF;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #6B7280;
+    line-height: 1.8;
+}
+
+.auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 0.25rem;
+}
+
+.g-recaptcha {
+    margin: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+    transform: scale(0.95);
+}
+
+.recaptcha-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #fef2f2;
+    border-radius: 4px;
+    border-right: 3px solid #dc2626;
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.recaptcha-success {
+    color: #059669;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #f0fdf4;
+    border-radius: 4px;
+    border-right: 3px solid #059669;
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.recaptcha-info {
+    font-size: 0.8rem;
+    color: #6B7280;
+    text-align: center;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    background: #fef2f2;
+    border-radius: 8px;
+    border-right: 4px solid #dc2626;
+    margin-bottom: 1.25rem;
+    text-align: center;
+    animation: slideIn 0.3s ease;
+}
+
+.success-message {
+    color: #059669;
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+    border-right: 4px solid #059669;
+    margin-bottom: 1.25rem;
+    text-align: center;
+    animation: slideIn 0.3s ease;
+}
+
+.message {
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    text-align: center;
+    animation: slideIn 0.3s ease;
+}
+
+.message.success {
+    color: #059669;
+    background: #f0fdf4;
+    border-right: 4px solid #059669;
+}
+
+.message.error {
+    color: #dc2626;
+    background: #fef2f2;
+    border-right: 4px solid #dc2626;
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6B7280;
+    font-size: 1.1rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+}
+
+.toggle-password:hover {
+    color: var(--primary);
+    background-color: #f3f4f6;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.remember-me label {
+    color: #6B7280;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.forgot-password {
+    font-size: 0.9rem;
+}
+
+.error-text {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.recaptcha-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    animation: slideIn 0.3s ease;
+}
+
+.recaptcha-status.pending {
+    color: #d97706;
+    background: #fffbeb;
+    border-right: 3px solid #d97706;
+}
+
+.recaptcha-status.verified {
+    color: #059669;
+    background: #f0fdf4;
+    border-right: 3px solid #059669;
+}
+
+.recaptcha-status.error {
+    color: #dc2626;
+    background: #fef2f2;
+    border-right: 3px solid #dc2626;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
     }
-    
-    body {
-        background-color: var(--light-bg);
-        font-family: 'Tajawal', sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes checkmark {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.checkmark {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    transform: scale(0);
+    animation: checkmark 0.5s ease forwards;
+}
+
+.checkmark::after {
+    content: "✓";
+    color: #059669;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+@media (max-width: 576px) {
     .auth-container {
-        width: 100%;
-        max-width: 480px;
-        padding: 2rem;
-    }
-    
-    .brand-header {
-        text-align: center;
-        margin-bottom: 2.5rem;
-    }
-    
-    .brand-logo {
-        font-size: 2.5rem;
-        font-weight: 900;
-        background: linear-gradient(to right, var(--primary), var(--action));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
-    }
-    
-    .brand-subtitle {
-        color: #6B7280;
-        font-size: 1.1rem;
+        padding: 1.5rem;
     }
     
     .auth-card {
-        background: white;
-        border-radius: 12px;
-        padding: 2.5rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        padding: 1.75rem;
     }
     
-    .auth-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 1.5rem;
-        text-align: center;
+    .g-recaptcha {
+        transform: scale(0.85);
     }
     
-    .form-group {
-        margin-bottom: 1.25rem;
-    }
-    
-    .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: var(--text);
-        font-size: 0.95rem;
-    }
-    
-    .form-input {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid #E5E7EB;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.2s;
-    }
-    
-    .form-input:focus {
-        border-color: var(--primary);
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-    
-    .terms-container {
-        margin: 1.5rem 0;
-        display: flex;
+    .login-options {
+        flex-direction: column;
+        gap: 0.75rem;
         align-items: flex-start;
     }
-    
-    .terms-checkbox {
-        margin-left: 0.5rem;
-    }
-    
-    .terms-text {
-        font-size: 0.9rem;
-        color: #6B7280;
-        line-height: 1.5;
-    }
-    
-    .terms-text a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-    }
-    
-    .submit-btn {
-        width: 100%;
-        background: var(--action);
-        color: white;
-        border: none;
-        padding: 0.875rem;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin-top: 0.5rem;
-    }
-    
-    .submit-btn:hover {
-        background: #E06515;
-    }
-    
-    .auth-footer {
-        text-align: center;
-        margin-top: 1.5rem;
-        color: #6B7280;
-    }
-    
-    .auth-footer a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-    }
-    
-    @media (max-width: 576px) {
-        .auth-container {
-            padding: 1.5rem;
-        }
-        
-        .auth-card {
-            padding: 1.75rem;
-        }
-    }
+}
 </style>
 </head>
 <body>
@@ -162,7 +389,7 @@
     <div class="auth-container">
         <div class="brand-header">
             <div class="brand-logo">Liysta</div>
-            <div class="brand-subtitle">منصتك الذكية لتنقل عملك الى العالم الرقمي </div>
+            <div class="brand-subtitle">منصتك الذكية لتنقل عملك الى العالم الرقمي</div>
         </div>
         
         <div class="auth-card">
@@ -178,30 +405,389 @@
             </div>
             {% endif %}
             
-            <form method="POST">
+            <form method="POST" id="loginForm">
                 {% csrf_token %}
                 
-
+                <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+                
                 <div class="form-group">
                     <label for="email" class="form-label">البريد الإلكتروني</label>
                     <input type="email" id="email" name="email" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">كلمة المرور </label>
-                    <input type="password" id="password" name="password" class="form-input" required>
+                    <span id="email-error" class="error-text"></span>
                 </div>
                 
-                <button type="submit" class="submit-btn">تسجيل الدخول</button>
-
-
+                <div class="form-group password-container">
+                    <label for="password" class="form-label">كلمة المرور</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                    <button type="button" class="toggle-password" id="togglePassword" aria-label="إظهار/إخفاء كلمة المرور">👁️</button>
+                    <span id="password-error" class="error-text"></span>
+                </div>
+                
+                <div class="login-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">تذكرني</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="{% url 'reset_password' %}">نسيت كلمة المرور؟</a>
+                    </div>
+                </div>
+                
+                <div class="g-recaptcha" data-sitekey="6LdkpGQsAAAAAC6oFKD0nqqKL_n6WSvJxfG5byyx" 
+                     data-callback="onRecaptchaVerified" 
+                     data-expired-callback="onRecaptchaExpired"
+                     data-error-callback="onRecaptchaError"></div>
+                
+                <div class="recaptcha-info">
+                    هذا التحقق يساعدنا في منع محاولات الدخول الآلية. المعلومات محمية بواسطة reCAPTCHA وتخضع لـ 
+                    <a href="https://policies.google.com/privacy" target="_blank">سياسة الخصوصية</a> و 
+                    <a href="https://policies.google.com/terms" target="_blank">شروط الخدمة</a> من Google.
+                </div>
+                
+                <div id="recaptcha-status" class="recaptcha-status pending" style="display: none;">
+                    <span id="recaptcha-status-icon"></span>
+                    <span id="recaptcha-status-text">في انتظار التحقق من أنك لست روبوت...</span>
+                </div>
+                
+                <div id="recaptcha-error" class="recaptcha-error"></div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                    <span id="btnText">تسجيل الدخول</span>
+                    <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+                </button>
             </form>
             
             <div class="auth-footer">
-                 ليس لديك حساب ؟ <a href="{% url 'register-customer' %}">انشاء حساب</a>
-                 هل نسيت كلمة المرور؟<a href="{% url 'reset_password' %}">اضغط هنا </a>
-
+                ليس لديك حساب؟ <a href="{% url 'register-customer' %}">إنشاء حساب</a>
+                <br>
+                هل نسيت كلمة المرور؟ <a href="{% url 'reset_password' %}">إعادة تعيين كلمة المرور</a>
             </div>
         </div>
     </div>
 </body>
+<script>
+let isRecaptchaVerified = false;
+let recaptchaResponse = '';
+
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function validateFormFields() {
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const emailError = document.getElementById('email-error');
+    const passwordError = document.getElementById('password-error');
+    
+    let isValid = true;
+    
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    emailInput.classList.remove('error');
+    passwordInput.classList.remove('error');
+    
+    if (!emailInput.value.trim()) {
+        isValid = false;
+        emailError.textContent = 'الرجاء إدخال البريد الإلكتروني';
+        emailInput.classList.add('error');
+    } else if (!validateEmail(emailInput.value)) {
+        isValid = false;
+        emailError.textContent = 'البريد الإلكتروني غير صالح';
+        emailInput.classList.add('error');
+    }
+    
+    if (!passwordInput.value.trim()) {
+        isValid = false;
+        passwordError.textContent = 'الرجاء إدخال كلمة المرور';
+        passwordInput.classList.add('error');
+    } else if (passwordInput.value.length < 6) {
+        isValid = false;
+        passwordError.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+        passwordInput.classList.add('error');
+    }
+    
+    return isValid;
+}
+
+function checkFormStatus() {
+    const submitBtn = document.getElementById('submitBtn');
+    const areFieldsValid = validateFormFields();
+    
+    if (areFieldsValid && isRecaptchaVerified) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+        submitBtn.style.animation = 'pulse 2s infinite';
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.cursor = 'not-allowed';
+        submitBtn.style.animation = 'none';
+    }
+}
+
+function showRecaptchaStatus(status, message) {
+    const statusElement = document.getElementById('recaptcha-status');
+    const statusText = document.getElementById('recaptcha-status-text');
+    const statusIcon = document.getElementById('recaptcha-status-icon');
+    
+    statusElement.style.display = 'block';
+    statusElement.className = 'recaptcha-status ' + status;
+    statusText.textContent = message;
+    
+    if (status === 'verified') {
+        statusIcon.innerHTML = '<div class="checkmark"></div>';
+    } else if (status === 'error') {
+        statusIcon.innerHTML = '⚠️ ';
+    } else {
+        statusIcon.innerHTML = '⏳ ';
+    }
+}
+
+function showRecaptchaError(message) {
+    const errorElement = document.getElementById('recaptcha-error');
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+    showRecaptchaStatus('error', message);
+}
+
+function hideRecaptchaError() {
+    const errorElement = document.getElementById('recaptcha-error');
+    errorElement.style.display = 'none';
+}
+
+function onRecaptchaVerified(response) {
+    isRecaptchaVerified = true;
+    recaptchaResponse = response;
+    
+    document.getElementById('recaptchaResponse').value = response;
+    
+    hideRecaptchaError();
+    
+    showRecaptchaStatus('verified', ' تم التحقق بنجاح! يمكنك الآن تسجيل الدخول');
+    
+    checkFormStatus();
+    
+    setTimeout(() => {
+        const statusElement = document.getElementById('recaptcha-status');
+        if (statusElement) {
+            statusElement.style.opacity = '0.8';
+        }
+    }, 3000);
+}
+
+function onRecaptchaExpired() {
+    isRecaptchaVerified = false;
+    recaptchaResponse = '';
+    document.getElementById('recaptchaResponse').value = '';
+    
+    showRecaptchaError('انتهت صلاحية التحقق. الرجاء التحقق مرة أخرى');
+    showRecaptchaStatus('pending', 'انتهت صلاحية التحقق. يرجى إعادة المحاولة');
+    
+    checkFormStatus();
+    
+    setTimeout(() => {
+        grecaptcha.reset();
+    }, 2000);
+}
+
+function onRecaptchaError() {
+    isRecaptchaVerified = false;
+    recaptchaResponse = '';
+    document.getElementById('recaptchaResponse').value = '';
+    
+    showRecaptchaError('حدث خطأ في التحقق. حاول تحديث الصفحة');
+    showRecaptchaStatus('error', 'حدث خطأ في التحقق');
+    
+    checkFormStatus();
+}
+
+async function verifyRecaptchaWithDjango(recaptchaResponse) {
+    try {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        const response = await fetch('{% url "verify_recaptcha" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ recaptcha_response: recaptchaResponse })
+        });
+        
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('خطأ في التحقق من reCAPTCHA:', error);
+        return { success: false, error: 'فشل الاتصال بالخادم' };
+    }
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    if (!validateFormFields()) {
+        return false;
+    }
+    
+    if (!isRecaptchaVerified || !recaptchaResponse) {
+        showRecaptchaError('الرجاء التحقق من أنك لست روبوت أولاً');
+        return false;
+    }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    
+    submitBtn.disabled = true;
+    btnText.textContent = 'جاري تسجيل الدخول...';
+    btnSpinner.style.display = 'inline-block';
+    
+    try {
+        const verificationResult = await verifyRecaptchaWithDjango(recaptchaResponse);
+        
+        if (!verificationResult.success) {
+            showRecaptchaError('فشل التحقق من أنك لست روبوت. حاول مرة أخرى');
+            showRecaptchaStatus('error', 'فشل التحقق من السيرفر');
+            
+            grecaptcha.reset();
+            isRecaptchaVerified = false;
+            recaptchaResponse = '';
+            
+            resetSubmitButton(submitBtn, btnText, btnSpinner);
+            checkFormStatus();
+            
+            return false;
+        }
+        
+        this.submit();
+        
+    } catch (error) {
+        console.error('خطأ في التحقق:', error);
+        showRecaptchaError('حدث خطأ أثناء التحقق. حاول مرة أخرى');
+        resetSubmitButton(submitBtn, btnText, btnSpinner);
+        checkFormStatus();
+    }
+});
+
+function resetSubmitButton(submitBtn, btnText, btnSpinner) {
+    submitBtn.disabled = true;
+    btnText.textContent = 'تسجيل الدخول';
+    btnSpinner.style.display = 'none';
+    checkFormStatus();
+}
+
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+    this.setAttribute('aria-label', type === 'password' ? 'إظهار كلمة المرور' : 'إخفاء كلمة المرور');
+});
+
+document.getElementById('email').addEventListener('input', function() {
+    const emailError = document.getElementById('email-error');
+    if (this.value.trim() && !validateEmail(this.value)) {
+        emailError.textContent = 'البريد الإلكتروني غير صالح';
+        this.classList.add('error');
+    } else {
+        emailError.textContent = '';
+        this.classList.remove('error');
+    }
+    
+    checkFormStatus();
+});
+
+document.getElementById('password').addEventListener('input', function() {
+    const passwordError = document.getElementById('password-error');
+    if (this.value.trim() && this.value.length < 6) {
+        passwordError.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+        this.classList.add('error');
+    } else {
+        passwordError.textContent = '';
+        this.classList.remove('error');
+    }
+    
+    checkFormStatus();
+});
+
+window.addEventListener('load', function() {
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.focus();
+    }
+    
+    showRecaptchaStatus('pending', 'في انتظار التحقق من أنك لست روبوت...');
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+});
+
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        grecaptcha.reset();
+        isRecaptchaVerified = false;
+        recaptchaResponse = '';
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        
+        resetSubmitButton(submitBtn, btnText, btnSpinner);
+        showRecaptchaStatus('pending', 'في انتظار التحقق من أنك لست روبوت...');
+    }
+});
+
+function checkRecaptchaLoaded() {
+    if (typeof grecaptcha === 'undefined') {
+        console.warn('reCAPTCHA لم يتم تحميله. تحقق من اتصال الإنترنت.');
+        showRecaptchaStatus('error', 'reCAPTCHA غير متاح. تحقق من اتصال الإنترنت.');
+        return false;
+    }
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (checkRecaptchaLoaded()) {
+        console.log('reCAPTCHA جاهز للاستخدام');
+    } else {
+        setTimeout(() => {
+            if (checkRecaptchaLoaded()) {
+                showRecaptchaStatus('pending', 'في انتظار التحقق من أنك لست روبوت...');
+            }
+        }, 2000);
+    }
+});
+
+const formInputs = document.querySelectorAll('#loginForm input');
+formInputs.forEach(input => {
+    input.addEventListener('blur', function() {
+        checkFormStatus();
+    });
+});
+
+setInterval(() => {
+    checkFormStatus();
+}, 1000);
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn.disabled) {
+            event.preventDefault();
+            
+            if (!isRecaptchaVerified) {
+                showRecaptchaError('الرجاء التحقق من أنك لست روبوت أولاً');
+                document.getElementById('recaptcha-status').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+    }
+});
+</script>
+
 </html>

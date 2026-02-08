@@ -487,7 +487,37 @@ def activate_user(request,uidb64,token):
           return redirect('register-customer')
     else:
         return HttpResponse('رابط التفعيل غير صالح')
+# في views.py
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
+@csrf_exempt
+def verify_recaptcha(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            recaptcha_response=data.get('recaptcha_response')
+            
+            recaptcha_secret=settings.RECAPTCHA_SECRET_KEY
+            data = {
+                'secret': recaptcha_secret,
+                'response': recaptcha_response
+            }
+            
+            response = requests.post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                data=data
+            )
+            result = response.json()
+            
+            return JsonResponse(result)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Method not allowed'})
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('email')
@@ -2534,7 +2564,9 @@ def calucate_delivery_price(request):
             
             if data.get('status') and data.get('data'):
                 if 'remainings' in data['data'] and data['data']['remainings']:
-                    price = data['data']['remainings'][0]['sums']['shipping']['sum']
+                    shiping_price=data['data']['remainings'][0]['sums']['shipping']['sum']
+                    shiping_charge=data['data']['remainings'][0]['sums']['charge']['sum']
+                    price = shiping_price + shiping_charge
                     charge = data['data']['remainings'][0]['sums']['package-charge']['sum']
 
                 else:
