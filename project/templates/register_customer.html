@@ -193,6 +193,7 @@
         background: #fef2f2;
         border-radius: 4px;
         border-right: 3px solid #dc2626;
+        display: none;
     }
     
     .recaptcha-info {
@@ -201,6 +202,47 @@
         text-align: center;
         margin-top: 0.5rem;
         line-height: 1.4;
+    }
+    
+    .messages {
+        margin-bottom: 1.5rem;
+    }
+    
+    .message {
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        animation: slideIn 0.3s ease;
+    }
+    
+    .message.success {
+        color: #059669;
+        background: #f0fdf4;
+        border-right: 4px solid #059669;
+    }
+    
+    .message.error {
+        color: #dc2626;
+        background: #fef2f2;
+        border-right: 4px solid #dc2626;
+    }
+    
+    .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
     @keyframes slideIn {
@@ -258,31 +300,36 @@
                 <div class="form-group">
                     <label for="first_name" class="form-label">الاسم الأول</label>
                     <input type="text" id="first_name" name="first_name" class="form-input" required>
+                    <span id="first-name-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="email" class="form-label">البريد الإلكتروني</label>
                     <input type="email" id="email" name="email" class="form-input" required>
+                    <span id="email-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="phone" class="form-label">رقم الهاتف</label>
                     <input type="tel" id="phone" name="phone" class="form-input" required>
+                    <span id="phone-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="store_ar_name" class="form-label">اسم المتجر (عربي)</label>
                     <input type="text" id="store_ar_name" name="store_ar_name" class="form-input" required>
+                    <span id="store-ar-name-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="store_en_name" class="form-label">اسم المتجر (إنجليزي)</label>
                     <input type="text" id="store_en_name" name="store_en_name" class="form-input" required>
+                    <span id="store-en-name-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">(اختياري)تحديد الموقع الجغرافي</label>
-                    <button type="button" onclick="getLocation()" class="submit-btn" style="margin-bottom: 10px;">📍 حدد موقعي</button>
+                    <button type="button" onclick="getLocation()" class="submit-btn" style="margin-bottom: 10px;"> حدد موقعي</button>
                     <input type="text" id="location_url" name="location_url" class="form-input" readonly placeholder="رابط الموقع الجغرافي">
                 </div>
 
@@ -294,11 +341,13 @@
                         <option value="متجر">متجر</option>
                         <option value="غير ذلك">غير ذلك</option>
                     </select>
+                    <span id="store-kind-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="password" class="form-label">كلمة المرور</label>
                     <input type="password" id="password" name="password" class="form-input" required>
+                    <span id="password-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
                 <div class="terms-container">
@@ -306,13 +355,20 @@
                     <label for="terms" class="terms-text">
                         أوافق على <a href="{% url 'terms' %}">الشروط والأحكام</a> و <a href="{% url 'privacy'%}">سياسة الخصوصية</a>
                     </label>
+                    <span id="terms-error" class="inline-error" style="display: none;"></span>
                 </div>
                 
-                <div class="g-recaptcha" data-sitekey="6LdkpGQsAAAAAC6oFKD0nqqKL_n6WSvJxfG5byyx"></div>
-                <div class="recaptcha-info">هذا التحقق يساعدنا في   . المعلومات محمية بواسطة reCAPTCHA وتخضع لـ <a href="https://policies.google.com/privacy" target="_blank">سياسة الخصوصية</a> و <a href="https://policies.google.com/terms" target="_blank">شروط الخدمة</a> من Google.</div>
-                <div id="recaptcha-error" class="recaptcha-error" style="display: none;"></div>
+                <div class="g-recaptcha" data-sitekey="6LdkpGQsAAAAAC6oFKD0nqqKL_n6WSvJxfG5byyx" 
+                     data-callback="onRecaptchaVerified" 
+                     data-expired-callback="onRecaptchaExpired"
+                     data-error-callback="onRecaptchaError"></div>
+                <div class="recaptcha-info">هذا التحقق يساعدنا في منع المحاولات الآلية. المعلومات محمية بواسطة reCAPTCHA وتخضع لـ <a href="https://policies.google.com/privacy" target="_blank">سياسة الخصوصية</a> و <a href="https://policies.google.com/terms" target="_blank">شروط الخدمة</a> من Google.</div>
+                <div id="recaptcha-error" class="recaptcha-error"></div>
                 
-                <button type="submit" class="submit-btn" id="submitBtn">تسجيل الحساب</button>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span id="btnText">تسجيل الحساب</span>
+                    <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+                </button>
             </form>
             
             <div class="auth-footer">
@@ -320,7 +376,7 @@
             </div>
         </div>
     </div>
-</body>
+
 <script>
 const FORBIDDEN_EMAIL_WORDS = [
     'test', 'user', 'demo', 'temp', 'fake', 'dummy',
@@ -328,7 +384,6 @@ const FORBIDDEN_EMAIL_WORDS = [
     'info', 'contact', 'support', 'sales', 'help',
     'mail', 'email', 'webmaster', 'postmaster',
     'noreply', 'no-reply', 'nobody', 'null',
- 
 ];
 
 const FORBIDDEN_USERNAMES = [
@@ -338,6 +393,9 @@ const FORBIDDEN_USERNAMES = [
     'admin123', 'admin001', 'admin01',
     'info123', 'contact123', 'support123'
 ];
+
+let isRecaptchaVerified = false;
+let recaptchaResponse = '';
 
 function validatePhoneNumber(phone) {
     const validPrefixes = ['091', '092', '093', '094', '21'];
@@ -412,205 +470,217 @@ function validateEmailAdvanced(email) {
     return { valid: true, reason: '' };
 }
 
-function showInlineError(inputElement, message) {
-    hideInlineError(inputElement);
-    
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'inline-error';
-    errorDiv.textContent = message;
-    
-    inputElement.parentNode.appendChild(errorDiv);
-    inputElement.classList.add('error');
-}
-
-function hideInlineError(inputElement) {
-    const existingError = inputElement.parentNode.querySelector('.inline-error');
-    if (existingError) {
-        existingError.remove();
-    }
-    inputElement.classList.remove('error');
-}
-
-function validateRecaptcha() {
-    const recaptchaResponse = grecaptcha.getResponse();
-    const errorElement = document.getElementById('recaptcha-error');
-    
-    if (recaptchaResponse.length === 0) {
-        errorElement.textContent = 'الرجاء التحقق من أنك لست روبوت';
+function showInlineError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.textContent = message;
         errorElement.style.display = 'block';
-        return false;
     }
     
-    errorElement.style.display = 'none';
-    document.getElementById('recaptchaResponse').value = recaptchaResponse;
-    return true;
+    const inputElement = document.getElementById(elementId.replace('-error', ''));
+    if (inputElement) {
+        inputElement.classList.add('error');
+    }
 }
 
-function validateForm() {
-    const phoneInput = document.getElementById('phone');
-    const emailInput = document.getElementById('email');
-    const firstNameInput = document.getElementById('first_name');
-    const storeArNameInput = document.getElementById('store_ar_name');
-    const storeEnNameInput = document.getElementById('store_en_name');
-    const storeKindInput = document.getElementById('store_kind');
-    const passwordInput = document.getElementById('password');
-    const termsCheckbox = document.getElementById('terms');
+function hideInlineError(elementId) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.style.display = 'none';
+    }
     
+    const inputElement = document.getElementById(elementId.replace('-error', ''));
+    if (inputElement) {
+        inputElement.classList.remove('error');
+    }
+}
+
+function showRecaptchaError(message) {
+    const errorElement = document.getElementById('recaptcha-error');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+}
+
+function hideRecaptchaError() {
+    const errorElement = document.getElementById('recaptcha-error');
+    if (errorElement) {
+        errorElement.style.display = 'none';
+    }
+}
+
+function onRecaptchaVerified(response) {
+    isRecaptchaVerified = true;
+    recaptchaResponse = response;
+    
+    document.getElementById('recaptchaResponse').value = response;
+    hideRecaptchaError();
+    
+    checkFormStatus();
+}
+
+function onRecaptchaExpired() {
+    isRecaptchaVerified = false;
+    recaptchaResponse = '';
+    document.getElementById('recaptchaResponse').value = '';
+    
+    showRecaptchaError('انتهت صلاحية التحقق. الرجاء التحقق مرة أخرى');
+    checkFormStatus();
+}
+
+function onRecaptchaError() {
+    isRecaptchaVerified = false;
+    recaptchaResponse = '';
+    document.getElementById('recaptchaResponse').value = '';
+    
+    showRecaptchaError('حدث خطأ في التحقق. حاول تحديث الصفحة');
+    checkFormStatus();
+}
+
+function validateFormFields() {
     let isValid = true;
-    let errorMessage = '';
     
-    if (!firstNameInput.value.trim()) {
+    const firstName = document.getElementById('first_name').value.trim();
+    if (!firstName) {
+        showInlineError('first-name-error', 'الرجاء إدخال الاسم الأول');
         isValid = false;
-        errorMessage += 'الرجاء إدخال الاسم الأول\n';
-        firstNameInput.classList.add('error');
     } else {
-        firstNameInput.classList.remove('error');
+        hideInlineError('first-name-error');
     }
     
-    const emailValidation = validateEmailAdvanced(emailInput.value);
-    if (!emailValidation.valid) {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+        showInlineError('email-error', 'الرجاء إدخال البريد الإلكتروني');
         isValid = false;
-        errorMessage += emailValidation.reason + '\n';
-        emailInput.classList.add('error');
-        showInlineError(emailInput, emailValidation.reason);
     } else {
-        emailInput.classList.remove('error');
-        hideInlineError(emailInput);
-    }
-    
-    if (!validatePhoneNumber(phoneInput.value)) {
-        isValid = false;
-        errorMessage += 'رقم الهاتف غير صالح. يجب أن يبدأ الرقم بـ: 091 أو 092 أو 093 أو 094 أو 21\n';
-        phoneInput.classList.add('error');
-    } else {
-        phoneInput.classList.remove('error');
-    }
-    
-    if (!storeArNameInput.value.trim()) {
-        isValid = false;
-        errorMessage += 'الرجاء إدخال اسم المتجر بالعربية\n';
-        storeArNameInput.classList.add('error');
-    } else {
-        storeArNameInput.classList.remove('error');
-    }
-    
-    if (!storeEnNameInput.value.trim()) {
-        isValid = false;
-        errorMessage += 'الرجاء إدخال اسم المتجر بالإنجليزية\n';
-        storeEnNameInput.classList.add('error');
-    } else {
-        storeEnNameInput.classList.remove('error');
-    }
-    
-    if (!storeKindInput.value) {
-        isValid = false;
-        errorMessage += 'الرجاء اختيار نوع المتجر\n';
-        storeKindInput.classList.add('error');
-    } else {
-        storeKindInput.classList.remove('error');
-    }
-    
-    if (!passwordInput.value) {
-        isValid = false;
-        errorMessage += 'الرجاء إدخال كلمة المرور\n';
-        passwordInput.classList.add('error');
-    } else if (passwordInput.value.length < 6) {
-        isValid = false;
-        errorMessage += 'كلمة المرور يجب أن تكون 6 أحرف على الأقل\n';
-        passwordInput.classList.add('error');
-    } else {
-        passwordInput.classList.remove('error');
-    }
-    
-    if (!termsCheckbox.checked) {
-        isValid = false;
-        errorMessage += 'يجب الموافقة على الشروط والأحكام\n';
-        termsCheckbox.classList.add('error');
-    } else {
-        termsCheckbox.classList.remove('error');
-    }
-    
-    if (!validateRecaptcha()) {
-        isValid = false;
-        errorMessage += 'الرجاء التحقق من reCAPTCHA\n';
-    }
-    
-    if (!isValid) {
-        if (errorMessage.includes('reCAPTCHA')) {
-            document.getElementById('recaptcha-error').scrollIntoView({ behavior: 'smooth' });
+        const emailValidation = validateEmailAdvanced(email);
+        if (!emailValidation.valid) {
+            showInlineError('email-error', emailValidation.reason);
+            isValid = false;
         } else {
-            alert(errorMessage);
+            hideInlineError('email-error');
         }
-        return false;
     }
     
-    return true;
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone) {
+        showInlineError('phone-error', 'الرجاء إدخال رقم الهاتف');
+        isValid = false;
+    } else if (!validatePhoneNumber(phone)) {
+        showInlineError('phone-error', 'رقم الهاتف غير صالح. يجب أن يبدأ الرقم بـ: 091 أو 092 أو 093 أو 094 أو 21');
+        isValid = false;
+    } else {
+        hideInlineError('phone-error');
+    }
+    
+    const storeArName = document.getElementById('store_ar_name').value.trim();
+    if (!storeArName) {
+        showInlineError('store-ar-name-error', 'الرجاء إدخال اسم المتجر بالعربية');
+        isValid = false;
+    } else {
+        hideInlineError('store-ar-name-error');
+    }
+    
+    const storeEnName = document.getElementById('store_en_name').value.trim();
+    if (!storeEnName) {
+        showInlineError('store-en-name-error', 'الرجاء إدخال اسم المتجر بالإنجليزية');
+        isValid = false;
+    } else {
+        hideInlineError('store-en-name-error');
+    }
+    
+    const storeKind = document.getElementById('store_kind').value;
+    if (!storeKind) {
+        showInlineError('store-kind-error', 'الرجاء اختيار نوع المتجر');
+        isValid = false;
+    } else {
+        hideInlineError('store-kind-error');
+    }
+    
+    const password = document.getElementById('password').value;
+    if (!password) {
+        showInlineError('password-error', 'الرجاء إدخال كلمة المرور');
+        isValid = false;
+    } else if (password.length < 6) {
+        showInlineError('password-error', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        isValid = false;
+    } else {
+        hideInlineError('password-error');
+    }
+    
+    const termsChecked = document.getElementById('terms').checked;
+    if (!termsChecked) {
+        showInlineError('terms-error', 'يجب الموافقة على الشروط والأحكام');
+        isValid = false;
+    } else {
+        hideInlineError('terms-error');
+    }
+    
+    return isValid;
+}
+
+function checkFormStatus() {
+    const submitBtn = document.getElementById('submitBtn');
+    const areFieldsValid = validateFormFields();
+    
+    if (areFieldsValid && isRecaptchaVerified) {
+        submitBtn.disabled = false;
+    } else {
+        submitBtn.disabled = true;
+    }
 }
 
 document.getElementById("myform").addEventListener("submit", function(event) {
     event.preventDefault();
     
-    if (!validateForm()) {
+    if (!validateFormFields()) {
         return false;
     }
     
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.innerText = "جاري التحقق والإرسال...";
+    if (!isRecaptchaVerified || !recaptchaResponse) {
+        showRecaptchaError('الرجاء التحقق من أنك لست روبوت أولاً');
+        return false;
+    }
     
-    const recaptchaResponse = grecaptcha.getResponse();
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
     
-    fetch('/verify-recaptcha/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: JSON.stringify({ recaptcha_response: recaptchaResponse })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.getElementById('recaptchaResponse').value = recaptchaResponse;
-            event.target.submit();
-        } else {
-            document.getElementById('recaptcha-error').textContent = 'فشل التحقق من reCAPTCHA. حاول مرة أخرى.';
-            document.getElementById('recaptcha-error').style.display = 'block';
-            grecaptcha.reset();
-            btn.disabled = false;
-            btn.innerText = "تسجيل الحساب";
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('recaptcha-error').textContent = 'حدث خطأ أثناء التحقق. حاول مرة أخرى.';
-        document.getElementById('recaptcha-error').style.display = 'block';
-        grecaptcha.reset();
-        btn.disabled = false;
-        btn.innerText = "تسجيل الحساب";
-    });
+    submitBtn.disabled = true;
+    btnText.textContent = 'جاري إنشاء الحساب...';
+    btnSpinner.style.display = 'inline-block';
+    
+    this.submit();
 });
 
 document.getElementById('phone').addEventListener('input', function() {
     if (this.value && !validatePhoneNumber(this.value)) {
-        this.classList.add('error');
-        this.setCustomValidity('رقم الهاتف يجب أن يبدأ بـ: 091 أو 092 أو 093 أو 094 أو 21');
+        showInlineError('phone-error', 'رقم الهاتف غير صالح. يجب أن يبدأ الرقم بـ: 091 أو 092 أو 093 أو 094 أو 21');
     } else {
-        this.classList.remove('error');
-        this.setCustomValidity('');
+        hideInlineError('phone-error');
     }
+    checkFormStatus();
 });
 
 document.getElementById('email').addEventListener('blur', function() {
     if (this.value) {
         const validation = validateEmailAdvanced(this.value);
         if (!validation.valid) {
-            showInlineError(this, validation.reason);
+            showInlineError('email-error', validation.reason);
         } else {
-            hideInlineError(this);
+            hideInlineError('email-error');
         }
     }
+    checkFormStatus();
 });
+
+document.getElementById('first_name').addEventListener('input', checkFormStatus);
+document.getElementById('store_ar_name').addEventListener('input', checkFormStatus);
+document.getElementById('store_en_name').addEventListener('input', checkFormStatus);
+document.getElementById('store_kind').addEventListener('change', checkFormStatus);
+document.getElementById('password').addEventListener('input', checkFormStatus);
+document.getElementById('terms').addEventListener('change', checkFormStatus);
 
 function getLocation() {
     if (navigator.geolocation) {
@@ -634,9 +704,15 @@ function showError(error) {
     alert("فشل تحديد الموقع. تأكد من السماح للموقع بالوصول إلى موقعك.");
 }
 
-function onRecaptchaLoad() {
-    console.log('reCAPTCHA loaded successfully');
-}
+window.addEventListener('load', function() {
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.focus();
+    }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+});
 </script>
 
 </html>
