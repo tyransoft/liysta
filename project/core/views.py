@@ -422,7 +422,7 @@ def register_customer(request):
     if request.method == 'POST':
         if not request.META.get('HTTP_USER_AGENT'):
            return HttpResponseForbidden('طلب غير مسموح')
-        recaptcha_response=data.get('recaptcha_response')
+        recaptcha_response=request.POST.get('recaptcha_response')
             
         recaptcha_secret=settings.RECAPTCHA_SECRET_KEY
         data = {
@@ -517,7 +517,7 @@ def user_login(request):
         if not request.META.get('HTTP_USER_AGENT'):
            return HttpResponseForbidden('طلب غير مسموح') 
         
-        recaptcha_response=data.get('recaptcha_response')
+        recaptcha_response=request.POST.get('recaptcha_response')
             
         recaptcha_secret=settings.RECAPTCHA_SECRET_KEY
         data = {
