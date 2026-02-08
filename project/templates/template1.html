@@ -959,6 +959,7 @@
             cursor: pointer;
             margin-left: 15px;
         }
+       
         
         @keyframes slideDown {
             from { top: -100px; opacity: 0; }
@@ -1492,10 +1493,10 @@
                     <div class="phone-validation">
                       <span class="phone-example">مثال: 912345678</span>
                       <span class="phone-error" id="phoneError" style="display: none; color: red;">
-                         ❌ رقم غير صحيح
+                          رقم غير صحيح
                       </span>
                       <span class="phone-valid" id="phoneValid" style="display: none; color: green;">
-                         ✅ رقم صحيح
+                          رقم صحيح
                       </span>
                     </div>
                   </div>
@@ -1556,14 +1557,7 @@
                             {% endfor %}
                         </select>
                         
-                        <div class="form-group" style="margin-top: 15px; display: none;" id="addressDetailsGroup">
-                            <label for="darb_sabil_address_details">تفاصيل العنوان:</label>
-                            <input type="text" 
-                                   id="darb_sabil_address_details" 
-                                   name="darb_sabil_address_details" 
-                                   placeholder="الشارع، الحي، رقم المنزل..."
-                                   class="form-control">
-                        </div>
+                        
                         
                         <div class="service-type-section" id="serviceTypeSection" style="display: none; margin-top: 15px;">
                             <label>نوع الخدمة:</label>
@@ -2042,14 +2036,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 cartItemElement.className = 'cart-item';
                 cartItemElement.innerHTML = `
                     <div class="cart-item-info">
-                        <div class="cart-item-image">
-                            <img src="${item.image}" alt="${item.name}">
-                        </div>
+                        
                         <div class="cart-item-details">
                             <h5>${item.name}</h5>
                              <p>${item.price.toFixed(1)} د.ل × ${item.quantity}</p>
 
-                            ${item.availableQuantity < 10 ? `<p class="stock-warning">الكمية المتبقية: ${item.availableQuantity}</p>` : ''}
                         </div>
                     </div>
                     <div class="cart-item-actions">

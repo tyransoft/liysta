@@ -1080,7 +1080,59 @@
         .service-option label:hover {
             background: var(--border-color);
         }
+                .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            z-index: 9999;
+            animation: slideDown 0.3s ease;
+            min-width: 300px;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
         
+        .notification.success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        
+        .notification.info {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+        
+        .notification.warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+        
+        .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+       
+        
+        @keyframes slideDown {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { top: 20px; opacity: 1; }
+            to { top: -100px; opacity: 0; }
+        }
         @media (max-width: 768px) {
             header {
                 padding: 15px 20px;
@@ -1348,10 +1400,10 @@
                     <div class="phone-validation">
                       <span class="phone-example">مثال: 912345678</span>
                       <span class="phone-error" id="phoneError" style="display: none; color: red;">
-                         ❌ رقم غير صحيح
+                          رقم غير صحيح
                       </span>
                       <span class="phone-valid" id="phoneValid" style="display: none; color: green;">
-                         ✅ رقم صحيح
+                          رقم صحيح
                       </span>
                     </div>
                   </div>
@@ -1411,14 +1463,7 @@
                             {% endfor %}
                         </select>
                         
-                        <div class="form-group" style="margin-top: 15px; display: none;" id="addressDetailsGroup">
-                            <label for="darb_sabil_address_details">تفاصيل العنوان:</label>
-                            <input type="text" 
-                                   id="darb_sabil_address_details" 
-                                   name="darb_sabil_address_details" 
-                                   placeholder="الشارع، الحي، رقم المنزل..."
-                                   class="form-control">
-                        </div>
+                        
                         
                         <div class="service-type-section" id="serviceTypeSection" style="display: none; margin-top: 15px;">
                             <label>نوع الخدمة:</label>
@@ -1970,9 +2015,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="cart-item-details">
                             <h5>${item.name}</h5>
-                             <p>${item.price.toFixed(1)} د.ل × ${item.quantity}</p>
 
-                            ${item.availableQuantity < 10 ? `<p class="stock-warning">الكمية المتبقية: ${item.availableQuantity}</p>` : ''}
                         </div>
                     </div>
                     <div class="cart-item-actions">

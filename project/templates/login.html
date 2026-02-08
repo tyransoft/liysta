@@ -158,19 +158,6 @@ body {
     animation: slideIn 0.3s ease;
 }
 
-.recaptcha-success {
-    color: #059669;
-    font-size: 0.875rem;
-    text-align: center;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: #f0fdf4;
-    border-radius: 4px;
-    border-right: 3px solid #059669;
-    display: none;
-    animation: slideIn 0.3s ease;
-}
-
 .recaptcha-info {
     font-size: 0.8rem;
     color: #6B7280;
@@ -424,10 +411,6 @@ body {
                 </div>
                 
                 <div class="login-options">
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">تذكرني</label>
-                    </div>
                     <div class="forgot-password">
                         <a href="{% url 'reset_password' %}">نسيت كلمة المرور؟</a>
                     </div>
@@ -464,7 +447,7 @@ body {
             </div>
         </div>
     </div>
-</body>
+
 <script>
 let isRecaptchaVerified = false;
 let recaptchaResponse = '';
@@ -565,7 +548,7 @@ function onRecaptchaVerified(response) {
     
     hideRecaptchaError();
     
-    showRecaptchaStatus('verified', ' تم التحقق بنجاح! يمكنك الآن تسجيل الدخول');
+    showRecaptchaStatus('verified', 'تم التحقق بنجاح! يمكنك الآن تسجيل الدخول');
     
     checkFormStatus();
     
@@ -603,28 +586,7 @@ function onRecaptchaError() {
     checkFormStatus();
 }
 
-async function verifyRecaptchaWithDjango(recaptchaResponse) {
-    try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        const response = await fetch('{% url "verify_recaptcha" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ recaptcha_response: recaptchaResponse })
-        });
-        
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('خطأ في التحقق من reCAPTCHA:', error);
-        return { success: false, error: 'فشل الاتصال بالخادم' };
-    }
-}
-
-document.getElementById('loginForm').addEventListener('submit', async function(event) {
+document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
     if (!validateFormFields()) {
@@ -644,39 +606,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     btnText.textContent = 'جاري تسجيل الدخول...';
     btnSpinner.style.display = 'inline-block';
     
-    try {
-        const verificationResult = await verifyRecaptchaWithDjango(recaptchaResponse);
-        
-        if (!verificationResult.success) {
-            showRecaptchaError('فشل التحقق من أنك لست روبوت. حاول مرة أخرى');
-            showRecaptchaStatus('error', 'فشل التحقق من السيرفر');
-            
-            grecaptcha.reset();
-            isRecaptchaVerified = false;
-            recaptchaResponse = '';
-            
-            resetSubmitButton(submitBtn, btnText, btnSpinner);
-            checkFormStatus();
-            
-            return false;
-        }
-        
-        this.submit();
-        
-    } catch (error) {
-        console.error('خطأ في التحقق:', error);
-        showRecaptchaError('حدث خطأ أثناء التحقق. حاول مرة أخرى');
-        resetSubmitButton(submitBtn, btnText, btnSpinner);
-        checkFormStatus();
-    }
+    submitBtn.style.animation = 'pulse 1s infinite';
+    
+    this.submit();
 });
-
-function resetSubmitButton(submitBtn, btnText, btnSpinner) {
-    submitBtn.disabled = true;
-    btnText.textContent = 'تسجيل الدخول';
-    btnSpinner.style.display = 'none';
-    checkFormStatus();
-}
 
 document.getElementById('togglePassword').addEventListener('click', function() {
     const passwordInput = document.getElementById('password');
@@ -735,7 +668,10 @@ window.addEventListener('pageshow', function(event) {
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
         
-        resetSubmitButton(submitBtn, btnText, btnSpinner);
+        submitBtn.disabled = true;
+        btnText.textContent = 'تسجيل الدخول';
+        btnSpinner.style.display = 'none';
+        checkFormStatus();
         showRecaptchaStatus('pending', 'في انتظار التحقق من أنك لست روبوت...');
     }
 });

@@ -420,30 +420,50 @@ def customer_list_view(request):
 
 def register_customer(request):
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        phone = request.POST.get('phone')
-        store_ar_name = request.POST.get('store_ar_name')
-        store_en_name = request.POST.get('store_en_name')
-        store_kind = request.POST.get('store_kind')
-        location_url = request.POST.get('location_url')
+        if not request.META.get('HTTP_USER_AGENT'):
+           return HttpResponseForbidden('طلب غير مسموح')
+        recaptcha_response=data.get('recaptcha_response')
+            
+        recaptcha_secret=settings.RECAPTCHA_SECRET_KEY
+        data = {
+                'secret': recaptcha_secret,
+                'response': recaptcha_response
+            }
+            
 
-        if not first_name or not email or not password or not phone or not store_ar_name or not store_en_name or not store_kind:
+        try:
+         response = requests.post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                data=data
+            )
+         result=response.json()
+         if not result.get('success',False):
+            messages.error(request, "فشل التحقق من reCAPTCHA. حاول مرة أخرى")
+            return render(request, 'user_login')    
+         first_name = request.POST.get('first_name')
+         email = request.POST.get('email')
+         password = request.POST.get('password')
+         phone = request.POST.get('phone')
+         store_ar_name = request.POST.get('store_ar_name')
+         store_en_name = request.POST.get('store_en_name')
+         store_kind = request.POST.get('store_kind')
+         location_url = request.POST.get('location_url')
+
+         if not first_name or not email or not password or not phone or not store_ar_name or not store_en_name or not store_kind:
             messages.error(request, 'نرجوا منك تعبئة كامل البيانات')
             return redirect('register-customer')
 
-        if User.objects.filter(username=email).exists():
+         if User.objects.filter(username=email).exists():
             messages.error(request, 'عنوان البريد الالكتروني مستخدم حاول تسجيل الدخول')
             return redirect('register-customer')
-        if  Customer.objects.filter(store_en_name=store_en_name).exists():
+         if  Customer.objects.filter(store_en_name=store_en_name).exists():
             messages.error(request, 'لسم المتجر باللغة الانجليزية مستخدم من قبل اجعله فريدا وحاول مجددا')
             return redirect('register-customer')       
-        user = User.objects.create_user(
+         user = User.objects.create_user(
             username=email, email=email, password=password, 
             first_name=first_name,is_active=False)
 
-        if user:
+         if user:
                 customer = Customer.objects.create(
                     user=user,
                     phone=phone,
@@ -461,9 +481,11 @@ def register_customer(request):
 
                 return redirect('email_sent')
             
-        messages.error(request, 'لم يتم تسجيلك حاول مرة اخرى')
-        return redirect('register-customer')
-
+         messages.error(request, 'لم يتم تسجيلك حاول مرة اخرى')
+         return redirect('register-customer')
+        except Exception as e:
+         messages.error(request, f'{e}:خطأ')
+         return redirect('register-customer')
     return render(request, 'register_customer.html')
 
 
@@ -487,49 +509,49 @@ def activate_user(request,uidb64,token):
           return redirect('register-customer')
     else:
         return HttpResponse('رابط التفعيل غير صالح')
-# في views.py
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
 
-@csrf_exempt
-def verify_recaptcha(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            recaptcha_response=data.get('recaptcha_response')
+
+
+def user_login(request):
+    if request.method == 'POST' :
+        if not request.META.get('HTTP_USER_AGENT'):
+           return HttpResponseForbidden('طلب غير مسموح') 
+        
+        recaptcha_response=data.get('recaptcha_response')
             
-            recaptcha_secret=settings.RECAPTCHA_SECRET_KEY
-            data = {
+        recaptcha_secret=settings.RECAPTCHA_SECRET_KEY
+        data = {
                 'secret': recaptcha_secret,
                 'response': recaptcha_response
             }
             
-            response = requests.post(
+
+        try:
+         response = requests.post(
                 'https://www.google.com/recaptcha/api/siteverify',
                 data=data
             )
-            result = response.json()
-            
-            return JsonResponse(result)
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-    
-    return JsonResponse({'success': False, 'error': 'Method not allowed'})
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST.get('email')
-        password = request.POST.get('password')
+         result=response.json()
+         if not result.get('success',False):
+            messages.error(request, "فشل التحقق من reCAPTCHA. حاول مرة أخرى")
+            return render(request, 'user_login')
+         
+         username = request.POST.get('email')
+         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
+         if user is not None:
             login(request, user)  
             return redirect('home')  
-        else:
+         else:
             messages.error(request, "بيانات الدخول غير صحيحة.")  
+            return redirect('user_login')  
+        
+        except Exception as e:
+            messages.error(request, f'{e}حدث خطأ:')  
+            return redirect('user_login')  
+           
     return render(request, 'login.html') 
 
 def email_sent(request):
