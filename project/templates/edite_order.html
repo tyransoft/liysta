@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .header {
-            background-color: #2c3e50;
+            background-color: #4361ee;
             color: white;
             padding: 20px 0;
             margin-bottom: 30px;
@@ -44,7 +44,7 @@
 </head>
 <body>
     <div class="header text-center">
-        <h1>تعديل الطلب رقم {{ order.ordernumber }}</h1>
+        <h1>تعديل الطلب رقم #{{order.id}}-{{ order.ordernumber }}</h1>
     </div>
 
     <div class="container">
@@ -119,10 +119,17 @@
                                             <td colspan="5" class="text-end"><strong>المجموع الفرعي:</strong></td>
                                             <td colspan="3" id="subtotal">{{ order.sales_total }} د.ل</td>
                                         </tr>
+                                        {% if order.delivery_address %}
                                         <tr>
                                             <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
                                             <td colspan="3" id="delivery-cost">{{ order.delivery_address.price|default:0 }} د.ل</td>
                                         </tr>
+                                        {% elif order.company_delivery_city %}
+                                        <tr>
+                                            <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
+                                            <td colspan="3" id="delivery-cost">{{ order.company_delivery_price|default:0 }} د.ل</td>
+                                        </tr>
+                                        {% endif  %}
                                         <tr class="fw-bold fs-5">
                                             <td colspan="5" class="text-end"><strong>المجموع الكلي:</strong></td>
                                             <td colspan="3" id="grand-total">{{ order.get_total }} د.ل</td>
@@ -147,6 +154,7 @@
                                 <label class="form-label">رقم الهاتف</label>
                                 <input type="text" class="form-control" name="customer_phone" value="{{ order.customer_phone }}" required>
                             </div>
+                            {% if order.delivery_address %}
                             <div class="mb-3">
                                 <label class="form-label">عنوان التوصيل</label>
                                 <select class="form-select" name="delivery_address" >
@@ -158,6 +166,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            {% endif %}
                             <div class="mb-3">
                                 <label class="form-label">ملاحظات</label>
                                 <textarea class="form-control" name="notes" rows="3">{{ order.notes }}</textarea>
@@ -175,10 +184,17 @@
                                 <strong>مجموع المنتجات:</strong>
                                 <span id="summary-subtotal">{{ order.sales_total }} د.ل</span>
                             </div>
+                            {% if not order.company_delivery_city %}
                             <div class="d-flex justify-content-between mb-2">
                                 <strong>رسوم التوصيل:</strong>
                                 <span id="summary-delivery">{{ order.delivery_address.price|default:0 }} د.ل</span>
                             </div>
+                            {% elif  order.company_delivery_city %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <strong>رسوم التوصيل:</strong>
+                                <span id="summary-delivery">{{ order.company_delivery_price|default:0 }} د.ل</span>
+                            </div>
+                            {% endif %}
                             <div class="d-flex justify-content-between mb-3 fs-5">
                                 <strong>المجموع الكلي:</strong>
                                 <span class="text-primary" id="summary-total">{{ order.get_total }} د.ل</span>
@@ -196,7 +212,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // زيادة الكمية
             document.querySelectorAll('.increase-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const itemId = this.dataset.itemId;
@@ -214,7 +229,6 @@
                 });
             });
 
-            // تقليل الكمية
             document.querySelectorAll('.decrease-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const itemId = this.dataset.itemId;
@@ -229,7 +243,6 @@
                 });
             });
 
-            // تحديث المخزون المعروض
             function updateStock(productId, change) {
                 const stockElement = document.querySelector(`.stock-${productId}`);
                 if (stockElement) {
@@ -237,7 +250,6 @@
                 }
             }
 
-            // تحديث المجموع للعنصر
             function updateItemTotal(itemId, price) {
                 const quantityInput = document.querySelector(`input[name="quantity_${itemId}"]`);
                 const quantity = parseInt(quantityInput.value);
@@ -247,12 +259,10 @@
                 updateOrderSummary();
             }
 
-            // تحديث ملخص الطلب
             function updateOrderSummary() {
                 let subtotal = 0;
                 
                 document.querySelectorAll('[id^="item-total-"]').forEach(element => {
-                    // تجاهل العناصر المخفية (المحذوفة)
                     if (element.closest('tr').style.display !== 'none') {
                         const totalText = element.textContent.replace(' د.ل', '').trim();
                         subtotal += parseFloat(totalText) || 0;
@@ -269,46 +279,38 @@
                 document.getElementById('delivery-cost').textContent = deliveryCost.toFixed(2) + ' د.ل';
                 document.getElementById('grand-total').textContent = grandTotal.toFixed(2) + ' د.ل';
                 
-                // تحديث الملخص في الجانب
                 document.getElementById('summary-subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
                 document.getElementById('summary-delivery').textContent = deliveryCost.toFixed(2) + ' د.ل';
                 document.getElementById('summary-total').textContent = grandTotal.toFixed(2) + ' د.ل';
             }
 
-            // إزالة منتج من الطلب
             document.querySelectorAll('.remove-item').forEach(button => {
                 button.addEventListener('click', function() {
                     const itemId = this.dataset.itemId;
                     if (confirm('هل أنت متأكد من إزالة هذا المنتج من الطلب؟')) {
-                        // إرجاع الكمية إلى المخزون
                         const input = document.querySelector(`input[name="quantity_${itemId}"]`);
                         const productId = input.dataset.productId;
                         const quantity = parseInt(input.value);
                         
                         updateStock(productId, quantity);
                         
-                        // إخفاء الصف
                         this.closest('tr').style.display = 'none';
                         
-                        // إضافة حقل مخفي للإشارة إلى إزالة المنتج
                         const hiddenInput = document.createElement('input');
                         hiddenInput.type = 'hidden';
                         hiddenInput.name = `remove_${itemId}`;
                         hiddenInput.value = 'true';
                         document.getElementById('orderForm').appendChild(hiddenInput);
                         
-                        // تحديث المجموع
                         updateOrderSummary();
                     }
                 });
             });
 
-            // تحديث تكاليف التوصيل عند التغيير
             document.querySelector('select[name="delivery_address"]').addEventListener('change', function() {
                 updateOrderSummary();
             });
 
-            // تحديث الكميات عند التغيير المباشر في حقل الإدخال
             document.querySelectorAll('.quantity-input').forEach(input => {
                 input.addEventListener('change', function() {
                     const itemId = this.name.split('_')[1];
@@ -324,7 +326,6 @@
                         this.value = 1;
                     }
                     
-                    // حساب الفرق في الكمية وتحديث المخزون
                     const currentValue = parseInt(this.dataset.currentValue);
                     const newValue = parseInt(this.value);
                     const quantityDiff = newValue - currentValue;
