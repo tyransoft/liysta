@@ -581,7 +581,7 @@
 <body>
     <div class="header text-center">
         <div class="container">
-            <h1><i class="fas fa-tasks me-2"></i>إدارة الطلبات المتقدمة</h1>
+            <h1>إدارة الطلبات </h1>
             <div class="header-actions">
                 <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
                     <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
@@ -684,7 +684,7 @@
 
         <div class="card main-card">
             <div class="card-header">
-                <i class="fas fa-list-alt me-2"></i> قائمة الطلبات
+                قائمة الطلبات
             </div>
             <div class="card-body p-0">
                 <div class="table-container desktop-table">
@@ -714,7 +714,7 @@
                                                value="{{ order.id }}"
                                                onchange="updateSelection()">
                                     </td>
-                                    <td class="order-number">{{ order.id }}-{{ order.ordernumber }}</td>
+                                    <td class="order-number">#{{ order.id }}-{{ order.ordernumber }}</td>
                                     <td>{{ order.customer_name }}</td>
                                     <td>{{ order.customer_phone }}</td>
                                     <td>{{ order.created_at|date:"Y-m-d" }}</td>

@@ -1421,7 +1421,7 @@ def manege_order(request,menu_id):
         orders = Order.objects.filter(**filters).order_by('-created_at')
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(orders, 20)
+    paginator = Paginator(orders,15)
     
     try:
         orders_page = paginator.page(page)
