@@ -1679,7 +1679,7 @@ def create_order(request):
             company_city=request.POST.get('darb_sabil_city')
             company_charge = int(request.POST.get('company_delivery_charge', 0))
 
-            company_price=float(request.POST.get('company_delivery_price'))
+            company_price=float(request.POST.get('company_delivery_price',0.0))
             service=request.POST.get('darb_sabil_service_id')
             
             menu_id=Menu.objects.get(id=menu)
@@ -1725,7 +1725,7 @@ def create_order(request):
                 notes=notes or '',
                 company_delivery_city=company_city if company_city else None,
                 company_delivery_area=company_area if company_area else None,
-                company_delivery_charge=int(company_charge),
+                company_delivery_charge=int(company_charge)if company_charge else 0,
                 company_delivery_price=float(company_price) if company_price else 0.0,
                 menu=menu_id,
                 sales_total=0,
