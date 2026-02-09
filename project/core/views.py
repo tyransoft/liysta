@@ -18,7 +18,7 @@ from .utils import verification
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.db import transaction
 from io import BytesIO
 from openpyxl import Workbook
@@ -1400,8 +1400,9 @@ def manege_order(request,menu_id):
     
     if request.method == 'POST':
         date = request.POST.get('date')
-        number = request.POST.get('number')
+        number = request.POST.get('order_number')
         status = request.POST.get('status')
+        order_id = request.POST.get('order_id')
         
         filters = {'menu_id': menu_id}
         
@@ -1411,17 +1412,33 @@ def manege_order(request,menu_id):
         if number:
             filters['ordernumber'] = number
         
+        if order_id:
+            filters['id'] = order_id
+           
         if status and status != 'all':
             filters['status'] = status
         
         orders = Order.objects.filter(**filters).order_by('-created_at')
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(orders, 20)
+    
+    try:
+        orders_page = paginator.page(page)
+    except PageNotAnInteger:
+        orders_page = paginator.page(1)
+    except EmptyPage:
+        orders_page = paginator.page(paginator.num_pages)
     
     context = {
-        'orders': orders,
+        'orders': orders_page,
         'menu_id': menu_id,
         'status_choices': Order.STATUS_CHOICES,
+        'paginator': paginator,
     }
     return render(request, 'manege_orders.html', context)
+
+
 def edite_order(request,order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order)

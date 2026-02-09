@@ -71,13 +71,17 @@
         
         <div class="order-details">
             <p ><strong> التاريخ:</strong> {{ order.created_at }}</p>
-            <p><strong>رقم الطلب:</strong> {{ order.ordernumber }}</p>
+            <p><strong>رقم الطلب:</strong>#{{order.id}}-{{ order.ordernumber }}</p>
             <p><strong>اسم العميل:</strong> {{ order.customer_name }}  | <strong>رقم الهاتف:</strong> {{ order.customer_phone }}</p>
 
             {% if  order.delivery_address %}
-            <p><strong> نوع الطلب:</strong> {{ order.order_type }}  | <strong>عنوان التوصيل:</strong> {{ order.delivery_address.name }}</p>
+            <p><strong>عنوان التوصيل:</strong> {{ order.delivery_address.name }}</p>
+            {% elif order.company_delivery_city %}
+            <p><strong>عنوان التوصيل:</strong> {{ order.company_delivery_city}}-{{ order.company_delivery_city}}</p>
+
+            
             {% else %}
-            <p><strong> نوع الطلب:</strong> {{ order.order_type }} | <strong>استلام شخصي</strong></p>
+            <p><strong>استلام شخصي</strong></p>
 
             {% endif %}
 

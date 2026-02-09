@@ -249,7 +249,7 @@ th, td {
 
     <div class="header">
         <h1>{{ bill.menu.customer.store_ar_name }}</h1>
-        <div class="invoice-number">فاتورة رقم #{{bill.id}}-{{bill.ordernumber}}</div>
+        <div class="invoice-number">فاتورة رقم #{{bill.ordernumber}}-{{bill.id}}</div>
         <div class="date-time">تاريخ:{{ bill.created_at|date:"Y/m/d " }}</div>
     </div>
 

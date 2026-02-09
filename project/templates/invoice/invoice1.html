@@ -3,7 +3,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>فاتورة -{{bill.id}}-{{bill.ordernumber }}</title>
+<title>فاتورة -{{bill.ordernumber}}-{{bill.id}}</title>
 <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
 
 <style>
@@ -184,7 +184,7 @@ td {
 <div class="invoice">
     <div class="header">
         <h1>{{ bill.menu.customer.store_ar_name }}</h1>
-        <div class="invoice-number"> #{{bill.id}}-{{bill.ordernumber }}رقم الفاتورة:#</div>
+        <div class="invoice-number"> #{{bill.ordernumber}}-{{bill.id }}رقم الفاتورة:#</div>
         <div class="date">{{ bill.created_at|date:"Y/m/d " }}:التاريخ</div>
     </div>
     <div class="info-section">
