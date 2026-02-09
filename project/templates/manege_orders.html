@@ -456,30 +456,54 @@
 .order-number-group {
     display: flex;
     align-items: center;
-    gap: 3px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 36px;
+    transition: all 0.3s ease;
+    width: 160px;
+}
+
+.order-number-group:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.15rem rgba(67, 97, 238, 0.15);
 }
 
 .order-number-input {
-    flex: 1;
+    border: none;
     text-align: center;
-    padding: 5px 8px;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    font-size: 0.85rem;
-    height: 38px;
+    padding: 0 4px;
+    font-size: 0.78rem;
+    background: transparent;
+    width: 55px;
+    height: 100%;
 }
 
-.order-number-input:focus {
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+.order-number-input:first-child {
+    border-left: none;
+}
+
+.order-number-input:last-child {
+    border-right: none;
+}
+
+.order-number-input::placeholder {
+    color: #999;
+    font-size: 0.72rem;
 }
 
 .order-number-separator {
     color: var(--primary-orange);
     font-weight: bold;
-    padding: 0 3px;
-    font-size: 1rem;
-    line-height: 38px;
+    font-size: 0.85rem;
+    padding: 0 2px;
+    line-height: 1;
+    background: #f8f9fa;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    min-width: 8px;
 }
         .pagination .page-link {
             color: var(--primary-blue);
@@ -594,22 +618,21 @@
                             <label for="date" class="form-label">التاريخ</label>
                             <input type="date" class="form-control" id="date" name="date">
                         </div>
-                        <div class="col-md-3">
-                            <label for="order_number" class="form-label">رقم الطلب</label>
-                            <div class="order-number-group">
-                                <input type="number" 
-                                       class="order-number-input" 
-                                       id="order_id" 
-                                       name="order_id" 
-                                       placeholder="المعرف">
-                                <span class="order-number-separator">-</span>
-                                <input type="number" 
-                                       class="order-number-input" 
-                                       id="order_number" 
-                                       name="order_number" 
-                                       placeholder="الرقم اليومي">
-                            </div>
-                        </div>
+                        <div class="order-number-group">
+                         <input type="number" 
+                          class="order-number-input" 
+                          id="order_id" 
+                          name="order_id" 
+                          placeholder="ID"
+                          style="width: 55px;">
+                            <span class="order-number-separator">-</span>
+                         <input type="number" 
+                          class="order-number-input" 
+                          id="order_number" 
+                          name="order_number" 
+                          placeholder="رقم"
+                          style="width: 55px;">
+                          </div>
                         <div class="col-md-3">
                             <label for="status" class="form-label">حالة الطلب</label>
                             <select class="form-select" id="status" name="status">
