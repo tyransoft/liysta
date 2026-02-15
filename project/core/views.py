@@ -3078,7 +3078,7 @@ def manege_coast(request,menu_id):
             filters['coast_kind'] = kind 
            
         
-    coasts=CustomerCoasts.objects.filter(**filters).order_by('-created_at')
+        coasts=CustomerCoasts.objects.filter(**filters).order_by('-created_at')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(coasts,15)
