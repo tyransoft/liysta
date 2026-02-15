@@ -1537,7 +1537,7 @@ def reports_dashboard(request):
             gross_profit_margin = (filtered_profit / filtered_sales) * 100
             net_profit = Decimal(filtered_profit) - Decimal(total_coasts)
             net_profit_margin = (net_profit / filtered_sales) * 100
-            coast_to_sales_ratio = (total_coasts / filtered_sales) * 100
+            coast_to_sales_ratio = ( Decimal(total_coasts) / filtered_sales) * 100
             charge_to_sales_ratio = (filtered_charge / filtered_sales) * 100
         else:
             gross_profit_margin = 0
