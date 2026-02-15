@@ -613,6 +613,7 @@
             <div class="card-body">
                 <form method="POST" action="{% url 'manege_order' menu_id %}">
                     {% csrf_token %}
+                    
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
                             <label for="date" class="form-label">التاريخ</label>

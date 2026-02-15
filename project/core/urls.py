@@ -61,16 +61,26 @@ urlpatterns = [
     path('menu/<int:menu_id>/add-customer-discount/', add_cpdiscount, name='add_cpdiscount'),
     path('customer-discount/edit/<int:cpdiscount_id>/', edit_cpdiscount, name='edit_cpcdiscount'),
     path('customer-discount/delete/<int:cpdiscount_id>/', delete_cpdiscount, name='delete_cpdiscount'),   
+   
+    path('menu/<int:menu_id>/coasts/',manege_coast, name='coast_list'),
+    
+    path('menu/<int:menu_id>/coasts/add/', add_coast, name='add_coast'),
+    
+    path('coasts/<int:coast_id>/edit/', edit_coast, name='edit_coast'),
+    path('coasts/<int:coast_id>/delete/', delete_coast, name='delete_coast'),
 
 
     path('delivery-companies/', delivery_companies, name='delivery_companies'),
+
     path('delivery-darbasabil-settings/', darbasabil_settings, name='darbasabil_settings'),
+
     path('delivery-darbasabil-shipping/<int:order_id>', dilver_darbasabil, name='dilver_darbasabil'),
     path('calculate-delivery-price/', calucate_delivery_price, name='calucate_delivery_price'),
 
-
     path('submit-review/', submit_review, name='submit_review'),
+    path('customer-dashboard/reports', reports_dashboard, name='reports_dashboard'),
     path('customer-dashboard/', customer_dashboard, name='customer_dashboard'),
+
     path('customer-dashboard/check-new-orders/',check_new_orders,name='check-new-orders'),
     path('preview-template/', preview_template, name='preview_template'),
     path('preview-invoice/', preview_invoice, name='preview_invoice'),

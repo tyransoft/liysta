@@ -237,6 +237,53 @@ class OrderForm(forms.ModelForm):
         if menu:
             self.fields['delivery_address'].queryset = City.objects.filter(menu=menu)
 
+
+
+class CustomerCoastForm(forms.ModelForm):
+    
+    class Meta:
+        model = CustomerCoasts
+        fields = ['coast_kind', 'amount', 'recurring']
+        widgets = {
+            'coast_kind': forms.RadioSelect(choices=CustomerCoasts.KIND, attrs={
+                'class': 'radio-input'
+            }),
+            'amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'أدخل المبلغ',
+                'step': '0.01',
+                'min': '0'
+            }),
+            'recurring': forms.CheckboxInput(attrs={
+                'class': 'toggle-input',
+                'id': 'recurring'
+            })
+        }
+        labels = {
+            'coast_kind': 'نوع التكلفة',
+            'amount': 'المبلغ',
+            'recurring': 'تكلفة متكررة'
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['coast_kind'].choices = [
+            ('Operations', 'عمليات'),
+            ('Marketing&sells', 'تسويق ومبيعات'),
+        ]
+        
+        self.fields['coast_kind'].widget.attrs.update({
+            'data-icon-operations': 'fa-cogs',
+            'data-icon-marketing': 'fa-chart-line'
+        })
+    
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            raise forms.ValidationError('يجب أن يكون المبلغ أكبر من صفر')
+        return amount
+
 class DarbasabilForm(forms.ModelForm):
     class Meta:
         model = DarbAsabilConnection

@@ -582,7 +582,27 @@ class AdminSales(models.Model):
 
         ] 
         
+class CustomerCoasts(models.Model):
+   
+    KIND={
+        ('Operations','Operations'),
+        ('Marketing&sells','Marketing&sells'),
+    }
+    
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    coast_kind=models.CharField(max_length=25,choices=KIND,null=False)
+    amount=models.FloatField()
+    recurring=models.BooleanField(default=False)
+    created_at=models.DateField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.amount}----{self.created_at}"
+    class Meta:
+        indexes = [
 
+           models.Index(fields=['coast_kind']),
+           models.Index(fields=['created_at']),
+        
+        ] 
 class Liystanumbers(models.Model):
     month_data=models.FileField(upload_to='data/')
     created_at=models.DateField()

@@ -1,0 +1,721 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>liysta - إدارة التكاليف </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <style>
+        :root {
+            --primary-blue: #4361ee;
+            --primary-orange: #ff7b25;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --info-color: #118ab2;
+            --purple-color: #8a2be2;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3748;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light-bg);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            padding: 25px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.15);
+            border-bottom: 3px solid var(--primary-orange);
+        }
+        
+        .header h1 {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .header h1:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60%;
+            height: 3px;
+            background: var(--primary-orange);
+            border-radius: 2px;
+        }
+        
+        .btn-add {
+            background: linear-gradient(135deg, var(--success-color) 0%, #05b388 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(6, 214, 160, 0.2);
+        }
+        
+        .btn-add:hover {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 123, 37, 0.25);
+        }
+        
+        .btn-light-blue {
+            background-color: #e3f2fd;
+            color: var(--primary-blue);
+            border: 1px solid #bbdefb;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-light-blue:hover {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+        
+        .filter-card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            border-top: 4px solid var(--primary-orange);
+        }
+        
+        .filter-card .card-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            font-weight: 700;
+            color: var(--primary-blue);
+            border-bottom: 2px solid #e9ecef;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+        }
+        
+        .stats-row {
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-right: 4px solid var(--primary-orange);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        
+        .stat-card.operations {
+            border-right-color: var(--primary-blue);
+        }
+        
+        .stat-card.marketing {
+            border-right-color: var(--purple-color);
+        }
+        
+        .stat-card.total {
+            border-right-color: var(--success-color);
+        }
+        
+        .stat-card.recurring {
+            border-right-color: var(--info-color);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-icon.operations { color: var(--primary-blue); }
+        .stat-icon.marketing { color: var(--purple-color); }
+        .stat-icon.total { color: var(--success-color); }
+        .stat-icon.recurring { color: var(--info-color); }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: var(--dark-text);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .stat-value small {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 400;
+        }
+        
+        .main-card {
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border-top: 4px solid var(--primary-blue);
+        }
+        
+        .main-card .card-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            font-weight: 700;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--primary-blue);
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.95rem;
+        }
+        
+        .table tbody td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 0.9rem;
+        }
+        
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(255, 123, 37, 0.05) 0%, rgba(67, 97, 238, 0.05) 100%);
+        }
+        
+        .kind-badge {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .kind-operations { 
+            background: linear-gradient(135deg, #d1ecf1 0%, #b8e2e8 100%);
+            color: #0c5460;
+            border: 1px solid #118ab2;
+        }
+        
+        .kind-marketing { 
+            background: linear-gradient(135deg, #e2d9f3 0%, #d6c8ec 100%);
+            color: #4b2c8a;
+            border: 1px solid #8a2be2;
+        }
+        
+        .recurring-badge {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .recurring-yes {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 1px solid #06d6a0;
+        }
+        
+        .recurring-no {
+            background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
+            color: #383d41;
+            border: 1px solid #9ca3af;
+        }
+        
+        .amount-value {
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .single-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .single-actions .btn {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-single-edit {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-single-edit:hover {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+        }
+        
+ 
+        
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+        }
+        
+        .form-label {
+            color: var(--primary-blue);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            width: 100%;
+        }
+        
+        .btn-search:hover {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff6b1a 100%);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .mobile-coasts {
+            display: none;
+        }
+        
+        .mobile-coast-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            border-right: 4px solid var(--primary-orange);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-coast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .mobile-coast-date {
+            color: var(--primary-orange);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-coast-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+        
+        .mobile-coast-label {
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .mobile-coast-value {
+            color: var(--dark-text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f1f1;
+            justify-content: center;
+        }
+        
+        .pagination .page-link {
+            color: var(--primary-blue);
+            border: 1px solid #dee2e6;
+            margin: 0 2px;
+            border-radius: 6px;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #3a56d4 100%);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #f8f9fa;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: var(--light-bg);
+            border-color: var(--primary-blue);
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-table {
+                display: none;
+            }
+            
+            .mobile-coasts {
+                display: block;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stat-card {
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-coasts {
+                display: none;
+            }
+            
+            .desktop-table {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header text-center">
+        <div class="container">
+            <h1>إدارة التكاليف</h1>
+            <div class="header-actions">
+                <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
+                    <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
+                </a>
+                <a href="{% url 'add_coast' menu_id %}" class="btn btn-add">
+                    <i class="fas fa-plus-circle me-1"></i> إضافة تكلفة جديدة
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        
+
+        <div class="card filter-card">
+            <div class="card-header">
+                <i class="fas fa-filter me-2"></i> تصفية التكاليف
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'manage_coast' menu_id %}">
+                    {% csrf_token %}
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label for="date" class="form-label">التاريخ</label>
+                            <input type="date" class="form-control" id="date" name="date" value="{{ request.POST.date }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="coast_kind" class="form-label">نوع التكلفة</label>
+                            <select class="form-select" id="coast_kind" name="coast_kind">
+                                {% for value, label in coast_kind_choices %}
+                                <option value="{{ value }}" {% if request.POST.coast_kind == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-search">
+                                <i class="fas fa-search me-1"></i> بحث
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card main-card">
+            <div class="card-header">
+                قائمة التكاليف
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container desktop-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>نوع التكلفة</th>
+                                    <th>المبلغ</th>
+                                    <th>النوع</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for coast in coasts %}
+                                <tr>
+                                    <td>{{ coast.created_at|date:"Y-m-d" }}</td>
+                                    <td>
+                                        <span class="kind-badge kind-{% if coast.coast_kind == 'Operations' %}operations{% else %}marketing{% endif %}">
+                                            <i class="fas {% if coast.coast_kind == 'Operations' %}fa-cogs{% else %}fa-chart-line{% endif %} me-1"></i>
+                                            {% if coast.coast_kind == 'Operations' %}عمليات{% else %}تسويق ومبيعات{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="amount-value">{{ coast.amount|floatformat:2 }} د.ل</td>
+                                    <td>
+                                        <span class="recurring-badge {% if coast.recurring %}recurring-yes{% else %}recurring-no{% endif %}">
+                                            <i class="fas {% if coast.recurring %}fa-redo-alt{% else %}fa-stop{% endif %} me-1"></i>
+                                            {% if coast.recurring %}متكررة{% else %}لمرة واحدة{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="single-actions">
+                                            <a href="{% url 'edit_coast' coast.id %}" class="btn btn-single-edit" title="تعديل التكلفة">
+                                                <i class="bi bi-pencil-fill"></i> تعديل
+                                            </a>
+                                            <a href="{% url 'delete_coast' coast.id %}" class="btn btn-single-edit">
+                                                <i class="bi bi-trush"></i> 
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <i class="fas fa-coins"></i>
+                                            <h5>لا توجد تكاليف</h5>
+                                            <p class="text-muted">لم يتم العثور على أي تكاليف تطابق معايير البحث</p>
+                                            <a href="{% url 'add_coast' menu_id %}" class="btn btn-add mt-3">
+                                                <i class="fas fa-plus-circle me-1"></i> إضافة أول تكلفة
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mobile-coasts p-3">
+                    {% for coast in coasts %}
+                    <div class="mobile-coast-card">
+                        <div class="mobile-coast-header">
+                            <div class="mobile-coast-date">
+                                <i class="fas fa-calendar me-1"></i> {{ coast.created_at|date:"Y-m-d" }}
+                            </div>
+                            <div>
+                                <span class="kind-badge kind-{% if coast.coast_kind == 'Operations' %}operations{% else %}marketing{% endif %}">
+                                    <i class="fas {% if coast.coast_kind == 'Operations' %}fa-cogs{% else %}fa-chart-line{% endif %} me-1"></i>
+                                    {% if coast.coast_kind == 'Operations' %}عمليات{% else %}تسويق{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-coast-detail">
+                            <span class="mobile-coast-label">المبلغ:</span>
+                            <span class="mobile-coast-value amount-value">{{ coast.amount|floatformat:2 }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-coast-detail">
+                            <span class="mobile-coast-label">النوع:</span>
+                            <span class="mobile-coast-value">
+                                <span class="recurring-badge {% if coast.recurring %}recurring-yes{% else %}recurring-no{% endif %}">
+                                    <i class="fas {% if coast.recurring %}fa-redo-alt{% else %}fa-stop{% endif %} me-1"></i>
+                                    {% if coast.recurring %}متكررة{% else %}لمرة واحدة{% endif %}
+                                </span>
+                            </span>
+                        </div>
+                        
+                        <div class="mobile-actions">
+                            <a href="{% url 'edit_coast' coast.id %}" class="btn btn-single-edit">
+                                <i class="bi bi-pencil-fill"></i> تعديل
+                            </a>
+                            <a href="{% url 'delete_coast' coast.id %}" class="btn btn-single-edit">
+                                <i class="bi bi-trush"></i> 
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-coins"></i>
+                        <h5>لا توجد تكاليف</h5>
+                        <p class="text-muted">لم يتم العثور على أي تكاليف</p>
+                        <a href="{% url 'add_coast' menu_id %}" class="btn btn-add mt-3">
+                            <i class="fas fa-plus-circle me-1"></i> إضافة أول تكلفة
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% if coasts.has_other_pages %}
+        <div class="row mt-4">
+            <div class="col">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if coasts.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ coasts.previous_page_number }}" aria-label="Previous">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="First">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for i in coasts.paginator.page_range %}
+                            {% if coasts.number == i %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ i }}</span>
+                                </li>
+                            {% elif i > coasts.number|add:'-3' and i < coasts.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if coasts.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ coasts.next_page_number }}" aria-label="Next">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ coasts.paginator.num_pages }}" aria-label="Last">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Last">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn-add, .btn-edit, .btn-single-edit, .btn-search');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

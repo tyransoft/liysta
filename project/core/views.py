@@ -1176,6 +1176,8 @@ def edit_customer_data(request):
     except Exception as e:
         messages.error(request, f'حدث خطأ: {str(e)}')
         return redirect('customer_dashboard')
+    
+
 
 @login_required
 def edit_menu(request, menu_id):
@@ -1205,7 +1207,7 @@ def edit_menu(request, menu_id):
         'menu': menu
     }
 
-    
+
     return render(request, 'edite_menu.html', context)
 
 
@@ -1286,10 +1288,12 @@ def customer_dashboard(request):
                 F('sales_total'),
                 output_field=DecimalField()
             )
+
             profit_exp = ExpressionWrapper(
                 F('profit_total'),
                 output_field=DecimalField()
             )
+
             charge_exp = ExpressionWrapper(
                 F('company_delivery_charge'),
                 output_field=DecimalField()
@@ -1350,7 +1354,7 @@ def customer_dashboard(request):
                  quantity=Sum('quantity'),
                  orders=Count('order',distinct=True)
              ).order_by('-quantity')[:5]
-            
+                        
             general_products=OrderItem.objects.filter(menu=menu).values('product__name').annotate(
                  quantity=Sum('quantity'),
                  orders=Count('order',distinct=True)
@@ -1394,7 +1398,301 @@ def customer_dashboard(request):
         return redirect('/')
     except Subscription.DoesNotExist:
         return redirect('/')
-    
+
+
+
+@login_required
+def reports_dashboard(request):
+    try:
+        customer = Customer.objects.get(user=request.user)
+        menu = Menu.objects.get(customer=customer)
+        
+        selected_year = request.GET.get('year', timezone.now().year)
+        selected_month = request.GET.get('month', '')
+        
+        try:
+            selected_year = int(selected_year)
+        except ValueError:
+            selected_year = timezone.now().year
+        
+        date_filter = {}
+        if selected_month:
+            try:
+                selected_month = int(selected_month)
+                if 1 <= selected_month <= 12:
+                    date_filter = {
+                        'created_at__year': selected_year,
+                        'created_at__month': selected_month
+                    }
+                else:
+                    selected_month = ''
+                    date_filter = {'created_at__year': selected_year}
+            except ValueError:
+                selected_month = ''
+                date_filter = {'created_at__year': selected_year}
+        else:
+            date_filter = {'created_at__year': selected_year}
+        
+        total_visits = MenuStatistics.objects.filter(menu=menu).aggregate(total=Sum('visits_count'))['total'] or 0
+        products = Products.objects.filter(menu=menu)
+        cities = City.objects.filter(menu=menu)
+        cpds = CPDiscount.objects.filter(menu=menu)
+        
+        coasts = CustomerCoasts.objects.filter(menu=menu)
+        
+        if selected_month:
+            coasts_filtered = coasts.filter(
+                created_at__year=selected_year,
+                created_at__month=selected_month
+            )
+        else:
+            coasts_filtered = coasts.filter(created_at__year=selected_year)
+        
+        total_operations_coasts = coasts_filtered.filter(coast_kind='Operations').aggregate(total=Sum('amount'))['total'] or 0
+        total_marketing_coasts = coasts_filtered.filter(coast_kind='Marketing&sells').aggregate(total=Sum('amount'))['total'] or 0
+        total_coasts = total_operations_coasts + total_marketing_coasts
+        
+        recurring_coasts = coasts.filter(recurring=True)
+        if selected_month:
+            recurring_monthly = recurring_coasts.aggregate(total=Sum('amount'))['total'] or 0
+        else:
+            recurring_monthly_total = recurring_coasts.aggregate(total=Sum('amount'))['total'] or 0
+            recurring_monthly = recurring_monthly_total * 12
+        
+        all_orders = Order.objects.filter(menu=menu)
+        all_orders_count = all_orders.count()
+        
+        filtered_orders = Order.objects.filter(menu=menu, **date_filter)
+        
+        sales_exp = ExpressionWrapper(F('sales_total'), output_field=DecimalField())
+        profit_exp = ExpressionWrapper(F('profit_total'), output_field=DecimalField())
+        charge_exp = ExpressionWrapper(F('company_delivery_charge'), output_field=DecimalField())
+        
+        filtered_delivered = filtered_orders.filter(status='delivered')
+        
+        filtered_sales = filtered_delivered.aggregate(total=Sum(sales_exp))['total'] or 0
+        filtered_profit = filtered_delivered.aggregate(total=Sum(profit_exp))['total'] or 0
+        filtered_charge = filtered_delivered.aggregate(total=Sum(charge_exp))['total'] or 0
+        
+        all_delivered = Order.objects.filter(menu=menu, status='delivered')
+        
+        total_sales_all = all_delivered.aggregate(total=Sum(sales_exp))['total'] or 0
+        total_profit_all = all_delivered.aggregate(total=Sum(profit_exp))['total'] or 0
+        total_charge_all = all_delivered.aggregate(total=Sum(charge_exp))['total'] or 0
+        
+        net_profit = filtered_profit - total_coasts
+        
+        delivered_count = all_delivered.count()
+        returned_count = Order.objects.filter(menu=menu, status='returned').count()
+        canceled_count = Order.objects.filter(menu=menu, status='canceled').count()
+        pending_count = Order.objects.filter(menu=menu, status='pending').count()
+        indeliver_count = Order.objects.filter(menu=menu, status='indeliver').count()
+        
+        delivery_rate = (delivered_count / all_orders_count * 100) if all_orders_count > 0 else 0
+        return_rate = (returned_count / all_orders_count * 100) if all_orders_count > 0 else 0
+        cancellation_rate = (canceled_count / all_orders_count * 100) if all_orders_count > 0 else 0
+        
+        if selected_month and int(selected_month) > 1:
+            previous_month = int(selected_month) - 1
+            previous_year = selected_year
+            previous_period_sales = Order.objects.filter(
+                menu=menu,
+                status='delivered',
+                created_at__year=previous_year,
+                created_at__month=previous_month
+            ).aggregate(total=Sum(sales_exp))['total'] or 0
+        elif selected_month and int(selected_month) == 1:
+            previous_month = 12
+            previous_year = selected_year - 1
+            previous_period_sales = Order.objects.filter(
+                menu=menu,
+                status='delivered',
+                created_at__year=previous_year,
+                created_at__month=previous_month
+            ).aggregate(total=Sum(sales_exp))['total'] or 0
+        else:
+            previous_year = selected_year - 1
+            previous_period_sales = Order.objects.filter(
+                menu=menu,
+                status='delivered',
+                created_at__year=previous_year
+            ).aggregate(total=Sum(sales_exp))['total'] or 0
+        
+        if previous_period_sales > 0:
+            growth_rate = ((filtered_sales - previous_period_sales) / previous_period_sales) * 100
+        else:
+            growth_rate = 100 if filtered_sales > 0 else 0
+        
+        avg_order_value = filtered_sales / filtered_delivered.count() if filtered_delivered.count() > 0 else 0
+        
+        customer_acquisition_cost = total_marketing_coasts / filtered_delivered.count() if filtered_delivered.count() > 0 else 0
+        
+        profit_per_order = filtered_profit / filtered_delivered.count() if filtered_delivered.count() > 0 else 0
+        
+        conversion_rate = (filtered_delivered.count() / total_visits * 100) if total_visits > 0 else 0
+        
+        total_items_sold = OrderItem.objects.filter(
+            order__menu=menu,
+            order__status='delivered',
+            **date_filter
+        ).aggregate(total=Sum('quantity'))['total'] or 0
+        
+        items_per_order = total_items_sold / filtered_delivered.count() if filtered_delivered.count() > 0 else 0
+        
+        if filtered_sales > 0:
+            gross_profit_margin = (filtered_profit / filtered_sales) * 100
+            net_profit_margin = (net_profit / filtered_sales) * 100
+            coast_to_sales_ratio = (total_coasts / filtered_sales) * 100
+            charge_to_sales_ratio = (filtered_charge / filtered_sales) * 100
+        else:
+            gross_profit_margin = 0
+            net_profit_margin = 0
+            coast_to_sales_ratio = 0
+            charge_to_sales_ratio = 0
+        
+        avg_charge_per_order = filtered_charge / filtered_delivered.count() if filtered_delivered.count() > 0 else 0
+        
+        now = timezone.now()
+        current_year = now.year
+        
+        months_labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+        
+        monthly_sales = [0] * 12
+        monthly_profits = [0] * 12
+        monthly_coasts = [0] * 12
+        monthly_charges = [0] * 12
+        monthly_orders_count = [0] * 12
+        
+        sales_data = Order.objects.filter(
+            menu=menu,
+            created_at__year=selected_year,
+            status='delivered'
+        ).annotate(
+            month=ExtractMonth('created_at')
+        ).values('month').annotate(
+            total_sales=Sum(sales_exp),
+            total_profit=Sum(profit_exp),
+            total_charge=Sum(charge_exp),
+            orders_count=Count('id')
+        ).order_by('month')
+        
+        for data in sales_data:
+            month_index = data['month'] - 1
+            monthly_sales[month_index] = float(data['total_sales'] or 0)
+            monthly_profits[month_index] = float(data['total_profit'] or 0)
+            monthly_charges[month_index] = float(data['total_charge'] or 0)
+            monthly_orders_count[month_index] = data['orders_count'] or 0
+        
+        monthly_coasts_data = CustomerCoasts.objects.filter(
+            menu=menu,
+            created_at__year=selected_year
+        ).annotate(
+            month=ExtractMonth('created_at')
+        ).values('month').annotate(
+            total_coasts=Sum('amount')
+        ).order_by('month')
+        
+        for data in monthly_coasts_data:
+            month_index = data['month'] - 1
+            monthly_coasts[month_index] = float(data['total_coasts'] or 0)
+        
+        current_month_products = OrderItem.objects.filter(
+            order__menu=menu,
+            order__created_at__month=now.month,
+            order__created_at__year=now.year,
+            order__status='delivered'
+        ).values('product__name').annotate(
+            quantity=Sum('quantity'),
+            revenue=Sum(F('price') * F('quantity')),
+            orders_count=Count('order', distinct=True)
+        ).order_by('-quantity')[:10]
+        
+        all_time_products = OrderItem.objects.filter(
+            order__menu=menu,
+            order__status='delivered'
+        ).values('product__name').annotate(
+            quantity=Sum('quantity'),
+            revenue=Sum(F('price') * F('quantity')),
+            orders_count=Count('order', distinct=True)
+        ).order_by('-quantity')[:10]
+        
+        available_years = []
+        years = Order.objects.filter(menu=menu).dates('created_at', 'year')
+        available_years = sorted(set([d.year for d in years]), reverse=True)
+        
+        if not available_years:
+            available_years = [timezone.now().year]
+        
+        context = {
+            'customer': customer,
+            'menu': menu,
+            'products_count': products.count(),
+            'cities_count': cities.count(),
+            'cpds_count': cpds.count(),
+            'total_visits': total_visits,
+            
+            'total_operations_coasts': total_operations_coasts,
+            'total_marketing_coasts': total_marketing_coasts,
+            'total_coasts': total_coasts,
+            'recurring_monthly_coasts': recurring_monthly,
+            
+            'selected_year': selected_year,
+            'selected_month': selected_month,
+            'available_years': available_years,
+            
+            'all_orders_count': all_orders_count,
+            'delivered_count': delivered_count,
+            'returned_count': returned_count,
+            'canceled_count': canceled_count,
+            'pending_count': pending_count,
+            'indeliver_count': indeliver_count,
+            
+            'delivery_rate': delivery_rate,
+            'return_rate': return_rate,
+            'cancellation_rate': cancellation_rate,
+            
+            'filtered_sales': filtered_sales,
+            'filtered_profit': filtered_profit,
+            'filtered_charge': filtered_charge,
+            'total_sales_all': total_sales_all,
+            'total_profit_all': total_profit_all,
+            'total_charge_all': total_charge_all,
+            'net_profit': net_profit,
+            
+            'growth_rate': growth_rate,
+            'avg_order_value': avg_order_value,
+            'customer_acquisition_cost': customer_acquisition_cost,
+            'profit_per_order': profit_per_order,
+            'conversion_rate': conversion_rate,
+            'items_per_order': items_per_order,
+            'total_items_sold': total_items_sold,
+            
+            'gross_profit_margin': gross_profit_margin,
+            'net_profit_margin': net_profit_margin,
+            'coast_to_sales_ratio': coast_to_sales_ratio,
+            'charge_to_sales_ratio': charge_to_sales_ratio,
+            'avg_charge_per_order': avg_charge_per_order,
+            
+            'monthly_sales': json.dumps(monthly_sales),
+            'monthly_profits': json.dumps(monthly_profits),
+            'monthly_coasts': json.dumps(monthly_coasts),
+            'monthly_charges': json.dumps(monthly_charges),
+            'monthly_orders_count': json.dumps(monthly_orders_count),
+            'current_month_products': list(current_month_products),
+            'all_time_products': list(all_time_products),
+            'months_labels': json.dumps(months_labels),
+        }
+
+        return render(request, 'reports_dashboard.html', context)
+
+    except Customer.DoesNotExist:
+        messages.error(request, 'العميل غير موجود')
+        return redirect('home')
+    except Menu.DoesNotExist:
+        messages.error(request, 'القائمة غير موجودة')
+        return redirect('customer_dashboard')
+      
 def manege_order(request,menu_id):
     orders = Order.objects.filter(menu=menu_id).order_by('-created_at')
     
@@ -2337,9 +2635,11 @@ def darbasabil_callback(request):
     else:
       messages.error(request,"فشلت عملية الربط حاول مرة اخرى")
       return redirect('customer_dashboard')   
+    
 
 @login_required
 def darbasabil_settings(request):
+
     try:
        customer=Customer.objects.get(user=request.user)
        darb=DarbAsabilConnection.objects.get(customer=customer)
@@ -2407,6 +2707,7 @@ def disconnect_darbasabil(request):
 
 @login_required
 def dilver_darbasabil(request,order_id):
+
 
     try:
        customer=Customer.objects.get(user=request.user) 
@@ -2479,8 +2780,8 @@ def dilver_darbasabil(request,order_id):
           timeout=30
 
        )
-
-
+       
+       
        data=response.json()
 
        if response.status_code == 201:
@@ -2494,8 +2795,7 @@ def dilver_darbasabil(request,order_id):
          messages.error(request,'لم يتم شحن الطلبية حاول مرة  اخرى') 
 
          return redirect('customer_dashboard')     
-    
-    
+  
     except DarbAsabilConnection.DoesNotExist:
       messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
       return redirect('customer_dashboard') 
@@ -2660,4 +2960,116 @@ def calucate_delivery_price(request):
             'success': False,
             'error': str(e)
         })
+
+
+
+
+@login_required
+def add_coast(request, menu_id):
+   
+    menu = get_object_or_404(Menu, id=menu_id)
+    
+    if request.user != menu.customer.user:
+        messages.error(request, 'لا تملك صلاحية الوصول إلى هذه القائمة.')
+        return redirect('customer_dashboard')
+    
+    if request.method == 'POST':
+        form = CustomerCoastForm(request.POST)
+        
+        if form.is_valid():
+            coast = form.save(commit=False)
+            coast.menu = menu
+            coast.save()
+            
+            messages.success(request, f' تم إضافة تكلفة جديدة بمبلغ {coast.amount} د.ل')
+            return redirect('coast_list', menu_id=menu.id)
+    else:
+        form = CustomerCoastForm()
+    
+    return render(request, 'create_coast.html', {
+        'form': form,
+        'menu': menu
+    })
+
+
+@login_required
+def edit_coast(request, coast_id):
+    coast = get_object_or_404(CustomerCoasts, id=coast_id)
+    menu = coast.menu
+    
+    if request.user != menu.customer.user:
+        messages.error(request, 'لا تملك صلاحية تعديل هذه التكلفة.')
+        return redirect('customer_dashboard')
+    
+    if request.method == 'POST':
+        form = CustomerCoastForm(request.POST, instance=coast)
+        
+        if form.is_valid():
+            updated_coast = form.save()
+            
+            messages.success(request, f' تم تحديث التكلفة بمبلغ {updated_coast.amount} د.ل')
+            return redirect('coast_list', menu_id=menu.id)
+    else:
+        form = CustomerCoastForm(instance=coast)
+    
+    return render(request, 'edit_coast.html', {
+        'form': form,
+        'coast': coast,
+        'menu': menu
+    })
+
+def manege_coast(request,menu_id):
+    coasts=CustomerCoasts.objects.filter(menu=menu_id).order_by('-created_at')
+    
+    if request.method == 'POST':
+        month = request.POST.get('month')
+        year = request.POST.get('year')
+        kind = request.POST.get('kind')
+        
+        filters = {'menu': menu_id}
+        
+        if month:
+            filters['month'] = month
+        
+        if year:
+            filters['year'] = year 
+        
+        if kind:
+            filters['coast_kind'] = kind 
+           
+        
+    coasts=CustomerCoasts.objects.filter(**filters).order_by('-created_at')
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(coasts,15)
+  
+    try:
+        coasts_page = paginator.page(page)
+    except PageNotAnInteger:
+        coasts_page = paginator.page(1)
+    except EmptyPage:
+        coasts_page = paginator.page(paginator.num_pages)
+    
+    context = {
+        'coasts': coasts_page,
+        'menu_id': menu_id,
+        'status_choices': Order.STATUS_CHOICES,
+        'paginator': paginator,
+    }
+
+
+    return render(request, 'manege_coast.html', context)
+
+
+@login_required
+def delete_coast(request, coast_id):
+    if request.method == 'POST':
+
+      coast = CustomerCoasts.objects.get(id=coast_id)
+      coast.delete()
+     
+      return redirect('customer_dashboard')
+        
+    return render(request, 'delete_product.html')
+
 
