@@ -561,7 +561,7 @@ class OrderItem(models.Model):
     color=models.CharField(max_length=30,null=True,blank=True)
     size=models.CharField(max_length=30,null=True,blank=True)
     def get_final_price(self):
-       return self.quantity * self.product.price
+       return self.quantity * self.product.get_discounted_price()
     def __str__(self):
         return f"طلب  - {self.product} * {self.quantity}"
     class Meta:
