@@ -1665,9 +1665,7 @@ def reports_dashboard(request):
         context = {
             'customer': customer,
             'menu': menu,
-            'products_count': products.count(),
-            'cities_count': cities.count(),
-            'cpds_count': cpds.count(),
+            
             'total_visits': total_visits,
             'filtered_visits': filtered_visits,
             
