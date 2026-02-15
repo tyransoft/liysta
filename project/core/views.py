@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -1533,7 +1535,7 @@ def reports_dashboard(request):
         
         if filtered_sales > 0:
             gross_profit_margin = (filtered_profit / filtered_sales) * 100
-            net_profit = float(filtered_profit) - float(total_coasts)
+            net_profit = Decimal(filtered_profit) - Decimal(total_coasts)
             net_profit_margin = (net_profit / filtered_sales) * 100
             coast_to_sales_ratio = (total_coasts / filtered_sales) * 100
             charge_to_sales_ratio = (filtered_charge / filtered_sales) * 100
