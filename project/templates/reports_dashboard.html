@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <style>
         :root {
@@ -50,6 +49,14 @@
             padding: 20px;
         }
 
+        .container-fluid {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
         .header {
             background: var(--primary-gradient);
             color: white;
@@ -69,12 +76,6 @@
             width: 200%;
             height: 200%;
             background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .header h1 {
@@ -165,7 +166,7 @@
         .stat-card.coasts::before { background: var(--warning-gradient); }
 
         .stat-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
 
@@ -233,7 +234,7 @@
         }
 
         .metric-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-md);
         }
 
@@ -432,6 +433,7 @@
         .section-tabs {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -493,59 +495,132 @@
             font-weight: 700;
         }
 
+        .btn-light {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            margin: 0 5px;
+        }
+
+        .btn-light:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .header h1 {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .metrics-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .percentage-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .coasts-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .stat-value {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             
             .chart-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
+            
+            .header .d-flex {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-light {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .percentage-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .coasts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .container-fluid {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card {
+            height: 100%;
+        }
+
+        .row {
+            margin-right: -10px;
+            margin-left: -10px;
+        }
+
+        .col-md-3 {
+            padding-right: 10px;
+            padding-left: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
-        <div class="header" data-aos="fade-down">
-            <div class="d-flex justify-content-between align-items-center">
+        <div class="header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <div>
                     <h1> التقارير الإحصائية</h1>
                     <p class="mb-0"><i class="fas fa-store me-2"></i> {{ customer.store_ar_name }} | <i class="fas fa-user me-2"></i> {{ customer.user.first_name }}</p>
                 </div>
-                <div> 
+                <div class="d-flex flex-wrap gap-2"> 
                     <a href="{% url 'customer_dashboard' %}" class="btn btn-light">
                         <i class="fas fa-arrow-right me-2"></i> العودة
                     </a>
-                
-                    <a href="{% url 'coast_list' menu.id %}" class="btn btn-light">
-                        <i class="me-2"></i>إدارة التكاليف
+                    <a href="{% url 'manage_coast' menu.id %}" class="btn btn-light">
+                        <i class="fas fa-file-invoice me-2"></i> إدارة التكاليف
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="filter-section" data-aos="fade-up">
+        <div class="filter-section">
             <form method="GET" action="{% url 'reports_dashboard' %}" class="row g-4">
                 <div class="col-md-5">
                     <label class="filter-label"><i class="fas fa-calendar-alt me-2"></i> السنة</label>
@@ -575,14 +650,14 @@
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn-filter">
-                        <i class="me-2"></i> تطبيق
+                        <i class="fas fa-filter me-2"></i> تطبيق
                     </button>
                 </div>
             </form>
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card sales" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-card sales">
                 <div class="stat-icon sales">
                     <i class="fas fa-chart-line"></i>
                 </div>
@@ -594,7 +669,7 @@
                 </div>
             </div>
 
-            <div class="stat-card profit" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-card profit">
                 <div class="stat-icon profit">
                     <i class="fas fa-coins"></i>
                 </div>
@@ -605,7 +680,7 @@
                 </div>
             </div>
 
-            <div class="stat-card net-profit" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-card net-profit">
                 <div class="stat-icon net-profit">
                     <i class="fas fa-hand-holding-usd"></i>
                 </div>
@@ -616,7 +691,7 @@
                 </div>
             </div>
 
-            <div class="stat-card coasts" data-aos="fade-up" data-aos-delay="400">
+            <div class="stat-card coasts">
                 <div class="stat-icon coasts">
                     <i class="fas fa-file-invoice"></i>
                 </div>
@@ -629,7 +704,7 @@
         </div>
 
         <div class="metrics-grid">
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="100">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
@@ -638,16 +713,16 @@
                 <small class="text-muted">د.ل</small>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-truck"></i>
                 </div>
                 <div class="metric-value">{{ customer_acquisition_cost|floatformat:0 }}</div>
-                <div class="metric-label">متوسط نكلفة جلب طلب</div>
+                <div class="metric-label">متوسط تكلفة جلب طلب</div>
                 <small class="text-muted">د.ل</small>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="300">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-chart-pie"></i>
                 </div>
@@ -656,7 +731,7 @@
                 <small class="text-muted">د.ل</small>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="400">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-shipping-fast" style="color: #f57c00;"></i>
                 </div>
@@ -665,7 +740,7 @@
                 <small class="text-muted">د.ل</small>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="500">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-percent" style="color: #f57c00;"></i>
                 </div>
@@ -673,16 +748,16 @@
                 <div class="metric-label">نسبة الشحن المضاف للمبيعات</div>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="600">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-box" style="color: #f57c00;"></i>
                 </div>
                 <div class="metric-value">{{ avg_charge_per_order|floatformat:1 }}</div>
-                <div class="metric-label">متوسط تكلفة شحن المضاف الطلب</div>
+                <div class="metric-label">متوسط تكلفة شحن المضاف للطلب</div>
                 <small class="text-muted">د.ل</small>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="700">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-boxes"></i>
                 </div>
@@ -691,7 +766,7 @@
                 <small class="text-muted">قطعة/طلب</small>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="800">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-percent"></i>
                 </div>
@@ -699,7 +774,7 @@
                 <div class="metric-label">نسبة التحويل</div>
             </div>
 
-            <div class="metric-card" data-aos="zoom-in" data-aos-delay="900">
+            <div class="metric-card">
                 <div class="metric-icon">
                     <i class="fas fa-cubes"></i>
                 </div>
@@ -709,25 +784,25 @@
         </div>
 
         <div class="percentage-grid">
-            <div class="percentage-card" data-aos="flip-right" data-aos-delay="100">
+            <div class="percentage-card">
                 <div class="percentage-value">{{ delivery_rate|floatformat:1 }}%</div>
                 <div class="percentage-label">نسبة التسليم</div>
                 <div class="percentage-desc">{{ filtered_delivered_count }} من {{ filtered_orders_count }} طلب</div>
             </div>
             
-            <div class="percentage-card" data-aos="flip-right" data-aos-delay="200">
+            <div class="percentage-card">
                 <div class="percentage-value">{{ return_rate|floatformat:1 }}%</div>
                 <div class="percentage-label">نسبة الرواجع</div>
                 <div class="percentage-desc">{{ filtered_returned_count }} طلب</div>
             </div>
             
-            <div class="percentage-card" data-aos="flip-right" data-aos-delay="300">
+            <div class="percentage-card">
                 <div class="percentage-value">{{ cancellation_rate|floatformat:1 }}%</div>
                 <div class="percentage-label">نسبة الإلغاء</div>
                 <div class="percentage-desc">{{ filtered_canceled_count }} طلب</div>
             </div>
             
-            <div class="percentage-card" data-aos="flip-right" data-aos-delay="400">
+            <div class="percentage-card">
                 <div class="percentage-value">{{ growth_rate|floatformat:1 }}%</div>
                 <div class="percentage-label">نسبة النمو</div>
                 <div class="percentage-desc">مقارنة بالفترة السابقة</div>
@@ -735,7 +810,7 @@
         </div>
 
         <div class="coasts-grid">
-            <div class="coast-card operations" data-aos="fade-up" data-aos-delay="100">
+            <div class="coast-card operations">
                 <div class="coast-icon">
                     <i class="fas fa-cogs" style="color: #1976d2;"></i>
                 </div>
@@ -744,7 +819,7 @@
                 <small>د.ل</small>
             </div>
             
-            <div class="coast-card marketing" data-aos="fade-up" data-aos-delay="200">
+            <div class="coast-card marketing">
                 <div class="coast-icon">
                     <i class="fas fa-chart-line" style="color: #7b1fa2;"></i>
                 </div>
@@ -753,7 +828,7 @@
                 <small>د.ل</small>
             </div>
             
-            <div class="coast-card recurring" data-aos="fade-up" data-aos-delay="300">
+            <div class="coast-card recurring">
                 <div class="coast-icon">
                     <i class="fas fa-redo-alt" style="color: #388e3c;"></i>
                 </div>
@@ -762,7 +837,7 @@
                 <small>د.ل/سنة</small>
             </div>
 
-            <div class="coast-card" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); border: 1px solid #f57c00;" data-aos="fade-up" data-aos-delay="400">
+            <div class="coast-card" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); border: 1px solid #f57c00;">
                 <div class="coast-icon">
                     <i class="fas fa-shipping-fast" style="color: #f57c00;"></i>
                 </div>
@@ -774,7 +849,7 @@
 
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card" data-aos="fade-up" data-aos-delay="100">
+                <div class="card">
                     <div class="card-body text-center">
                         <h3 class="text-primary mb-3"><i class="fas fa-hourglass-half"></i></h3>
                         <h2 class="mb-2">{{ pending_count_all }}</h2>
@@ -783,7 +858,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card" data-aos="fade-up" data-aos-delay="200">
+                <div class="card">
                     <div class="card-body text-center">
                         <h3 class="text-info mb-3"><i class="fas fa-truck"></i></h3>
                         <h2 class="mb-2">{{ indeliver_count_all }}</h2>
@@ -792,7 +867,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card" data-aos="fade-up" data-aos-delay="300">
+                <div class="card">
                     <div class="card-body text-center">
                         <h3 class="text-success mb-3"><i class="fas fa-check-circle"></i></h3>
                         <h2 class="mb-2">{{ delivered_count_all }}</h2>
@@ -801,7 +876,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card" data-aos="fade-up" data-aos-delay="400">
+                <div class="card">
                     <div class="card-body text-center">
                         <h3 class="text-danger mb-3"><i class="fas fa-times-circle"></i></h3>
                         <h2 class="mb-2">{{ canceled_count_all }}</h2>
@@ -811,7 +886,7 @@
             </div>
         </div>
 
-        <div class="chart-container" data-aos="fade-up">
+        <div class="chart-container">
             <div class="chart-header">
                 <div class="chart-title">
                     <i class="fas fa-chart-bar me-2" style="color: #f57c00;"></i>
@@ -839,10 +914,10 @@
             <canvas id="monthlyChart"></canvas>
         </div>
 
-        <div class="products-section" data-aos="fade-up">
+        <div class="products-section">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="me-2" style="color: #ffd700;"></i>
+                    <i class="fas fa-crown me-2" style="color: #ffd700;"></i>
                     أفضل المنتجات مبيعاً
                 </div>
                 <div class="section-tabs">
@@ -851,77 +926,76 @@
                 </div>
             </div>
 
-            <div id="period-products" class="products-tab-content">
-                <table class="products-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>المنتج</th>
-                            <th>الكمية</th>
-                            <th>الإيرادات</th>
-                            <th>الطلبات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in period_products %}
-                        <tr>
-                            <td><div class="product-rank">{{ forloop.counter }}</div></td>
-                            <td class="product-name">{{ product.product__name }}</td>
-                            <td class="product-stats">{{ product.quantity }}</td>
-                            <td class="product-stats">{{ product.revenue|floatformat:0 }} د.ل</td>
-                            <td>{{ product.orders_count }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center py-4">
-                                <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
-                                <p class="text-muted">لا توجد مبيعات في هذه الفترة</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            <div class="table-responsive">
+                <div id="period-products" class="products-tab-content">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>الإيرادات</th>
+                                <th>الطلبات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in period_products %}
+                            <tr>
+                                <td><div class="product-rank">{{ forloop.counter }}</div></td>
+                                <td class="product-name">{{ product.product__name }}</td>
+                                <td class="product-stats">{{ product.quantity }}</td>
+                                <td class="product-stats">{{ product.revenue|floatformat:0 }} د.ل</td>
+                                <td>{{ product.orders_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted">لا توجد مبيعات في هذه الفترة</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-            <div id="all-time-products" class="products-tab-content" style="display: none;">
-                <table class="products-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>المنتج</th>
-                            <th>الكمية</th>
-                            <th>الإيرادات</th>
-                            <th>الطلبات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in all_time_products %}
-                        <tr>
-                            <td><div class="product-rank">{{ forloop.counter }}</div></td>
-                            <td class="product-name">{{ product.product__name }}</td>
-                            <td class="product-stats">{{ product.quantity }}</td>
-                            <td class="product-stats">{{ product.revenue|floatformat:0 }} د.ل</td>
-                            <td>{{ product.orders_count }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center py-4">
-                                <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
-                                <p class="text-muted">لا توجد مبيعات</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div id="all-time-products" class="products-tab-content" style="display: none;">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>الإيرادات</th>
+                                <th>الطلبات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in all_time_products %}
+                            <tr>
+                                <td><div class="product-rank">{{ forloop.counter }}</div></td>
+                                <td class="product-name">{{ product.product__name }}</td>
+                                <td class="product-stats">{{ product.quantity }}</td>
+                                <td class="product-stats">{{ product.revenue|floatformat:0 }} د.ل</td>
+                                <td>{{ product.orders_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted">لا توجد مبيعات</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, once: true, offset: 50 });
-
         const monthlySales = {{ monthly_sales|safe }};
         const monthlyProfits = {{ monthly_profits|safe }};
         const monthlyCoasts = {{ monthly_coasts|safe }};
