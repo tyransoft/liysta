@@ -1423,38 +1423,42 @@ def reports_dashboard(request):
             except ValueError:
                 selected_month = ''
         
-        total_visits = MenuStatistics.objects.filter(menu=menu).aggregate(total=Sum('visits_count'))['total'] or 0
-        products = Products.objects.filter(menu=menu)
-        cities = City.objects.filter(menu=menu)
-        cpds = CPDiscount.objects.filter(menu=menu)
-        
-        coasts = CustomerCoasts.objects.filter(menu=menu)
-        
+        date_filter = {'created_at__year': selected_year}
         if selected_month:
-            coasts_filtered = coasts.filter(
-                created_at__year=selected_year,
-                created_at__month=selected_month
-            )
-        else:
-            coasts_filtered = coasts.filter(created_at__year=selected_year)
+            date_filter['created_at__month'] = selected_month
         
-        total_operations_coasts = coasts_filtered.filter(coast_kind='Operations').aggregate(total=Sum('amount'))['total'] or 0
-        total_marketing_coasts = coasts_filtered.filter(coast_kind='Marketing&sells').aggregate(total=Sum('amount'))['total'] or 0
+        coasts_filter = {'menu': menu}
+        if selected_month:
+            coasts_filter['created_at__year'] = selected_year
+            coasts_filter['created_at__month'] = selected_month
+        else:
+            coasts_filter['created_at__year'] = selected_year
+        
+        coasts = CustomerCoasts.objects.filter(**coasts_filter)
+        
+        total_operations_coasts = coasts.filter(coast_kind='Operations').aggregate(total=Sum('amount'))['total'] or 0
+        total_marketing_coasts = coasts.filter(coast_kind='Marketing&sells').aggregate(total=Sum('amount'))['total'] or 0
         total_coasts = total_operations_coasts + total_marketing_coasts
         
-        recurring_coasts = coasts.filter(recurring=True)
+        recurring_coasts = CustomerCoasts.objects.filter(menu=menu, recurring=True)
         if selected_month:
-            recurring_monthly = recurring_coasts.aggregate(total=Sum('amount'))['total'] or 0
+            recurring_monthly = recurring_coasts.filter(
+                created_at__year=selected_year,
+                created_at__month=selected_month
+            ).aggregate(total=Sum('amount'))['total'] or 0
         else:
-            recurring_monthly_total = recurring_coasts.aggregate(total=Sum('amount'))['total'] or 0
-            recurring_monthly = recurring_monthly_total * 12
+            recurring_monthly = recurring_coasts.filter(
+                created_at__year=selected_year
+            ).aggregate(total=Sum('amount'))['total'] or 0
         
         all_orders = Order.objects.filter(menu=menu)
         all_orders_count = all_orders.count()
         
-        date_filter = {'created_at__year': selected_year}
-        if selected_month:
-            date_filter['created_at__month'] = selected_month
+        delivered_count_all = all_orders.filter(status='delivered').count()
+        returned_count_all = all_orders.filter(status='returned').count()
+        canceled_count_all = all_orders.filter(status='canceled').count()
+        pending_count_all = all_orders.filter(status='pending').count()
+        indeliver_count_all = all_orders.filter(status='indeliver').count()
         
         filtered_orders = Order.objects.filter(menu=menu, **date_filter)
         
@@ -1463,68 +1467,56 @@ def reports_dashboard(request):
         charge_exp = ExpressionWrapper(F('company_delivery_charge'), output_field=DecimalField())
         
         filtered_delivered = filtered_orders.filter(status='delivered')
+        filtered_delivered_count = filtered_delivered.count()
         
         filtered_sales = filtered_delivered.aggregate(total=Sum(sales_exp))['total'] or 0
         filtered_profit = filtered_delivered.aggregate(total=Sum(profit_exp))['total'] or 0
         filtered_charge = filtered_delivered.aggregate(total=Sum(charge_exp))['total'] or 0
         
-        all_delivered = Order.objects.filter(menu=menu, status='delivered')
+        total_visits = MenuStatistics.objects.filter(menu=menu).aggregate(total=Sum('visits_count'))['total'] or 0
         
-        total_sales_all = all_delivered.aggregate(total=Sum(sales_exp))['total'] or 0
-        total_profit_all = all_delivered.aggregate(total=Sum(profit_exp))['total'] or 0
-        total_charge_all = all_delivered.aggregate(total=Sum(charge_exp))['total'] or 0
+        visits_filter = {'menu': menu}
+        if selected_month:
+            visits_filter['date__year'] = selected_year
+            visits_filter['date__month'] = selected_month
+        else:
+            visits_filter['date__year'] = selected_year
+        filtered_visits = MenuStatistics.objects.filter(**visits_filter).aggregate(total=Sum('visits_count'))['total'] or 0
         
-        net_profit = filtered_profit - total_coasts
+        delivery_rate = (filtered_delivered_count / filtered_orders.count() * 100) if filtered_orders.count() > 0 else 0
         
-        delivered_count = all_delivered.count()
-        returned_count = Order.objects.filter(menu=menu, status='returned').count()
-        canceled_count = Order.objects.filter(menu=menu, status='canceled').count()
-        pending_count = Order.objects.filter(menu=menu, status='pending').count()
-        indeliver_count = Order.objects.filter(menu=menu, status='indeliver').count()
+        filtered_returned = filtered_orders.filter(status='returned').count()
+        return_rate = (filtered_returned / filtered_orders.count() * 100) if filtered_orders.count() > 0 else 0
         
-        delivery_rate = (delivered_count / all_orders_count * 100) if all_orders_count > 0 else 0
-        return_rate = (returned_count / all_orders_count * 100) if all_orders_count > 0 else 0
-        cancellation_rate = (canceled_count / all_orders_count * 100) if all_orders_count > 0 else 0
+        filtered_canceled = filtered_orders.filter(status='canceled').count()
+        cancellation_rate = (filtered_canceled / filtered_orders.count() * 100) if filtered_orders.count() > 0 else 0
         
-        if selected_month and int(selected_month) > 1:
-            previous_month = int(selected_month) - 1
-            previous_year = selected_year
-            previous_period_sales = Order.objects.filter(
-                menu=menu,
-                status='delivered',
-                created_at__year=previous_year,
-                created_at__month=previous_month
-            ).aggregate(total=Sum(sales_exp))['total'] or 0
-        elif selected_month and int(selected_month) == 1:
-            previous_month = 12
-            previous_year = selected_year - 1
-            previous_period_sales = Order.objects.filter(
+        if selected_month:
+            previous_month = int(selected_month) - 1 if int(selected_month) > 1 else 12
+            previous_year = selected_year if int(selected_month) > 1 else selected_year - 1
+            
+            previous_sales = Order.objects.filter(
                 menu=menu,
                 status='delivered',
                 created_at__year=previous_year,
                 created_at__month=previous_month
             ).aggregate(total=Sum(sales_exp))['total'] or 0
         else:
-            previous_year = selected_year - 1
-            previous_period_sales = Order.objects.filter(
+            previous_sales = Order.objects.filter(
                 menu=menu,
                 status='delivered',
-                created_at__year=previous_year
+                created_at__year=selected_year - 1
             ).aggregate(total=Sum(sales_exp))['total'] or 0
         
-        if previous_period_sales > 0:
-            growth_rate = ((filtered_sales - previous_period_sales) / previous_period_sales) * 100
+        if previous_sales > 0:
+            growth_rate = ((filtered_sales - previous_sales) / previous_sales) * 100
         else:
             growth_rate = 100 if filtered_sales > 0 else 0
         
-        delivered_count_period = filtered_delivered.count()
-        avg_order_value = filtered_sales / delivered_count_period if delivered_count_period > 0 else 0
-        
-        customer_acquisition_cost = total_marketing_coasts / delivered_count_period if delivered_count_period > 0 else 0
-        
-        profit_per_order = filtered_profit / delivered_count_period if delivered_count_period > 0 else 0
-        
-        conversion_rate = (delivered_count_period / total_visits * 100) if total_visits > 0 else 0
+        avg_order_value = filtered_sales / filtered_delivered_count if filtered_delivered_count > 0 else 0
+        customer_acquisition_cost = total_marketing_coasts / filtered_delivered_count if filtered_delivered_count > 0 else 0
+        profit_per_order = filtered_profit / filtered_delivered_count if filtered_delivered_count > 0 else 0
+        avg_charge_per_order = filtered_charge / filtered_delivered_count if filtered_delivered_count > 0 else 0
         
         order_item_filter = {
             'order__menu': menu,
@@ -1537,24 +1529,20 @@ def reports_dashboard(request):
         order_items = OrderItem.objects.filter(**order_item_filter)
         
         total_items_sold = order_items.aggregate(total=Sum('quantity'))['total'] or 0
-        
-        items_per_order = total_items_sold / delivered_count_period if delivered_count_period > 0 else 0
+        items_per_order = total_items_sold / filtered_delivered_count if filtered_delivered_count > 0 else 0
         
         if filtered_sales > 0:
             gross_profit_margin = (filtered_profit / filtered_sales) * 100
+            net_profit = filtered_profit - total_coasts
             net_profit_margin = (net_profit / filtered_sales) * 100
             coast_to_sales_ratio = (total_coasts / filtered_sales) * 100
             charge_to_sales_ratio = (filtered_charge / filtered_sales) * 100
         else:
             gross_profit_margin = 0
+            net_profit = 0
             net_profit_margin = 0
             coast_to_sales_ratio = 0
             charge_to_sales_ratio = 0
-        
-        avg_charge_per_order = filtered_charge / delivered_count_period if delivered_count_period > 0 else 0
-        
-        now = timezone.now()
-        current_year = now.year
         
         months_labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
                         'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
@@ -1598,38 +1586,43 @@ def reports_dashboard(request):
             month_index = data['month'] - 1
             monthly_coasts[month_index] = float(data['total_coasts'] or 0)
         
-        current_month_products_data = OrderItem.objects.filter(
+        period_products_data = OrderItem.objects.filter(
             order__menu=menu,
-            order__created_at__month=now.month,
-            order__created_at__year=now.year,
-            order__status='delivered'
-        ).select_related('product')
+            order__status='delivered',
+            order__created_at__year=selected_year,
+        )
+        if selected_month:
+            period_products_data = period_products_data.filter(
+                order__created_at__month=selected_month
+            )
         
-        current_month_products = []
-        product_dict = {}
+        period_products_data = period_products_data.select_related('product')
         
-        for item in current_month_products_data:
+        period_products = []
+        product_dict_period = {}
+        
+        for item in period_products_data:
             product_name = item.product.name
-            if product_name not in product_dict:
-                product_dict[product_name] = {
+            if product_name not in product_dict_period:
+                product_dict_period[product_name] = {
                     'product__name': product_name,
                     'quantity': 0,
                     'revenue': 0,
                     'orders_count': 0
                 }
-            product_dict[product_name]['quantity'] += item.quantity
-            product_dict[product_name]['revenue'] += float(item.get_final_price())
-            product_dict[product_name]['orders_count'] += 1
+            product_dict_period[product_name]['quantity'] += item.quantity
+            product_dict_period[product_name]['revenue'] += float(item.get_final_price())
+            product_dict_period[product_name]['orders_count'] += 1
         
-        for product_name, data in product_dict.items():
-            current_month_products.append({
+        for product_name, data in product_dict_period.items():
+            period_products.append({
                 'product__name': data['product__name'],
                 'quantity': data['quantity'],
                 'revenue': data['revenue'],
                 'orders_count': data['orders_count']
             })
         
-        current_month_products = sorted(current_month_products, key=lambda x: x['quantity'], reverse=True)[:10]
+        period_products = sorted(period_products, key=lambda x: x['quantity'], reverse=True)[:10]
         
         all_time_products_data = OrderItem.objects.filter(
             order__menu=menu,
@@ -1676,6 +1669,7 @@ def reports_dashboard(request):
             'cities_count': cities.count(),
             'cpds_count': cpds.count(),
             'total_visits': total_visits,
+            'filtered_visits': filtered_visits,
             
             'total_operations_coasts': total_operations_coasts,
             'total_marketing_coasts': total_marketing_coasts,
@@ -1687,11 +1681,16 @@ def reports_dashboard(request):
             'available_years': available_years,
             
             'all_orders_count': all_orders_count,
-            'delivered_count': delivered_count,
-            'returned_count': returned_count,
-            'canceled_count': canceled_count,
-            'pending_count': pending_count,
-            'indeliver_count': indeliver_count,
+            'delivered_count_all': delivered_count_all,
+            'returned_count_all': returned_count_all,
+            'canceled_count_all': canceled_count_all,
+            'pending_count_all': pending_count_all,
+            'indeliver_count_all': indeliver_count_all,
+            
+            'filtered_orders_count': filtered_orders.count(),
+            'filtered_delivered_count': filtered_delivered_count,
+            'filtered_returned_count': filtered_returned,
+            'filtered_canceled_count': filtered_canceled,
             
             'delivery_rate': delivery_rate,
             'return_rate': return_rate,
@@ -1700,16 +1699,13 @@ def reports_dashboard(request):
             'filtered_sales': filtered_sales,
             'filtered_profit': filtered_profit,
             'filtered_charge': filtered_charge,
-            'total_sales_all': total_sales_all,
-            'total_profit_all': total_profit_all,
-            'total_charge_all': total_charge_all,
             'net_profit': net_profit,
             
             'growth_rate': growth_rate,
             'avg_order_value': avg_order_value,
             'customer_acquisition_cost': customer_acquisition_cost,
             'profit_per_order': profit_per_order,
-            'conversion_rate': conversion_rate,
+            'conversion_rate': (filtered_delivered_count / filtered_visits * 100) if filtered_visits > 0 else 0,
             'items_per_order': items_per_order,
             'total_items_sold': total_items_sold,
             
@@ -1724,13 +1720,13 @@ def reports_dashboard(request):
             'monthly_coasts': json.dumps(monthly_coasts),
             'monthly_charges': json.dumps(monthly_charges),
             'monthly_orders_count': json.dumps(monthly_orders_count),
-            'current_month_products': current_month_products,
+            
+            'period_products': period_products,  
             'all_time_products': all_time_products,
             'months_labels': json.dumps(months_labels),
         }
 
         return render(request, 'reports_dashboard.html', context)
-
 
     except Customer.DoesNotExist:
         messages.error(request, 'العميل غير موجود')
@@ -1738,7 +1734,6 @@ def reports_dashboard(request):
     except Menu.DoesNotExist:
         messages.error(request, 'القائمة غير موجودة')
         return redirect('customer_dashboard')
-
 
 def manege_order(request,menu_id):
     orders = Order.objects.filter(menu=menu_id).order_by('-created_at')
