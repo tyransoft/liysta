@@ -1534,7 +1534,8 @@ def reports_dashboard(request):
         total_items_sold = OrderItem.objects.filter(
             order__menu=menu,
             order__status='delivered',
-            **date_filter
+            order__created_at__year=selected_year,
+            **({'order__created_at__month': selected_month} if selected_month else {})
         ).aggregate(total=Sum('quantity'))['total'] or 0
         
         items_per_order = total_items_sold / filtered_delivered.count() if filtered_delivered.count() > 0 else 0
