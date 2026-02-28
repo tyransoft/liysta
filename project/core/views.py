@@ -2548,7 +2548,7 @@ def add_quantity(request,product_id):
           total_quantity=new_quantity + product.quantity    
           new_bought_price=total_coast / total_quantity if total_quantity else 0
           product.quantity = total_quantity
-          product.bought_price=new_bought_price
+          product.bought_price=round(new_bought_price)
           product.save() 
         messages.success(request,'تم اضاقة الكمية بنجاح.') 
         return redirect('storage', product.menu.id)   
