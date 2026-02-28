@@ -3095,7 +3095,7 @@ def manege_coast(request,menu_id):
     context = {
         'coasts': coasts_page,
         'menu_id': menu_id,
-        'status_choices': Order.STATUS_CHOICES,
+        'coast_choices': CustomerCoasts.KIND,
         'paginator': paginator,
     }
 

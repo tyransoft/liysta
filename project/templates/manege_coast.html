@@ -487,7 +487,7 @@
                         <div class="col-md-4">
                             <label for="coast_kind" class="form-label">نوع التكلفة</label>
                             <select class="form-select" id="coast_kind" name="coast_kind">
-                                {% for value, label in coast_kind_choices %}
+                                {% for value, label in coast_choices %}
                                 <option value="{{ value }}" {% if request.POST.coast_kind == value %}selected{% endif %}>{{ label }}</option>
                                 {% endfor %}
                             </select>
