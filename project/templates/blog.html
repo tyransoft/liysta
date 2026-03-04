@@ -1,212 +1,1208 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://Liysta.ly/blog/" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدونة Liysta - دليلك الشامل للنجاح في التجارة الإلكترونية. نصائح وحلول لإنشاء وإدارة متجرك الإلكتروني في ليبيا">
+    <meta name="keywords" content="مدونة, تجارة إلكترونية, متجر إلكتروني, ليبيا, تسويق, مبيعات, Liysta">
+    <meta name="author" content="Liysta">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="مدونة Liysta - دليلك للنجاح في التجارة الإلكترونية">
+    <meta property="og:description" content="نصائح وحلول عملية لإنشاء وتطوير متجرك الإلكتروني في ليبيا">
+    <meta property="og:image" content="https://Liysta.ly{% static 'img/fc.png' %}">
+    <meta property="og:url" content="https://Liysta.ly/blog/">
+    <meta property="og:type" content="website">
+    
+    <title>Liysta - المدونة الشاملة للتجارة الإلكترونية</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="canonical" href="https://Liysta.ly/blog/">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    
+    <!-- Schema.org markup for Blog -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "مدونة Liysta",
+        "description": "دليلك الشامل للنجاح في التجارة الإلكترونية - نصائح وحلول عملية للمتاجر الإلكترونية في ليبيا",
+        "url": "https://Liysta.ly/blog/",
+        "inLanguage": "ar",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Liysta",
+            "url": "https://Liysta.ly",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://Liysta.ly{% static 'img/fc.png' %}"
+            }
+        },
+        "blogPost": [
+            {
+                "@type": "BlogPosting",
+                "headline": "كيف تبدأ التجارة الإلكترونية من الصفر؟",
+                "description": "دليل شامل للمبتدئين خطوة بخطوة لبدء مشروعك الإلكتروني بنجاح",
+                "datePublished": "2026-03-04",
+                "dateModified": "2026-03-04",
+                "author": {
+                    "@type": "Organization",
+                    "name": "Liysta"
+                },
+                "url": "https://Liysta.ly/blog/how-to-start-ecommerce"
+            },
+            {
+                "@type": "BlogPosting",
+                "headline": "دليل Liysta الشامل للتسجيل والاستخدام",
+                "description": "كل ما تحتاج معرفته عن منصتنا وكيفية الاستفادة من جميع الميزات",
+                "datePublished": "2026-03-04",
+                "dateModified": "2026-03-04",
+                "author": {
+                    "@type": "Organization",
+                    "name": "Liysta"
+                },
+                "url": "https://Liysta.ly/blog/liysta-guide"
+            },
+            {
+                "@type": "BlogPosting",
+                "headline": "١٠ استراتيجيات لزيادة المبيعات ٢٠٢٦",
+                "description": "طرق مجربة لرفع أرباح متجرك الإلكتروني",
+                "datePublished": "2026-03-04",
+                "dateModified": "2026-03-04",
+                "author": {
+                    "@type": "Organization",
+                    "name": "Liysta"
+                },
+                "url": "https://Liysta.ly/blog/sales-strategies"
+            }
+        ]
+    }
+    </script>
 
-<title>مدونة Liysta - التجارة الإلكترونية</title>
+    <!-- Article Schema للمقالات الفردية -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "url": "https://Liysta.ly/blog/how-to-start-ecommerce",
+                "name": "كيف تبدأ التجارة الإلكترونية من الصفر؟"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "url": "https://Liysta.ly/blog/liysta-guide",
+                "name": "دليل Liysta الشامل للتسجيل والاستخدام"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "url": "https://Liysta.ly/blog/sales-strategies",
+                "name": "١٠ استراتيجيات لزيادة المبيعات ٢٠٢٦"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "url": "https://Liysta.ly/blog/order-management",
+                "name": "إدارة الطلبات والمخزون باحترافية"
+            },
+            {
+                "@type": "ListItem",
+                "position": 5,
+                "url": "https://Liysta.ly/blog/qr-code-marketing",
+                "name": "رموز QR في التسويق لمتجرك"
+            },
+            {
+                "@type": "ListItem",
+                "position": 6,
+                "url": "https://Liysta.ly/blog/shipping-guide",
+                "name": "التوصيل وإدارة الشحن"
+            },
+            {
+                "@type": "ListItem",
+                "position": 7,
+                "url": "https://Liysta.ly/blog/product-photography",
+                "name": "نصائح لتصوير المنتجات"
+            }
+        ]
+    }
+    </script>
 
-<style>
-body {
-    font-family: 'Cairo', sans-serif;
-    margin: 0;
-    background: #f5f7fa;
-}
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "الرئيسية",
+                "item": "https://Liysta.ly"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "المدونة",
+                "item": "https://Liysta.ly/blog/"
+            }
+        ]
+    }
+    </script>
 
-header {
-    background: #0f172a;
-    color: white;
-    padding: 30px;
-    text-align: center;
-}
+    <!-- Website Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Liysta",
+        "url": "https://Liysta.ly",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://Liysta.ly/search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    
+    <style>
+        :root {
+            --primary-blue: #4361ee;
+            --primary-orange: #ff7b25;
+            --success-color: #06d6a0;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3748;
+        }
 
-.container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 20px;
-}
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-.blog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
+        /* النافبار */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    cursor: pointer;
-    transition: 0.3s;
-}
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.card:hover {
-    transform: translateY(-5px);
-}
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-.card h3 {
-    margin-top: 0;
-}
+        .navbar-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
 
-#article-view {
-    display: none;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    margin-top: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
+        .navbar-links a:hover,
+        .navbar-links a.active {
+            background: var(--primary-blue);
+            color: white;
+        }
 
-.back-btn {
-    margin-bottom: 20px;
-    background: #0f172a;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 6px;
-}
-</style>
+        /* مسار التنقل */
+        .breadcrumb {
+            max-width: 1300px;
+            margin: 20px auto 0;
+            padding: 0 30px;
+        }
+        
+        .breadcrumb-container {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+        
+        .breadcrumb span {
+            color: var(--primary-orange);
+            font-weight: 500;
+        }
+        
+        .breadcrumb i {
+            color: #6c757d;
+            margin: 0 10px;
+            font-size: 0.8rem;
+        }
+
+        /* الحاوية الرئيسية */
+        .blog-wrapper {
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - 200px);
+            position: relative;
+        }
+
+        /* القائمة الجانبية الثابتة */
+        .blog-sidebar {
+            width: 350px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            padding: 30px 20px;
+            position: fixed;
+            right: 0;
+            top: 80px;
+            bottom: 0;
+            overflow-y: auto;
+            border-left: 1px solid #e9ecef;
+            z-index: 900;
+        }
+
+        .sidebar-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .sidebar-header h3 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h3 i {
+            color: var(--primary-orange);
+        }
+
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .article-link {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+            text-decoration: none;
+            display: block;
+        }
+
+        .article-link:hover {
+            background: white;
+            border-right-color: var(--primary-orange);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transform: translateX(-5px);
+        }
+
+        .article-link.active {
+            background: linear-gradient(135deg, var(--primary-blue), #3a56d4);
+            border-right-color: var(--primary-orange);
+        }
+
+        .article-link.active h4,
+        .article-link.active p {
+            color: white;
+        }
+
+        .article-link h4 {
+            font-size: 1rem;
+            margin: 0 0 5px 0;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .article-link h4 i {
+            color: var(--primary-orange);
+            font-size: 0.9rem;
+        }
+
+        .article-link.active h4 i {
+            color: white;
+        }
+
+        .article-link p {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin: 0;
+            padding-right: 22px;
+        }
+
+        .article-link.active p {
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* منطقة المحتوى الرئيسي */
+        .blog-content {
+            flex: 1;
+            margin-right: 350px;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            min-height: calc(100vh - 80px);
+        }
+
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-blue);
+        }
+
+        /* المقالات مع Schema */
+        .blog-article {
+            display: none;
+        }
+
+        .blog-article.active {
+            display: block;
+        }
+
+        .article-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .article-header h2 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .article-meta i {
+            color: var(--primary-orange);
+            margin-left: 5px;
+        }
+
+        .article-body {
+            line-height: 1.8;
+        }
+
+        .article-body h3 {
+            color: var(--primary-blue);
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+        }
+
+        .article-body h4 {
+            color: var(--dark-text);
+            font-size: 1.2rem;
+            margin: 25px 0 10px;
+        }
+
+        .article-body p {
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .article-body ul, 
+        .article-body ol {
+            margin: 20px 0;
+            padding-right: 25px;
+        }
+
+        .article-body li {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        .article-body li::marker {
+            color: var(--primary-orange);
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-right: 4px solid var(--primary-orange);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .info-box i {
+            color: var(--primary-orange);
+            margin-left: 10px;
+        }
+
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-mini {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-mini .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .stat-mini .label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .btn-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-blue), #3a56d4);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-blog:hover {
+            background: linear-gradient(135deg, var(--primary-orange), #ff6b1a);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 123, 37, 0.3);
+        }
+
+        /* شريط التمرير المخصص */
+        .blog-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .blog-sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .blog-sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary-orange);
+            border-radius: 3px;
+        }
+
+        .blog-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-blue);
+        }
+
+        /* الفوتر */
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 30px 30px;
+            margin-right: 350px;
+        }
+
+        .footer-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-orange);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 992px) {
+            .blog-sidebar {
+                width: 280px;
+            }
+            
+            .blog-content {
+                margin-right: 280px;
+                padding: 20px;
+            }
+            
+            .footer {
+                margin-right: 280px;
+            }
+            
+            .content-container {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .blog-wrapper {
+                flex-direction: column;
+            }
+            
+            .blog-sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                top: 0;
+                border-left: none;
+                border-bottom: 1px solid #e9ecef;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+            
+            .blog-content {
+                margin-right: 0;
+                padding: 15px;
+            }
+            
+            .footer {
+                margin-right: 0;
+            }
+            
+            .articles-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-<header>
-    <h1>مدونة Liysta</h1>
-    <p>دليلك الكامل للنجاح في التجارة الإلكترونية</p>
-</header>
-
-<div class="container">
-
-    <div id="blog-list" class="blog-grid">
-
-        <div class="card" onclick="openArticle('a1')">
-            <h3>كيف تبدأ التجارة الإلكترونية من الصفر؟</h3>
-            <p>خطوات عملية لبدء مشروعك الإلكتروني بنجاح.</p>
+    <!-- النافبار -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-text">Liysta</span>
+            </div>
+            
+            <ul class="navbar-links">
+                <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{% url 'plan_list' %}"><i class="fas fa-list"></i> الباقات</a></li>
+                <li><a href="{% url 'how-it-works' %}"><i class="fas fa-play-circle"></i> كيف يعمل</a></li>
+                <li><a href="{% url 'blog' %}" class="active"><i class="fas fa-blog"></i> المدونة</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <div class="card" onclick="openArticle('a2')">
-            <h3>كيفية الاشتراك في Liysta بالتفصيل</h3>
-            <p>تعرف على خطوات التسجيل والباقات والتجربة المجانية.</p>
+    <!-- مسار التنقل (Breadcrumbs) -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a>
+            <i class="fas fa-chevron-left"></i>
+            <span><i class="fas fa-blog"></i> المدونة</span>
         </div>
-
-        <div class="card" onclick="openArticle('a3')">
-            <h3>أفضل طريقة لإدارة متجر إلكتروني</h3>
-            <p>نصائح عملية لزيادة المبيعات وتنظيم الطلبات.</p>
-        </div>
-
-        <div class="card" onclick="openArticle('a4')">
-            <h3>أخطاء يقع فيها أصحاب المتاجر الجدد</h3>
-            <p>تجنب هذه الأخطاء لتنجح بسرعة.</p>
-        </div>
-
-        <div class="card" onclick="openArticle('a5')">
-            <h3>لماذا المتجر الإلكتروني أفضل من صفحة فيسبوك؟</h3>
-            <p>مقارنة مهمة لكل تاجر مبتدئ.</p>
-        </div>
-
-        <div class="card" onclick="openArticle('a6')">
-            <h3>كيف تزيد مبيعات متجرك الإلكتروني؟</h3>
-            <p>استراتيجيات عملية لرفع الأرباح.</p>
-        </div>
-
     </div>
 
-    <div id="article-view">
-        <button class="back-btn" onclick="backToList()">الرجوع للمقالات</button>
-        <div id="article-content"></div>
+    <!-- الحاوية الرئيسية -->
+    <div class="blog-wrapper">
+        <!-- القائمة الجانبية -->
+        <aside class="blog-sidebar">
+            <div class="sidebar-header">
+                <h3>
+                    <i class="fas fa-newspaper"></i>
+                    جميع المقالات
+                </h3>
+            </div>
+            
+            <div class="articles-list">
+                <a class="article-link active" onclick="showArticle(1)">
+                    <h4><i class="fas fa-rocket"></i> كيف تبدأ التجارة الإلكترونية؟</h4>
+                    <p>دليل شامل للمبتدئين - 15 دقيقة</p>
+                </a>
+                
+                <a class="article-link" onclick="showArticle(2)">
+                    <h4><i class="fas fa-star"></i> دليل Liysta الشامل</h4>
+                    <p>التسجيل والاستخدام - 10 دقائق</p>
+                </a>
+                
+                <a class="article-link" onclick="showArticle(3)">
+                    <h4><i class="fas fa-chart-line"></i> زيادة المبيعات 2026</h4>
+                    <p>10 استراتيجيات فعالة - 12 دقيقة</p>
+                </a>
+                
+                <a class="article-link" onclick="showArticle(4)">
+                    <h4><i class="fas fa-shopping-cart"></i> إدارة الطلبات والمخزون</h4>
+                    <p>نظام متكامل لمتجرك - 8 دقائق</p>
+                </a>
+                
+                <a class="article-link" onclick="showArticle(5)">
+                    <h4><i class="fas fa-qrcode"></i> رموز QR في التسويق</h4>
+                    <p>كيف تضاعف مبيعاتك - 6 دقائق</p>
+                </a>
+
+                <a class="article-link" onclick="showArticle(6)">
+                    <h4><i class="fas fa-truck"></i> التوصيل وإدارة الشحن</h4>
+                    <p>طرق وأسعار التوصيل - 7 دقائق</p>
+                </a>
+
+                <a class="article-link" onclick="showArticle(7)">
+                    <h4><i class="fas fa-camera"></i> تصوير المنتجات</h4>
+                    <p>نصائح لصور احترافية - 5 دقائق</p>
+                </a>
+            </div>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="blog-content">
+            <div class="content-container">
+                <!-- المقال 1 مع Schema -->
+                <div id="article-1" class="blog-article active" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/how-to-start-ecommerce">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    <meta itemprop="dateModified" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">كيف تبدأ التجارة الإلكترونية من الصفر؟</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 15 دقيقة قراءة</span>
+                            <span><i class="far fa-eye"></i> 2.5k مشاهدة</span>
+                        </div>
+                        <meta itemprop="description" content="دليل شامل للمبتدئين خطوة بخطوة لبدء مشروعك الإلكتروني بنجاح">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <div class="info-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>معلومة مهمة:</strong> أكثر من 70% من المتاجر الناجحة بدأت بمنتج واحد فقط!
+                        </div>
+                        
+                        <h3>١. اختيار المنتج المناسب</h3>
+                        <p>اختيار المنتج هو أهم خطوة. ابحث عن منتج:</p>
+                        <ul>
+                            <li>مطلوب في السوق الليبي (استخدم جوجل تريندز)</li>
+                            <li>هامش ربح جيد (40% فأكثر)</li>
+                            <li>سهل الشحن والتخزين</li>
+                            <li>متوفر باستمرار من الموردين</li>
+                        </ul>
+
+                        <div class="stats-mini">
+                            <div class="stat-mini">
+                                <div class="number">+40%</div>
+                                <div class="label">هامش ربح</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="number">10K</div>
+                                <div class="label">متجر في ليبيا</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="number">80%</div>
+                                <div class="label">مشتريات عبر الجوال</div>
+                            </div>
+                        </div>
+                        
+                        <h3>٢. دراسة السوق والمنافسين</h3>
+                        <p>قبل البدء، ادرس السوق جيداً:</p>
+                        <ul>
+                            <li>تابع المنافسين في مجالك</li>
+                            <li>حلل أسعارهم وعروضهم</li>
+                            <li>اقرأ تقييمات عملائهم</li>
+                            <li>حدد نقاط ضعفهم لتتفوق عليها</li>
+                        </ul>
+                        
+                        <h3>٣. إنشاء متجر احترافي مع Liysta</h3>
+                        <p>مع Liysta، يمكنك إنشاء متجرك في دقائق:</p>
+                        <ol>
+                            <li>سجل حساب مجاني (14 يوم تجربة)</li>
+                            <li>اختر قالب متجرك المفضل</li>
+                            <li>أضف منتجاتك بالصور والأسعار</li>
+                            <li>حدد طرق التوصيل والدفع</li>
+                            <li>شارك رابط متجرك مع العملاء</li>
+                        </ol>
+                        
+                        <div class="info-box">
+                            <i class="fas fa-gift"></i>
+                            <strong>عرض خاص:</strong> اشترك الآن واحصل على 14 يوم تجربة مجانية بدون بطاقة ائتمان
+                        </div>
+                        
+                        <a href="{% url 'register-customer' %}" class="btn-blog">
+                            <i class="fas fa-rocket"></i> ابدأ متجرك الآن مجاناً
+                        </a>
+                    </div>
+                    
+                    <div itemprop="author" itemscope itemtype="https://schema.org/Organization" style="display: none;">
+                        <meta itemprop="name" content="Liysta">
+                    </div>
+                    
+                    <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization" style="display: none;">
+                        <meta itemprop="name" content="Liysta">
+                        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+                            <meta itemprop="url" content="https://Liysta.ly{% static 'img/fc.png' %}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المقال 2 مع Schema -->
+                <div id="article-2" class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/liysta-guide">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">دليل Liysta الشامل للتسجيل والاستخدام</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 10 دقائق</span>
+                        </div>
+                        <meta itemprop="description" content="كل ما تحتاج معرفته عن منصتنا وكيفية الاستفادة من جميع الميزات">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <h3>خطوات التسجيل</h3>
+                        <ol>
+                            <li>ادخل على الموقع liysta.ly</li>
+                            <li>اضغط على "إنشاء حساب" في الأعلى</li>
+                            <li>أدخل بريدك الإلكتروني ورقم هاتفك</li>
+                            <li>اختر كلمة مرور قوية</li>
+                            <li>فعّل حسابك عبر الرابط المرسل لبريدك</li>
+                        </ol>
+                        
+                        <h3>الباقات المتوفرة</h3>
+                        <ul>
+                            <li><strong>الباقة الأساسية:</strong> 50 منتج - 49 د.ل/شهر</li>
+                            <li><strong>الباقة المتقدمة:</strong> منتجات غير محدودة - 99 د.ل/شهر</li>
+                            <li><strong>الباقة الاحترافية:</strong> جميع الميزات + دعم VIP - 199 د.ل/شهر</li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <i class="fas fa-check-circle" style="color: #06d6a0;"></i>
+                            جميع الباقات تشمل 14 يوم تجربة مجانية كاملة
+                        </div>
+
+                        <h3>ميزات المنصة</h3>
+                        <ul>
+                            <li>لوحة تحكم سهلة الاستخدام</li>
+                            <li>إدارة الطلبات والمخزون</li>
+                            <li>إحصائيات دقيقة للمبيعات</li>
+                            <li>رموز QR خاصة لكل متجر</li>
+                            <li>دعم فني عبر واتساب</li>
+                        </ul>
+                    </div>
+                    
+                    <div itemprop="author" itemscope itemtype="https://schema.org/Organization" style="display: none;">
+                        <meta itemprop="name" content="Liysta">
+                    </div>
+                </div>
+
+                <!-- المقال 3 مع Schema -->
+                <div id="article-3" class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/sales-strategies">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">١٠ استراتيجيات لزيادة المبيعات ٢٠٢٦</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 12 دقيقة</span>
+                        </div>
+                        <meta itemprop="description" content="طرق مجربة لرفع أرباح متجرك الإلكتروني">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <ol style="font-size: 1.1rem;">
+                            <li><strong>حسّن سرعة متجرك:</strong> كل ثانية تأخير تخسرك 7% من المبيعات</li>
+                            <li><strong>استخدم صور احترافية:</strong> صور عالية الجودة تزيد المبيعات 30%</li>
+                            <li><strong>قدم عروض محدودة:</strong> "عرض اليوم فقط" يخلق إحساس بالسرعة</li>
+                            <li><strong>وفر شحن مجاني:</strong> يزيد المبيعات حتى 40%</li>
+                            <li><strong>اهتم بالتقييمات:</strong> اعرض تقييمات العملاء بشكل بارز</li>
+                            <li><strong>تواصل عبر واتساب:</strong> رد سريع على استفسارات العملاء</li>
+                            <li><strong>حلل بيانات مبيعاتك:</strong> اعرف المنتجات الأكثر طلباً</li>
+                            <li><strong>أعد استهداف الزوار:</strong> استهدف من زار متجرك ولم يشتر</li>
+                            <li><strong>قدم عروض مخصصة:</strong> للعملاء المتكررين</li>
+                            <li><strong>حسّن تجربة الجوال:</strong> 80% من الزوار عبر الجوال</li>
+                        </ol>
+                        
+                        <div class="stats-mini">
+                            <div class="stat-mini">
+                                <div class="number">+45%</div>
+                                <div class="label">زيادة متوقعة</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="number">30%</div>
+                                <div class="label">بفضل الصور</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="number">40%</div>
+                                <div class="label">بفضل الشحن المجاني</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المقال 4 -->
+                <div id="article-4" class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/order-management">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">إدارة الطلبات والمخزون باحترافية</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 8 دقائق</span>
+                        </div>
+                        <meta itemprop="description" content="نظام متكامل لإدارة الطلبات والمخزون لمتجرك">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <h3>نظام إدارة الطلبات في Liysta</h3>
+                        <ul>
+                            <li>الطلبات تصل مباشرة للوحة التحكم</li>
+                            <li>إشعار فوري عند كل طلب جديد</li>
+                            <li>تحديث حالة الطلب (قيد المراجعة - تم التأكيد - تم الشحن)</li>
+                            <li>إرسال إشعارات للعميل بتحديثات الطلب</li>
+                            <li>طباعة فواتير احترافية</li>
+                        </ul>
+                        
+                        <h3>إدارة المخزون</h3>
+                        <ul>
+                            <li>تنبيه عند قرب نفاد الكمية (اقل من 5 قطع)</li>
+                            <li>تقارير عن المنتجات الأكثر مبيعاً</li>
+                            <li>تحديث الكمية تلقائياً بعد كل طلب</li>
+                            <li>إمكانية إيقاف المنتجات مؤقتاً</li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <i class="fas fa-chart-line"></i>
+                            <strong>نصيحة:</strong> راجع تقارير المخزون أسبوعياً لتجنب نفاد المنتجات الأكثر طلباً
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المقال 5 -->
+                <div id="article-5" class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/qr-code-marketing">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">كيف تستخدم رموز QR في التسويق لمتجرك</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 6 دقائق</span>
+                        </div>
+                        <meta itemprop="description" content="دليل استخدام رموز QR لزيادة زوار ومبيعات متجرك">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <div class="info-box">
+                            <i class="fas fa-qrcode"></i>
+                            مع Liysta، كل متجر يحصل على رمز QR خاص مجاناً
+                        </div>
+                        
+                        <h3>أفكار مبتكرة لاستخدام QR</h3>
+                        <ul>
+                            <li>ضعه على واجهة المحل لمسح مباشر</li>
+                            <li>أضفه على الفواتير والأكياس</li>
+                            <li>شاركه على منشورات فيسبوك وانستغرام</li>
+                            <li>اطبعه على الكروت الشخصية</li>
+                            <li>ضعه في الكتالوجات والبروشورات</li>
+                            <li>أضفه في توقيع البريد الإلكتروني</li>
+                        </ul>
+                        
+                        <h3>فوائد استخدام QR</h3>
+                        <ul>
+                            <li>وصول سريع للمتجر بدون كتابة رابط</li>
+                            <li>زيادة الزوار بنسبة تصل لـ 50%</li>
+                            <li>سهولة المشاركة في الأماكن العامة</li>
+                            <li>تتبع عدد مرات المسح</li>
+                        </ul>
+                        
+                        <div class="stats-mini">
+                            <div class="stat-mini">
+                                <div class="number">+50%</div>
+                                <div class="label">زيارة المتجر</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="number">95%</div>
+                                <div class="label">مسح عبر الجوال</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="number">10K</div>
+                                <div class="label">مسح شهرياً</div>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'register-customer' %}" class="btn-blog">
+                            <i class="fas fa-qrcode"></i> احصل على QR خاص لمتجرك
+                        </a>
+                    </div>
+                </div>
+
+                <!-- المقال 6 -->
+                <div id="article-6" class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/shipping-guide">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">التوصيل وإدارة الشحن لمتجرك</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 7 دقائق</span>
+                        </div>
+                        <meta itemprop="description" content="كل ما تحتاج معرفته عن خيارات التوصيل وإدارة الشحن">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <h3>خيارات التوصيل في Liysta</h3>
+                        <ul>
+                            <li>تحديد أسعار توصيل حسب المنطقة</li>
+                            <li>إمكانية الشحن المجاني للطلبات فوق مبلغ معين</li>
+                            <li>اختيار شركات الشحن المتعاقد معها</li>
+                            <li>تحديد أوقات التوصيل المتاحة</li>
+                        </ul>
+                        
+                        <h3>نصائح لتحسين التوصيل</h3>
+                        <ul>
+                            <li>وفر أكثر من خيار توصيل للعميل</li>
+                            <li>حدد المناطق المشمولة بالتوصيل بوضوح</li>
+                            <li>قدم شحن مجاني للطلبات الكبيرة</li>
+                            <li>أرسل للعميل رقم التتبع إن وجد</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- المقال 7 -->
+                <div id="article-7" class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="url" content="https://Liysta.ly/blog/product-photography">
+                    <meta itemprop="datePublished" content="2026-03-04">
+                    
+                    <div class="article-header">
+                        <h2 itemprop="headline">نصائح لتصوير المنتجات بشكل احترافي</h2>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
+                            <span><i class="far fa-clock"></i> 5 دقائق</span>
+                        </div>
+                        <meta itemprop="description" content="دليل تصوير المنتجات لزيادة مبيعات متجرك">
+                    </div>
+                    
+                    <div class="article-body" itemprop="articleBody">
+                        <h3>أساسيات التصوير</h3>
+                        <ul>
+                            <li>استخدم إضاءة طبيعية أو إضاءة احترافية</li>
+                            <li>صور المنتج من عدة زوايا</li>
+                            <li>استخدم خلفية بيضاء أو بسيطة</li>
+                            <li>أظهر المنتج بحجمه الحقيقي</li>
+                            <li>صور تفاصيل المنتج عن قرب</li>
+                        </ul>
+                        
+                        <h3>معدات بسيطة لتصوير احترافي</h3>
+                        <ul>
+                            <li>كاميرا جوال حديثة (12 ميجابكسل كافية)</li>
+                            <li>خلفية بيضاء أو softbox</li>
+                            <li>حامل ثلاثي (ترايبود) لثبات الكاميرا</li>
+                            <li>إضاءة إضافية إن لزم</li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <i class="fas fa-camera"></i>
+                            <strong>تذكر:</strong> الصورة الجيدة تزيد المبيعات حتى 30%، استثمر وقتك في تصوير احترافي
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-</div>
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Liysta</h3>
+                <p>جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61581502305511" rel="nofollow"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.tiktok.com/@liystaplatform" rel="nofollow"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/218935931207" rel="nofollow"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-arrow-left"></i> الرئيسية</a></li>
+                    <li><a href="{% url 'plan_list' %}"><i class="fas fa-arrow-left"></i> الباقات</a></li>
+                    <li><a href="{% url 'how-it-works' %}"><i class="fas fa-arrow-left"></i> كيف يعمل</a></li>
+                    <li><a href="{% url 'blog' %}"><i class="fas fa-arrow-left"></i> المدونة</a></li>
+                    <li><a href="{% url 'faqs' %}"><i class="fas fa-arrow-left"></i> الأسئلة الشائعة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>المساعدة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'terms' %}"><i class="fas fa-arrow-left"></i> الشروط والأحكام</a></li>
+                    <li><a href="{% url 'privacy' %}"><i class="fas fa-arrow-left"></i> سياسة الخصوصية</a></li>
+                    <li><a href="{% url 'about' %}"><i class="fas fa-arrow-left"></i> من نحن</a></li>
+                    <li><a href="{% url 'saler_login' %}"><i class="fas fa-arrow-left"></i> التسويق بالعمولة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>اتصل بنا</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> support@liysta.ly</li>
+                    <li><i class="fab fa-whatsapp"></i> 0935931207</li>
+                    <li><i class="fas fa-map-marker-alt"></i> ليبيا</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Liysta. جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
 
-<script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
 
-const articles = {
+        function showArticle(articleNumber) {
+            // إخفاء كل المقالات
+            const articles = document.querySelectorAll('.blog-article');
+            articles.forEach(article => {
+                article.classList.remove('active');
+            });
+            
+            // إظهار المقال المختار
+            document.getElementById(`article-${articleNumber}`).classList.add('active');
+            
+            // تحديث الحالة النشطة في القائمة
+            const links = document.querySelectorAll('.article-link');
+            links.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+            
+            // تمرير سلس لأعلى المحتوى
+            document.querySelector('.blog-content').scrollTop = 0;
+            
+            // تحديث URL (اختياري - لتحسين SEO)
+            const articleTitles = {
+                1: "how-to-start-ecommerce",
+                2: "liysta-guide",
+                3: "sales-strategies",
+                4: "order-management",
+                5: "qr-code-marketing",
+                6: "shipping-guide",
+                7: "product-photography"
+            };
+            
+            // يمكن إضافة تحديث URL إذا أردت
+            // window.history.pushState({}, '', `/blog/${articleTitles[articleNumber]}/`);
+        }
 
-a1: `
-<h2>كيف تبدأ التجارة الإلكترونية من الصفر؟</h2>
-<p>لبداية ناجحة في التجارة الإلكترونية يجب اتباع خطوات واضحة:</p>
-<ol>
-<li>اختيار منتج عليه طلب في السوق.</li>
-<li>تحليل المنافسين والأسعار.</li>
-<li>إنشاء متجر إلكتروني احترافي.</li>
-<li>اختيار شركة شحن موثوقة.</li>
-<li>بدء التسويق عبر الإعلانات.</li>
-</ol>
-<p>استخدام منصة مثل Liysta يساعدك على إطلاق متجرك بسرعة بدون تعقيدات تقنية.</p>
-`,
-
-a2: `
-<h2>كيفية الاشتراك في Liysta بالتفصيل</h2>
-<p>الاشتراك في Liysta بسيط وسريع:</p>
-<ol>
-<li>الدخول إلى الموقع.</li>
-<li>اختيار الباقة المناسبة.</li>
-<li>إنشاء حساب.</li>
-<li>الاستفادة من التجربة المجانية.</li>
-</ol>
-<p>توفر Liysta عدة باقات تناسب المشاريع الصغيرة والمتوسطة والكبيرة.</p>
-`,
-
-a3: `
-<h2>أفضل طريقة لإدارة متجر إلكتروني</h2>
-<ul>
-<li>تنظيم الطلبات بشكل احترافي.</li>
-<li>الرد السريع على العملاء.</li>
-<li>تحليل بيانات المبيعات.</li>
-<li>تحسين تجربة المستخدم.</li>
-</ul>
-<p>توفر Liysta لوحة تحكم تساعدك على متابعة كل شيء بسهولة.</p>
-`,
-
-a4: `
-<h2>أخطاء يقع فيها أصحاب المتاجر الجدد</h2>
-<ul>
-<li>الاعتماد فقط على وسائل التواصل.</li>
-<li>عدم دراسة السوق.</li>
-<li>سوء إدارة الطلبات.</li>
-</ul>
-<p>إنشاء متجر منظم عبر Liysta يقلل هذه الأخطاء.</p>
-`,
-
-a5: `
-<h2>لماذا المتجر الإلكتروني أفضل من صفحة فيسبوك؟</h2>
-<p>المتجر الإلكتروني يمنحك:</p>
-<ul>
-<li>تنظيم احترافي للمنتجات.</li>
-<li>تحكم كامل في الطلبات.</li>
-<li>تقارير مبيعات دقيقة.</li>
-</ul>
-<p>Liysta توفر لك متجر كامل بدلاً من الاعتماد على صفحة فقط.</p>
-`,
-
-a6: `
-<h2>كيف تزيد مبيعات متجرك الإلكتروني؟</h2>
-<ul>
-<li>تحسين سرعة الموقع.</li>
-<li>استخدام إعادة الاستهداف.</li>
-<li>تقديم عروض وخصومات.</li>
-<li>تحليل المنتجات الأكثر مبيعًا.</li>
-</ul>
-<p>من خلال أدوات Liysta يمكنك متابعة الأداء واتخاذ قرارات ذكية.</p>
-`
-
-};
-
-function openArticle(id) {
-    document.getElementById("blog-list").style.display = "none";
-    document.getElementById("article-view").style.display = "block";
-    document.getElementById("article-content").innerHTML = articles[id];
-}
-
-function backToList() {
-    document.getElementById("blog-list").style.display = "grid";
-    document.getElementById("article-view").style.display = "none";
-}
-
-</script>
-
+        function disableTrialBtn(btn) {
+            btn.style.pointerEvents = 'none';   
+            btn.style.opacity = '0.6';          
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفعيل...';
+        }
+    </script>
 </body>
 </html>

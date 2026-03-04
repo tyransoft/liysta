@@ -1,63 +1,1071 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://Liysta.ly/faqs/" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="الأسئلة الشائعة حول منصة Liysta - كل ما تريد معرفته عن المتاجر الإلكترونية في ليبيا، الاشتراكات، الميزات، وكيفية البدء">
+    <meta name="keywords" content="ليستا, أسئلة شائعة, FAQ, متجر إلكتروني, تجارة إلكترونية, ليبيا, منصة ليبية">
+    <meta name="author" content="Liysta">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="الأسئلة الشائعة - Liysta">
+    <meta property="og:description" content="كل ما تريد معرفته عن منصة Liysta والتجارة الإلكترونية في ليبيا">
+    <meta property="og:url" content="https://Liysta.ly/faqs/">
+    <meta property="og:type" content="website">
+    
+    <title>الأسئلة الشائعة - Liysta</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="canonical" href="https://Liysta.ly/faqs/" />
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    
+    <!-- Schema.org markup for Google Rich Results - FAQPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "name": "الأسئلة الشائعة - Liysta",
+        "description": "كل ما تريد معرفته عن منصة Liysta والتجارة الإلكترونية في ليبيا",
+        "url": "https://Liysta.ly/faqs/",
+        "inLanguage": "ar",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Liysta",
+            "url": "https://Liysta.ly",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://Liysta.ly{% static 'img/fc.png' %}"
+            }
+        },
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "ما هي منصة Liysta؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Liysta منصة ليبية متخصصة في إنشاء وإدارة المتاجر الإلكترونية بشكل احترافي وسهل. توفر المنصة كل ما يحتاجه التاجر: تصميم متجر، إدارة المنتجات، استقبال الطلبات، تقارير المبيعات، ورموز QR خاصة."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "من يمكنه استخدام Liysta؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Liysta مناسبة لأصحاب المتاجر الجدد، المطاعم والمقاهي، أصحاب المشاريع الصغيرة والمتوسطة، والعلامات التجارية التي تبحث عن منصة متكاملة."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "ما الفرق بين المتجر الإلكتروني وصفحة فيسبوك؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "المتجر الإلكتروني يوفر نظام طلبات منظم، تقارير مبيعات دقيقة، إدارة المخزون، ملكية كاملة لبيانات العملاء، ظهور في محركات البحث، وتجربة شراء احترافية."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "كيف يمكنني الاشتراك في Liysta؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "الاشتراك سهل: اختر الباقة المناسبة، أنشئ حساب، فعّل حسابك عبر البريد، واستمتع بتجربة مجانية لمدة 14 يوماً."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "هل توفر Liysta تجربة مجانية؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "نعم! توفر Liysta 14 يوم تجربة مجانية لجميع الباقات الجديدة بدون الحاجة لبطاقة ائتمان."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "ما هي الباقات المتوفرة؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "الباقة الأساسية: 50 منتج - 49 د.ل/شهر. الباقة المتقدمة: منتجات غير محدودة - 99 د.ل/شهر. الباقة الاحترافية: جميع الميزات + دعم VIP - 199 د.ل/شهر."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "كيف أضيف منتجاتي إلى المتجر؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "سجل الدخول للوحة التحكم، اختر إضافة منتج جديد، أضف صور المنتج، أدخل السعر والوصف والكمية، ثم احفظ المنتج."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "كيف أستقبل الطلبات؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "الطلبات تصل مباشرة للوحة التحكم. يمكنك رؤية جميع الطلبات، تحديث حالتها، طباعة الفواتير، والتواصل مع العملاء."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "هل يمكنني الحصول على رمز QR لمتجري؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "نعم! كل متجر على Liysta يحصل على رمز QR خاص مجاناً يمكنك تحميله وطباعته ومشاركته."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "ما هي أفضل طريقة لزيادة مبيعات متجري؟",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "استخدم صور عالية الجودة، قدم عروض محدودة، وفر شحن مجاني، اهتم بتقييمات العملاء، تواصل عبر واتساب، وحلل بيانات مبيعاتك."
+                }
+            }
+        ]
+    }
+    </script>
 
-<title>الأسئلة الشائعة - Liysta</title>
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "الرئيسية",
+                "item": "https://Liysta.ly"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "الأسئلة الشائعة",
+                "item": "https://Liysta.ly/faqs/"
+            }
+        ]
+    }
+    </script>
 
-<style>
-body {
-    font-family: 'Cairo', sans-serif;
-    background: #f5f7fa;
-    margin: 0;
-}
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Liysta",
+        "url": "https://Liysta.ly",
+        "logo": "https://Liysta.ly{% static 'img/fc.png' %}",
+        "sameAs": [
+            "https://www.facebook.com/profile.php?id=61581502305511",
+            "https://www.tiktok.com/@liystaplatform"
+        ],
+        "contactPoint": [
+            {
+                "@type": "ContactPoint",
+                "telephone": "+218935931207",
+                "contactType": "customer service",
+                "areaServed": "LY",
+                "availableLanguage": "Arabic"
+            },
+            {
+                "@type": "ContactPoint",
+                "email": "support@liysta.ly",
+                "contactType": "customer service",
+                "areaServed": "LY",
+                "availableLanguage": "Arabic"
+            }
+        ]
+    }
+    </script>
 
-.container {
-    max-width: 900px;
-    margin: 50px auto;
-    background: white;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
+    <!-- Website Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Liysta",
+        "url": "https://Liysta.ly",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://Liysta.ly/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    
+    <style>
+        /* (نفس الـ CSS السابق) */
+        :root {
+            --primary-blue: #4361ee;
+            --primary-orange: #ff7b25;
+            --success-color: #06d6a0;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3748;
+            --border-color: #e9ecef;
+        }
 
-h1 {
-    text-align: center;
-}
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-h2 {
-    margin-top: 40px;
-}
-</style>
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-links a:hover,
+        .navbar-links a.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0 0 15px 0;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .page-header i {
+            color: var(--primary-orange);
+            margin-left: 10px;
+        }
+
+        .faq-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid #e9ecef;
+            background: white;
+            color: var(--dark-text);
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn i {
+            color: var(--primary-orange);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-blue), #3a56d4);
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-btn.active i {
+            color: white;
+        }
+
+        .faq-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .section-title i {
+            font-size: 2rem;
+            color: var(--primary-orange);
+        }
+
+        .section-title h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .faq-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary-orange);
+            box-shadow: 0 4px 15px rgba(255, 123, 37, 0.1);
+        }
+
+        .faq-question {
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+
+        .faq-question i.fa-question-circle {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+        }
+
+        .faq-question h3 {
+            flex: 1;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .faq-question .toggle-icon {
+            color: var(--primary-orange);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-question {
+            background: linear-gradient(135deg, var(--primary-blue), #3a56d4);
+        }
+
+        .faq-item.active .faq-question i.fa-question-circle,
+        .faq-item.active .faq-question h3,
+        .faq-item.active .faq-question .toggle-icon {
+            color: white;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            padding: 0 25px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border-top: 0px solid transparent;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 20px 25px;
+            border-top-width: 1px;
+            border-top-color: rgba(255,123,37,0.2);
+        }
+
+        .faq-answer p {
+            margin: 0;
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        .faq-answer ul,
+        .faq-answer ol {
+            margin: 10px 0;
+            padding-right: 20px;
+        }
+
+        .faq-answer li {
+            margin-bottom: 5px;
+        }
+
+        .help-section {
+            margin-top: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), #3a56d4);
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+        }
+
+        .help-section h3 {
+            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+        }
+
+        .help-section p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 25px;
+        }
+
+        .help-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .help-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .btn-email {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .btn-email:hover {
+            background: var(--primary-orange);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 30px 30px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-orange);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navbar-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .faq-question h3 {
+                font-size: 1rem;
+            }
+            
+            .help-section {
+                padding: 30px 20px;
+            }
+            
+            .help-section h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <!-- النافبار -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-text">Liysta</span>
+            </div>
+            
+            <ul class="navbar-links">
+                <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{% url 'plan_list' %}"><i class="fas fa-list"></i> الباقات</a></li>
+                <li><a href="{% url 'how-it-works' %}"><i class="fas fa-play-circle"></i> كيف يعمل</a></li>
+                <li><a href="{% url 'blog' %}"><i class="fas fa-blog"></i> المدونة</a></li>
+                <li><a href="{% url 'faqs' %}" class="active"><i class="fas fa-question-circle"></i> الأسئلة</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<div class="container">
+    <!-- مسار التنقل (Breadcrumbs) للمستخدم -->
+    <div style="max-width: 1100px; margin: 20px auto 0; padding: 0 20px;">
+        <div style="background: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; color: #6c757d;">
+            <i class="fas fa-home"></i> <a href="{% url 'home' %}" style="color: var(--primary-blue); text-decoration: none;">الرئيسية</a>
+            <i class="fas fa-chevron-left" style="margin: 0 10px; font-size: 0.8rem;"></i>
+            <span style="color: var(--primary-orange); font-weight: 500;">الأسئلة الشائعة</span>
+        </div>
+    </div>
 
-<h1>الأسئلة الشائعة حول Liysta والتجارة الإلكترونية</h1>
+    <!-- المحتوى الرئيسي -->
+    <div class="main-wrapper">
+        <!-- الهيدر -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-question-circle"></i>
+                الأسئلة الشائعة
+            </h1>
+            <p>كل ما تريد معرفته عن منصة Liysta والتجارة الإلكترونية في ليبيا</p>
+        </div>
 
-<h2>ما هي Liysta؟</h2>
-<p>Liysta منصة ليبية متخصصة في إنشاء وإدارة المتاجر الإلكترونية بشكل احترافي وسهل.</p>
+        <!-- فلاتر الأقسام -->
+        <div class="faq-filters">
+            <button class="filter-btn active" onclick="filterFaq('all')">
+                <i class="fas fa-star"></i>
+                الكل
+            </button>
+            <button class="filter-btn" onclick="filterFaq('general')">
+                <i class="fas fa-store"></i>
+                عام
+            </button>
+            <button class="filter-btn" onclick="filterFaq('subscription')">
+                <i class="fas fa-credit-card"></i>
+                الاشتراكات
+            </button>
+            <button class="filter-btn" onclick="filterFaq('technical')">
+                <i class="fas fa-cog"></i>
+                تقني
+            </button>
+            <button class="filter-btn" onclick="filterFaq('marketing')">
+                <i class="fas fa-chart-line"></i>
+                تسويق
+            </button>
+        </div>
 
-<h2>كيف يمكنني الاشتراك في Liysta؟</h2>
-<p>يمكنك الاشتراك عبر اختيار الباقة المناسبة وإنشاء حساب، مع إمكانية الاستفادة من تجربة مجانية.</p>
+        <!-- قسم الأسئلة العامة -->
+        <div class="faq-section" data-category="general">
+            <div class="section-title">
+                <i class="fas fa-store"></i>
+                <h2>أسئلة عامة عن Liysta</h2>
+            </div>
+            
+            <div class="faq-grid">
+                <!-- سؤال 1 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">ما هي منصة Liysta؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>Liysta منصة ليبية متخصصة في إنشاء وإدارة المتاجر الإلكترونية بشكل احترافي وسهل. توفر المنصة كل ما يحتاجه التاجر لبدء متجره الإلكتروني: تصميم متجر، إدارة المنتجات، استقبال الطلبات، تقارير المبيعات، ورموز QR خاصة.</p>
+                        </div>
+                    </div>
+                </div>
 
-<h2>هل توفر Liysta تجربة مجانية؟</h2>
-<p>نعم، توفر تجربة مجانية لاختبار لوحة التحكم وإضافة المنتجات قبل الاشتراك.</p>
+                <!-- سؤال 2 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">من يمكنه استخدام Liysta؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>Liysta مناسبة للجميع:</p>
+                            <ul>
+                                <li>أصحاب المتاجر الجدد الذين يريدون بدء تجارتهم الإلكترونية</li>
+                                <li>المطاعم والمقاهي لتحويل قوائم الطعام إلى منيو إلكتروني</li>
+                                <li>أصحاب المشاريع الصغيرة والمتوسطة</li>
+                                <li>العلامات التجارية التي تبحث عن منصة متكاملة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-<h2>ما هي أفضل طريقة لبدء التجارة الإلكترونية؟</h2>
-<p>اختيار منتج مناسب، إنشاء متجر احترافي، ثم البدء بالتسويق. استخدام منصة متخصصة مثل Liysta يسهل العملية.</p>
+                <!-- سؤال 3 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">ما الفرق بين المتجر الإلكتروني وصفحة فيسبوك؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>المتجر الإلكتروني يوفر مميزات لا توفرها صفحة فيسبوك:</p>
+                            <ul>
+                                <li>نظام طلبات منظم وتلقائي</li>
+                                <li>تقارير مبيعات دقيقة</li>
+                                <li>إدارة المخزون والمنتجات</li>
+                                <li>ملكية كاملة لبيانات العملاء</li>
+                                <li>ظهور في محركات البحث (SEO)</li>
+                                <li>تجربة شراء احترافية للعملاء</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<h2>ما الفرق بين المتجر الإلكتروني وصفحة فيسبوك؟</h2>
-<p>المتجر الإلكتروني يوفر نظام طلبات منظم، تقارير مبيعات، وتجربة شراء احترافية.</p>
+        <!-- قسم الاشتراكات -->
+        <div class="faq-section" data-category="subscription">
+            <div class="section-title">
+                <i class="fas fa-credit-card"></i>
+                <h2>الاشتراكات والباقات</h2>
+            </div>
+            
+            <div class="faq-grid">
+                <!-- سؤال 4 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">كيف يمكنني الاشتراك في Liysta؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>الاشتراك في Liysta بسيط وسريع:</p>
+                            <ol>
+                                <li>اختر الباقة المناسبة من صفحة الباقات</li>
+                                <li>أنشئ حساب باستخدام بريدك الإلكتروني</li>
+                                <li>فعّل حسابك عبر البريد</li>
+                                <li>استمتع بتجربة مجانية لمدة 14 يوماً</li>
+                                <li>اشترك بعد انتهاء التجربة</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
 
-<h2>ما أفضل منصة لإنشاء متجر إلكتروني في ليبيا؟</h2>
-<p>يعتمد على احتياجات المشروع، ولكن Liysta تعتبر خيارًا مناسبًا للتجار الذين يبحثون عن حل متكامل وسهل الاستخدام.</p>
+                <!-- سؤال 5 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">هل توفر Liysta تجربة مجانية؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>نعم! توفر Liysta <strong>14 يوم تجربة مجانية</strong> لجميع الباقات الجديدة. خلال هذه الفترة يمكنك:</p>
+                            <ul>
+                                <li>تجربة لوحة التحكم بالكامل</li>
+                                <li>إضافة المنتجات وتجربة النظام</li>
+                                <li>اختبار جميع الميزات بدون حدود</li>
+                                <li>لا تحتاج لبطاقة ائتمان للتجربة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-</div>
+                <!-- سؤال 6 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">ما هي الباقات المتوفرة؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>نوفر عدة باقات تناسب جميع الاحتياجات:</p>
+                            <ul>
+                                <li><strong>الباقة الأساسية:</strong> 50 منتج، نظام طلبات، إحصائيات - 49 د.ل/شهر</li>
+                                <li><strong>الباقة المتقدمة:</strong> منتجات غير محدودة، تقارير متقدمة - 99 د.ل/شهر</li>
+                                <li><strong>الباقة الاحترافية:</strong> جميع الميزات + دعم VIP - 199 د.ل/شهر</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- سؤال 7 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">ما هي طرق الدفع المتاحة؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>يمكنك الدفع عبر:</p>
+                            <ul>
+                                <li>شحن المحفظة داخل المنصة</li>
+                                <li>التحويل البنكي</li>
+                                <li>بطاقات الدفع الإلكتروني</li>
+                                <li>قريباً: الدفع عند الاستلام</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الأسئلة التقنية -->
+        <div class="faq-section" data-category="technical">
+            <div class="section-title">
+                <i class="fas fa-cog"></i>
+                <h2>أسئلة تقنية</h2>
+            </div>
+            
+            <div class="faq-grid">
+                <!-- سؤال 8 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">كيف أضيف منتجاتي إلى المتجر؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>إضافة المنتجات سهلة جداً:</p>
+                            <ol>
+                                <li>سجل الدخول للوحة التحكم</li>
+                                <li>اختر "إضافة منتج جديد"</li>
+                                <li>أضف صور المنتج (جودة عالية)</li>
+                                <li>أدخل السعر والوصف والكمية</li>
+                                <li>احفظ المنتج ليظهر في متجرك</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سؤال 9 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">كيف أستقبل الطلبات؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>الطلبات تصل مباشرة إلى لوحة التحكم الخاصة بك. يمكنك:</p>
+                            <ul>
+                                <li>رؤية كل الطلبات في صفحة واحدة</li>
+                                <li>تحديث حالة الطلب (قيد المراجعة، تم التأكيد، تم الشحن)</li>
+                                <li>طباعة فواتير الطلبات</li>
+                                <li>التواصل مع العميل مباشرة</li>
+                                <li>تصدير تقارير الطلبات</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سؤال 10 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">هل يمكنني الحصول على رمز QR لمتجري؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <p>نعم! كل متجر على Liysta يحصل على رمز QR خاص مجاناً. تستطيع:</p>
+                            <ul>
+                                <li>تحميل رمز QR بجودة عالية</li>
+                                <li>طباعته على الفواتير والمنتجات</li>
+                                <li>وضعه على واجهة المحل</li>
+                                <li>مشاركته على وسائل التواصل</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم التسويق -->
+        <div class="faq-section" data-category="marketing">
+            <div class="section-title">
+                <i class="fas fa-chart-line"></i>
+                <h2>التسويق وزيادة المبيعات</h2>
+            </div>
+            
+            <div class="faq-grid">
+                <!-- سؤال 11 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">ما هي أفضل طريقة لزيادة مبيعات متجري؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <ul>
+                                <li>استخدم صور عالية الجودة لمنتجاتك</li>
+                                <li>قدم عروض وخصومات لفترة محدودة</li>
+                                <li>وفر شحن مجاني للطلبات الكبيرة</li>
+                                <li>اهتم بتقييمات العملاء واعرضها</li>
+                                <li>تواصل مع العملاء عبر واتساب</li>
+                                <li>حلل بيانات مبيعاتك وركز على الأكثر طلباً</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سؤال 12 -->
+                <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <i class="fas fa-question-circle"></i>
+                        <h3 itemprop="name">كيف يمكنني تسويق متجري على وسائل التواصل؟</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text">
+                            <ul>
+                                <li>شارك رابط متجرك في المنشورات</li>
+                                <li>استخدم رمز QR في الصور</li>
+                                <li>انشر صور منتجاتك بشكل يومي</li>
+                                <li>اعرض تجارب العملاء السعداء</li>
+                                <li>قدم عروض حصرية لمتابعيك</li>
+                                <li>استخدم إعلانات مدفوعة مستهدفة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم المساعدة -->
+        <div class="help-section">
+            <h3>لم تجد إجابة لسؤالك؟</h3>
+            <p>فريق الدعم الفني جاهز لمساعدتك على مدار الساعة</p>
+            <div class="help-buttons">
+                <a href="https://wa.me/218935931207?text=مرحباً، لدي استفسار عن Liysta" class="help-btn btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    تواصل عبر واتساب
+                </a>
+                <a href="mailto:support@liysta.ly" class="help-btn btn-email">
+                    <i class="fas fa-envelope"></i>
+                    راسلنا عبر البريد
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Liysta</h3>
+                <p>منصة ليبية متكاملة لإنشاء وإدارة المتاجر الإلكترونية بكل سهولة</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61581502305511" rel="nofollow"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.tiktok.com/@liystaplatform" rel="nofollow"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/218935931207" rel="nofollow"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-arrow-left"></i> الرئيسية</a></li>
+                    <li><a href="{% url 'plan_list' %}"><i class="fas fa-arrow-left"></i> الباقات</a></li>
+                    <li><a href="{% url 'how-it-works' %}"><i class="fas fa-arrow-left"></i> كيف يعمل</a></li>
+                    <li><a href="{% url 'blog' %}"><i class="fas fa-arrow-left"></i> المدونة</a></li>
+                    <li><a href="{% url 'faqs' %}"><i class="fas fa-arrow-left"></i> الأسئلة الشائعة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>المساعدة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'terms' %}"><i class="fas fa-arrow-left"></i> الشروط والأحكام</a></li>
+                    <li><a href="{% url 'privacy' %}"><i class="fas fa-arrow-left"></i> سياسة الخصوصية</a></li>
+                    <li><a href="{% url 'about' %}"><i class="fas fa-arrow-left"></i> من نحن</a></li>
+                    <li><a href="{% url 'saler_login' %}"><i class="fas fa-arrow-left"></i> التسويق بالعمولة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>اتصل بنا</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> support@liysta.ly</li>
+                    <li><i class="fab fa-whatsapp"></i> 0935931207</li>
+                    <li><i class="fas fa-map-marker-alt"></i> ليبيا</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Liysta. جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script>
+        // وظيفة تصفية الأسئلة حسب القسم
+        function filterFaq(category) {
+            const sections = document.querySelectorAll('.faq-section');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            // تحديث حالة الأزرار
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // إظهار أو إخفاء الأقسام
+            sections.forEach(section => {
+                if (category === 'all') {
+                    section.style.display = 'block';
+                } else {
+                    if (section.dataset.category === category) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // وظيفة فتح وإغلاق الإجابات
+        function toggleFaq(element) {
+            const faqItem = element.classList.contains('faq-item') ? element : element.closest('.faq-item');
+            
+            // إغلاق جميع الأسئلة الأخرى
+            const allItems = document.querySelectorAll('.faq-item');
+            allItems.forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // فتح أو إغلاق السؤال الحالي
+            faqItem.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
