@@ -16,6 +16,9 @@ urlpatterns = [
     path('',home,name='home'),
 
     path('about-us/',about,name='about'),
+    path('blog/',blog,name='blog'),
+    path('faqs/',faqs,name='faqs'),
+
     path('How_it_works/',learn,name='how-it-works'),
     path('terms/',terms,name='terms'),
     path('Privacy/',privacy,name='privacy'),

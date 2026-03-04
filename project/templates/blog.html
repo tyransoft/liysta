@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://Liysta.ly/blog/" />
+
+<title>مدونة Liysta - التجارة الإلكترونية</title>
+
+<style>
+body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    background: #f5f7fa;
+}
+
+header {
+    background: #0f172a;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+#article-view {
+    display: none;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-top: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.back-btn {
+    margin-bottom: 20px;
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>مدونة Liysta</h1>
+    <p>دليلك الكامل للنجاح في التجارة الإلكترونية</p>
+</header>
+
+<div class="container">
+
+    <div id="blog-list" class="blog-grid">
+
+        <div class="card" onclick="openArticle('a1')">
+            <h3>كيف تبدأ التجارة الإلكترونية من الصفر؟</h3>
+            <p>خطوات عملية لبدء مشروعك الإلكتروني بنجاح.</p>
+        </div>
+
+        <div class="card" onclick="openArticle('a2')">
+            <h3>كيفية الاشتراك في Liysta بالتفصيل</h3>
+            <p>تعرف على خطوات التسجيل والباقات والتجربة المجانية.</p>
+        </div>
+
+        <div class="card" onclick="openArticle('a3')">
+            <h3>أفضل طريقة لإدارة متجر إلكتروني</h3>
+            <p>نصائح عملية لزيادة المبيعات وتنظيم الطلبات.</p>
+        </div>
+
+        <div class="card" onclick="openArticle('a4')">
+            <h3>أخطاء يقع فيها أصحاب المتاجر الجدد</h3>
+            <p>تجنب هذه الأخطاء لتنجح بسرعة.</p>
+        </div>
+
+        <div class="card" onclick="openArticle('a5')">
+            <h3>لماذا المتجر الإلكتروني أفضل من صفحة فيسبوك؟</h3>
+            <p>مقارنة مهمة لكل تاجر مبتدئ.</p>
+        </div>
+
+        <div class="card" onclick="openArticle('a6')">
+            <h3>كيف تزيد مبيعات متجرك الإلكتروني؟</h3>
+            <p>استراتيجيات عملية لرفع الأرباح.</p>
+        </div>
+
+    </div>
+
+    <div id="article-view">
+        <button class="back-btn" onclick="backToList()">الرجوع للمقالات</button>
+        <div id="article-content"></div>
+    </div>
+
+</div>
+
+<script>
+
+const articles = {
+
+a1: `
+<h2>كيف تبدأ التجارة الإلكترونية من الصفر؟</h2>
+<p>لبداية ناجحة في التجارة الإلكترونية يجب اتباع خطوات واضحة:</p>
+<ol>
+<li>اختيار منتج عليه طلب في السوق.</li>
+<li>تحليل المنافسين والأسعار.</li>
+<li>إنشاء متجر إلكتروني احترافي.</li>
+<li>اختيار شركة شحن موثوقة.</li>
+<li>بدء التسويق عبر الإعلانات.</li>
+</ol>
+<p>استخدام منصة مثل Liysta يساعدك على إطلاق متجرك بسرعة بدون تعقيدات تقنية.</p>
+`,
+
+a2: `
+<h2>كيفية الاشتراك في Liysta بالتفصيل</h2>
+<p>الاشتراك في Liysta بسيط وسريع:</p>
+<ol>
+<li>الدخول إلى الموقع.</li>
+<li>اختيار الباقة المناسبة.</li>
+<li>إنشاء حساب.</li>
+<li>الاستفادة من التجربة المجانية.</li>
+</ol>
+<p>توفر Liysta عدة باقات تناسب المشاريع الصغيرة والمتوسطة والكبيرة.</p>
+`,
+
+a3: `
+<h2>أفضل طريقة لإدارة متجر إلكتروني</h2>
+<ul>
+<li>تنظيم الطلبات بشكل احترافي.</li>
+<li>الرد السريع على العملاء.</li>
+<li>تحليل بيانات المبيعات.</li>
+<li>تحسين تجربة المستخدم.</li>
+</ul>
+<p>توفر Liysta لوحة تحكم تساعدك على متابعة كل شيء بسهولة.</p>
+`,
+
+a4: `
+<h2>أخطاء يقع فيها أصحاب المتاجر الجدد</h2>
+<ul>
+<li>الاعتماد فقط على وسائل التواصل.</li>
+<li>عدم دراسة السوق.</li>
+<li>سوء إدارة الطلبات.</li>
+</ul>
+<p>إنشاء متجر منظم عبر Liysta يقلل هذه الأخطاء.</p>
+`,
+
+a5: `
+<h2>لماذا المتجر الإلكتروني أفضل من صفحة فيسبوك؟</h2>
+<p>المتجر الإلكتروني يمنحك:</p>
+<ul>
+<li>تنظيم احترافي للمنتجات.</li>
+<li>تحكم كامل في الطلبات.</li>
+<li>تقارير مبيعات دقيقة.</li>
+</ul>
+<p>Liysta توفر لك متجر كامل بدلاً من الاعتماد على صفحة فقط.</p>
+`,
+
+a6: `
+<h2>كيف تزيد مبيعات متجرك الإلكتروني؟</h2>
+<ul>
+<li>تحسين سرعة الموقع.</li>
+<li>استخدام إعادة الاستهداف.</li>
+<li>تقديم عروض وخصومات.</li>
+<li>تحليل المنتجات الأكثر مبيعًا.</li>
+</ul>
+<p>من خلال أدوات Liysta يمكنك متابعة الأداء واتخاذ قرارات ذكية.</p>
+`
+
+};
+
+function openArticle(id) {
+    document.getElementById("blog-list").style.display = "none";
+    document.getElementById("article-view").style.display = "block";
+    document.getElementById("article-content").innerHTML = articles[id];
+}
+
+function backToList() {
+    document.getElementById("blog-list").style.display = "grid";
+    document.getElementById("article-view").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>

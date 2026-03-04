@@ -443,19 +443,37 @@
 </head>
 
 <body>
-    <div class="header text-center">
-        <div class="container">
-            <h1>إدارة التكاليف</h1>
-            <div class="header-actions">
-                <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
-                    <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
-                </a>
-                <a href="{% url 'add_coast' menu_id %}" class="btn btn-add">
-                    <i class="fas fa-plus-circle me-1"></i> إضافة تكلفة جديدة
-                </a>
-            </div>
+<div class="header text-center">
+    <div class="container">
+        <h1>إدارة التكاليف</h1>
+        <div class="mt-3">
+            <a href="{% url 'customer_dashboard' %}" 
+               style="
+                    background: #764ba2;
+                    color: white;
+                    padding: 10px 25px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-left: 10px;
+                    display: inline-block;
+               ">
+                <i class="fas fa-arrow-right"></i> رجوع
+            </a>
+            
+            <a href="{% url 'add_coast' menu_id %}" 
+               style="
+                    background: #00b09b;
+                    color: white;
+                    padding: 10px 25px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    display: inline-block;
+               ">
+                <i class="fas fa-plus-circle"></i> إضافة تكلفة
+            </a>
         </div>
     </div>
+</div>
 
     <div class="container">
         {% if messages %}
