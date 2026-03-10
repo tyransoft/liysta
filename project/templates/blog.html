@@ -9,14 +9,13 @@
     <meta name="author" content="Liysta">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph -->
     <meta property="og:title" content="مدونة Liysta - دليلك للنجاح في التجارة الإلكترونية">
     <meta property="og:description" content="نصائح وحلول عملية لإنشاء وتطوير متجرك الإلكتروني في ليبيا">
     <meta property="og:image" content="https://Liysta.ly{% static 'img/fc.png' %}">
     <meta property="og:url" content="https://Liysta.ly/blog/">
     <meta property="og:type" content="website">
     
-    <title>Liysta - المدونة الشاملة للتجارة الإلكترونية</title>
+    <title>Liysta - مدونة لييستا   </title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,7 +24,6 @@
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/lista.css' %}">
     
-    <!-- Schema.org markup for Blog -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -59,7 +57,7 @@
             {
                 "@type": "BlogPosting",
                 "headline": "دليل Liysta الشامل للتسجيل والاستخدام",
-                "description": "كل ما تحتاج معرفته عن منصتنا وكيفية الاستفادة من جميع الميزات",
+                "description": "كل ما تحتاج معرفته عن منصة لييستا وكيفية الاستفادة من جميع الميزات",
                 "datePublished": "2026-03-04",
                 "dateModified": "2026-03-04",
                 "author": {
@@ -84,7 +82,6 @@
     }
     </script>
 
-    <!-- Article Schema للمقالات الفردية -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -136,7 +133,6 @@
     }
     </script>
 
-    <!-- BreadcrumbList Schema -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -158,7 +154,6 @@
     }
     </script>
 
-    <!-- Website Schema -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -195,7 +190,6 @@
             flex-direction: column;
         }
 
-        /* النافبار */
         .navbar {
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -244,7 +238,6 @@
             color: white;
         }
 
-        /* مسار التنقل */
         .breadcrumb {
             max-width: 1300px;
             margin: 20px auto 0;
@@ -275,7 +268,6 @@
             font-size: 0.8rem;
         }
 
-        /* الحاوية الرئيسية */
         .blog-wrapper {
             display: flex;
             flex: 1;
@@ -283,7 +275,6 @@
             position: relative;
         }
 
-        /* القائمة الجانبية الثابتة */
         .blog-sidebar {
             width: 350px;
             background: white;
@@ -380,7 +371,6 @@
             color: rgba(255,255,255,0.9);
         }
 
-        /* منطقة المحتوى الرئيسي */
         .blog-content {
             flex: 1;
             margin-right: 350px;
@@ -399,7 +389,6 @@
             border-top: 4px solid var(--primary-blue);
         }
 
-        /* المقالات مع Schema */
         .blog-article {
             display: none;
         }
@@ -531,7 +520,6 @@
             box-shadow: 0 4px 10px rgba(255, 123, 37, 0.3);
         }
 
-        /* شريط التمرير المخصص */
         .blog-sidebar::-webkit-scrollbar {
             width: 6px;
         }
@@ -549,7 +537,6 @@
             background: var(--primary-blue);
         }
 
-        /* الفوتر */
         .footer {
             background: #0f172a;
             color: white;
@@ -676,7 +663,6 @@
     </style>
 </head>
 <body>
-    <!-- النافبار -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="logo">
@@ -684,38 +670,33 @@
             </div>
             
             <ul class="navbar-links">
-                <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li><a href="{% url 'plan_list' %}"><i class="fas fa-list"></i> الباقات</a></li>
-                <li><a href="{% url 'how-it-works' %}"><i class="fas fa-play-circle"></i> كيف يعمل</a></li>
-                <li><a href="{% url 'blog' %}" class="active"><i class="fas fa-blog"></i> المدونة</a></li>
+                <li><a href="{% url 'home' %}"> الرئيسية</a></li>
+                <li><a href="{% url 'plan_list' %}"> الباقات</a></li>
+                <li><a href="{% url 'how-it-works' %}"> كيف يعمل</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- مسار التنقل (Breadcrumbs) -->
     <div class="breadcrumb">
         <div class="breadcrumb-container">
-            <a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="{% url 'home' %}">الرئيسية</a>
             <i class="fas fa-chevron-left"></i>
-            <span><i class="fas fa-blog"></i> المدونة</span>
+            <span> المدونة</span>
         </div>
     </div>
 
-    <!-- الحاوية الرئيسية -->
     <div class="blog-wrapper">
-        <!-- القائمة الجانبية -->
         <aside class="blog-sidebar">
             <div class="sidebar-header">
                 <h3>
-                    <i class="fas fa-newspaper"></i>
                     جميع المقالات
                 </h3>
             </div>
             
             <div class="articles-list">
                 <a class="article-link active" onclick="showArticle(1)">
-                    <h4><i class="fas fa-rocket"></i> كيف تبدأ التجارة الإلكترونية؟</h4>
-                    <p>دليل شامل للمبتدئين - 15 دقيقة</p>
+                    <h4><i class="fas fa-rocket"></i> كيف تبدأ التجارة الإلكترونية في ليبيا؟ </h4>
+                    <p>دليل شامل للمبتدئين - 10 دقيقة</p>
                 </a>
                 
                 <a class="article-link" onclick="showArticle(2)">
@@ -729,7 +710,7 @@
                 </a>
                 
                 <a class="article-link" onclick="showArticle(4)">
-                    <h4><i class="fas fa-shopping-cart"></i> إدارة الطلبات والمخزون</h4>
+                    <h4><i class="fas fa-shopping-cart"></i> إدارة الطلبات والمخزون مع منصة لييستا</h4>
                     <p>نظام متكامل لمتجرك - 8 دقائق</p>
                 </a>
                 
@@ -750,10 +731,8 @@
             </div>
         </aside>
 
-        <!-- المحتوى الرئيسي -->
         <main class="blog-content">
             <div class="content-container">
-                <!-- المقال 1 مع Schema -->
                 <div id="article-1" class="blog-article active" itemscope itemtype="https://schema.org/BlogPosting">
                     <meta itemprop="url" content="https://Liysta.ly/blog/how-to-start-ecommerce">
                     <meta itemprop="datePublished" content="2026-03-04">
@@ -763,7 +742,7 @@
                         <h2 itemprop="headline">كيف تبدأ التجارة الإلكترونية من الصفر؟</h2>
                         <div class="article-meta">
                             <span><i class="far fa-calendar"></i> <span itemprop="datePublished">4 مارس 2026</span></span>
-                            <span><i class="far fa-clock"></i> 15 دقيقة قراءة</span>
+                            <span><i class="far fa-clock"></i> 10 دقيقة قراءة</span>
                             <span><i class="far fa-eye"></i> 2.5k مشاهدة</span>
                         </div>
                         <meta itemprop="description" content="دليل شامل للمبتدئين خطوة بخطوة لبدء مشروعك الإلكتروني بنجاح">
@@ -776,51 +755,45 @@
                         </div>
                         
                         <h3>١. اختيار المنتج المناسب</h3>
-                        <p>اختيار المنتج هو أهم خطوة. ابحث عن منتج:</p>
+                        <p>حدد فئة المجتمع التي ستبيع لها اولا ثم قم باختيار منتج مناسب لهذه الفئة </p>
+                        <p>    اختيار المنتج مهم جدا لذا. ابحث عن منتج:</p>
                         <ul>
-                            <li>مطلوب في السوق الليبي (استخدم جوجل تريندز)</li>
-                            <li>هامش ربح جيد (40% فأكثر)</li>
-                            <li>سهل الشحن والتخزين</li>
-                            <li>متوفر باستمرار من الموردين</li>
+                            <li>مطلوب في السوق الليبي (اسئل واجمع آراء  فئتك المستهدفة) حاول ان تتجول في اسواق الجملة فيفضل في بدايتك ان تشتري من السوق المحلي وايضا راقب المتاجر الالكترونية على منصات التواصل والمنتجات التي تبيعا والتفاعل عليها.</li>
+                            <li>هامش ربح جيد (40% فأكثر):ينصح ان تختار منتج يمكنك بيعه بهامش ربح عالي  وفي نفس الوقت يكون سعر بيعه مناسب  ومنافس .</li>
+                            <li>سهل الشحن والتخزين:كل ما اخترت منتج سهل الشحن اي خفيف الوزن و صغير الحجم و ان يكون غير قابل للكسر كل ماكان منتجك جيدا</li>
+                            <li>متوفر باستمرار من الموردين المحليين:تاكد انه متوفر بكثرة،فاذا بعت الكمية الاولى منه ونجحت يمكنك شراء كمية جديدة دون خسارة وقت وعملاء</li>
+                            <li> يحل مشكلة او ذا فائدة:احرص ان يكون منتجك ذا اهمية لجمهورك المستهدف سيسهل بيعه</li>
+
                         </ul>
 
-                        <div class="stats-mini">
-                            <div class="stat-mini">
-                                <div class="number">+40%</div>
-                                <div class="label">هامش ربح</div>
-                            </div>
-                            <div class="stat-mini">
-                                <div class="number">10K</div>
-                                <div class="label">متجر في ليبيا</div>
-                            </div>
-                            <div class="stat-mini">
-                                <div class="number">80%</div>
-                                <div class="label">مشتريات عبر الجوال</div>
-                            </div>
-                        </div>
+                    
                         
                         <h3>٢. دراسة السوق والمنافسين</h3>
                         <p>قبل البدء، ادرس السوق جيداً:</p>
                         <ul>
-                            <li>تابع المنافسين في مجالك</li>
-                            <li>حلل أسعارهم وعروضهم</li>
-                            <li>اقرأ تقييمات عملائهم</li>
-                            <li>حدد نقاط ضعفهم لتتفوق عليها</li>
+                            <li>تابع المنافسين في مجالك:تعلم من المتاجر التي تستهدف نفس جمهورك او تبيع نفس منتجك ،حلل واعرف كيف يسوقون والطرق التي يستخدمونها وايها انجح.</li>
+                            <li>حلل أسعارهم وعروضهم:اعرف الاسعار التي يبيعون بها والعروض التي يقدمونها لتتمكن من تقديم عروض افضل وليس بشرط ان تبيع بسعر اقل منهم بل يمكن ان تبيع بسعر اعلى منهم وتنجح بعرض منتجك بقيمته وفائده ونتيجته للعميل</li>
+                            <li>اقرأ تقييمات عملائهم:ابحث في التعليقات وانظر الى اراء الناس حول المنتج لتعرف المشاكل وتحاول اصلاحها مبكرا </li>
+                            <li>حدد نقاط ضعفهم لتتفوق عليها:من خلال النقاط التي سبق وذكرناها  ينمكنك استخراج نقاط الضعف والاستفادة منها.</li>
                         </ul>
                         
                         <h3>٣. إنشاء متجر احترافي مع Liysta</h3>
-                        <p>مع Liysta، يمكنك إنشاء متجرك في دقائق:</p>
+                        <p>يفضل ان تستخدم نظام إدارة شامل ولاتكتفي  بصفحة فيسبوك عادية </p>
+                        <p>استخدم منصة لييستا التي توفر لك منظومة مبيعات  ونظام متكامل لادارة متجرك وايضا ستحص على موقع لعرض منتجك</p>
+
                         <ol>
-                            <li>سجل حساب مجاني (14 يوم تجربة)</li>
+                            <li>سجل حساب مجاني (30 يوم تجربة)</li>
                             <li>اختر قالب متجرك المفضل</li>
                             <li>أضف منتجاتك بالصور والأسعار</li>
                             <li>حدد طرق التوصيل والدفع</li>
                             <li>شارك رابط متجرك مع العملاء</li>
+                            <li>المزيد من المعلومات والشروحات هنا  :t.me/liystaly</li>
+
                         </ol>
                         
                         <div class="info-box">
                             <i class="fas fa-gift"></i>
-                            <strong>عرض خاص:</strong> اشترك الآن واحصل على 14 يوم تجربة مجانية بدون بطاقة ائتمان
+                            <strong>عرض خاص:</strong> انشئ حسابك وقم بالحصول على تجربة مجانية لخدمات منصتنا لمدة شهر ودون شروط!
                         </div>
                         
                         <a href="{% url 'register-customer' %}" class="btn-blog">
@@ -1109,7 +1082,6 @@
         </main>
     </div>
 
-    <!-- الفوتر -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-col">
@@ -1146,7 +1118,7 @@
             <div class="footer-col">
                 <h3>اتصل بنا</h3>
                 <ul class="contact-info">
-                    <li><i class="fas fa-envelope"></i> support@liysta.ly</li>
+                    <li><i class="fas fa-envelope"></i> liystaplatform@liysta.ly</li>
                     <li><i class="fab fa-whatsapp"></i> 0935931207</li>
                     <li><i class="fas fa-map-marker-alt"></i> ليبيا</li>
                 </ul>
@@ -1163,16 +1135,13 @@
         AOS.init({ duration: 800, once: true });
 
         function showArticle(articleNumber) {
-            // إخفاء كل المقالات
             const articles = document.querySelectorAll('.blog-article');
             articles.forEach(article => {
                 article.classList.remove('active');
             });
             
-            // إظهار المقال المختار
             document.getElementById(`article-${articleNumber}`).classList.add('active');
             
-            // تحديث الحالة النشطة في القائمة
             const links = document.querySelectorAll('.article-link');
             links.forEach(link => {
                 link.classList.remove('active');
@@ -1180,10 +1149,8 @@
             
             event.currentTarget.classList.add('active');
             
-            // تمرير سلس لأعلى المحتوى
             document.querySelector('.blog-content').scrollTop = 0;
             
-            // تحديث URL (اختياري - لتحسين SEO)
             const articleTitles = {
                 1: "how-to-start-ecommerce",
                 2: "liysta-guide",
@@ -1194,8 +1161,7 @@
                 7: "product-photography"
             };
             
-            // يمكن إضافة تحديث URL إذا أردت
-            // window.history.pushState({}, '', `/blog/${articleTitles[articleNumber]}/`);
+            window.history.pushState({}, '', `/blog/${articleTitles[articleNumber]}/`);
         }
 
         function disableTrialBtn(btn) {
