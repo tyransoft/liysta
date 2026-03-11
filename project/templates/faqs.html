@@ -9,10 +9,9 @@
     <meta name="author" content="Liysta">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph -->
     <meta property="og:title" content="الأسئلة الشائعة - Liysta">
     <meta property="og:description" content="كل ما تريد معرفته عن منصة Liysta والتجارة الإلكترونية في ليبيا">
-    <meta property="og:url" content="https://Liysta.ly/faqs/">
+    <meta property="og:url" content="https://www.liysta.ly/faqs/">
     <meta property="og:type" content="website">
     
     <title>الأسئلة الشائعة - Liysta</title>
@@ -23,7 +22,6 @@
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/lista.css' %}">
     
-    <!-- Schema.org markup for Google Rich Results - FAQPage -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -126,7 +124,6 @@
     }
     </script>
 
-    <!-- BreadcrumbList Schema -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -148,7 +145,6 @@
     }
     </script>
 
-    <!-- Organization Schema -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -179,7 +175,6 @@
     }
     </script>
 
-    <!-- Website Schema -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -195,7 +190,6 @@
     </script>
     
     <style>
-        /* (نفس الـ CSS السابق) */
         :root {
             --primary-blue: #4361ee;
             --primary-orange: #ff7b25;
@@ -618,7 +612,6 @@
     </style>
 </head>
 <body>
-    <!-- النافبار -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="logo">
@@ -628,14 +621,11 @@
             <ul class="navbar-links">
                 <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a></li>
                 <li><a href="{% url 'plan_list' %}"><i class="fas fa-list"></i> الباقات</a></li>
-                <li><a href="{% url 'how-it-works' %}"><i class="fas fa-play-circle"></i> كيف يعمل</a></li>
                 <li><a href="{% url 'blog' %}"><i class="fas fa-blog"></i> المدونة</a></li>
-                <li><a href="{% url 'faqs' %}" class="active"><i class="fas fa-question-circle"></i> الأسئلة</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- مسار التنقل (Breadcrumbs) للمستخدم -->
     <div style="max-width: 1100px; margin: 20px auto 0; padding: 0 20px;">
         <div style="background: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; color: #6c757d;">
             <i class="fas fa-home"></i> <a href="{% url 'home' %}" style="color: var(--primary-blue); text-decoration: none;">الرئيسية</a>
@@ -644,9 +634,7 @@
         </div>
     </div>
 
-    <!-- المحتوى الرئيسي -->
     <div class="main-wrapper">
-        <!-- الهيدر -->
         <div class="page-header">
             <h1>
                 <i class="fas fa-question-circle"></i>
@@ -655,7 +643,6 @@
             <p>كل ما تريد معرفته عن منصة Liysta والتجارة الإلكترونية في ليبيا</p>
         </div>
 
-        <!-- فلاتر الأقسام -->
         <div class="faq-filters">
             <button class="filter-btn active" onclick="filterFaq('all')">
                 <i class="fas fa-star"></i>
@@ -679,7 +666,6 @@
             </button>
         </div>
 
-        <!-- قسم الأسئلة العامة -->
         <div class="faq-section" data-category="general">
             <div class="section-title">
                 <i class="fas fa-store"></i>
@@ -687,7 +673,6 @@
             </div>
             
             <div class="faq-grid">
-                <!-- سؤال 1 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -701,7 +686,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 2 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -721,7 +705,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 3 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -745,7 +728,6 @@
             </div>
         </div>
 
-        <!-- قسم الاشتراكات -->
         <div class="faq-section" data-category="subscription">
             <div class="section-title">
                 <i class="fas fa-credit-card"></i>
@@ -753,7 +735,6 @@
             </div>
             
             <div class="faq-grid">
-                <!-- سؤال 4 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -774,7 +755,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 5 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -794,7 +774,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 6 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -813,7 +792,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 7 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -835,7 +813,6 @@
             </div>
         </div>
 
-        <!-- قسم الأسئلة التقنية -->
         <div class="faq-section" data-category="technical">
             <div class="section-title">
                 <i class="fas fa-cog"></i>
@@ -843,7 +820,6 @@
             </div>
             
             <div class="faq-grid">
-                <!-- سؤال 8 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -864,7 +840,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 9 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -885,7 +860,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 10 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -907,7 +881,6 @@
             </div>
         </div>
 
-        <!-- قسم التسويق -->
         <div class="faq-section" data-category="marketing">
             <div class="section-title">
                 <i class="fas fa-chart-line"></i>
@@ -915,7 +888,6 @@
             </div>
             
             <div class="faq-grid">
-                <!-- سؤال 11 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -936,7 +908,6 @@
                     </div>
                 </div>
 
-                <!-- سؤال 12 -->
                 <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <i class="fas fa-question-circle"></i>
@@ -959,7 +930,6 @@
             </div>
         </div>
 
-        <!-- قسم المساعدة -->
         <div class="help-section">
             <h3>لم تجد إجابة لسؤالك؟</h3>
             <p>فريق الدعم الفني جاهز لمساعدتك على مدار الساعة</p>
@@ -968,15 +938,11 @@
                     <i class="fab fa-whatsapp"></i>
                     تواصل عبر واتساب
                 </a>
-                <a href="mailto:support@liysta.ly" class="help-btn btn-email">
-                    <i class="fas fa-envelope"></i>
-                    راسلنا عبر البريد
-                </a>
+                
             </div>
         </div>
     </div>
 
-    <!-- الفوتر -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-col">
@@ -1013,7 +979,7 @@
             <div class="footer-col">
                 <h3>اتصل بنا</h3>
                 <ul class="contact-info">
-                    <li><i class="fas fa-envelope"></i> support@liysta.ly</li>
+                    <li><i class="fas fa-envelope"></i> liystaplatform@liysta.ly</li>
                     <li><i class="fab fa-whatsapp"></i> 0935931207</li>
                     <li><i class="fas fa-map-marker-alt"></i> ليبيا</li>
                 </ul>
@@ -1026,18 +992,15 @@
     </footer>
 
     <script>
-        // وظيفة تصفية الأسئلة حسب القسم
         function filterFaq(category) {
             const sections = document.querySelectorAll('.faq-section');
             const buttons = document.querySelectorAll('.filter-btn');
             
-            // تحديث حالة الأزرار
             buttons.forEach(btn => {
                 btn.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
             
-            // إظهار أو إخفاء الأقسام
             sections.forEach(section => {
                 if (category === 'all') {
                     section.style.display = 'block';
@@ -1051,11 +1014,9 @@
             });
         }
 
-        // وظيفة فتح وإغلاق الإجابات
         function toggleFaq(element) {
             const faqItem = element.classList.contains('faq-item') ? element : element.closest('.faq-item');
             
-            // إغلاق جميع الأسئلة الأخرى
             const allItems = document.querySelectorAll('.faq-item');
             allItems.forEach(item => {
                 if (item !== faqItem) {
@@ -1063,7 +1024,6 @@
                 }
             });
             
-            // فتح أو إغلاق السؤال الحالي
             faqItem.classList.toggle('active');
         }
     </script>

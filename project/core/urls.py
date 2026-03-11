@@ -21,7 +21,7 @@ urlpatterns = [
 
     path('faqs/',faqs,name='faqs'),
 
-    path('How_it_works/',learn,name='how-it-works'),
+    path('How-it-works/',learn,name='how-it-works'),
     path('terms/',terms,name='terms'),
     path('Privacy/',privacy,name='privacy'),
     path('start-free-trial/',start_free_trial,name='start_free_trial'),
