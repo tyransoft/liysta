@@ -5,30 +5,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا مع نظامنا بدون اي تعب">
-    <meta name="keywords" content="ليستا ,متجر الكتروني,تجارة الكترونية,منيو الكتروني,Liysta, "> 
+    
+    <meta name="description" content="Liysta - المنصة الليبية الرائدة لإنشاء وإدارة المتاجر الإلكترونية في ليبيا. حلول متكاملة لإدارة المنتجات، الطلبات، الدفع والشحن المحلي والدولي بسهولة.">
+    <meta name="keywords" content="Liysta, منصة إنشاء متجر إلكتروني في ليبيا, إدارة متاجر إلكترونية, التجارة الإلكترونية ليبيا, دفع إلكتروني, شحن محلي, لوحة تحكم متكاملة, حلول رقمية للتجار الليبيين">
     <meta name="author" content="Liysta-ليستا">
     <meta name="robots" content="index, follow">
 
-    <title>Liysta - منصتك الذكية  </title>
-    <meta property="og:title" content="Liysta - تغير قواعد اللعبة في عالم التجارة الالكترونية">
-    <meta property="og:description" content="جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا مع نظامنا بدون اي تعب">
+    <title>Liysta - منصة ليبية لإنشاء وإدارة متاجر إلكترونية احترافية في ليبيا</title>
+    <meta property="og:title" content="Liysta - تغير قواعد اللعبة في عالم التجارة الالكترونية في ليبيا">
+    <meta property="og:description" content="Liysta - أنشئ وأدِر متجرك الإلكتروني بسهولة واستقبل مئات الطلبات يوميًا في ليبيا">
     <meta property="og:image" content="https://liysta.ly{% static 'img/fc.png' %}">
     <meta property="og:url" content="https://liysta.ly">
     <meta property="og:type" content="website">
 
-    <meta name="google-site-verification" content="iOErQ2oA1VwE1zVAs5EhdvMZfXkm3UhjC4Dv-tfnCuc" /> 
+    <link rel="canonical" href="https://www.liysta.ly" />
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="canonical" href="https://www.liysta.ly" />
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{% static 'css/lista.css'%}" />
     <link rel="shortcut icon" href="{% static 'img/fc.png' %}" type="image/x-icon" alt="Liysta">
-    <link rel="home" href="{% url 'home' %}" >
-    <link rel="apple-touch-icon" href="{% static 'img/fc.png' %}" type="image/x-icon" alt="Liysta">
-
-    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon" alt="Liysta">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Liysta - منصة ليبية لإنشاء وإدارة متاجر إلكترونية احترافية",
+  "url": "https://liysta.ly",
+  "description": "جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا مع Liysta، المنصة الرائدة في ليبيا لإدارة المتاجر الإلكترونية، تشمل إدارة الطلبات والمخزون والدفع والشحن المحلي.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Liysta",
+    "url": "https://liysta.ly",
+    "logo": "https://liysta.ly{% static 'img/fc.png' %}",
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61581502305511",
+      "https://www.tiktok.com/@liystaplatform?_r=1&_t=ZM-934Hiw4vpEa"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Support",
+      "telephone": "+218935931207",
+      "email": "liystaplatform@liysta.ly",
+      "availableLanguage": "ar"
+    }
+  },
+  "mainEntity": [
+    {
+      "@type": "Product",
+      "name": "باقة Liysta",
+      "description": "باقة مرنة لإدارة متجرك الإلكتروني في ليبيا، تشمل إدارة الطلبات والمخزون والدفع والشحن المحلي",
+      "brand": {
+        "@type": "Organization",
+        "name": "Liysta"
+      },
+      "offers": [
+        {% for plan in plans %}
+        {
+          "@type": "Offer",
+          "name": "{{ plan.name }}",
+          "price": "{{ plan.get_discounted_price }}",
+          "priceCurrency": "LYD",
+          "url": "https://liysta.ly{% url 'buy_plan' plan.id %}",
+          "availability": "https://schema.org/InStock"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "كيفية استخدام Liysta لإنشاء متجر إلكتروني",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "سجّل حسابك في Liysta",
+          "text": "أنشئ حسابك في دقائق باستخدام بريدك الإلكتروني ورقم الهاتف."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "أضف منتجاتك بسهولة",
+          "text": "قم بتحميل المنتجات مع صور عالية الجودة وأوصاف تفصيلية وأسعار."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "شارك متجرك مع العملاء",
+          "text": "احصل على رابط فريد ورمز QR لمتجرك الإلكتروني على Liysta."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "استقبل الطلبات وأدِرها",
+          "text": "استقبل الطلبات مباشرة على لوحة تحكم Liysta وراقب المخزون والمبيعات."
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "name": "Liysta",
+      "url": "https://liysta.ly",
+      "logo": "https://liysta.ly{% static 'img/fc.png' %}",
+      "makesOffer": {
+        "@type": "Service",
+        "name": "منصة إنشاء وإدارة متاجر إلكترونية في ليبيا",
+        "serviceType": "E-commerce Platform"
+      },
+      "client": [
+        {% for customer in our_customers %}
+        {
+          "@type": "Organization",
+          "name": "{{ customer.name }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    },
+    {
+      "@type": "ContactPage",
+      "name": "دعم فني Liysta",
+      "url": "https://liysta.ly/support",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "telephone": "+218935931207",
+        "email": "liystaplatform@liysta.ly",
+        "availableLanguage": "ar"
+      }
+    }
+  ],
+  "potentialAction": {
+    "@type": "SubscribeAction",
+    "target": "https://liysta.ly/register-customer",
+    "name": "اشترك الآن للحصول على باقة Liysta"
+  }
+}
+</script>
 </head>    
     
 
@@ -106,8 +213,8 @@
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="hero-text" data-aos="fade-right">
-                <h1>جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا</h1>
-                <p>المتجر الالكتروني اليدوي لايمكن ان يستقبل مئات الطلبات بشكل يومي ولكن معانا  قواعد اللعبة تتغير</p>
+                <h1>جهّز متجرك الالكتروني في ليبيا واستقبل مئات الطلبات يوميًا مع Liysta</h1>
+                <p>Liysta هي أفضل منصة ليبية لإنشاء وإدارة المتاجر الإلكترونية، مع أدوات احترافية للدفع والشحن المحلي.</p>
                 <div class="hero-actions">
                     <a href="{% url 'plan_list' %}" class="btn btn-primary">
                         <i class="fas fa-list"></i> استعرض الباقات
@@ -133,55 +240,56 @@
     </section>
 
     <!-- قسم الميزات -->
-    <section class="features-section" id="features">
-        <div class="section-title" data-aos="fade-up">
-            <h2>لماذا Liysta هي الحل الأمثل لك؟</h2>
-            <p>اكتشف الميزات الرائعة التي تجعل منصتنا الخيار الأول  لمتجرك الالكتروني</p>
+<section class="features-section" id="features">
+    <div class="section-title" data-aos="fade-up">
+        <h2>لماذا Liysta هي الحل الأمثل لمتجرك الإلكتروني في ليبيا؟</h2>
+        <p>اكتشف ميزاتنا التي تجعل إدارة متجرك سهلة وآمنة مع الدفع والشحن المحلي</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
+            <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+            <h3>انتشر بسرعة في السوق الليبي</h3>
+            <p>قم بإنشاء متجرك الإلكتروني على Liysta وابدأ في بيع منتجاتك واستقبال الطلبات في أي مكان داخل ليبيا بسهولة وسرعة.</p>
         </div>
-        
-        <div class="features-grid">
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
-                <h3>سهولة الانتشار</h3>
-                <p>معنا يمكنك ان تنشر متجلرك بدون عوائق وقت ولامكان ما سيوفر عليك الكثير من التكاليف</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="feature-icon"><i class="fas fa-clock"></i></div>
-                <h3>اختصر وقتك</h3>
-                <p>استقبل الطلبات في اي وقت وسهل على عملائك اختيار حاجاتهم بدون تعقيدات ولا انتظار</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                <h3> احصائيات دقيقة</h3>
-                <p>راقب متجرك واحصل على تحليلات كاملة عن الاداء والمبيعات والارباح...</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
-                <h3>رموز QR مخصصة</h3>
-                <p>ستحصل تلقائيا على رمز QR فريدة لمتجرك أو قائمة مطعمك لتشاركه مع عملائك</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="feature-icon"><i class="fas fa-star"></i></div>
-                <h3>تقييمات العملاء</h3> 
-                <p>استقبل تقييمات عملائك حول متجرك او مطعمك باحترافي عالية</p>
-            </div>
-            
-            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-                <div class="feature-icon"><i class="fas fa-shopping-cart"></i></div>
-                <h3>نظام طلبات متكامل</h3>
-                <p>استقبل الطلبات مباشرة من عملائك عبر صفحتك الخاصة بك...</p>
-            </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-icon"><i class="fas fa-clock"></i></div>
+            <h3>إدارة الطلبات بسرعة وفعالية</h3>
+            <p>استقبل الطلبات مباشرة عبر لوحة تحكم Liysta السهلة، وامنح عملائك تجربة سلسة دون أي تأخير.</p>
         </div>
-    </section>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>تقارير ومؤشرات أداء دقيقة</h3>
+            <p>تابع مبيعاتك وأرباحك في الوقت الحقيقي باستخدام نظام التحليلات المتقدم من Liysta، لتحسين أداء متجرك الإلكتروني في ليبيا.</p>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+            <h3>رموز QR فريدة لمتجرك</h3>
+            <p>احصل على رمز QR مخصص لمتجرك الإلكتروني على Liysta وشارك رابطك بسهولة مع عملائك عبر وسائل التواصل الاجتماعي.</p>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="feature-icon"><i class="fas fa-star"></i></div>
+            <h3>جمع تقييمات العملاء بسهولة</h3>
+            <p>استقبل تقييمات ومراجعات عملائك حول منتجاتك وخدماتك عبر Liysta لتعزيز الثقة وتحسين متجرك الإلكتروني في ليبيا.</p>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+            <div class="feature-icon"><i class="fas fa-shopping-cart"></i></div>
+            <h3>نظام طلبات متكامل</h3>
+            <p>استقبل الطلبات مباشرة من عملائك على متجرك الإلكتروني في ليبيا باستخدام لوحة تحكم Liysta المتكاملة وإدارة المخزون بسهولة.</p>
+        </div>
+    </div>
+</section>
 
     <section class="packages-section" id="packages">
         <div class="section-title" data-aos="fade-up">
             <h2>اختر الباقة ذات الميزات المناسبة لك</h2>
-            <p>باقات مرنة تناسب جميع أنواع الأعمال مع خصومات دورية</p>
+            <p>باقة مرنة تناسب جميع أحجام الأعمال مع ميزات إدارة الطلبات والمخزون والدفع والشحن المحلي</p>
+
         </div>
         
         <div class="packages-container">
@@ -200,9 +308,9 @@
                     <ul class="package-features">
                         <li>عدد المنتجات: {{ plan.product_count }}</li>
                         {% if plan.ordering %}
-                        <li>نظام طلبات متكامل</li>
-                        <li>إحصائيات المبيعات والارباح</li>
-                        <li>ادارة اسعار التوصيل</li>
+                        <li>نظام طلبات متكامل على Liysta</li>
+                        <li>إحصائيات المبيعات والأرباح</li>
+                        <li>إدارة أسعار التوصيل محلياً</li>
                         {% else %}
                         <li>قائمة عرض فقط</li>
                         {% endif %}
@@ -231,43 +339,40 @@
         </div>
     </section>
 
-    <section class="how-it-works" id="how-it-works">
-        <div class="section-title" data-aos="fade-up">
-            <h2>كيف تنضم الينا؟ Liysta؟</h2>
-            <p>4 خطوات بسيطة تفصلك عن تحويل عملك إلى تجربة رقمية متكاملة</p>
+ <section class="how-it-works" id="how-it-works">
+    <div class="section-title" data-aos="fade-up">
+        <h2>كيف يعمل Liysta لمتجرك الإلكتروني في ليبيا؟</h2>
+        <p>4 خطوات بسيطة لتحويل عملك إلى تجربة رقمية متكاملة</p>
+    </div>
+
+    <div class="process-steps">
+        <div class="process-step" data-aos="fade-up" data-aos-delay="0">
+            <div class="step-number">1</div>
+            <h3>سجّل حسابك في Liysta</h3>
+            <p>أنشئ حسابك في دقائق باستخدام بريدك الإلكتروني ورقم الهاتف، واستعد لإنشاء متجرك الإلكتروني في ليبيا.</p>
         </div>
-        
-        <div class="process-steps">
-            <div class="process-step" data-aos="fade-up" data-aos-delay="0">
-                <div class="step-number">1</div>
-                <h3>سجل حسابك في دقائق</h3>
-                <p>أنشئ حسابك في أقل من دقيقة باستخدام بريدك الإلكتروني ورقم هاتفك. لا حاجة لمعلومات معقدة أو خبرة تقنية.</p>
-            </div>
-            
-            <div class="process-step" data-aos="fade-up" data-aos-delay="100">
-                <div class="step-number">2</div>
-                <h3>أضف منتجاتك بسهولة</h3>
-                <p>قم بتحميل منتجاتك أو قائمة طعامك مع صور عالية الجودة، وأوصاف تفصيلية، وأسعار، وأي تفاصيل أخرى يحتاجها عملاؤك.</p>
-            </div>
-            
-            <div class="process-step" data-aos="fade-up" data-aos-delay="200">
-                <div class="step-number">3</div>
-                <h3>شارك متجرك مع العالم</h3>
-                <p>احصل على رابط فريد لمتجرك ورمز QR يمكنك مشاركته على وسائل التواصل الاجتماعي. يمكن للعملاء تصفح منتجاتك ووضع الطلبات مباشرة.</p>
-            </div>
-            
-            <div class="process-step" data-aos="fade-up" data-aos-delay="300">
-                <div class="step-number">4</div>
-                <h3>استقبل الطلبات وأدرها بسهولة</h3>
-                <p>استقبل الطلبات مباشرة على لوحة التحكم الخاصة بك. يمكنك تحديث حالة الطلب وإدارة المخزون بضغطة زر.</p>
-            </div>
+        <div class="process-step" data-aos="fade-up" data-aos-delay="100">
+            <div class="step-number">2</div>
+            <h3>أضف منتجاتك بسهولة</h3>
+            <p>قم بتحميل منتجاتك مع صور عالية الجودة، وأوصاف تفصيلية، وأسعار تنافسية، مباشرة على منصة Liysta.</p>
         </div>
-    </section>
+        <div class="process-step" data-aos="fade-up" data-aos-delay="200">
+            <div class="step-number">3</div>
+            <h3>شارك متجرك مع العملاء</h3>
+            <p>احصل على رابط فريد ورمز QR لمتجرك الإلكتروني على Liysta وشارك منتجاتك مع عملائك بسهولة.</p>
+        </div>
+        <div class="process-step" data-aos="fade-up" data-aos-delay="300">
+            <div class="step-number">4</div>
+            <h3>استقبل الطلبات وأدِرها</h3>
+            <p>استقبل الطلبات مباشرة على لوحة تحكم Liysta، وراقب المخزون والمبيعات بسهولة.</p>
+        </div>
+    </div>
+</section>
 
     <section class="clients-section" id="clients">
         <div class="section-title" data-aos="fade-up">
-            <h2>عملاؤنا الذين يثقون بنا</h2>
-            <p>متاجر حققت النجاح معنا</p>  
+        <h2>عملاؤنا في ليبيا الذين يثقون بـ Liysta</h2>
+        <p>متاجر إلكترونية حققت النجاح باستخدام منصة Liysta</p> 
         </div>
         
         <div class="clients-grid">
@@ -282,9 +387,10 @@
     <section class="support-section" id="support">
         <div class="support-content">
             <div class="support-text" data-aos="fade-right">
-                <h2>دعم فني متاح على مدار الساعة</h2>
-                <p>فريق الدعم الفني لدينا جاهز لمساعدتك في أي وقت، لتضمن لك تجربة سلسة وخالية من المشاكل.</p>
-                
+            <h2>دعم فني على مدار الساعة لكل متاجر ليبيا</h2>
+            <p>فريق دعم Liysta جاهز لمساعدتك في أي وقت لضمان تجربة سلسة وإدارة متجرك الإلكتروني بكفاءة.</p>
+            
+                      
                 <ul class="support-features">
                     <li data-aos="fade-right" data-aos-delay="100">
                         <i class="fas fa-headset"></i>
@@ -330,14 +436,12 @@
             </div>
         </div>
     </section>
-
-    <!-- الفوتر -->
+    
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-col">
                 <h3>Liysta</h3>
-                <p>جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا</p>
-                
+               <p>منصة ليبية لإنشاء وإدارة متاجر إلكترونية احترافية في ليبيا</p>               
                 <div class="social-links">
                     <a href="https://www.facebook.com/profile.php?id=61581502305511"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://www.tiktok.com/@liystaplatform?_r=1&_t=ZM-934Hiw4vpEa"><i class="fab fa-tiktok"></i></a>
