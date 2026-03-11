@@ -17,7 +17,7 @@ urlpatterns = [
 
     path('about-us/',about,name='about'),
     path('blog/',blog,name='blog'),
-    path('blog/<str:slug>/', blog, name='blog_article'),
+    re_path(r'^blog/.*/$', blog, name='blog_article'),
 
     path('faqs/',faqs,name='faqs'),
 

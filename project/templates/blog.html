@@ -1186,44 +1186,114 @@
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 800, once: true });
+<script>
+    AOS.init({ duration: 800, once: true });
 
-        function showArticle(articleNumber) {
-            const articles = document.querySelectorAll('.blog-article');
-            articles.forEach(article => {
-                article.classList.remove('active');
-            });
-            
-            document.getElementById(`article-${articleNumber}`).classList.add('active');
-            
-            const links = document.querySelectorAll('.article-link');
-            links.forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            event.currentTarget.classList.add('active');
-            
-            document.querySelector('.blog-content').scrollTop = 0;
-            
-            const articleTitles = {
-                1: "how-to-start-ecommerce",
-                2: "liysta-guide",
-                3: "sales-strategies",
-                4: "order-management",
-                5: "qr-code-marketing",
-                6: "shipping-guide",
-                7: "product-photography"
+    function getArticleNumberFromUrl() {
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1); 
+            const hashMap = {
+                'how-to-start-ecommerce': 1,
+                'liysta-guide': 2,
+                'sales-strategies': 3,
+                'order-management': 4,
+                'qr-code-marketing': 5,
+                'shipping-guide': 6,
+                'product-photography': 7
             };
-            
-            window.history.pushState({}, '', `/blog/${articleTitles[articleNumber]}/`);
+            if (hashMap[hash]) {
+                return hashMap[hash];
+            }
         }
+        
+        const path = window.location.pathname;
+        const match = path.match(/\/blog\/([^\/]+)\//);
+        if (match && match[1]) {
+            const pathMap = {
+                'how-to-start-ecommerce': 1,
+                'liysta-guide': 2,
+                'sales-strategies': 3,
+                'order-management': 4,
+                'qr-code-marketing': 5,
+                'shipping-guide': 6,
+                'product-photography': 7
+            };
+            if (pathMap[match[1]]) {
+                return pathMap[match[1]];
+            }
+        }
+        
+        return 1; 
+    }
 
-        function disableTrialBtn(btn) {
-            btn.style.pointerEvents = 'none';   
-            btn.style.opacity = '0.6';          
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفعيل...';
+    function showArticle(articleNumber) {
+        const articles = document.querySelectorAll('.blog-article');
+        articles.forEach(article => {
+            article.classList.remove('active');
+            article.style.display = 'none';
+        });
+        
+        const selectedArticle = document.getElementById(`article-${articleNumber}`);
+        if (selectedArticle) {
+            selectedArticle.classList.add('active');
+            selectedArticle.style.display = 'block';
         }
-    </script>
+        
+        const links = document.querySelectorAll('.article-link');
+        links.forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        const activeLink = Array.from(links).find(link => 
+            link.getAttribute('onclick') && link.getAttribute('onclick').includes(`showArticle(${articleNumber})`)
+        );
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+        
+        document.querySelector('.blog-content').scrollTop = 0;
+        
+        const articleSlugs = {
+            1: "how-to-start-ecommerce",
+            2: "liysta-guide",
+            3: "sales-strategies",
+            4: "order-management",
+            5: "qr-code-marketing",
+            6: "shipping-guide",
+            7: "product-photography"
+        };
+        
+        if (articleSlugs[articleNumber]) {
+            window.location.hash = articleSlugs[articleNumber];
+        }
+    }
+
+    window.addEventListener('load', function() {
+        const articleNumber = getArticleNumberFromUrl();
+        showArticle(articleNumber);
+    });
+
+    window.addEventListener('hashchange', function() {
+        const articleNumber = getArticleNumberFromUrl();
+        showArticle(articleNumber);
+    });
+
+    function disableTrialBtn(btn) {
+        btn.style.pointerEvents = 'none';   
+        btn.style.opacity = '0.6';          
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفعيل...';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('.article-link');
+        links.forEach(link => {
+            link.style.cursor = 'pointer';
+            
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        });
+    });
+</script>
 </body>
 </html>

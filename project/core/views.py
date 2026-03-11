@@ -67,8 +67,8 @@ def plan_list(request):
 def faqs(request):
     return render(request,'faqs.html')
 
-def blog(request):
-    return render(request,'blog.html')
+def blog(request,slug=None):
+    return render(request,'blog.html',{'current_slug':slug})
 
 
 #admin views 
