@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('about-us/',about,name='about'),
     path('blog/',blog,name='blog'),
+    path('blog/<str:slug>/', blog, name='blog_article'),
+
     path('faqs/',faqs,name='faqs'),
 
     path('How_it_works/',learn,name='how-it-works'),
