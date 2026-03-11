@@ -60,6 +60,7 @@ def privacy(request):
     return render(request,'privacy.html')
 def learn(request):
     return render(request,'learn.html')
+
 def plan_list(request):
     plans = Plan.objects.all()
     return render(request,'plan_list.html',{'plans':plans})

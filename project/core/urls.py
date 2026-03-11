@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,re_path
 from .views import *
 from django.contrib.auth import views as v
 from django.contrib.sitemaps.views import sitemap
