@@ -67,10 +67,50 @@ def plan_list(request):
 
 def faqs(request):
     return render(request,'faqs.html')
+def blog(request):
+    return render(request,'blog.html')
+def blog_post(request, slug):
 
-def blog(request,slug=None):
-    return render(request,'blog.html',{'current_slug':slug})
+    articles = {
+    'how-to-start-ecommerce-libya': 'blog/how-to-start-ecommerce-libya.html',
+    'create-store-with-liysta': 'blog/create-store-with-liysta.html',
+    'increase-ecommerce-sales': 'blog/increase-ecommerce-sales.html',
+    'order-and-inventory-management': 'blog/order-and-inventory-management.html',
+    'qr-code-marketing-ecommerce': 'blog/qr-code-marketing-ecommerce.html',
+    'shipping-guide-libya': 'blog/shipping-guide-libya.html',
+    'product-photography-tips': 'blog/product-photography-tips.html',
+    'best-products-to-sell-libya': 'blog/best-products-to-sell-libya.html',
+    'ecommerce-beginner-mistakes': 'blog/ecommerce-beginner-mistakes.html',
+    'choose-product-to-sell-online': 'blog/choose-product-to-sell-online.html',
+    'ecommerce-marketing-strategies': 'blog/ecommerce-marketing-strategies.html',
+    'facebook-ads-for-ecommerce': 'blog/facebook-ads-for-ecommerce.html',
+    'product-description-writing': 'blog/product-description-writing.html',
+    'customer-service-ecommerce': 'blog/customer-service-ecommerce.html',
+    'build-ecommerce-brand': 'blog/build-ecommerce-brand.html',
+    'attract-customers-ecommerce': 'blog/attract-customers-ecommerce.html',
+    'manage-orders-ecommerce': 'blog/manage-orders-ecommerce.html',
+    'ecommerce-management-tools': 'blog/ecommerce-management-tools.html',
+    'dropshipping-libya': 'blog/dropshipping-libya.html',
+    'pricing-products-ecommerce': 'blog/pricing-products-ecommerce.html',
+    'build-trust-ecommerce': 'blog/build-trust-ecommerce.html',
+    'content-marketing-ecommerce': 'blog/content-marketing-ecommerce.html',
+    'convert-visitors-to-customers': 'blog/convert-visitors-to-customers.html',
+    'customer-reviews-ecommerce': 'blog/customer-reviews-ecommerce.html',
+    'choose-shipping-company': 'blog/choose-shipping-company.html',
+    'inventory-management-tips': 'blog/inventory-management-tips.html',
+    'reduce-return-orders': 'blog/reduce-return-orders.html',
+    'whatsapp-marketing-ecommerce': 'blog/whatsapp-marketing-ecommerce.html',
+    'selling-products-online-guide': 'blog/selling-products-online-guide.html',
+    'ecommerce-success-metrics': 'blog/ecommerce-success-metrics.html',
+    'manage-online-store-professionally': 'blog/manage-online-store-professionally.html',
+    }
 
+    template = articles.get(slug)
+
+    if template:
+        return render(request, template)
+
+    return render(request, "404.html")
 
 #admin views 
 
