@@ -110,7 +110,7 @@ def blog_post(request, slug):
     if template:
         return render(request, template)
 
-    return render(request, "404.html")
+    return render(request, "blog.html")
 
 #admin views 
 
