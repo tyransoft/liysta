@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="بناء ثقة العملاء, ثقة المتجر الإلكتروني, زيادة المبيعات, ولاء العملاء, تجارة إلكترونية ليبيا, Liysta">
+    <meta name="author" content="Liysta">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:title" content="كيف تبني ثقة العملاء مع متجرك الإلكتروني | دليل 2026">
+    <meta property="og:description" content="دليل شامل لبناء ثقة العملاء مع متجرك الإلكتروني لزيادة المبيعات والحفاظ على ولاء العملاء.">
+    <meta property="og:image" content="https://www.liysta.ly{% static 'img/fc.png' %}">
+    <meta property="og:url" content="https://www.liysta.ly/blog/build-trust-ecommerce/">
+    <meta property="og:type" content="article">
+    <meta name="twitter:title" content="كيف تبني ثقة العملاء مع متجرك الإلكتروني">
+    <meta name="twitter:description" content="دليل شامل لبناء ثقة العملاء مع متجرك الإلكتروني">
+    <meta name="twitter:image" content="https://www.liysta.ly/static/img/fc.png">
+    
+    <title>كيف تبني ثقة العملاء مع متجرك الإلكتروني | Liysta</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="canonical" href="https://www.liysta.ly/blog/build-trust-ecommerce/">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    
+    <!-- Schema Markup للمقال -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "كيف تبني ثقة العملاء مع متجرك الإلكتروني",
+        "description": "دليل شامل لبناء ثقة العملاء مع متجرك الإلكتروني لزيادة المبيعات والحفاظ على ولاء العملاء.",
+        "image": "https://www.liysta.ly/static/img/fc.png",
+        "datePublished": "2026-03-12",
+        "dateModified": "2026-03-12",
+        "author": {
+            "@type": "Organization",
+            "name": "Liysta",
+            "url": "https://www.liysta.ly"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Liysta",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.liysta.ly/static/img/fc.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.liysta.ly/blog/build-trust-ecommerce/"
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "الرئيسية",
+                "item": "https://www.liysta.ly"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "المدونة",
+                "item": "https://www.liysta.ly/blog/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "كيف تبني ثقة العملاء مع متجرك الإلكتروني",
+                "item": "https://www.liysta.ly/blog/build-trust-ecommerce/"
+            }
+        ]
+    }
+    </script>
+    
+    <style>
+        :root {
+            --primary-blue: #4361ee;
+            --primary-orange: #ff7b25;
+            --success-color: #06d6a0;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3748;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-links a:hover,
+        .navbar-links a.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .breadcrumb {
+            max-width: 1300px;
+            margin: 20px auto 0;
+            padding: 0 30px;
+        }
+        
+        .breadcrumb-container {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+        
+        .breadcrumb span {
+            color: var(--primary-orange);
+            font-weight: 500;
+        }
+        
+        .breadcrumb i {
+            color: #6c757d;
+            margin: 0 10px;
+            font-size: 0.8rem;
+        }
+
+        .article-main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 30px;
+            flex: 1;
+        }
+
+        .article-container {
+            background: white;
+            border-radius: 15px;
+            padding: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-blue);
+        }
+
+        .article-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .article-header h1 {
+            color: var(--primary-blue);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            line-height: 1.4;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 20px;
+            color: #6c757d;
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+        }
+
+        .article-meta i {
+            color: var(--primary-orange);
+            margin-left: 5px;
+        }
+
+        .article-body {
+            line-height: 1.9;
+            font-size: 1.1rem;
+        }
+
+        .article-body h2 {
+            color: var(--primary-blue);
+            font-size: 1.7rem;
+            margin: 45px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .article-body h3 {
+            color: var(--dark-text);
+            font-size: 1.4rem;
+            margin: 35px 0 15px;
+        }
+
+        .article-body p {
+            margin-bottom: 25px;
+            color: #4a5568;
+        }
+
+        .article-body ul, 
+        .article-body ol {
+            margin: 25px 0;
+            padding-right: 25px;
+        }
+
+        .article-body li {
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .article-body li::marker {
+            color: var(--primary-orange);
+        }
+
+        .article-body strong {
+            color: var(--primary-blue);
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-right: 4px solid var(--primary-orange);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 35px 0;
+            font-size: 1rem;
+        }
+
+        .info-box i {
+            color: var(--primary-orange);
+            margin-left: 10px;
+            font-size: 1.3rem;
+        }
+
+        .info-box a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .info-box a:hover {
+            color: var(--primary-orange);
+            text-decoration: underline;
+        }
+
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-mini {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-mini .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .stat-mini .label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .btn-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary-blue), #3a56d4);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 20px 0 10px;
+        }
+
+        .btn-blog:hover {
+            background: linear-gradient(135deg, var(--primary-orange), #ff6b1a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 123, 37, 0.3);
+            color: white;
+        }
+
+        .btn-blog i {
+            font-size: 1.1rem;
+        }
+
+        .btn-blog-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-blog-small:hover {
+            background: var(--primary-orange);
+            color: white;
+        }
+
+        .related-articles {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .related-articles h3 {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .related-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .related-card:hover {
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+
+        .related-card h4 {
+            font-size: 1rem;
+            margin: 0 0 10px 0;
+            color: var(--dark-text);
+            line-height: 1.5;
+        }
+
+        .related-card a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .related-card a:hover {
+            color: var(--primary-orange);
+        }
+
+        .footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 30px 30px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-orange);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .contact-info {
+            list-style: none;
+            padding: 0;
+        }
+
+        .contact-info li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #999;
+        }
+
+        .contact-info i {
+            color: var(--primary-orange);
+            width: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .article-container {
+                padding: 25px;
+            }
+            
+            .article-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .navbar-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navbar-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-mini {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .article-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-blog {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-text">Liysta</span>
+            </div>
+            
+            <ul class="navbar-links">
+                <li><a href="{% url 'home' %}">الرئيسية</a></li>
+                <li><a href="{% url 'plan_list' %}">الباقات</a></li>
+                <li><a href="{% url 'how-it-works' %}">كيف يعمل</a></li>
+                <li><a href="{% url 'blog' %}" class="active">المدونة</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="{% url 'home' %}">الرئيسية</a>
+            <i class="fas fa-chevron-left"></i>
+            <a href="{% url 'blog' %}">المدونة</a>
+            <i class="fas fa-chevron-left"></i>
+            <span>كيف تبني ثقة العملاء مع متجرك الإلكتروني</span>
+        </div>
+    </div>
+
+    <main class="article-main">
+        <div class="article-container" data-aos="fade-up">
+            
+            <!-- بداية المقال مع Schema -->
+            <div class="blog-article" itemscope itemtype="https://schema.org/BlogPosting">
+                
+                <meta itemprop="url" content="https://www.liysta.ly/blog/build-trust-ecommerce">
+                <meta itemprop="datePublished" content="2026-03-12">
+                <meta itemprop="dateModified" content="2026-03-12">
+
+                <!-- رأس المقال -->
+                <div class="article-header">
+                    <h1 itemprop="headline">كيف تبني ثقة العملاء مع متجرك الإلكتروني</h1>
+                    
+                    <div class="article-meta">
+                        <span><i class="far fa-calendar"></i> <span itemprop="datePublished">12 مارس 2026</span></span>
+                        <span><i class="far fa-clock"></i> 12 دقيقة قراءة</span>
+                        <span><i class="far fa-eye"></i> 3k مشاهدة</span>
+                    </div>
+                    
+                    <meta itemprop="description" content="دليل شامل لبناء ثقة العملاء مع متجرك الإلكتروني لزيادة المبيعات والحفاظ على ولاء العملاء.">
+                </div>
+
+                <!-- جسم المقال -->
+                <div class="article-body" itemprop="articleBody">
+
+                    <div class="info-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>معلومة مهمة:</strong> الثقة هي العامل الأهم في قرار العميل بالشراء عبر الإنترنت، وبناءها يحتاج استراتيجيات دقيقة وشفافة.
+                    </div>
+
+                    <h3>1. أهمية الثقة في التجارة الإلكترونية</h3>
+                    <p>العملاء لا يرون المنتج فعليًا قبل الشراء، لذلك يعتمدون على العلامة التجارية والموقع والسمعة لاتخاذ القرار. إذا شعر العميل بعدم الثقة، سيترك الموقع مباشرة.</p>
+                    <ul>
+                        <li>زيادة معدل التحويل: العملاء الذين يثقون بالمتجر يشترون بشكل أسرع.</li>
+                        <li>تحفيز الولاء: العملاء الموثوقون يعودون لشراء منتجات أخرى.</li>
+                        <li>تقييمات إيجابية: الثقة تعزز من مشاركة التجربة الإيجابية مع الآخرين.</li>
+                    </ul>
+
+                    <h3>2. تصميم موقع موثوق</h3>
+                    <p>المظهر الجيد والاحترافي للموقع يعطي انطباعًا أوليًا إيجابيًا:</p>
+                    <ul>
+                        <li>استخدام تصميم نظيف ومنسق وسهل التصفح.</li>
+                        <li>التحقق من أمان الموقع (HTTPS) وشعارات الدفع الآمن.</li>
+                        <li>إظهار سياسة الاسترجاع والاستبدال بوضوح.</li>
+                        <li>تقديم معلومات واضحة عن طرق التواصل والدعم.</li>
+                    </ul>
+
+                    <h3>3. استخدام مراجعات العملاء وشهاداتهم</h3>
+                    <p>المراجعات الحقيقية تعزز الثقة:</p>
+                    <ul>
+                        <li>اعرض تقييمات العملاء بشكل بارز على صفحات المنتج.</li>
+                        <li>شجع العملاء على مشاركة صورهم وتجاربهم مع المنتج.</li>
+                        <li>تفاعل مع المراجعات سواء كانت إيجابية أو سلبية بحرفية.</li>
+                    </ul>
+
+                    <h3>4. تقديم دعم عملاء ممتاز</h3>
+                    <p>الدعم السريع والفعال يقلل من القلق ويزيد الثقة:</p>
+                    <ul>
+                        <li>استخدام قنوات متعددة: واتساب، البريد الإلكتروني، والدردشة المباشرة.</li>
+                        <li>الرد السريع على استفسارات العملاء في أقل من 24 ساعة.</li>
+                        <li>تدريب فريق الدعم على التعامل بأسلوب ودود ومحترف.</li>
+                    </ul>
+
+                    <h3>5. سياسات واضحة وشفافة</h3>
+                    <ul>
+                        <li>توضيح شروط الدفع والاسترجاع والشحن بشكل واضح ومرن.</li>
+                        <li>تجنب الغموض في أي تفاصيل مالية أو قيود على المنتج.</li>
+                        <li>ضمان حقوق العميل سيزيد من ثقة العملاء الجدد.</li>
+                    </ul>
+
+                    <h3>6. بناء علاقة مستمرة مع العملاء</h3>
+                    <ul>
+                        <li>إرسال رسائل متابعة بعد الشراء لسؤال العملاء عن تجربتهم.</li>
+                        <li>تقديم عروض حصرية للعملاء الحاليين لإظهار تقديرك لهم.</li>
+                        <li>إنشاء محتوى ذو قيمة على مدونتك أو قناتك على تلجرام <a href="https://t.me/liystaly" target="_blank">Liysta</a> لتعزيز العلاقة والثقة.</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <i class="fas fa-handshake"></i>
+                        <strong>نصيحة:</strong> الثقة تُبنى على المدى الطويل من خلال الشفافية والالتزام والاحترافية في كل تفاصيل المتجر.
+                    </div>
+
+                    <h3>7. الخلاصة</h3>
+                    <p>بناء ثقة العملاء ليس خيارًا، بل هو ضرورة لأي متجر إلكتروني يريد النجاح واستدامة المبيعات. من خلال موقع احترافي، دعم عملاء ممتاز، مراجعات حقيقية، وسياسات واضحة، يمكنك تحويل الزائر إلى عميل دائم يثق بك ويستمر في الشراء من متجرك.</p>
+
+                    <div style="text-align: center; margin-top: 40px;">
+                        <a href="{% url 'register-customer' %}" class="btn-blog">
+                            <i class="fas fa-handshake"></i> ابدأ ببناء ثقة عملائك الآن
+                        </a>
+                    </div>
+
+                </div>
+                <!-- نهاية جسم المقال -->
+
+                <!-- معلومات الناشر المخفية -->
+                <div itemprop="author" itemscope itemtype="https://schema.org/Organization" style="display:none;">
+                    <meta itemprop="name" content="Liysta">
+                </div>
+
+                <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization" style="display:none;">
+                    <meta itemprop="name" content="Liysta">
+                    <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+                        <meta itemprop="url" content="https://www.liysta.ly/static/img/fc.png">
+                    </div>
+                </div>
+            </div>
+            <!-- نهاية المقال مع Schema -->
+
+            <!-- مقالات ذات صلة -->
+            <div class="related-articles">
+                <h3>مقالات قد تهمك</h3>
+                <div class="related-grid">
+                    <div class="related-card">
+                        <h4>خدمة العملاء في التجارة الإلكترونية</h4>
+                        <a href="{% url 'blog_article' slug='customer-service-ecommerce' %}">
+                            اقرأ المزيد <i class="fas fa-arrow-left"></i>
+                        </a>
+                    </div>
+                    <div class="related-card">
+                        <h4>بناء علامة تجارية قوية لمتجرك الإلكتروني</h4>
+                        <a href="{% url 'blog_article' slug='build-ecommerce-brand' %}">
+                            اقرأ المزيد <i class="fas fa-arrow-left"></i>
+                        </a>
+                    </div>
+                    <div class="related-card">
+                        <h4>طرق فعّالة لجذب العملاء لمتجرك الإلكتروني</h4>
+                        <a href="{% url 'blog_article' slug='attract-customers-ecommerce' %}">
+                            اقرأ المزيد <i class="fas fa-arrow-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Liysta</h3>
+                <p>جهّز متجرك الالكتروني لاستقبال مئات الطلبات يومياً</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61581502305511" rel="nofollow" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.tiktok.com/@liystaplatform" rel="nofollow" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://t.me/liystaly" rel="nofollow" target="_blank"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'home' %}"><i class="fas fa-arrow-left"></i> الرئيسية</a></li>
+                    <li><a href="{% url 'plan_list' %}"><i class="fas fa-arrow-left"></i> الباقات</a></li>
+                    <li><a href="{% url 'how-it-works' %}"><i class="fas fa-arrow-left"></i> كيف يعمل</a></li>
+                    <li><a href="{% url 'blog' %}"><i class="fas fa-arrow-left"></i> المدونة</a></li>
+                    <li><a href="{% url 'faqs' %}"><i class="fas fa-arrow-left"></i> الأسئلة الشائعة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>المساعدة</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'terms' %}"><i class="fas fa-arrow-left"></i> الشروط والأحكام</a></li>
+                    <li><a href="{% url 'privacy' %}"><i class="fas fa-arrow-left"></i> سياسة الخصوصية</a></li>
+                    <li><a href="{% url 'about' %}"><i class="fas fa-arrow-left"></i> من نحن</a></li>
+                    <li><a href="{% url 'saler_login' %}"><i class="fas fa-arrow-left"></i> التسويق بالعمولة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>اتصل بنا</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> liystaplatform@liysta.ly</li>
+                    <li><i class="fab fa-whatsapp"></i> 0935931207</li>
+                    <li><i class="fas fa-map-marker-alt"></i> ليبيا</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Liysta. جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+</body>
+</html>
