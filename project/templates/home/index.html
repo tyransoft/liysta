@@ -11,11 +11,11 @@
     <meta name="author" content="Liysta-ليستا">
     <meta name="robots" content="index, follow">
 
-    <title>Liysta - منصة ليبية لإنشاء وإدارة متاجر إلكترونية احترافية في ليبيا</title>
+    <title>Liysta -لييستا منصة ليبية لإنشاء وإدارة متاجر إلكترونية احترافية في ليبيا </title>
     <meta property="og:title" content="Liysta - تغير قواعد اللعبة في عالم التجارة الالكترونية في ليبيا">
     <meta property="og:description" content="Liysta - أنشئ وأدِر متجرك الإلكتروني بسهولة واستقبل مئات الطلبات يوميًا في ليبيا">
-    <meta property="og:image" content="https://liysta.ly{% static 'img/fc.png' %}">
-    <meta property="og:url" content="https://liysta.ly">
+    <meta property="og:image" content="https://www.liysta.ly{% static 'img/fc.png' %}">
+    <meta property="og:url" content="https://www.liysta.ly">
     <meta property="og:type" content="website">
 
     <link rel="canonical" href="https://www.liysta.ly" />
@@ -30,13 +30,13 @@
   "@context": "https://schema.org",
   "@type": "WebPage",
   "name": "Liysta - منصة ليبية لإنشاء وإدارة متاجر إلكترونية احترافية",
-  "url": "https://liysta.ly",
+  "url": "https://www.liysta.ly",
   "description": "جهّز متجرك الالكتروني لاستقبال مئات الطلبات يوميا مع Liysta، المنصة الرائدة في ليبيا لإدارة المتاجر الإلكترونية، تشمل إدارة الطلبات والمخزون والدفع والشحن المحلي.",
   "publisher": {
     "@type": "Organization",
     "name": "Liysta",
-    "url": "https://liysta.ly",
-    "logo": "https://liysta.ly{% static 'img/fc.png' %}",
+    "url": "https://www.liysta.ly",
+    "logo": "https://www.liysta.ly/{% static 'img/fc.png' %}",
     "sameAs": [
       "https://www.facebook.com/profile.php?id=61581502305511",
       "https://www.tiktok.com/@liystaplatform?_r=1&_t=ZM-934Hiw4vpEa"
@@ -65,7 +65,7 @@
           "name": "{{ plan.name }}",
           "price": "{{ plan.get_discounted_price }}",
           "priceCurrency": "LYD",
-          "url": "https://liysta.ly{% url 'buy_plan' plan.id %}",
+          "url": "https://www.liysta.ly{% url 'buy_plan' plan.id %}",
           "availability": "https://schema.org/InStock"
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
@@ -100,8 +100,8 @@
     {
       "@type": "Organization",
       "name": "Liysta",
-      "url": "https://liysta.ly",
-      "logo": "https://liysta.ly{% static 'img/fc.png' %}",
+      "url": "https://www.liysta.ly",
+      "logo": "https://www.liysta.ly{% static 'img/fc.png' %}",
       "makesOffer": {
         "@type": "Service",
         "name": "منصة إنشاء وإدارة متاجر إلكترونية في ليبيا",
@@ -119,7 +119,7 @@
     {
       "@type": "ContactPage",
       "name": "دعم فني Liysta",
-      "url": "https://liysta.ly/support",
+      "url": "https://www.liysta.ly/support",
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "Customer Support",
@@ -131,7 +131,7 @@
   ],
   "potentialAction": {
     "@type": "SubscribeAction",
-    "target": "https://liysta.ly/register-customer",
+    "target": "https://www.liysta.ly/register-customer",
     "name": "اشترك الآن للحصول على باقة Liysta"
   }
 }
@@ -456,8 +456,8 @@
                     <li><a href="{% url 'home' %}"><i class="fas fa-arrow-left"></i> الرئيسية</a></li>
                     <li><a href="{% url 'plan_list' %}"><i class="fas fa-arrow-left"></i> الباقات</a></li>
                     <li><a href="{% url 'how-it-works' %}"><i class="fas fa-arrow-left"></i> كيف يعمل</a></li>
-                    <li><a href="{% url 'blog' %}"><i class="fas fa-arrow-left"></i>مدونتنا</a></li>
-                    <li><a href="{% url 'faqs' %}"><i class="fas fa-arrow-left"></i>الاسئلة الشائعة-FAQs</a></li>
+                    <li><a href="/blog/"><i class="fas fa-arrow-left"></i>مدونتنا</a></li>
+                    <li><a href="/faqs/"><i class="fas fa-arrow-left"></i>الاسئلة الشائعة-FAQs</a></li>
 
                 </ul>
             </div>
