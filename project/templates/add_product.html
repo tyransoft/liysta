@@ -626,31 +626,31 @@
             أبعاد المنتج (مطلوبة للتوصيل)
         </h4>
         
-            {% if form.high.value or form.length.value or form.latitude.value %}
+            {% if form.instance.high or form.instance.length or form.instance.latitude %}
     <div class="current-dimensions-display">
         <div class="current-dims-header">
             <i class="fas fa-history" style="margin-left: 8px; color: #FF6B35;"></i>
             <span>الأبعاد الحالية:</span>
         </div>
         <div class="current-dims-grid">
-            {% if form.high.value %}
+            {% if form.instance.high %}
             <div class="current-dim-item">
                 <span class="dim-label">الارتفاع:</span>
-                <span class="dim-value">{{ form.high.value }} سم</span>
+                <span class="dim-value">{{ form.instance.high }} سم</span>
             </div>
             {% endif %}
             
-            {% if form.length.value %}
+            {% if form.instance.length %}
             <div class="current-dim-item">
                 <span class="dim-label">الطول:</span>
-                <span class="dim-value">{{ form.length.value }} سم</span>
+                <span class="dim-value">{{ form.instance.length }} سم</span>
             </div>
             {% endif %}
             
-            {% if form.latitude.value %}
+            {% if form.instance.latitude %}
             <div class="current-dim-item">
                 <span class="dim-label">العرض:</span>
-                <span class="dim-value">{{ form.latitude.value }} سم</span>
+                <span class="dim-value">{{ form.instance.latitude }} سم</span>
             </div>
             {% endif %}
         </div>
@@ -668,13 +668,13 @@
                     <i class="fas fa-arrows-alt-v" style="color: #FF6B35; margin-left: 5px;"></i>
                     الارتفاع
                 </label>
-                {% if form.high.value %}
-                <span class="current-value-hint">الحالي: {{ form.high.value }} سم</span>
+                {% if form.instance.high %}
+                <span class="current-value-hint">الحالي: {{ form.instance.high }} سم</span>
                 {% endif %}
             </div>
             <div class="dimension-input-wrapper">
                 <input type="number" name="high" id="high" class="dimension-input"
-                       step="0.1" min="0" value="{{ form.high.value|default_if_none:'' }}"
+                       step="0.1" min="0" value="{{ form.high.value|default:form.instance.high }}"
                        placeholder="أدخل الارتفاع">
                 <span class="dimension-unit">سم</span>
             </div>
@@ -686,13 +686,13 @@
                     <i class="fas fa-arrows-alt-h" style="color: #FF6B35; margin-left: 5px;"></i>
                     الطول
                 </label>
-                {% if form.length.value %}
-                <span class="current-value-hint">الحالي: {{ form.length.value }} سم</span>
+                {% if form.instance.length %}
+                <span class="current-value-hint">الحالي: {{ form.instance.length }} سم</span>
                 {% endif %}
             </div>
             <div class="dimension-input-wrapper">
                 <input type="number" name="length" id="length" class="dimension-input"
-                       step="0.1" min="0" value="{{ form.length.value|default_if_none:'' }}"
+                       step="0.1" min="0" value="{{ form.length.value|default:form.instance.length }}"
                        placeholder="أدخل الطول">
                 <span class="dimension-unit">سم</span>
             </div>
@@ -704,13 +704,13 @@
                     <i class="fas fa-expand-alt" style="color: #FF6B35; margin-left: 5px;"></i>
                     العرض
                 </label>
-                {% if form.latitude.value %}
-                <span class="current-value-hint">الحالي: {{ form.latitude.value }} سم</span>
+                {% if form.instance.latitude %}
+                <span class="current-value-hint">الحالي: {{ form.instance.latitude }} سم</span>
                 {% endif %}
             </div>
             <div class="dimension-input-wrapper">
                 <input type="number" name="latitude" id="latitude" class="dimension-input"
-                       step="0.1" min="0" value="{{ form.latitude.value|default_if_none:'' }}"
+                       step="0.1" min="0" value="{{ form.latitude.value|default:form.instance.latitude }}"
                        placeholder="أدخل العرض">
                 <span class="dimension-unit">سم</span>
             </div>

@@ -15,7 +15,10 @@ class ProductForm(forms.ModelForm):
             'catogery':'فئة المنتج',
             'description': 'الوصف',
             'bought_price':'سعر التكلفة(يفضل ادخاله للحصول على احصاءات دقيقة)',
-            'quantity':'الكمية(يجب اضافته للتحكم في الطلبات)'
+            'quantity':'الكمية(يجب اضافته للتحكم في الطلبات)',
+            'length':'الطول',
+            'high':'الارتفاع',
+            'latitude':'العرض',
         }
         widgets={
             'catogery': forms.Select(attrs={'class': 'form-input'}), 
