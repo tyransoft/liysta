@@ -216,9 +216,9 @@ class Products(models.Model):
     available_colors = models.CharField(max_length=1000,null=True,blank=True, help_text="أدخل الألوان مفصولة بفاصلة مثل: أحمر, أخضر, أزرق")
     available_sizes = models.CharField(max_length=1000,null=True ,blank=True, help_text="أدخل المقاسات مفصولة بفاصلة مثل: S, M, L, XL")
     
-    high=models.FloatField(default=0.0,blank=True,)
-    length=models.FloatField(default=0.0,blank=True,)
-    latitude=models.FloatField(default=0.0,blank=True,)
+    high=models.FloatField(default=0.0,blank=True,null=True)
+    length=models.FloatField(default=0.0,blank=True,null=True)
+    latitude=models.FloatField(default=0.0,blank=True,null=True)
     
     breakable= models.BooleanField(default=False)
     measurable= models.BooleanField(default=False)

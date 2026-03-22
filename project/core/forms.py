@@ -54,7 +54,22 @@ class ProductForm(forms.ModelForm):
                 cleaned_data['quantity'] = self.instance.quantity
             if not cleaned_data.get('bought_price'):
                 cleaned_data['bought_price'] = self.instance.bought_price
-        
+        dimension_fields = ['length', 'high', 'latitude']
+
+        for field in dimension_fields:
+          value = cleaned_data.get(field)
+
+          if value in [None, '']:
+            if self.instance and self.instance.pk:
+                old_value = getattr(self.instance, field, None)
+
+                if old_value not in [None, '']:
+                    cleaned_data[field] = old_value
+                else:
+                    cleaned_data[field] = None
+            else:
+                 cleaned_data[field] = None
+
         return cleaned_data
        
 class CPDiscountForm(forms.ModelForm):
