@@ -210,11 +210,11 @@ def start():
     scheduler.add_jobstore(DjangoJobStore(),"default")
     scheduler.add_job(
         deactivate_users_subs, 
-        trigger='interval',
-        hours=6,
+        trigger='cron',
+        hour=7,
+        minute=0,
         id='deactive_subs',
         replace_existing=True,
-        max_instances=1, 
     )
     
     scheduler.add_job(
@@ -234,14 +234,4 @@ def start():
       replace_existing=True,
     )
 
-    scheduler.add_job(
-        refresh_tokens, 
-        trigger='interval',
-        hours=8,
-        id='deactive_subs',
-        replace_existing=True,
-        max_instances=1, 
-    )
-    register_events(scheduler)
-    scheduler.start()
-
+ 
