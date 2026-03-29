@@ -3188,7 +3188,6 @@ def disconnect_nawris(request):
 
 @login_required
 def connect_nawris(request):
-    
     try:
         customer = Customer.objects.get(user=request.user)
     except Customer.DoesNotExist:
@@ -3198,46 +3197,35 @@ def connect_nawris(request):
     existing_connection = NawrisConnection.objects.filter(customer=customer).first()
     
     if request.method == 'POST':
-        form = NawrisForm(request.POST)
+        main_code = request.POST.get('main_code')
+        auth = request.POST.get('auth')
         
-        if form.is_valid():
-            main_code = form.cleaned_data['main_code']
-            auth = form.cleaned_data['auth']
-            
-            
+        if not main_code or not auth:
+            messages.error(request, 'يرجى ملء جميع الحقول')
+        else:
             if existing_connection:
-                connection = existing_connection
-                connection.main_code = main_code
-                connection.auth = auth
-                connection.is_active = True
+                existing_connection.main_code = main_code
+                existing_connection.auth = auth
+                existing_connection.is_active = True
+                existing_connection.save()
             else:
-             connection = NawrisConnection(
-                        customer=customer,
-                        main_code=main_code,
-                        auth=auth,
-                        is_active=True
-                    )
-                
-             connection.save()
-             messages.success(request, 'تم ربط المتجر مع شركة النورس بنجاح!')
-             return redirect('nawris_settings')
-       
-        else:
-            messages.error(request, 'يرجى تصحيح الأخطاء في النموذج')
-    else:
-        if existing_connection:
-            form = NawrisForm(instance=existing_connection)
-        else:
-            form = NawrisForm()
+                NawrisConnection.objects.create(
+                    customer=customer,
+                    main_code=main_code,
+                    auth=auth,
+                    is_active=True
+                )
+            
+            messages.success(request, 'تم ربط المتجر مع شركة النورس بنجاح!')
+            return redirect('nawris_settings')
     
     context = {
-        'form': form,
         'customer': customer,
         'existing_connection': existing_connection,
-        'page_title': 'ربط المتجر مع النورس',
+        'page_title': 'ربط  مع النورس',
     }
     
-    return render(request, 'nawris_connect.html', context)   
+    return render(request, 'nawris_connect.html', context)
 
 def fetch_nawris_products(main_code, auth):
     url = "https://backoffice.nawris.algoriza.com/external-api/products"
