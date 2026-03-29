@@ -73,8 +73,9 @@ urlpatterns = [
     
     path('coasts/<int:coast_id>/edit/', edit_coast, name='edit_coast'),
     path('coasts/<int:coast_id>/delete/', delete_coast, name='delete_coast'),
-
-
+    path('disconnect-nawris/', disconnect_nawris, name='disconnect_nawris'),
+    path('connect-nawris/', connect_nawris, name='connect_nawris'),
+    path('nawris-settings/', nawris_integration, name='nawris_settings'),
     path('delivery-companies/', delivery_companies, name='delivery_companies'),
 
     path('delivery-darbasabil-settings/', darbasabil_settings, name='darbasabil_settings'),

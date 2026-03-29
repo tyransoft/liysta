@@ -2608,9 +2608,12 @@ def delivery_companies(request):
     customer=Customer.objects.get(user=request.user)
     try:
        darb=DarbAsabilConnection.objects.get(customer=customer)
+       nawris=NawrisConnection.objects.get(customer=customer)
+
     except:
        darb=None   
-    return render(request, 'delivery_company.html',{'darb_connection':darb,})     
+       nawris=None
+    return render(request, 'delivery_company.html',{'darb_connection':darb,'nawris_connection':nawris})     
 
 
 
@@ -3162,3 +3165,166 @@ def delete_coast(request, coast_id):
     return render(request, 'delete_product.html')
 
 
+
+
+
+@login_required
+def disconnect_nawris(request):
+    customer=Customer.objects.get(user=request.user)
+    try:
+        nawris=NawrisConnection.objects.get(
+          customer=customer,
+          is_active=True,
+        ).delete()
+ 
+        customer.connected_del_method='normal'
+        customer.save()
+        messages.success(request,'تم فك الربط مع شركة النورس ') 
+    except NawrisConnection.DoesNotExist:
+        messages.error(request,'ليس لديك ربط حالي مع شركة النورس') 
+
+    return redirect('customer_dashboard')        
+
+
+@login_required
+def connect_nawris(request):
+    
+    try:
+        customer = Customer.objects.get(user=request.user)
+    except Customer.DoesNotExist:
+        messages.error(request, 'لم يتم العثور على بيانات المتجر الخاصة بك')
+        return redirect('customer_dashboard')
+    
+    existing_connection = NawrisConnection.objects.filter(customer=customer).first()
+    
+    if request.method == 'POST':
+        form = NawrisForm(request.POST)
+        
+        if form.is_valid():
+            main_code = form.cleaned_data['main_code']
+            auth = form.cleaned_data['auth']
+            
+            
+            if existing_connection:
+                connection = existing_connection
+                connection.main_code = main_code
+                connection.auth = auth
+                connection.is_active = True
+            else:
+             connection = NawrisConnection(
+                        customer=customer,
+                        main_code=main_code,
+                        auth=auth,
+                        is_active=True
+                    )
+                
+             connection.save()
+             messages.success(request, 'تم ربط المتجر مع شركة النورس بنجاح!')
+             return redirect('nawris_settings')
+       
+        else:
+            messages.error(request, 'يرجى تصحيح الأخطاء في النموذج')
+    else:
+        if existing_connection:
+            form = NawrisForm(instance=existing_connection)
+        else:
+            form = NawrisForm()
+    
+    context = {
+        'form': form,
+        'customer': customer,
+        'existing_connection': existing_connection,
+        'page_title': 'ربط المتجر مع النورس',
+    }
+    
+    return render(request, 'nawris_connect.html', context)   
+
+def fetch_nawris_products(main_code, auth):
+    url = "https://backoffice.nawris.algoriza.com/external-api/products"
+    
+    params = {
+        "authentication_key": auth,
+        "main_client_code": main_code
+    }
+    
+    try:
+        response = requests.get(
+            url, 
+            params=params,
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            products = data.get('products', data.get('data', data.get('results', [])))
+            return True, products
+        else:
+            return False, f"خطأ في الاتصال: {response.status_code} - {response.text}"
+            
+    except requests.exceptions.Timeout:
+        return False, "انتهى وقت الاتصال، يرجى المحاولة مرة أخرى"
+    except requests.exceptions.ConnectionError:
+        return False, "فشل الاتصال بالخادم، يرجى التحقق من اتصال الإنترنت"
+    except Exception as e:
+        return False, f"حدث خطأ غير متوقع: {str(e)}"
+
+
+
+@login_required
+def nawris_integration(request):
+    
+    try:
+        customer = Customer.objects.get(user=request.user)
+    except Customer.DoesNotExist:
+        messages.error(request, 'لم يتم العثور على بيانات المتجر')
+        return redirect('customer_dashboard')
+    
+    try:
+        nawris_conn = NawrisConnection.objects.get(customer=customer, is_active=True)
+    except NawrisConnection.DoesNotExist:
+        messages.warning(request, 'يرجى ربط المتجر مع شركة النورس أولاً')
+        return redirect('connect_nawris')
+    
+    nawris_products = []
+    api_error = None
+    my_products = Products.objects.filter(menu__customer=customer) 
+    
+    if nawris_conn.storeing:
+        success, result = fetch_nawris_products(nawris_conn.main_code, nawris_conn.auth)
+        if success:
+            nawris_products = result
+        else:
+            api_error = result
+    
+    if request.method == 'POST':
+        nawris_conn.paymentby = request.POST.get('paymentby', 'receiver')
+        nawris_conn.storeing = request.POST.get('storeing') == 'on'
+        nawris_conn.epay = request.POST.get('epay') == 'on'
+        nawris_conn.save()
+        
+        for product in my_products:
+            del_id_key = f'del_id_{product.id}'
+            if del_id_key in request.POST:
+                del_id_value = request.POST.get(del_id_key)
+                if del_id_value and del_id_value.isdigit():
+                    product.del_id = int(del_id_value)
+                elif del_id_value == '':
+                    product.del_id = None
+                product.save()
+        
+        messages.success(request, 'تم حفظ جميع الإعدادات وروابط المنتجات بنجاح')
+        return redirect('nawris_integration')
+    
+    existing_mapping = {product.id: product.del_id for product in my_products if product.del_id}
+    
+    context = {
+        'nawris_conn': nawris_conn,
+        'my_products': my_products,
+        'nawris_products': nawris_products,
+        'existing_mapping': existing_mapping,
+        'api_error': api_error,
+        'customer': customer,
+    }
+    
+    return render(request, 'nawris_integration.html', context)        

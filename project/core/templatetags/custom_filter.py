@@ -9,3 +9,7 @@ def smart_split(value):
         return []
     
     return [item.strip() for item in re.split(r'[,،]\s*', value) if item.strip()]
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

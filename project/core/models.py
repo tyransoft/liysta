@@ -39,6 +39,7 @@ class Customer(models.Model):
         ('darbasabil','darbasabil'),
         ('vanex', 'vanex'),
         ('normal','normal'),
+        ('nawris', 'nawris'),
 
     }
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -206,6 +207,8 @@ class Catogery(models.Model):
 class Products(models.Model):
     menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
     catogery=models.ForeignKey(Catogery,on_delete=models.CASCADE)
+   
+    del_id=models.IntegerField(null=True,blank=True)
 
     name=models.CharField(max_length=50)
     image=models.ImageField(upload_to=get_upload_path,null=False)
@@ -750,4 +753,42 @@ class Darbasabilbranches(models.Model):
     price=models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.city}-{self.area}'                                                                                                                    
+        return f'{self.city}-{self.area}'           
+
+
+class NawrisConnection(models.Model):
+    PAY_CHOICES={
+        ('sender','sender'),
+        ('receiver','receiver'),
+    }
+
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+   
+    main_code=models.CharField(max_length=200,null=False)
+    auth=models.CharField(max_length=200,null=False)
+
+    storeing=models.BooleanField(default=False)
+    paymentby=models.CharField(max_length=10, choices=PAY_CHOICES,default='reciver')
+    epay=models.BooleanField(default=False)
+    
+    is_active=models.BooleanField(default=False)
+    connected_at=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f'{self.customer.store_en_name} -{self.connected_at}'                                                                                                                 
+    
+class NawrisCity(models.Model):
+    city_name=models.CharField(max_length=200)
+    city_id=models.IntegerField(unique=True)
+    have_areas=models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f'{self.city} -{self.city_id}'
+
+class NawrisArea(models.Model):
+    city=models.ForeignKey(NawrisCity,on_delete=models.CASCADE)
+    area_name=models.CharField(max_length=200)
+    area_id=models.IntegerField(unique=True)
+    
+    def __str__(self):
+        return f'{self.area_name} -{self.area_id}'
+

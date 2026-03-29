@@ -23,3 +23,7 @@ admin.site.register(Coasts)
 admin.site.register(CustomerCoasts)
 admin.site.register(DarbAsabilConnection)
 admin.site.register(Darbasabilbranches)
+
+admin.site.register(NawrisConnection)
+admin.site.register(NawrisCity)
+admin.site.register(NawrisArea)

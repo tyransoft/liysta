@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات النورس المتكاملة - Liysta</title>
+    <link rel="stylesheet" href="{% static 'css/temp.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+  .connection-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        .connection-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .company-logo-large {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #F97316 0%, #FF8C42 100%);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .company-logo-large i {
+            font-size: 60px;
+            color: white;
+        }
+        
+        .connection-title {
+            font-size: 28px;
+            color: #1F2937;
+            margin-bottom: 15px;
+        }
+        
+        .connection-subtitle {
+            color: #6B7280;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .connection-form {
+            text-align: right;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: right;
+        }
+        
+        .form-label {
+            display: block;
+            color: #1F2937;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .form-label i {
+            margin-left: 8px;
+            color: #F97316;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #F97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        
+        .btn-connect {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #F97316 0%, #FF8C42 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+        
+        .info-box {
+            background: #F0F9FF;
+            border-right: 4px solid #F97316;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        
+        .info-box i {
+            color: #F97316;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .connection-card {
+                padding: 25px;
+            }
+            
+            .connection-title {
+                font-size: 24px;
+            }
+        }        
+        .products-mapping-section {
+            margin-top: 30px;
+            border-top: 2px solid #F3F4F6;
+            padding-top: 30px;
+        }
+        
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .mapping-table th,
+        .mapping-table td {
+            border: 1px solid #E5E7EB;
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .mapping-table th {
+            background: #FFF7ED;
+            color: #1F2937;
+            font-weight: 600;
+        }
+        
+        .mapping-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .mapping-table input:focus {
+            outline: none;
+            border-color: #F97316;
+        }
+        
+        .product-name {
+            font-weight: 500;
+            color: #1F2937;
+        }
+        
+        .product-sku {
+            font-size: 12px;
+            color: #6B7280;
+        }
+        
+        .alert-warning {
+            background: #FFEDD5;
+            border: 1px solid #FDBA74;
+            color: #C2410C;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            color: #6B7280;
+        }
+        
+        @media (max-width: 768px) {
+            .mapping-table {
+                font-size: 14px;
+            }
+            
+            .mapping-table th,
+            .mapping-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="settings-container">
+    <div class="page-header-container">
+        <div class="brand-header">
+            <div class="brand-logo">Liysta</div>
+            <h1 class="page-title">
+                <i class="fas fa-cogs"></i>
+                إعدادات النورس المتكاملة
+            </h1>
+        </div>
+    </div>
+    
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <form method="POST" id="nawrisIntegrationForm">
+        {% csrf_token %}
+        
+        <div class="settings-card">
+            <div class="company-header">
+                <div class="company-logo">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="company-info">
+                    <h2 class="company-name">شركة النورس للتوصيل</h2>
+                    {% if nawris_conn.is_active %}
+                        <span class="company-status status-active">
+                            <i class="fas fa-check-circle"></i> مرتبط
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-money-bill-wave"></i>
+                    من يدفع قيمة الشحن؟
+                </label>
+                <div class="custom-radio-group">
+                    <div class="custom-radio-option">
+                        <input type="radio" name="paymentby" id="paymentby_sender" 
+                               value="sender" 
+                               {% if nawris_conn.paymentby == 'sender' %}checked{% endif %}
+                               class="custom-radio-input">
+                        <label for="paymentby_sender" class="custom-radio-label">
+                            <div class="custom-radio-icon"></div>
+                            <div class="custom-radio-text">
+                                <div class="custom-radio-title">المتجر</div>
+                                <div class="custom-radio-description">يدفع المتجر قيمة الشحن</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="custom-radio-option">
+                        <input type="radio" name="paymentby" id="paymentby_receiver" 
+                               value="receiver" 
+                               {% if nawris_conn.paymentby == 'receiver' %}checked{% endif %}
+                               class="custom-radio-input">
+                        <label for="paymentby_receiver" class="custom-radio-label">
+                            <div class="custom-radio-icon"></div>
+                            <div class="custom-radio-text">
+                                <div class="custom-radio-title">المستلم</div>
+                                <div class="custom-radio-description">يدفع المستلم قيمة الشحن</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="custom-checkbox-group">
+                    <div class="custom-checkbox-option">
+                        <input type="checkbox" name="storeing" id="storeing_real" 
+                               {% if nawris_conn.storeing %}checked{% endif %}
+                               class="real-checkbox-input">
+                        <span class="custom-checkbox-visual" id="storeing_visual"></span>
+                        <label for="storeing_real" class="custom-checkbox-label">
+                            تفعيل خدمة التجميع (التخزين عند النورس)
+                        </label>
+                    </div>
+                </div>
+                <div class="checkbox-description">
+                    تتيح هذه الخدمة تخزين منتجاتك لدى شركة النورس
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="custom-checkbox-group">
+                    <div class="custom-checkbox-option">
+                        <input type="checkbox" name="epay" id="epay_real" 
+                               {% if nawris_conn.epay %}checked{% endif %}
+                               class="real-checkbox-input">
+                        <span class="custom-checkbox-visual" id="epay_visual"></span>
+                        <label for="epay_real" class="custom-checkbox-label">
+                            تفعيل الدفع الإلكتروني
+                        </label>
+                    </div>
+                </div>
+                <div class="checkbox-description">
+                    تمكين الدفع الإلكتروني للعملاء
+                </div>
+            </div>
+        </div>
+        
+        <div id="productsMappingSection" class="products-mapping-section" 
+             style="display: {% if nawris_conn.storeing %}block{% else %}none{% endif %};">
+            
+            <div class="settings-card">
+                <h3 style="margin-bottom: 20px; color: #1F2937;">
+                    <i class="fas fa-link"></i> ربط منتجات متجرك مع منتجات النورس
+                </h3>
+                
+                {% if api_error %}
+                    <div class="alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ api_error }}
+                    </div>
+                {% elif nawris_products %}
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="color: #F97316; margin-bottom: 15px;">
+                            <i class="fas fa-box"></i> منتجات النورس المتاحة للتخزين
+                        </h4>
+                        <table class="mapping-table">
+                            <thead>
+                                <tr>
+                                    <th>ID في النورس</th>
+                                    <th>اسم المنتج</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in nawris_products %}
+                                <tr>
+                                    <td>{{ product.id }}</td>
+                                    <td class="product-name">{{ product.name }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #F97316; margin-bottom: 15px;">
+                            <i class="fas fa-store"></i> منتجات متجرك - أدخل المعرف المناسب من النورس
+                        </h4>
+                        {% if my_products %}
+                            <table class="mapping-table">
+                                <thead>
+                                    <tr>
+                                        <th>منتجك</th>
+                                        <th>ID في النورس </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in my_products %}
+                                    <tr>
+                                        <td class="product-name">{{ product.name }}</td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="del_id_{{ product.id }}" 
+                                                   id="del_id_{{ product.id }}"
+                                                   value="{{ existing_mapping|get_item:product.id }}"
+                                                   placeholder="أدخل المعرف من النورس">
+                                        </td>
+                                      
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <div class="no-products">
+                                <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 15px;"></i>
+                                <p>لا توجد منتجات في متجرك حالياً</p>
+                                <a href="#" class="btn btn-primary">إضافة منتجات</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        لا توجد منتجات مستوردة من النورس حالياً. تأكد من تفعيل خدمة التخزين.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right"></i> إلغاء
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> حفظ جميع الإعدادات والروابط
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const storeingCheckbox = document.getElementById('storeing_real');
+    const productsSection = document.getElementById('productsMappingSection');
+    
+    function toggleProductsSection() {
+        if (storeingCheckbox.checked) {
+            productsSection.style.display = 'block';
+        } else {
+            productsSection.style.display = 'none';
+        }
+    }
+    
+    storeingCheckbox.addEventListener('change', toggleProductsSection);
+    
+  
+    
+    function initCheckboxes() {
+        const checkboxes = ['storeing', 'epay'];
+        checkboxes.forEach(name => {
+            const checkbox = document.getElementById(`${name}_real`);
+            const visual = document.getElementById(`${name}_visual`);
+            if (checkbox && visual) {
+                visual.addEventListener('click', () => {
+                    checkbox.checked = !checkbox.checked;
+                    updateVisual(checkbox, visual);
+                    if (name === 'storeing') toggleProductsSection();
+                });
+                checkbox.addEventListener('change', () => updateVisual(checkbox, visual));
+                updateVisual(checkbox, visual);
+            }
+        });
+    }
+    
+    function updateVisual(checkbox, visual) {
+        if (checkbox.checked) {
+            visual.style.background = '#F97316';
+            visual.style.borderColor = '#F97316';
+        } else {
+            visual.style.background = 'white';
+            visual.style.borderColor = '#E5E7EB';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        initCheckboxes();
+        toggleProductsSection();
+    });
+</script>
+</body>
+</html>

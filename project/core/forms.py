@@ -316,3 +316,14 @@ class DarbasabilForm(forms.ModelForm):
         self.fields['epay_coast'].widget.attrs.update({'class': 'radio-group'})
 
         self.fields['epay_coast'].required = False
+
+class NawrisForm(forms.ModelForm):
+    class Meta:
+        model = NawrisConnection
+        exclude = ['customer', 'is_active']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['storeing'].widget.attrs.update({'class': 'custom-checkbox'})
+        self.fields['epay'].widget.attrs.update({'class': 'custom-checkbox'})
+        self.fields['paymentby'].widget.attrs.update({'class': 'radio-group'})
