@@ -10,46 +10,141 @@
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #F97316;
+            --primary-dark: #EA580C;
+            --primary-light: #FFEDD5;
+            --secondary-color: #1F2937;
+            --gray-light: #F9FAFB;
+            --gray-border: #E5E7EB;
+            --text-gray: #6B7280;
+        }
+
         .connection-container {
-            max-width: 600px;
-            margin: 50px auto;
+            max-width: 650px;
+            margin: 40px auto;
             padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .connection-card {
             background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            border-radius: 24px;
+            padding: 45px;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-border);
+            transition: transform 0.3s ease;
+        }
+        
+        .connection-card:hover {
+            transform: translateY(-5px);
         }
         
         .company-logo-large {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            background: linear-gradient(135deg, #F97316 0%, #FF8C42 100%);
-            border-radius: 60px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.2);
+            border: 3px solid white;
         }
         
-        .company-logo-large i {
-            font-size: 60px;
-            color: white;
+        .company-logo-large img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .company-logo-large:hover img {
+            transform: scale(1.05);
+        }
+        
+        .company-logo-large .logo-fallback {
+            font-size: 50px;
+            color: var(--primary-color);
         }
         
         .connection-title {
+            font-size: 32px;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .connection-title i {
+            color: var(--primary-color);
             font-size: 28px;
-            color: #1F2937;
-            margin-bottom: 15px;
         }
         
         .connection-subtitle {
-            color: #6B7280;
-            margin-bottom: 30px;
+            color: var(--text-gray);
+            margin-bottom: 35px;
             line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        .messages-container {
+            margin-bottom: 25px;
+        }
+        
+        .alert {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .alert i {
+            font-size: 18px;
+        }
+        
+        .alert-success {
+            background: #D1FAE5;
+            border: 1px solid #A7F3D0;
+            color: #065F46;
+        }
+        
+        .alert-error {
+            background: #FEE2E2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
+        }
+        
+        .alert-warning {
+            background: #FFEDD5;
+            border: 1px solid #FDBA74;
+            color: #C2410C;
+        }
+        
+        .alert-info {
+            background: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            color: #0369A1;
         }
         
         .connection-form {
@@ -57,73 +152,220 @@
         }
         
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 28px;
             text-align: right;
         }
         
         .form-label {
-            display: block;
-            color: #1F2937;
+            display: flex;
+            align-items: center;
+            color: var(--secondary-color);
             font-weight: 600;
             margin-bottom: 10px;
-            font-size: 16px;
+            font-size: 15px;
+            gap: 8px;
         }
         
         .form-label i {
-            margin-left: 8px;
-            color: #F97316;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+        
+        .form-label .required-star {
+            color: #EF4444;
+            font-size: 14px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            font-size: 16px;
+            pointer-events: none;
+            transition: all 0.3s ease;
         }
         
         .form-control {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 14px 45px 14px 15px;
+            border: 2px solid var(--gray-border);
+            border-radius: 12px;
+            font-size: 15px;
             transition: all 0.3s ease;
             font-family: inherit;
+            background: var(--gray-light);
         }
         
         .form-control:focus {
             outline: none;
-            border-color: #F97316;
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
+        
+        .form-control:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .field-help {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+        
+        .field-help i {
+            font-size: 12px;
+            color: var(--primary-color);
         }
         
         .btn-connect {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #F97316 0%, #FF8C42 100%);
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-connect::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
         
         .btn-connect:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+        }
+        
+        .btn-connect:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-connect i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-connect:hover i {
+            transform: translateX(-4px);
         }
         
         .info-box {
-            background: #F0F9FF;
-            border-right: 4px solid #F97316;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-right: 4px solid var(--primary-color);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 25px 0;
             text-align: right;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
         
         .info-box i {
-            color: #F97316;
-            margin-left: 10px;
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-top: 2px;
+        }
+        
+        .info-box-content {
+            flex: 1;
+        }
+        
+        .info-box strong {
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .info-box p {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .form-errors {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #991B1B;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .form-errors i {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        
+        .form-errors ul {
+            margin: 0;
+            padding-right: 20px;
+            flex: 1;
+        }
+        
+        /* رابط العودة */
+        .back-link {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--gray-border);
+            text-align: center;
+        }
+        
+        .back-link a {
+            color: var(--text-gray);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            color: var(--primary-color);
+            transform: translateX(-4px);
         }
         
         @media (max-width: 768px) {
+            .connection-container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+            
             .connection-card {
                 padding: 25px;
             }
@@ -131,6 +373,35 @@
             .connection-title {
                 font-size: 24px;
             }
+            
+            .company-logo-large {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .form-control {
+                padding: 12px 40px 12px 12px;
+                font-size: 14px;
+            }
+            
+            .btn-connect {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+        
+        .btn-connect.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn-connect.loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -138,33 +409,44 @@
 <div class="connection-container">
     <div class="connection-card">
         <div class="company-logo-large">
-            <i class="fas fa-truck"></i>
-        </div>
+           
+            <img src="{% static 'img/nawris-logo.png' %}" 
+                 alt="شعار النورس">
+                </div>
         
-        <h1 class="connection-title">ربط المتجر مع النورس</h1>
+        <h1 class="connection-title">
+            <i class="fas fa-handshake"></i>
+            ربط المتجر مع النورس
+        </h1>
         <p class="connection-subtitle">
-            قم بإدخال بيانات التوثيق الخاصة بشركة النورس لتمكين خدمة التوصيل
+            قم بإدخال بيانات التوثيق الخاصة بشركة النورس لتمكين خدمة التوصيل السريع لعملائك
         </p>
         
         {% if messages %}
+        <div class="messages-container">
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" style="margin-bottom: 20px;">
-                    {{ message }}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    <span>{{ message }}</span>
                 </div>
             {% endfor %}
+        </div>
         {% endif %}
         
         <div class="info-box">
             <i class="fas fa-info-circle"></i>
-            <strong>ملاحظة:</strong> يرجى التأكد من صحة الكود الرئيسي وكود التوثيق قبل المتابعة
+            <div class="info-box-content">
+                <strong>تعليمات هامة</strong>
+                <p>يرجى التأكد من صحة الكود الرئيسي وكود التوثيق قبل المتابعة. يمكنك الحصول على هذه البيانات من حسابك في منصة النورس.</p>
+            </div>
         </div>
         
-        <form method="POST" class="connection-form">
+        <form method="POST" class="connection-form" id="connectionForm">
             {% csrf_token %}
             
             {% if form.errors %}
-                <div style="background: #FEF2F2; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #991B1B;">
-                    <strong>يرجى تصحيح الأخطاء التالية:</strong>
+                <div class="form-errors">
+                    <i class="fas fa-exclamation-triangle"></i>
                     <ul>
                         {% for field, errors in form.errors.items %}
                             {% for error in errors %}
@@ -179,33 +461,82 @@
                 <label class="form-label">
                     <i class="fas fa-key"></i>
                     الكود الرئيسي
+                    <span class="required-star">*</span>
                 </label>
-                {{ form.main_code }}
-                <small style="color: #6B7280; font-size: 12px;">الكود المقدم من شركة النورس</small>
+                <div class="input-wrapper">
+                    <i class="fas fa-code input-icon"></i>
+                    {{ form.main_code }}
+                </div>
+                <div class="field-help">
+                    <i class="fas fa-info-circle"></i>
+                    <span>الكود المقدم من شركة النورس عند الاشتراك</span>
+                </div>
             </div>
             
             <div class="form-group">
                 <label class="form-label">
                     <i class="fas fa-lock"></i>
                     كود التوثيق
+                    <span class="required-star">*</span>
                 </label>
-                {{ form.auth }}
-                <small style="color: #6B7280; font-size: 12px;">رمز التوثيق الخاص بحسابك في النورس</small>
+                <div class="input-wrapper">
+                    <i class="fas fa-shield-alt input-icon"></i>
+                    {{ form.auth }}
+                </div>
+                <div class="field-help">
+                    <i class="fas fa-info-circle"></i>
+                    <span>رمز التوثيق الخاص بحسابك في منصة النورس</span>
+                </div>
             </div>
             
-            <button type="submit" class="btn-connect">
+            <button type="submit" class="btn-connect" id="submitBtn">
                 <i class="fas fa-link"></i>
-                ربط المتجر
+                <span>ربط </span>
             </button>
         </form>
         
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
-            <a href="{% url 'customer_dashboard' %}" style="color: #6B7280; text-decoration: none;">
+        <div class="back-link">
+            <a href="{% url 'customer_dashboard' %}">
                 <i class="fas fa-arrow-right"></i>
-                العودة للوحة التحكم
+                العودة للوحة التحكم 
             </a>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('connectionForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const inputs = document.querySelectorAll('.form-control');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('.input-icon').style.color = '#F97316';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('.input-icon').style.color = '#6B7280';
+            });
+        });
+        
+        form.addEventListener('submit', function() {
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<i class="fas fa-spinner"></i><span>جاري الربط...</span>';
+            submitBtn.disabled = true;
+        });
+        
+        const mainCodeInput = document.querySelector('input[name="main_code"]');
+        const authInput = document.querySelector('input[name="auth"]');
+        
+        if (mainCodeInput) {
+            mainCodeInput.placeholder = 'أدخل الكود الرئيسي';
+        }
+        
+        if (authInput) {
+            authInput.placeholder = 'أدخل كود التوثيق';
+        }
+    });
+</script>
 </body>
 </html>

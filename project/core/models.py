@@ -767,11 +767,11 @@ class NawrisConnection(models.Model):
     main_code=models.CharField(max_length=200,null=False)
     auth=models.CharField(max_length=200,null=False)
 
-    storeing=models.BooleanField(default=False)
-    paymentby=models.CharField(max_length=10, choices=PAY_CHOICES,default='reciver')
-    epay=models.BooleanField(default=False)
+    storeing=models.BooleanField(default=False,null=True,blank=True)
+    paymentby=models.CharField(max_length=10,null=True,blank=True, choices=PAY_CHOICES,default='reciver')
+    epay=models.BooleanField(default=False,null=True,blank=True)
     
-    is_active=models.BooleanField(default=False)
+    is_active=models.BooleanField(default=False,null=True,blank=True)
     connected_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f'{self.customer.store_en_name} -{self.connected_at}'                                                                                                                 
