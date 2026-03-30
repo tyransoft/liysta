@@ -3388,10 +3388,10 @@ def deliver_nawris(request, order_id):
 
         response = requests.post(
             'https://backoffice.nawris.algoriza.com/external-api/add-order',
-            data=payload,
+            json=payload,
             headers={
                 'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
             },
             timeout=30
         )
