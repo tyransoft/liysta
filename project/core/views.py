@@ -3239,24 +3239,32 @@ def fetch_nawris_products(main_code, auth):
         response = requests.get(
             url, 
             params=params,
-            headers={'Content-Type': 'application/json'},
+            headers={
+              'Accept': 'application/json',
+
+              'Content-Type': 'application/json' 
+              },
             timeout=30
         )
         
         if response.status_code == 200:
             data = response.json()
-            products = data.get('products', data.get('data', data.get('results', [])))
-            return True, products
+            
+            if data.get("success") == 1:
+                products = data.get("result", [])
+                return True, products
+            else:
+                return False, "فشل في جلب المنتجات من النورس"
+        
         else:
             return False, f"خطأ في الاتصال: {response.status_code} - {response.text}"
             
     except requests.exceptions.Timeout:
         return False, "انتهى وقت الاتصال، يرجى المحاولة مرة أخرى"
     except requests.exceptions.ConnectionError:
-        return False, "فشل الاتصال بالخادم، يرجى التحقق من اتصال الإنترنت"
+        return False, "فشل الاتصال بالخادم"
     except Exception as e:
-        return False, f"حدث خطأ غير متوقع: {str(e)}"
-
+        return False, f"خطأ غير متوقع: {str(e)}"
 
 
 @login_required
@@ -3278,7 +3286,7 @@ def nawris_integration(request):
     api_error = None
     my_products = Products.objects.filter(menu__customer=customer) 
     
-    if nawris_conn.storeing:
+    if nawris_conn:
         success, result = fetch_nawris_products(nawris_conn.main_code, nawris_conn.auth)
         if success:
             nawris_products = result

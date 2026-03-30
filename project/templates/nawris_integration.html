@@ -1,220 +1,614 @@
 {% load static %}
+{% load custom_filter %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>إعدادات النورس المتكاملة - Liysta</title>
     <link rel="stylesheet" href="{% static 'css/temp.css' %}">
     <link rel="stylesheet" href="{% static 'css/lista.css' %}">
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-  .connection-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
+        :root {
+            --primary-color: #F97316;
+            --primary-dark: #EA580C;
+            --primary-light: #FFEDD5;
+            --secondary-color: #1F2937;
+            --gray-light: #F9FAFB;
+            --gray-border: #E5E7EB;
+            --text-gray: #6B7280;
         }
-        
-        .connection-card {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        .company-logo-large {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            background: linear-gradient(135deg, #F97316 0%, #FF8C42 100%);
-            border-radius: 60px;
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #F3F4F6;
+            overflow-x: hidden;
+        }
+
+        .main-settings-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-settings-wrapper {
+                padding: 20px 15px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .brand-header {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
-        
-        .company-logo-large i {
-            font-size: 60px;
-            color: white;
-        }
-        
-        .connection-title {
+
+        .brand-logo {
             font-size: 28px;
-            color: #1F2937;
-            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .connection-subtitle {
-            color: #6B7280;
-            margin-bottom: 30px;
-            line-height: 1.6;
+
+        .page-title {
+            font-size: 24px;
+            margin: 0;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .connection-form {
-            text-align: right;
+
+        .page-title i {
+            color: var(--primary-color);
+            font-size: 24px;
         }
-        
-        .form-group {
-            margin-bottom: 25px;
-            text-align: right;
-        }
-        
-        .form-label {
-            display: block;
-            color: #1F2937;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .form-label i {
-            margin-left: 8px;
-            color: #F97316;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: #F97316;
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
-        }
-        
-        .btn-connect {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #F97316 0%, #FF8C42 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-        
-        .btn-connect:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
-        }
-        
-        .info-box {
-            background: #F0F9FF;
-            border-right: 4px solid #F97316;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: right;
-        }
-        
-        .info-box i {
-            color: #F97316;
-            margin-left: 10px;
-        }
-        
+
         @media (max-width: 768px) {
-            .connection-card {
-                padding: 25px;
+            .brand-header {
+                padding: 15px 20px;
             }
             
-            .connection-title {
-                font-size: 24px;
+            .brand-logo {
+                font-size: 22px;
             }
-        }        
-        .products-mapping-section {
-            margin-top: 30px;
-            border-top: 2px solid #F3F4F6;
-            padding-top: 30px;
+            
+            .page-title {
+                font-size: 18px;
+            }
+            
+            .page-title i {
+                font-size: 20px;
+            }
+        }
+
+        .messages-container {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease;
         }
         
-        .mapping-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .alert {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
         }
         
-        .mapping-table th,
-        .mapping-table td {
-            border: 1px solid #E5E7EB;
-            padding: 12px;
-            text-align: center;
-            vertical-align: middle;
+        .alert i {
+            font-size: 18px;
         }
         
-        .mapping-table th {
-            background: #FFF7ED;
-            color: #1F2937;
-            font-weight: 600;
+        .alert-success {
+            background: #D1FAE5;
+            border: 1px solid #A7F3D0;
+            color: #065F46;
         }
         
-        .mapping-table input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            text-align: center;
-        }
-        
-        .mapping-table input:focus {
-            outline: none;
-            border-color: #F97316;
-        }
-        
-        .product-name {
-            font-weight: 500;
-            color: #1F2937;
-        }
-        
-        .product-sku {
-            font-size: 12px;
-            color: #6B7280;
+        .alert-error {
+            background: #FEE2E2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
         }
         
         .alert-warning {
             background: #FFEDD5;
             border: 1px solid #FDBA74;
             color: #C2410C;
-            padding: 15px;
+        }
+        
+        .alert-info {
+            background: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            color: #0369A1;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .settings-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        @media (max-width: 768px) {
+            .settings-card {
+                padding: 20px;
+            }
+        }
+
+        .company-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gray-border);
+        }
+        
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+        }
+        
+        .company-logo i {
+            font-size: 45px;
+            color: var(--primary-color);
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-size: 22px;
+            margin: 0 0 8px 0;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .company-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        @media (max-width: 768px) {
+            .company-logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .company-logo i {
+                font-size: 32px;
+            }
+            
+            .company-name {
+                font-size: 18px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: right;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            gap: 8px;
+        }
+        
+        .form-label i {
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+        
+        .required-star {
+            color: #EF4444;
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--gray-border);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: var(--gray-light);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
+        
+        .form-control:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .checkbox-description {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 8px;
+            margin-right: 34px;
+        }
+
+        .custom-radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .custom-radio-option {
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .custom-radio-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid var(--gray-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            gap: 12px;
+        }
+        
+        .custom-radio-input {
+            display: none;
+        }
+        
+        .custom-radio-input:checked + .custom-radio-label {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+        
+        .custom-radio-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-border);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .custom-radio-input:checked + .custom-radio-label .custom-radio-icon {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            box-shadow: inset 0 0 0 3px white;
+        }
+        
+        .custom-radio-text {
+            flex: 1;
+        }
+        
+        .custom-radio-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+        
+        .custom-radio-description {
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+        
+        @media (max-width: 768px) {
+            .custom-radio-group {
+                flex-direction: column;
+            }
+            
+            .custom-radio-option {
+                min-width: auto;
+            }
+        }
+
+        .custom-checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .custom-checkbox-option {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .real-checkbox-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .custom-checkbox-visual {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--gray-border);
+            border-radius: 6px;
+            margin-left: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            flex-shrink: 0;
+        }
+        
+        .custom-checkbox-label {
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--secondary-color);
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--secondary-color);
+            border: 1px solid var(--gray-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-border);
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mapping-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 15px;
+        }
+        
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 500px;
+        }
+        
+        .mapping-table th,
+        .mapping-table td {
+            border: 1px solid var(--gray-border);
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .mapping-table th {
+            background: var(--primary-light);
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .mapping-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--gray-border);
             border-radius: 8px;
-            margin: 20px 0;
+            text-align: center;
+            font-size: 13px;
+            min-width: 100px;
+        }
+        
+        .mapping-table input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .product-name {
+            font-weight: 500;
+            color: var(--secondary-color);
         }
         
         .no-products {
             text-align: center;
-            padding: 40px;
-            color: #6B7280;
+            padding: 40px 20px;
+            color: var(--text-gray);
         }
         
-        @media (max-width: 768px) {
-            .mapping-table {
-                font-size: 14px;
-            }
-            
-            .mapping-table th,
-            .mapping-table td {
-                padding: 8px;
+        .no-products i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--gray-border);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-right: 4px solid var(--primary-color);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .info-box i {
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        
+        .info-box-content {
+            flex: 1;
+        }
+        
+        .info-box strong {
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .info-box p {
+            color: var(--text-gray);
+            font-size: 12px;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .mapping-table-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .mapping-table-wrapper::-webkit-scrollbar-track {
+            background: var(--gray-border);
+            border-radius: 10px;
+        }
+        
+        .mapping-table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @media print {
+            .btn, .form-actions {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-<div class="settings-container">
-    <div class="page-header-container">
+<div class="main-settings-wrapper">
+    <div class="page-header">
         <div class="brand-header">
-            <div class="brand-logo">Liysta</div>
             <h1 class="page-title">
-                <i class="fas fa-cogs"></i>
-                إعدادات النورس المتكاملة
+                إعدادات النورس 
             </h1>
         </div>
     </div>
@@ -223,8 +617,8 @@
     <div class="messages-container">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
-            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% endif %}"></i>
-            {{ message }}
+            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            <span>{{ message }}</span>
         </div>
         {% endfor %}
     </div>
@@ -236,21 +630,59 @@
         <div class="settings-card">
             <div class="company-header">
                 <div class="company-logo">
-                    <i class="fas fa-truck"></i>
+                  <img src="{% static 'img/image.png' %}"  alt="شعار النورس">
                 </div>
                 <div class="company-info">
                     <h2 class="company-name">شركة النورس للتوصيل</h2>
                     {% if nawris_conn.is_active %}
-                        <span class="company-status status-active">
+                        <span class="company-status">
                             <i class="fas fa-check-circle"></i> مرتبط
                         </span>
                     {% endif %}
                 </div>
             </div>
             
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <div class="info-box-content">
+                    <strong>بيانات التوثيق</strong>
+                    <p>يرجى التأكد من صحة الكود الرئيسي وكود التوثيق قبل المتابعة. يمكنك الحصول على هذه البيانات من حسابك في منصة النورس.</p>
+                </div>
+            </div>
+            
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-money-bill-wave"></i>
+                    Authentication Key
+                    <span class="required-star">*</span>
+                </label>
+                <input type="text" name="auth" class="form-control" 
+                       value="{{ nawris_conn.auth|default:'' }}" 
+                       placeholder="أدخل كود التوثيق"
+                       required>
+                <div class="checkbox-description">
+                    <i class="fas fa-info-circle"></i> رمز التوثيق الخاص بحسابك في منصة النورس
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    Main Client Code
+                    <span class="required-star">*</span>
+
+                </label>
+                <input type="text" name="main_code" class="form-control" 
+                       value="{{ nawris_conn.main_code|default:'' }}" 
+                       placeholder="أدخل الكود الرئيسي"
+                       required>
+                <div class="checkbox-description">
+                    <i class="fas fa-info-circle"></i> الكود المقدم من شركة النورس عند الاشتراك
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-card">
+            <div class="form-group">
+                <label class="form-label">
                     من يدفع قيمة الشحن؟
                 </label>
                 <div class="custom-radio-group">
@@ -291,12 +723,12 @@
                                class="real-checkbox-input">
                         <span class="custom-checkbox-visual" id="storeing_visual"></span>
                         <label for="storeing_real" class="custom-checkbox-label">
-                            تفعيل خدمة التجميع (التخزين عند النورس)
+                             هل منتجاتك مخزنة لدى شركة النورس؟
                         </label>
                     </div>
                 </div>
                 <div class="checkbox-description">
-                    تتيح هذه الخدمة تخزين منتجاتك لدى شركة النورس
+                      اذا كانت منتجاتك مخزنة لدى شركة النورس نرجو التاكد من تحديد هذا الخيار
                 </div>
             </div>
             
@@ -322,71 +754,73 @@
              style="display: {% if nawris_conn.storeing %}block{% else %}none{% endif %};">
             
             <div class="settings-card">
-                <h3 style="margin-bottom: 20px; color: #1F2937;">
+                <h3 class="section-title">
                     <i class="fas fa-link"></i> ربط منتجات متجرك مع منتجات النورس
                 </h3>
                 
                 {% if api_error %}
-                    <div class="alert-warning">
+                    <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle"></i>
                         {{ api_error }}
                     </div>
                 {% elif nawris_products %}
-                    <div style="margin-bottom: 30px;">
-                        <h4 style="color: #F97316; margin-bottom: 15px;">
+                    <div>
+                        <h4 class="section-title" style="font-size: 16px;">
                             <i class="fas fa-box"></i> منتجات النورس المتاحة للتخزين
                         </h4>
-                        <table class="mapping-table">
-                            <thead>
-                                <tr>
-                                    <th>ID في النورس</th>
-                                    <th>اسم المنتج</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for product in nawris_products %}
-                                <tr>
-                                    <td>{{ product.id }}</td>
-                                    <td class="product-name">{{ product.name }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div>
-                        <h4 style="color: #F97316; margin-bottom: 15px;">
-                            <i class="fas fa-store"></i> منتجات متجرك - أدخل المعرف المناسب من النورس
-                        </h4>
-                        {% if my_products %}
+                        <div class="mapping-table-wrapper">
                             <table class="mapping-table">
                                 <thead>
                                     <tr>
-                                        <th>منتجك</th>
-                                        <th>ID في النورس </th>
+                                        <th>ID في النورس</th>
+                                        <th>اسم المنتج</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for product in my_products %}
+                                    {% for product in nawris_products %}
                                     <tr>
+                                        <td>{{ product.id }}</td>
                                         <td class="product-name">{{ product.name }}</td>
-                                        <td>
-                                            <input type="number" 
-                                                   name="del_id_{{ product.id }}" 
-                                                   id="del_id_{{ product.id }}"
-                                                   value="{{ existing_mapping|get_item:product.id }}"
-                                                   placeholder="أدخل المعرف من النورس">
-                                        </td>
-                                      
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h4 class="section-title" style="font-size: 16px;">
+                            <i class="fas fa-store"></i> منتجات متجرك - أدخل المعرف المناسب من النورس
+                        </h4>
+                        {% if my_products %}
+                            <div class="mapping-table-wrapper">
+                                <table class="mapping-table">
+                                    <thead>
+                                        <tr>
+                                            <th>منتجك</th>
+                                            <th>ID في النورس</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in my_products %}
+                                        <tr>
+                                            <td class="product-name">{{ product.name }}</td>
+                                            <td>
+                                                <input type="number" 
+                                                       name="del_id_{{ product.id }}" 
+                                                       id="del_id_{{ product.id }}"
+                                                       value="{{ existing_mapping|get_item:product.id }}"
+                                                       placeholder="أدخل المعرف">
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         {% else %}
                             <div class="no-products">
-                                <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 15px;"></i>
+                                <i class="fas fa-box-open"></i>
                                 <p>لا توجد منتجات في متجرك حالياً</p>
-                                <a href="#" class="btn btn-primary">إضافة منتجات</a>
                             </div>
                         {% endif %}
                     </div>
@@ -403,8 +837,8 @@
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">
                 <i class="fas fa-arrow-right"></i> إلغاء
             </a>
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> حفظ جميع الإعدادات والروابط
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                </i> حفظ   
             </button>
         </div>
     </form>
@@ -415,16 +849,14 @@
     const productsSection = document.getElementById('productsMappingSection');
     
     function toggleProductsSection() {
-        if (storeingCheckbox.checked) {
-            productsSection.style.display = 'block';
-        } else {
-            productsSection.style.display = 'none';
+        if (storeingCheckbox && productsSection) {
+            if (storeingCheckbox.checked) {
+                productsSection.style.display = 'block';
+            } else {
+                productsSection.style.display = 'none';
+            }
         }
     }
-    
-    storeingCheckbox.addEventListener('change', toggleProductsSection);
-    
-  
     
     function initCheckboxes() {
         const checkboxes = ['storeing', 'epay'];
@@ -432,7 +864,8 @@
             const checkbox = document.getElementById(`${name}_real`);
             const visual = document.getElementById(`${name}_visual`);
             if (checkbox && visual) {
-                visual.addEventListener('click', () => {
+                visual.addEventListener('click', (e) => {
+                    e.preventDefault();
                     checkbox.checked = !checkbox.checked;
                     updateVisual(checkbox, visual);
                     if (name === 'storeing') toggleProductsSection();
@@ -453,9 +886,44 @@
         }
     }
     
+    const form = document.getElementById('nawrisIntegrationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (form && submitBtn) {
+        form.addEventListener('submit', function() {
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<i class="fas fa-spinner"></i><span>جاري الحفظ...</span>';
+            submitBtn.disabled = true;
+        });
+    }
+    
+    function enhanceTouchBehavior() {
+        const btns = document.querySelectorAll('.btn, .custom-radio-label, .custom-checkbox-label');
+        btns.forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.style.opacity = '0.8';
+            });
+            btn.addEventListener('touchend', function() {
+                this.style.opacity = '1';
+            });
+        });
+    }
+    
     document.addEventListener('DOMContentLoaded', () => {
         initCheckboxes();
         toggleProductsSection();
+        enhanceTouchBehavior();
+        
+        const authInput = document.querySelector('input[name="auth"]');
+        const mainCodeInput = document.querySelector('input[name="main_code"]');
+        
+        if (authInput && !authInput.value) {
+            authInput.placeholder = 'أدخل كود التوثيق';
+        }
+        
+        if (mainCodeInput && !mainCodeInput.value) {
+            mainCodeInput.placeholder = 'أدخل الكود الرئيسي';
+        }
     });
 </script>
 </body>

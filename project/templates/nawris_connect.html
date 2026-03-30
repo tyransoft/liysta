@@ -442,8 +442,26 @@
         </div>
         
         <form method="POST" class="connection-form" id="connectionForm">
-    {% csrf_token %}
+         {% csrf_token %}
     
+
+    <div class="form-group">
+        <label class="form-label">
+            Authentication Key
+            <span class="required-star">*</span>
+        </label>
+        <div class="input-wrapper">
+            <input type="text" name="auth" class="form-control" 
+                   value="{{ existing_connection.auth|default:'' }}" required>
+        </div>
+        <div class="field-help">
+            <i class="fas fa-info-circle"></i>
+
+            <span>رمز التوثيق الخاص بحسابك في منصة النورس</span>
+        </div>
+    </div>
+
+
     <div class="form-group">
         <label class="form-label">
             Main Client Code
@@ -460,21 +478,7 @@
         </div>
     </div>
     
-    <div class="form-group">
-        <label class="form-label">
-            Authentication Key
-            <span class="required-star">*</span>
-        </label>
-        <div class="input-wrapper">
-            <input type="text" name="auth" class="form-control" 
-                   value="{{ existing_connection.auth|default:'' }}" required>
-        </div>
-        <div class="field-help">
-            <i class="fas fa-info-circle"></i>
 
-            <span>رمز التوثيق الخاص بحسابك في منصة النورس</span>
-        </div>
-    </div>
     
     <button type="submit" class="btn-connect" id="submitBtn">
         <i class="fas fa-link"></i>
