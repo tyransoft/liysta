@@ -3409,7 +3409,7 @@ def deliver_nawris(request, order_id):
             return redirect('customer_dashboard')
 
         else:
-            messages.error(request, data.get('error_msg', 'فشل الشحن'))
+            messages.error(request, data.get('errors', 'فشل الشحن'))
             return redirect('customer_dashboard')
 
     except NawrisConnection.DoesNotExist:
