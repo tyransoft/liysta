@@ -3309,8 +3309,8 @@ def nawris_integration(request):
                     product.del_id = None
                 product.save()
         
-        messages.success(request, 'تم حفظ جميع الإعدادات وروابط المنتجات بنجاح')
-        return redirect('nawris_integration')
+        messages.success(request, 'تم حفظ جميع الإعدادات وربط التوصيل مع شركة النورس بنجاح')
+        return redirect('customer_dashboard')
     
     existing_mapping = {product.id: product.del_id for product in my_products if product.del_id}
     
