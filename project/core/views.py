@@ -3358,7 +3358,7 @@ def deliver_nawris(request, order_id):
                 [item.product.name for item in order.orderitem_set.all()]
             ),
 
-            "amount_to_be_collected": str(order.total_price),
+            "amount_to_be_collected": str(order.sales_total),
 
             "is_order": "0",
 
