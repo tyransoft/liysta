@@ -566,7 +566,7 @@ class OrderItem(models.Model):
     def get_final_price(self):
        return self.quantity * self.product.get_discounted_price()
     def __str__(self):
-        return f"طلب  - {self.product} * {self.quantity}"
+        return f"طلب {self.order.id} - {self.product} * {self.quantity}"
     class Meta:
         indexes = [
            models.Index(fields=['menu']),
