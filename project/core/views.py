@@ -3324,3 +3324,102 @@ def nawris_integration(request):
     }
     
     return render(request, 'nawris_integration.html', context)        
+
+
+
+ 
+
+@login_required
+def deliver_nawris(request, order_id):
+    try:
+        customer = Customer.objects.get(user=request.user)
+
+        nawris = NawrisConnection.objects.get(
+            customer=customer,
+            is_active=True
+        )
+
+        order = Order.objects.get(id=order_id, menu__customer=customer)
+
+        payload = {
+            "authentication_key": nawris.auth,
+            "main_client_code": nawris.main_code,
+
+            "receiver": order.customer_name,
+            "phone1": order.customer_phone,
+
+            "government": order.company_delivery_city,
+            "area": order.company_delivery_area or "",
+
+
+            "invoice_number": f"{order.ordernumber}-{order.id}",
+
+            "order_summary": ", ".join(
+                [item.product.name for item in order.orderitem_set.all()]
+            ),
+
+            "amount_to_be_collected": str(order.total_price),
+
+            "is_order": "0",
+
+
+            "shipment_on_sender": "1" if nawris.paymentby == "sender" else "0",
+
+
+         
+        }
+
+        if nawris.storeing:
+            products_list = []
+
+            for item in order.orderitem_set.all():
+                product = item.product
+
+                if not product.del_id:
+                    messages.error(request, f'المنتج {product.name} غير مربوط مع النورس')
+                    return redirect('customer_dashboard')
+
+                products_list.append({
+                    "id": product.del_id,
+                    "quantity": item.quantity
+                })
+
+            payload["products"] = products_list
+
+        response = requests.post(
+            'https://backoffice.nawris.algoriza.com/external-api/add-order',
+            data=payload,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            timeout=30
+        )
+
+        data = response.json()
+
+        if data.get('success') == 1:
+            result = data.get('result', {})
+
+            order.refrence = result.get('code')
+            order.status = 'indeliver'
+            order.save()
+
+            messages.success(request, 'تم ارسال الطلبية الى النورس ')
+            return redirect('customer_dashboard')
+
+        else:
+            messages.error(request, data.get('error_msg', 'فشل الشحن'))
+            return redirect('customer_dashboard')
+
+    except NawrisConnection.DoesNotExist:
+        messages.error(request, 'النورس غير مربوط')
+        return redirect('customer_dashboard')
+
+    except Order.DoesNotExist:
+        messages.error(request, 'الطلب غير موجود')
+        return redirect('customer_dashboard')
+
+    except Exception as e:
+        messages.error(request, f'خطأ: {str(e)}')
+        return redirect('customer_dashboard')
