@@ -1542,17 +1542,10 @@
                     
                     {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}
                         {% if darbasabil %}
-                        <div style="margin-bottom: 15px;">
-                            <label>اختر شركة التوصيل:</label>
-                            <select id="delivery_company_select" class="form-control">
-                                <option value="darb">درب السبيل</option>
-                                <option value="nawris">النورس</option>
-                            </select>
-                        </div>
-                        {% endif %}
+                        
                         
                         <div id="darb_sabil_section" style="display: {% if darbasabil %}block{% else %}none{% endif %};">
-                            <label for="darb_sabil_area">اختر العنوان (درب السبيل):</label>
+                            <label for="darb_sabil_area">اختر العنوان:</label>
                             <select id="darb_sabil_area" name="darb_sabil_area" class="form-control">
                                 <option value="">-- اختر المدينة --</option>
                                 {% for city in darb_cities %}
@@ -1568,7 +1561,7 @@
                             </select>
                             
                             <div class="service-type-section" id="serviceTypeSection" style="display: none; margin-top: 15px;">
-                                <label>نوع الخدمة (درب السبيل):</label>
+                                <label>نوع الخدمة :</label>
                                 <div class="service-options" id="serviceOptions">
                                     <div class="service-option">
                                         <input type="radio" name="darb_sabil_service" value="6783c612dcf305c9e775c987" id="service_male" data-title="توصيل رجالي">
@@ -1585,14 +1578,16 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        {% elif nawris %}
+
                         <div id="nawris_section" style="display: none;">
-                            <label for="nawris_area">اختر العنوان (النورس):</label>
+                            <label for="nawris_area">اختر العنوان:</label>
                             <select id="nawris_area" name="nawris_area" class="form-control">
                                 <option value="">-- اختر المنطقة --</option>
                                 {% for area in nawris_areas %}
                                 <option value="{{ area.area_id }}" data-city-name="{{ area.city_name }}" data-area-name="{{ area.area_name }}">
-                                    {{ area.city_name }} - {{ area.area_name }}
+                                    {{ area.city_name }}     {% if area.area_name %} - {{ area.area_name }}{% endif %}
+                                </option>
                                 </option>
                                 {% empty %}
                                 <option value="">لا توجد مناطق متاحة</option>

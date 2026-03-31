@@ -3461,7 +3461,7 @@ def calculate_nawris_price(request):
             'Content-Type': 'application/json'
         }
         
-        if area_id and area_id != 'null' and area_id != '':
+        if area_id and area_id != 'None' and area_id != '':
             url = "https://backoffice.nawris.algoriza.com/external-api/get-area-cost"
             payload = {
                 "authentication_key": auth_key,
