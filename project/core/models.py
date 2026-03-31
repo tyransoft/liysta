@@ -784,5 +784,5 @@ class NawrisArea(models.Model):
     area_id=models.IntegerField(null=True,blank=True)
     
     def __str__(self):
-        return f'{self.city_name} -{self.city_id}'
+        return f'{self.city_name} -{self.city_id}-|-{self.area_name}-{self.area_id}'
 

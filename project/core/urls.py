@@ -20,7 +20,6 @@ urlpatterns = [
     path('blog/<slug:slug>',blog_post,name='blog_post'),
 
     path('faqs/',faqs,name='faqs'),
-    path('sync-nawris/', sync_nawris_areas, name='sync_nawris'),
 
     path('How-it-works/',learn,name='how-it-works'),
     path('terms/',terms,name='terms'),

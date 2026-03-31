@@ -1412,6 +1412,12 @@ def customer_dashboard(request):
               darb=DarbAsabilConnection.objects.get(customer=customer)
             except:
                 darb=None
+            try:            
+              nawris=NawrisConnection.objects.get(customer=customer)
+            except:
+                nawris=None
+                   
+            
             context.update({
                 'orders': orders,
                 'delivered_percent':deliv_per,
@@ -1432,6 +1438,8 @@ def customer_dashboard(request):
                 'returned_orders_count': returned,
                 'canceled_orders_count': canceled,
                 'darb_connection':darb,
+                'nawris_connection':nawris,
+
                 'months': json.dumps(months_labels),  
             })
         if subscription.plan.review:
@@ -1952,8 +1960,7 @@ def menu_page_view(request, store_slug):
        nawris=None
     
     darb_cities=Darbasabilbranches.objects.all()
-    nawris_areas=n
-
+    nawris_areas = NawrisArea.objects.all().order_by('city_name')
     cities = City.objects.filter(menu=menu) 
     menu.review_count = Reviews.objects.filter(menu=menu).count()
 
@@ -1972,6 +1979,7 @@ def menu_page_view(request, store_slug):
         'darbasabil':darb,
         'darb_cities':darb_cities,
         'nawris':nawris,
+        'nawris_areas':nawris_areas,
     }
     return render(request, f'{menu.template}.html', context)
     
@@ -2614,11 +2622,14 @@ def delivery_companies(request):
     customer=Customer.objects.get(user=request.user)
     try:
        darb=DarbAsabilConnection.objects.get(customer=customer)
-       nawris=NawrisConnection.objects.get(customer=customer)
 
     except:
        darb=None   
-       nawris=None
+    try:
+       nawris=NawrisConnection.objects.get(customer=customer)
+
+    except:
+       nawris=None   
     return render(request, 'delivery_company.html',{'darb_connection':darb,'nawris_connection':nawris})     
 
 
@@ -3504,100 +3515,3 @@ def calculate_nawris_price(request):
 
 
 
-
-def sync_nawris_areas(request):
-    API_KEY = "e04d0c4b07b71d9b2fcfb5f503d6b309a7d53af08b06aadd491853592efe88ee"
-    BASE_URL = "https://backoffice.nawris.algoriza.com/external-api"
-
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    }
-
-    try:
-        res = requests.get(
-            f"{BASE_URL}/get-government",
-            params={"authentication_key": API_KEY},
-            headers=headers,
-            timeout=10
-        )
-
-        if res.status_code != 200:
-            messages.error(request, "فشل في الاتصال بجلب المدن")
-            return redirect("home")  # غيرها حسب اسم صفحتك
-
-        data = res.json()
-
-        if not data.get("success"):
-            messages.error(request, f"خطأ من API: {data.get('error_msg')}")
-            return redirect("home")
-
-        cities = data.get("feed", [])
-        created = 0
-        skipped = 0
-
-        for city in cities:
-            city_id = city.get("id")
-            city_name = city.get("name")
-            area_required = city.get("area_required")
-
-            # ✅ لا يحتاج مناطق
-            if area_required == 0:
-                NawrisArea.objects.update_or_create(
-                    city_id=city_id,
-                    area_id=None,
-                    defaults={
-                        "city_name": city_name,
-                        "area_name": None
-                    }
-                )
-                created += 1
-
-            # 🔥 يحتاج مناطق
-            else:
-                areas_res = requests.get(
-                    f"{BASE_URL}/get-area/{city_id}",
-                    params={"authentication_key": API_KEY},
-                    headers=headers,
-                    timeout=10
-                )
-
-                if areas_res.status_code != 200:
-                    skipped += 1
-                    continue
-
-                areas_data = areas_res.json()
-
-                if not areas_data.get("success"):
-                    skipped += 1
-                    continue
-
-                areas = areas_data.get("feed", [])
-
-                if not areas:
-                    skipped += 1
-                    continue
-
-                for area in areas:
-                    NawrisArea.objects.update_or_create(
-                        area_id=area.get("id"),
-                        defaults={
-                            "city_name": city_name,
-                            "city_id": city_id,
-                            "area_name": area.get("name"),
-                        }
-                    )
-                    created += 1
-
-        messages.success(
-            request,
-            f"تمت المزامنة بنجاح ✅ | العناصر المضافة/المحدثة: {created} | المتجاهلة: {skipped}"
-        )
-
-    except requests.exceptions.RequestException:
-        messages.error(request, "حدث خطأ في الاتصال بالخادم الخارجي")
-
-    except Exception as e:
-        messages.error(request, f"خطأ غير متوقع: {str(e)}")
-
-    return redirect("home")
