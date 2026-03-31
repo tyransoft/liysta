@@ -775,20 +775,14 @@ class NawrisConnection(models.Model):
     connected_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f'{self.customer.store_en_name} -{self.connected_at}'                                                                                                                 
-    
-class NawrisCity(models.Model):
-    city_name=models.CharField(max_length=200)
-    city_id=models.IntegerField(unique=True)
-    have_areas=models.BooleanField(default=False)
-    
-    def __str__(self):
-        return f'{self.city} -{self.city_id}'
+
 
 class NawrisArea(models.Model):
-    city=models.ForeignKey(NawrisCity,on_delete=models.CASCADE)
-    area_name=models.CharField(max_length=200)
-    area_id=models.IntegerField(unique=True)
+    city_name=models.CharField(max_length=200)
+    city_id=models.IntegerField(unique=True)
+    area_name=models.CharField(max_length=200,null=True,blank=True)
+    area_id=models.IntegerField(unique=True,null=True,blank=True)
     
     def __str__(self):
-        return f'{self.area_name} -{self.area_id}'
+        return f'{self.city_name} -{self.city_id}'
 

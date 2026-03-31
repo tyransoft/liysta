@@ -20,6 +20,7 @@ urlpatterns = [
     path('blog/<slug:slug>',blog_post,name='blog_post'),
 
     path('faqs/',faqs,name='faqs'),
+    path('sync-nawris/', sync_nawris_areas, name='sync_nawris'),
 
     path('How-it-works/',learn,name='how-it-works'),
     path('terms/',terms,name='terms'),
@@ -79,6 +80,7 @@ urlpatterns = [
     path('disconnect-nawris/', disconnect_nawris, name='disconnect_nawris'),
     path('connect-nawris/', connect_nawris, name='connect_nawris'),
     path('nawris-settings/', nawris_integration, name='nawris_settings'),
+    path('calculate-nawris-price/', calculate_nawris_price, name='calculate_nawris_price'),
 
     path('delivery-companies/', delivery_companies, name='delivery_companies'),
 

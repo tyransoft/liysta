@@ -1946,9 +1946,14 @@ def menu_page_view(request, store_slug):
         darb=DarbAsabilConnection.objects.get(customer=menu.customer)
     except: 
        darb=None       
+    try:
+        nawris=NawrisConnection.objects.get(customer=menu.customer)
+    except: 
+       nawris=None
     
     darb_cities=Darbasabilbranches.objects.all()
- 
+    nawris_areas=n
+
     cities = City.objects.filter(menu=menu) 
     menu.review_count = Reviews.objects.filter(menu=menu).count()
 
@@ -1966,6 +1971,7 @@ def menu_page_view(request, store_slug):
         'subscription':subscription,
         'darbasabil':darb,
         'darb_cities':darb_cities,
+        'nawris':nawris,
     }
     return render(request, f'{menu.template}.html', context)
     
@@ -3423,3 +3429,178 @@ def deliver_nawris(request, order_id):
     except Exception as e:
         messages.error(request, f'خطأ: {str(e)}')
         return redirect('customer_dashboard')
+
+
+
+@csrf_exempt
+def calculate_nawris_price(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        city_id = data.get('city_id')
+        area_id = data.get('area_id')
+        products = data.get('products', [])
+        
+        auth_key = "e04d0c4b07b71d9b2fcfb5f503d6b309a7d53af08b06aadd491853592efe88ee"
+        
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+        
+        if area_id and area_id != 'null' and area_id != '':
+            url = "https://backoffice.nawris.algoriza.com/external-api/get-area-cost"
+            payload = {
+                "authentication_key": auth_key,
+                "type": 1,
+                "area_id": int(area_id)
+            }
+        else:
+            url = "https://backoffice.nawris.algoriza.com/external-api/get-cost"
+            payload = {
+                "authentication_key": auth_key,"type": 1, "government_id": int(city_id) 
+            }
+        
+        response = requests.get(url, headers=headers, params=payload, timeout=10)
+        
+        if response.status_code == 200:
+            api_response = response.json()
+            
+            if api_response.get('success') == 1:
+                delivery_price = float(api_response.get('feed', 0))
+                
+                return JsonResponse({
+                    'success': True,
+                    'price': delivery_price,
+                    'charge': 0
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'API returned error'
+                }, status=400)
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': f'API request failed with status {response.status_code}'
+            }, status=500)
+            
+    except requests.exceptions.Timeout:
+        return JsonResponse({'success': False, 'error': 'Request timeout'}, status=500)
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)        
+
+
+
+
+
+
+
+import requests
+from django.shortcuts import redirect
+from django.contrib import messages
+from yourapp.models import NawrisArea
+
+
+def sync_nawris_areas(request):
+    API_KEY = "e04d0c4b07b71d9b2fcfb5f503d6b309a7d53af08b06aadd491853592efe88ee"
+    BASE_URL = "https://backoffice.nawris.algoriza.com/external-api"
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        res = requests.get(
+            f"{BASE_URL}/get-government",
+            params={"authentication_key": API_KEY},
+            headers=headers,
+            timeout=10
+        )
+
+        if res.status_code != 200:
+            messages.error(request, "فشل في الاتصال بجلب المدن")
+            return redirect("home")  # غيرها حسب اسم صفحتك
+
+        data = res.json()
+
+        if not data.get("success"):
+            messages.error(request, f"خطأ من API: {data.get('error_msg')}")
+            return redirect("home")
+
+        cities = data.get("feed", [])
+        created = 0
+        skipped = 0
+
+        for city in cities:
+            city_id = city.get("id")
+            city_name = city.get("name")
+            area_required = city.get("area_required")
+
+            # ✅ لا يحتاج مناطق
+            if area_required == 0:
+                NawrisArea.objects.update_or_create(
+                    city_id=city_id,
+                    area_id=None,
+                    defaults={
+                        "city_name": city_name,
+                        "area_name": None
+                    }
+                )
+                created += 1
+
+            # 🔥 يحتاج مناطق
+            else:
+                areas_res = requests.get(
+                    f"{BASE_URL}/get-area/{city_id}",
+                    params={"authentication_key": API_KEY},
+                    headers=headers,
+                    timeout=10
+                )
+
+                if areas_res.status_code != 200:
+                    skipped += 1
+                    continue
+
+                areas_data = areas_res.json()
+
+                if not areas_data.get("success"):
+                    skipped += 1
+                    continue
+
+                areas = areas_data.get("feed", [])
+
+                if not areas:
+                    skipped += 1
+                    continue
+
+                for area in areas:
+                    NawrisArea.objects.update_or_create(
+                        area_id=area.get("id"),
+                        defaults={
+                            "city_name": city_name,
+                            "city_id": city_id,
+                            "area_name": area.get("name"),
+                        }
+                    )
+                    created += 1
+
+        messages.success(
+            request,
+            f"تمت المزامنة بنجاح ✅ | العناصر المضافة/المحدثة: {created} | المتجاهلة: {skipped}"
+        )
+
+    except requests.exceptions.RequestException:
+        messages.error(request, "حدث خطأ في الاتصال بالخادم الخارجي")
+
+    except Exception as e:
+        messages.error(request, f"خطأ غير متوقع: {str(e)}")
+
+    return redirect("home")
