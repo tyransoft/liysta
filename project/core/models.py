@@ -779,9 +779,9 @@ class NawrisConnection(models.Model):
 
 class NawrisArea(models.Model):
     city_name=models.CharField(max_length=200)
-    city_id=models.IntegerField(unique=True)
+    city_id=models.IntegerField(default=0)
     area_name=models.CharField(max_length=200,null=True,blank=True)
-    area_id=models.IntegerField(unique=True,null=True,blank=True)
+    area_id=models.IntegerField(null=True,blank=True)
     
     def __str__(self):
         return f'{self.city_name} -{self.city_id}'
