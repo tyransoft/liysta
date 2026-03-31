@@ -3502,10 +3502,7 @@ def calculate_nawris_price(request):
 
 
 
-import requests
-from django.shortcuts import redirect
-from django.contrib import messages
-from yourapp.models import NawrisArea
+
 
 
 def sync_nawris_areas(request):
