@@ -3036,7 +3036,10 @@ def calucate_delivery_price(request,menu_id):
                 if 'remainings' in data['data'] and data['data']['remainings']:
                     shiping_price=data['data']['remainings'][0]['sums']['shipping']['sum']
                     shiping_charge=data['data']['remainings'][0]['sums']['charge']['sum']
-                    price = shiping_price + shiping_charge
+                    if shiping_charge:
+                      price = shiping_price + shiping_charge
+                    else:
+                      price = shiping_price 
                     charge = data['data']['remainings'][0]['sums']['package-charge']['sum']
 
                 else:
