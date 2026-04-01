@@ -2107,7 +2107,12 @@ def create_order(request):
                )
             except:
               darb=None
-            
+            try:
+               nawris=NawrisConnection.objects.get(
+                customer=menu_id.customer
+               )
+            except:
+              nawris=None
             if not all([customer_name, customer_phone, menu]):
                 return JsonResponse({
                     'success': False,
@@ -2186,6 +2191,12 @@ def create_order(request):
                  total_profit -= float(order.company_delivery_price) 
             else:
                pass
+            if nawris: 
+             if nawris.paymentby == 'sender':
+                 total_profit -= float(order.company_delivery_price) 
+            else:
+               pass
+            
             total_profit -= float(order.company_delivery_charge)
                 
             order.sales_total = total_sales
@@ -3442,7 +3453,6 @@ def deliver_nawris(request, order_id):
         return redirect('customer_dashboard')
 
 
-
 @csrf_exempt
 def calculate_nawris_price(request):
     if request.method != 'POST':
@@ -3452,9 +3462,22 @@ def calculate_nawris_price(request):
         data = json.loads(request.body)
         city_id = data.get('city_id')
         area_id = data.get('area_id')
-        products = data.get('products', [])
+        customer = data.get('customer')
         
-        auth_key = "e04d0c4b07b71d9b2fcfb5f503d6b309a7d53af08b06aadd491853592efe88ee"
+        if not customer:
+            return JsonResponse({
+                'success': False,
+                'error': 'customer ID is required'
+            }, status=400)
+        
+        try:
+            nawris = NawrisConnection.objects.get(customer__id=customer)
+            auth_key = nawris.auth
+        except NawrisConnection.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Nawris connection not found for this customer'
+            }, status=404)
         
         headers = {
             'Accept': 'application/json',
@@ -3463,16 +3486,38 @@ def calculate_nawris_price(request):
         
         if area_id and area_id != 'None' and area_id != '':
             url = "https://backoffice.nawris.algoriza.com/external-api/get-area-cost"
-            payload = {
-                "authentication_key": auth_key,
-                "type": 1,
-                "area_id": int(area_id)
-            }
+            try:
+                area_id_int = int(area_id)
+                payload = {
+                    "authentication_key": auth_key,
+                    "type": 1,
+                    "area_id": area_id_int
+                }
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Invalid area_id format'
+                }, status=400)
         else:
             url = "https://backoffice.nawris.algoriza.com/external-api/get-cost"
-            payload = {
-                "authentication_key": auth_key,"type": 1, "government_id": int(city_id) 
-            }
+            if not city_id:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'city_id is required'
+                }, status=400)
+            
+            try:
+                city_id_int = int(city_id)
+                payload = {
+                    "authentication_key": auth_key,
+                    "type": 1,
+                    "government_id": city_id_int
+                }
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Invalid city_id format'
+                }, status=400)
         
         response = requests.get(url, headers=headers, params=payload, timeout=10)
         
@@ -3480,7 +3525,27 @@ def calculate_nawris_price(request):
             api_response = response.json()
             
             if api_response.get('success') == 1:
-                delivery_price = float(api_response.get('feed', 0))
+                feed_value = api_response.get('feed')
+                
+                if feed_value is None or feed_value == '':
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'سعر التوصيل غير متاح لهذه المنطقة، يرجى اختيار منطقة أخرى'
+                    }, status=400)
+                
+                try:
+                    delivery_price = float(feed_value)
+                except (ValueError, TypeError):
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'قيمة السعر غير صالحة: {feed_value}'
+                    }, status=400)
+                
+                if delivery_price <= 0:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'سعر التوصيل غير متاح لهذه المنطقة (السعر صفر أو أقل)، يرجى اختيار منطقة أخرى'
+                    }, status=400)
                 
                 return JsonResponse({
                     'success': True,
@@ -3488,30 +3553,34 @@ def calculate_nawris_price(request):
                     'charge': 0
                 })
             else:
+                error_message = api_response.get('message', 'API returned error')
                 return JsonResponse({
                     'success': False,
-                    'error': 'API returned error'
+                    'error': f'خدمة التوصيل غير متاحة: {error_message}'
                 }, status=400)
         else:
             return JsonResponse({
                 'success': False,
-                'error': f'API request failed with status {response.status_code}'
+                'error': f'فشل الاتصال بخدمة التوصيل، يرجى المحاولة لاحقاً'
             }, status=500)
             
     except requests.exceptions.Timeout:
-        return JsonResponse({'success': False, 'error': 'Request timeout'}, status=500)
+        return JsonResponse({
+            'success': False, 
+            'error': 'انتهت مهلة الاتصال بخدمة التوصيل، يرجى المحاولة مرة أخرى'
+        }, status=500)
     except requests.exceptions.RequestException as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+        return JsonResponse({
+            'success': False, 
+            'error': f'خطأ في الاتصال: {str(e)}'
+        }, status=500)
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
+        return JsonResponse({
+            'success': False, 
+            'error': 'بيانات غير صالحة من الخادم'
+        }, status=400)
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)        
-
-
-
-
-
-
-
-
-
+        return JsonResponse({
+            'success': False, 
+            'error': f'حدث خطأ غير متوقع: {str(e)}'
+        }, status=500)
