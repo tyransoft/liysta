@@ -290,8 +290,10 @@
                 </div>
                 <div class="company-info">
                     <h3 class="company-name">درب السبيل</h3>
-                        {% if darb_connection%}
-                            <span class="company-status status-active">
+                    {% if darb_connection%}
+                       {% if darb_connection.is_active %}
+                    
+                        <span class="company-status status-active">
                                 <i class="fas fa-check-circle"></i> مرتبط
                             </span>
                         {% else %}
@@ -299,12 +301,14 @@
                                 <i class="fas fa-times-circle"></i> غير نشط
                             </span>
                         {% endif %}
-                      {% if not nawris_connection %}
+                    {% else %}    
+                       {% if not nawris_connection %}
 
                         <span class="company-status status-available">
                             <i class="fas fa-plug"></i> متاح للربط
                         </span>
-                      {% endif %}
+                       {% endif %}
+                    {% endif %}
                 </div>
             </div>
             
@@ -346,8 +350,10 @@
                 </div>
                 <div class="company-info">
                     <h3 class="company-name"> النورس</h3>
-                        {% if nawris_connection %}
-                            <span class="company-status status-active">
+                    {% if nawris_connection %}
+                        {% if nawris_connection.is_active %}
+                    
+                       <span class="company-status status-active">
                                 <i class="fas fa-check-circle"></i> مرتبط
                             </span>
                         {% else %}
@@ -355,13 +361,15 @@
                                 <i class="fas fa-times-circle"></i> غير نشط
                             </span>
                         {% endif %}
+                    {% else %}    
                         {% if not darb_connection %}
 
                         <span class="company-status status-available">
                             <i class="fas fa-plug"></i> متاح للربط
                         </span>
                            {% endif %}
-                </div>
+                    {% endif %}
+                    </div>
             </div>
             
             

@@ -2700,16 +2700,15 @@ def connect_darbasabil(request):
 
 
 def darbasabil_callback(request):
-    customer=Customer.objects.get(user=request.user)
 
     get_code=request.GET.get('code') 
     get_state=request.GET.get('state') 
 
     try:
        darb=DarbAsabilConnection.objects.get(
-           customer=customer,
            state=get_state,
        )
+       customer=Customer.objects.filter(customer=darb.customer).first()
     except DarbAsabilConnection.DoesNotExist:
       messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
       return redirect('customer_dashboard') 
