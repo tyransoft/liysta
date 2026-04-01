@@ -2936,42 +2936,52 @@ def dilver_darbasabil(request,order_id):
 
 
 
-@csrf_exempt
-def calucate_delivery_price(request,menu_id):
+from django.views.decorators.csrf import csrf_protect
+
+
+@csrf_protect
+def calucate_delivery_price(request, menu_id):
     try:
-        
+        if request.method != 'POST':
+            return JsonResponse({
+                'success': False,
+                'error': 'Method not allowed'
+            }, status=405)
+
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({
+                'success': False,
+                'error': 'بيانات غير صالحة'
+            })
+
         menu = Menu.objects.get(id=menu_id)
-        
+
         darb = DarbAsabilConnection.objects.get(
             customer=menu.customer,
             is_active=True
         )
-    
-        if request.method == 'POST':
-            data = json.loads(request.body)
-        else:
-            data = request.GET
-        
+
         city = data.get('city')
         area = data.get('area')
         service = data.get('service')
         products_data = data.get('products', [])
-       
-       
-        if darb.paymentby=='sales' or darb.paymentby =='sender': 
-         return JsonResponse({
-                    'success': True,
-                    'price': 0,
-                    'service_type':service 
-                })
-        else:
-           pass
+
         if not city or not area or not service:
             return JsonResponse({
                 'success': False,
                 'error': 'المدينة والمنطقة ونوع الخدمة مطلوبة'
             })
-        
+
+        if darb.paymentby in ['sales', 'sender']:
+            return JsonResponse({
+                'success': True,
+                'price': 0,
+                'charge': 0,
+                'service_type': service
+            })
+
         order_data = {
             "service": service,
             "products": [],
@@ -2983,28 +2993,26 @@ def calucate_delivery_price(request,menu_id):
             },
             "paymentBy": darb.paymentby
         }
-        
+
         if products_data:
-            for product_item in products_data:
+            for item in products_data:
                 try:
                     product = Products.objects.get(
-                        id=product_item['product_id'],
+                        id=item['product_id'],
                         menu=menu
                     )
-                    
-                    product_json = {
+
+                    order_data["products"].append({
                         "title": product.name,
-                        "quantity": product_item['quantity'],
-                        "widthCM": product.latitude if  product.latitude != None else 10,
-                        "heightCM": product.high if  product.high != None else 10,
-                        "lengthCM": product.length if  product.length != None else 10,
+                        "quantity": item['quantity'],
+                        "widthCM": product.latitude if  product.latitude else 10,
+                        "heightCM": product.high if product.high else 10,
+                        "lengthCM": product.length if product.length else 10,
                         "amount": 0,
                         "currency": "lyd",
                         "isChargeable": True
-                    }
-                    
-                    order_data["products"].append(product_json)
-                    
+                    })
+
                 except Products.DoesNotExist:
                     continue
         else:
@@ -3018,7 +3026,7 @@ def calucate_delivery_price(request,menu_id):
                 "currency": "lyd",
                 "isChargeable": False
             }]
-        
+
         response = requests.post(
             'https://v2.sabil.ly/api/local/shipments/calculate/shipping',
             json=order_data,
@@ -3028,71 +3036,70 @@ def calucate_delivery_price(request,menu_id):
             },
             timeout=30
         )
-        
-        if response.status_code == 200:
-            data = response.json()
-            
-            if data.get('status') and data.get('data'):
-                if 'remainings' in data['data'] and data['data']['remainings']:
-                    shiping_price=data['data']['remainings'][0]['sums']['shipping']['sum']
-                    shiping_charge=data['data']['remainings'][0]['sums']['charge']['sum']
-                    if shiping_charge:
-                      price = shiping_price + shiping_charge
-                    else:
-                      price = shiping_price 
-                    charge = data['data']['remainings'][0]['sums']['package-charge']['sum']
 
-                else:
-                    price = 0
-                
-                if darb.paymentby=='sales' or darb.paymentby =='sender': 
-                   return JsonResponse({
-                    'success': True,
-                    'price': 0,
-                    'charge':charge if charge else 0,
-                    'service_type':service 
-                   })
-                else:
-           
-                  return JsonResponse({
-                    'success': True,
-                    'price': price,
-                    'charge':charge if charge else 0,
-                    'service_type': service
-                  })
-            else:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'لم يتم حساب السعر'
-                })
-        else:
-            error_msg = f'خطأ في الحساب: {response.status_code}'
+        if response.status_code != 200:
             try:
                 error_data = response.json()
-                if 'message' in error_data:
-                    error_msg = error_data['message']
+                error_msg = error_data.get('message', 'خطأ في الحساب')
             except:
-                pass
-            
+                error_msg = f'خطأ في الحساب: {response.status_code}'
+
             return JsonResponse({
                 'success': False,
                 'error': error_msg
             })
-    
+
+        res_data = response.json()
+
+        if not res_data.get('status') or not res_data.get('data'):
+            return JsonResponse({
+                'success': False,
+                'error': 'لم يتم حساب السعر'
+            })
+
+        remainings = res_data.get('data', {}).get('remainings', [])
+
+        if not remainings:
+            return JsonResponse({
+                'success': False,
+                'error': 'لا توجد نتائج للتوصيل'
+            })
+
+        sums = remainings[0].get('sums', {})
+
+        def safe_sum(key):
+            return sums.get(key, {}).get('sum', 0)
+
+        shipping_price = safe_sum('shipping')
+        shipping_charge = safe_sum('charge')
+        package_charge = safe_sum('package-charge')
+
+        final_price = shipping_price + shipping_charge
+
+        return JsonResponse({
+            'success': True,
+            'price': final_price,
+            'charge': package_charge,
+            'service_type': service
+        })
+
     except Menu.DoesNotExist:
         return JsonResponse({
             'success': False,
             'error': 'القائمة غير موجودة'
         })
+
     except DarbAsabilConnection.DoesNotExist:
         return JsonResponse({
             'success': False,
             'error': 'لم يتم العثور على اتصال درب السبيل'
         })
+
     except Exception as e:
+        print("ERROR:", str(e))  # debugging
         return JsonResponse({
             'success': False,
-            'error': str(e)
+            'error': 'حدث خطأ غير متوقع'
         })
 
 
