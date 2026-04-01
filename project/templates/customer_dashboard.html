@@ -1051,6 +1051,43 @@
                 </div>
             </div>
         </div>
+        {% elif nawris_connection %}
+         <div class="delivery-status-container">
+            <div class="delivery-company-status">
+                <div class="company-info">
+                    <div class="company-logo">
+                        <img src="{% static 'img/image.png' %}" alt="النورس">
+                    </div>
+                    
+                    <div class="company-details">
+                        <h4 class="company-name">النورس</h4>
+                        <div class="status-container">
+                            {% if nawris_connection.is_active %}
+                                <span class="status-badge status-connected">
+                                    <i class="fas fa-check-circle"></i>
+                                    مرتبط
+                                </span>
+                            {% else %}
+                                <span class="status-badge status-disconnected">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    غير مرتبط
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="company-actions">
+                    {% if darb_connection.is_active %}
+                        <a href="{% url 'delivery_companies' %}" class="btn btn-success btn-manage">
+                            <i class="fas fa-cog"></i>
+                            إدارة الربط
+                        </a>
+                  
+                    {% endif %}
+                </div>
+            </div>
+        </div>       
         {% else %}
         <div class="delivery-status-container">
             <div class="delivery-company-status">

@@ -2573,6 +2573,15 @@ def manage_storage(request,menu_id):
     finished_products=Products.objects.filter(menu__id=menu_id,quantity=0) 
     soon_finish_products=Products.objects.filter(menu__id=menu_id,quantity__lte=5)
 
+    products = Products.objects.all().aggregate(
+      total_cost_value=Sum(F('bought_price') * F('quantity'), output_field=DecimalField()),
+      total_sales_value=Sum(F('price') * F('quantity'), output_field=DecimalField())
+    )
+
+    total_cost_value = products['total_cost_value'] or Decimal('0')
+    total_sales_value = products['total_sales_value'] or Decimal('0')
+
+    total_profit_value = total_sales_value - total_cost_value
 
     context={
         'all_products':products,
@@ -2582,7 +2591,9 @@ def manage_storage(request,menu_id):
         'finished':finished_products,
         'soon_finish':soon_finish_products,
         'menu_id':menu_id,
-  
+        'total_cost_value': total_cost_value,
+        'total_sales_value': total_sales_value,
+        'total_profit_value': total_profit_value,
     }
 
 
@@ -3463,7 +3474,6 @@ def calculate_nawris_price(request):
         city_id = data.get('city_id')
         area_id = data.get('area_id')
         customer = data.get('customer')
-        
         if not customer:
             return JsonResponse({
                 'success': False,

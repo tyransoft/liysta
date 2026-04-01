@@ -64,6 +64,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
             border-top: 4px solid;
+            height: 100%;
         }
         
         .stats-card:hover {
@@ -84,6 +85,16 @@
         .stats-card.soon {
             border-top-color: var(--warning-color);
             background: linear-gradient(135deg, #ffffff 0%, #fffcf0 100%);
+        }
+        
+        .stats-card.cost {
+            border-top-color: var(--purple-color);
+            background: linear-gradient(135deg, #ffffff 0%, #f5f0ff 100%);
+        }
+        
+        .stats-card.sales {
+            border-top-color: var(--success-color);
+            background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);
         }
         
         .stats-icon {
@@ -112,6 +123,16 @@
             color: #856404;
         }
         
+        .stats-icon.cost {
+            background: linear-gradient(135deg, var(--purple-color) 0%, #9b4dff 100%);
+            color: white;
+        }
+        
+        .stats-icon.sales {
+            background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+            color: white;
+        }
+        
         .stats-number {
             font-size: 2rem;
             font-weight: 800;
@@ -130,10 +151,24 @@
             color: #856404;
         }
         
+        .stats-number.cost {
+            color: var(--purple-color);
+        }
+        
+        .stats-number.sales {
+            color: var(--success-color);
+        }
+        
         .stats-label {
             color: #6c757d;
             font-size: 0.9rem;
             font-weight: 500;
+        }
+        
+        .stats-sub {
+            font-size: 0.75rem;
+            color: #adb5bd;
+            margin-top: 5px;
         }
         
         .main-card {
@@ -356,6 +391,18 @@
             border-radius: 2px;
         }
         
+        .row-custom {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col-custom {
+            flex: 1;
+            min-width: 200px;
+            padding: 0 10px;
+        }
+        
         @media (max-width: 768px) {
             .desktop-table {
                 display: none;
@@ -376,6 +423,14 @@
             .stats-number {
                 font-size: 1.5rem;
             }
+            
+            .row-custom {
+                flex-direction: column;
+            }
+            
+            .col-custom {
+                margin-bottom: 15px;
+            }
         }
         
         @media (min-width: 769px) {
@@ -387,6 +442,7 @@
                 display: block;
             }
         }
+        
         .btn-add-product {
             background: #ff7b25 !important;
             color: white !important;
@@ -399,9 +455,9 @@
         }
         
         .btn-add-product:hover {
-            background:  #ff7b25 !important;
+            background: #ff7b25 !important;
             transform: translateY(-2px) !important;
-            box-shadow:#ff7b25 !important;
+            box-shadow: #ff7b25 !important;
         }
         
         .add-product-section {
@@ -419,7 +475,6 @@
                 <a href="{% url 'customer_dashboard' %}" class="btn btn-light-blue me-2">
                     <i class="fas fa-arrow-right me-1"></i> رجوع للوحة التحكم
                 </a>
-                 
             </div>
         </div>
     </div>
@@ -436,14 +491,16 @@
             {% endfor %}
         </div>
         {% endif %}
+        
         <div class="add-product-section">
             <a href="{% url 'add_product' menu_id %}" class="btn btn-add-product" style="padding: 12px 30px; font-size: 1.1rem;">
                 <i class="fas fa-plus-circle me-2"></i> 
-                     إضافة منتج
+                إضافة منتج
             </a>
         </div>
-        <div class="row">
-            <div class="col-md-4">
+        
+        <div class="row-custom">
+            <div class="col-custom">
                 <div class="stats-card total">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon total">
@@ -457,7 +514,7 @@
                 </div>
             </div>
             
-            <div class="col-md-4">
+            <div class="col-custom">
                 <div class="stats-card finished">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon finished">
@@ -471,7 +528,7 @@
                 </div>
             </div>
             
-            <div class="col-md-4">
+            <div class="col-custom">
                 <div class="stats-card soon">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon soon">
@@ -485,6 +542,46 @@
                 </div>
             </div>
         </div>
+        
+        <div class="row-custom">
+            <div class="col-custom">
+                <div class="stats-card cost">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon cost">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="stats-number cost">{{ total_cost_value|floatformat:2 }} د.ل</div>
+                            <div class="stats-label">قيمة المخزون (سعر التكلفة)</div>
+                            <div class="stats-sub">إجمالي قيمة المنتجات بسعر الشراء</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-custom">
+                <div class="stats-card sales">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon sales">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="stats-number sales">{{ total_sales_value|floatformat:2 }} د.ل</div>
+                            <div class="stats-label">قيمة المخزون (سعر البيع)</div>
+                            <div class="stats-sub">إجمالي قيمة المنتجات بسعر البيع</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if total_profit_value > 0 %}
+        <div class="alert alert-success text-center mt-3" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border: none; border-radius: 12px;">
+            <i class="fas fa-chart-line me-2"></i>
+            <strong>الربح المتوقع عند بيع جميع المنتجات:</strong>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #155724; margin-right: 10px;">{{ total_profit_value|floatformat:2 }} د.ل</span>
+        </div>
+        {% endif %}
 
         <h3 class="section-title">جميع المنتجات</h3>
         
@@ -502,6 +599,8 @@
                                     <th>الكمية المتاحة</th>
                                     <th>سعر التكلفة</th>
                                     <th>سعر البيع</th>
+                                    <th>قيمة التكلفة الإجمالية</th>
+                                    <th>قيمة البيع الإجمالية</th>
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
@@ -520,18 +619,20 @@
                                     </td>
                                     <td class="price-label">{{ product.bought_price }} د.ل</td>
                                     <td class="price-label">{{ product.price }} د.ل</td>
+                                    <td class="price-label" style="color: var(--purple-color); font-weight: 600;">{{ product.total_cost|floatformat:2 }} د.ل</td>
+                                    <td class="price-label" style="color: var(--success-color); font-weight: 600;">{{ product.total_value|floatformat:2 }} د.ل</td>
                                     <td>
                                         <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
                                             <i class="fas fa-plus-circle"></i> زيادة الكمية
                                         </a>
-                                        <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
-                                          <i class="fas fa-edit"></i>
+                                        <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffc107; color: #856404; border-radius: 8px; margin-right: 5px;">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="5">
+                                    <td colspan="7">
                                         <div class="empty-state">
                                             <i class="fas fa-box-open"></i>
                                             <h5>لا توجد منتجات</h5>
@@ -571,13 +672,23 @@
                             <span class="mobile-product-value">{{ product.price }} د.ل</span>
                         </div>
                         
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">قيمة التكلفة الإجمالية:</span>
+                            <span class="mobile-product-value" style="color: var(--purple-color);">{{ product.total_cost|floatformat:2 }} د.ل</span>
+                        </div>
+                        
+                        <div class="mobile-product-detail">
+                            <span class="mobile-product-label">قيمة البيع الإجمالية:</span>
+                            <span class="mobile-product-value" style="color: var(--success-color);">{{ product.total_value|floatformat:2 }} د.ل</span>
+                        </div>
+                        
                         <div class="mobile-actions">
                             <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
                                 <i class="fas fa-plus-circle"></i> زيادة الكمية
                             </a>
-                            <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
-                                        <i class="fas fa-edit"></i>
-                            </a>  
+                            <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffc107; color: #856404; border-radius: 8px;">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </div>
                     </div>
                     {% empty %}
@@ -626,8 +737,8 @@
                                         <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
                                             <i class="fas fa-plus-circle"></i> زيادة الكمية
                                         </a>
-                                        <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
-                                          <i class="fas fa-edit"></i>
+                                        <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffc107; color: #856404; border-radius: 8px;">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -661,7 +772,7 @@
                             <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
                                 <i class="fas fa-plus-circle"></i> زيادة الكمية
                             </a>
-                            <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                            <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffc107; color: #856404; border-radius: 8px;">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </div>
@@ -679,7 +790,7 @@
         
         <div class="card main-card">
             <div class="card-header" style="background: linear-gradient(135deg, var(--warning-color) 0%, #ffc107 100%); color: #856404;">
-                <i class="fas fa-exclamation-triangle me-2"></i>منتجات قريب ان تنتهي(5او اقل)
+                <i class="fas fa-exclamation-triangle me-2"></i>منتجات قريب ان تنتهي (5 او اقل)
             </div>
             <div class="card-body p-0">
                 <div class="table-container desktop-table">
@@ -707,9 +818,9 @@
                                         <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
                                             <i class="fas fa-plus-circle"></i> زيادة الكمية
                                         </a>
-                                        <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
-                                         <i class="fas fa-edit"></i>
-                                        </a>    
+                                        <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffc107; color: #856404; border-radius: 8px;">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -742,9 +853,9 @@
                             <a href="{% url 'add_quantity' product.id %}" class="btn btn-edit">
                                 <i class="fas fa-plus-circle"></i> زيادة الكمية
                             </a>
-                            <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل">
+                            <a href="{% url 'update_product' product.id %}" class="action-btn btn-sm btn-warning" title="تعديل" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ffc107; color: #856404; border-radius: 8px;">
                                 <i class="fas fa-edit"></i>
-                            </a>    
+                            </a>
                         </div>
                     </div>
                     {% endfor %}

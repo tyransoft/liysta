@@ -947,8 +947,6 @@
     </div>
     {% else %}
     
-
-    
     <section class="hero">
         <div class="hero-content">
             <h2>مرحباً بكم في {{ menu.customer.store_ar_name }}</h2>
@@ -978,7 +976,6 @@
         </div>
         <div class="hero-image">
             {% if menu.image %}
-
             <img src="{{ menu.image.url }}" alt="{{ menu.customer.store_ar_name }}">
             {% endif %}
         </div>
@@ -1006,8 +1003,6 @@
         </form>
     </section>
 
-
-
     <section class="menu-section">
         <div class="section-title">
             <h3>المنتجات المتاحة</h3>
@@ -1024,11 +1019,9 @@
                             <div>
                                 {% if product.get_discounted_price != product.price %}
                                  <span class="price" data-price="{{ product.get_discounted_price}}">{{ product.get_discounted_price }} د.ل</span>
- 
                                  <span class="original-price">{{ product.price }} د.ل</span>
                                 {% elif product.get_discounted_price == product.price %}
                                     <span class="price" data-price="{{ product.get_discounted_price }}">{{ product.price }} د.ل</span>
-                                
                                 {% endif %}
                             </div>
                         </div>
@@ -1065,7 +1058,6 @@
                         </div>
                         
                         {% if subscription.plan.ordering %}
-
                         <div class="menu-item-actions">
                             <div class="quantity-control">
                                 <button class="quantity-btn minus">-</button>
@@ -1084,8 +1076,8 @@
             {% endfor %}
         </div>
     </section>
+    
     {% if subscription.plan.ordering %}
-
     <div class="floating-cart">
         <div class="cart-toggle">
             <i class="fas fa-shopping-cart"></i>
@@ -1117,7 +1109,7 @@
 
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <span class="close-modal">&times;</span>
             <h3>إتمام الطلب</h3>
             <form id="orderForm" method="POST" action="{% url 'create_order' %}">
                 {% csrf_token %}
@@ -1142,12 +1134,10 @@
                           title="يرجى إدخال 9 أرقام (مثال: 912345678)"
                             required>
                     </div>
-        
                     <input type="hidden" 
                         id="customer_phone_final" 
                         name="customer_phone" 
                         value="">
-        
                     <div class="phone-validation">
                       <span class="phone-example">مثال: 912345678</span>
                       <span class="phone-error" id="phoneError" style="display: none; color: red;">
@@ -1168,7 +1158,6 @@
                             <input type="radio" id="type" name="type" value="داخلي">
                             <label for="type">داخلي</label>
                         </div>
-                        
                         <div class="delivery-option">
                             <input type="radio" id="type" name="type" value="خارجي" >
                             <label for="type">خارجي</label>
@@ -1199,51 +1188,79 @@
                     
                     {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}
                         {% if darbasabil %}
-                        <label for="darb_sabil_area">اختر العنوان:</label>
-                        <select id="darb_sabil_area" name="darb_sabil_area" class="form-control">
-                            <option value="">-- اختر المدينة --</option>
-                            {% for city in darb_cities %}
-                            <option value="{{ city.id }}" 
-                                    data-city-name="{{ city.city }}" 
-                                    data-area-name="{{ city.area }}"
-                                    data-display-name="{{ city.city }}-{{city.area}}">
-                                {{ city.city }}-{{city.area}}
-                            </option>
-                            {% empty %}
-                            <option value="">لا توجد مدن متاحة</option>
-                            {% endfor %}
-                        </select>
-                        
-                       
-                        
-                        <div class="service-type-section" id="serviceTypeSection" style="display: none; margin-top: 15px;">
-                            <label>نوع الخدمة:</label>
-                            <div class="service-options" id="serviceOptions">
-                                <div class="service-option">
-                                    <input type="radio" name="darb_sabil_service" value="6783c612dcf305c9e775c987" id="service_male" data-title="توصيل رجالي">
-                                    <label for="service_male">توصيل رجالي</label>
-                                </div>
-                                <div class="service-option">
-                                    <input type="radio" name="darb_sabil_service" value="67c84fbc9ed6c0d5c5bb1d2b" id="service_female" data-title="توصيل نسائي">
-                                    <label for="service_female">توصيل نسائي</label>
-                                </div>
-                                <div class="service-option">
-                                    <input type="radio" name="darb_sabil_service" value="67c84fea9ed6c0d5c5bb1d2c" id="service_express" data-title="توصيل فوري">
-                                    <label for="service_express">توصيل فوري</label>
+                        <div id="darb_sabil_section" style="display: block;">
+                            <label for="darb_sabil_area">اختر العنوان:</label>
+                            <select id="darb_sabil_area" name="darb_sabil_area" class="form-control">
+                                <option value="">-- اختر المدينة --</option>
+                                {% for city in darb_cities %}
+                                <option value="{{ city.id }}" 
+                                        data-city-name="{{ city.city }}" 
+                                        data-area-name="{{ city.area }}"
+                                        data-city-id="{{ city.city_id|default:city.id }}"
+                                        data-display-name="{{ city.city }}-{{city.area}}">
+                                    {{ city.city }}-{{city.area}}
+                                </option>
+                                {% empty %}
+                                <option value="">لا توجد مدن متاحة</option>
+                                {% endfor %}
+                            </select>
+                            <div class="service-type-section" id="serviceTypeSection" style="display: none; margin-top: 15px;">
+                                <label>نوع الخدمة :</label>
+                                <div class="service-options" id="serviceOptions">
+                                    <div class="service-option">
+                                        <input type="radio" name="darb_sabil_service" value="6783c612dcf305c9e775c987" id="service_male" data-title="توصيل رجالي">
+                                        <label for="service_male">توصيل رجالي</label>
+                                    </div>
+                                    <div class="service-option">
+                                        <input type="radio" name="darb_sabil_service" value="67c84fbc9ed6c0d5c5bb1d2b" id="service_female" data-title="توصيل نسائي">
+                                        <label for="service_female">توصيل نسائي</label>
+                                    </div>
+                                    <div class="service-option">
+                                        <input type="radio" name="darb_sabil_service" value="67c84fea9ed6c0d5c5bb1d2c" id="service_express" data-title="توصيل فوري">
+                                        <label for="service_express">توصيل فوري</label>
+                                    </div>
                                 </div>
                             </div>
+                            <input type="hidden" id="darb_sabil_price" name="darb_sabil_price" value="0">
+                            <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="0">
+                            <input type="hidden" id="company_delivery_price_final" name="company_delivery_price" value="0">
+                            <input type="hidden" id="darb_sabil_service_id" name="darb_sabil_service_id" value="">
+                            <input type="hidden" id="darb_sabil_service_type" name="darb_sabil_service_type" value="">
+                            <input type="hidden" id="darb_sabil_city" name="darb_sabil_city" value="">
+                            <input type="hidden" id="darb_sabil_area_name" name="darb_sabil_area_name" value="">
+                            <input type="hidden" id="darb_sabil_area_id" name="darb_sabil_area_id" value="">
+                            <input type="hidden" id="darb_sabil_city_id" name="darb_sabil_city_id" value="">
+                            <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="darb">
+                            <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
                         </div>
-
-                        
-                        <input type="hidden" id="darb_sabil_price" name="darb_sabil_price" value="0">
-                        <input type="hidden" id="company_delivery_price_final" name="company_delivery_price" value="0">
-                        <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="0">
-
-                        <input type="hidden" id="darb_sabil_service_id" name="darb_sabil_service_id" value="">
-                        <input type="hidden" id="darb_sabil_service_type" name="darb_sabil_service_type" value="">
-                        <input type="hidden" id="darb_sabil_city" name="darb_sabil_city" value="">
-                        <input type="hidden" id="darb_sabil_area_name" name="darb_sabil_area_name" value="">
-                        <input type="hidden" id="darb_sabil_area_id" name="darb_sabil_area_id" value="">
+                        {% elif nawris %}
+                        <div id="nawris_section" style="display: block;">
+                            <label for="nawris_area">اختر العنوان:</label>
+                            <select id="nawris_area" name="nawris_area" class="form-control">
+                                <option value="">-- اختر المنطقة --</option>
+                                {% for area in nawris_areas %}
+                                <option value="{{ area.city_id }}" 
+                                        data-city-name="{{ area.city_name }}" 
+                                        data-area-name="{{ area.area_name }}"
+                                        data-city-id="{{ area.city_id }}"
+                                        data-area-id="{{ area.area_id }}">
+                                    {{ area.city_name }}{% if area.area_name %} - {{ area.area_name }}{% endif %}
+                                </option>
+                                {% empty %}
+                                <option value="">لا توجد مناطق متاحة</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" id="nawris_price" name="nawris_price" value="0">
+                            <input type="hidden" id="nawris_charge" name="nawris_charge" value="0">
+                            <input type="hidden" id="nawris_city_name" name="nawris_city_name" value="">
+                            <input type="hidden" id="nawris_city_id" name="nawris_city_id" value="">
+                            <input type="hidden" id="nawris_area_id" name="nawris_area_id" value="">
+                            <input type="hidden" id="nawris_area_name" name="nawris_area_name" value="">
+                            <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="0">
+                            <input type="hidden" id="company_delivery_price_final" name="company_delivery_price" value="0">
+                            <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="nawris">
+                            <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
+                        </div>
                         {% else %}
                         <label for="delivery_address">العنوان:</label>
                         <select id="delivery_address" name="delivery_address" class="form-control">
@@ -1254,6 +1271,8 @@
                             </option>
                             {% endfor %}
                         </select>
+                        <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="normal">
+                        <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
                         {% endif %}
                     {% endif %}
                 </div>
@@ -1300,7 +1319,6 @@
         <div class="rating-content">
             <h3>قيم تجربتك مع {{ menu.customer.store_ar_name }}</h3>
             <p>كيف كانت تجربتك مع متجرنا؟</p>
-            
             <div class="rating-stars">
                 <i class="fas fa-star" data-rating="1"></i>
                 <i class="fas fa-star" data-rating="2"></i>
@@ -1308,9 +1326,7 @@
                 <i class="fas fa-star" data-rating="4"></i>
                 <i class="fas fa-star" data-rating="5"></i>
             </div>
-            
             <input type="hidden" id="selectedRating" value="0">
-            
             <button class="submit-rating" id="submitRating">تأكيد التقييم</button>
         </div>
     </div>
@@ -1323,33 +1339,25 @@ document.getElementById('customer_phone').addEventListener('input', function(e) 
     const phoneError = document.getElementById('phoneError');
     const phoneValid = document.getElementById('phoneValid');
     const hiddenField = document.getElementById('customer_phone_final');
-    
     let phone = phoneInput.value.trim();
-    
     phone = phone.replace(/\D/g, '');
-    
     phoneInput.value = phone;
-    
     if (phone.length === 9) {
         const validPrefixes = ['91', '92', '93', '94', '95', '96', '97', '98', '99'];
         const prefix = phone.substring(0, 2);
-        
         if (validPrefixes.includes(prefix)) {
             const fullPhone = '+218' + phone;
             hiddenField.value = fullPhone;
-            
             phoneError.style.display = 'none';
             phoneValid.style.display = 'inline';
             phoneValid.textContent = ` ${fullPhone}`;
-            
             phoneInput.style.borderColor = '#10B981';
             phoneInput.style.backgroundColor = '#F0FDF4';
         } else {
             phoneError.style.display = 'inline';
-            phoneError.textContent = ' 93- 94 - يجب أن يبدأ الرقم بـ 91 - 92...';
+            phoneError.textContent = 'يجب أن يبدأ الرقم بـ 91,92,93,94,95,96,97,98,99';
             phoneValid.style.display = 'none';
             hiddenField.value = '';
-            
             phoneInput.style.borderColor = '#EF4444';
             phoneInput.style.backgroundColor = '#FEF2F2';
         }
@@ -1358,68 +1366,43 @@ document.getElementById('customer_phone').addEventListener('input', function(e) 
         phoneError.textContent = ` ناقص ${9 - phone.length} أرقام`;
         phoneValid.style.display = 'none';
         hiddenField.value = '';
-        
         phoneInput.style.borderColor = '#F59E0B';
         phoneInput.style.backgroundColor = '#FFFBEB';
     } else {
         phoneError.style.display = 'none';
         phoneValid.style.display = 'none';
         hiddenField.value = '';
-        
         phoneInput.style.borderColor = '';
         phoneInput.style.backgroundColor = '';
     }
 });
-
 document.getElementById('customer_phone').addEventListener('blur', function() {
     const phone = this.value.trim();
     const hiddenField = document.getElementById('customer_phone_final');
-    
-    if (phone.length === 9) {
-        hiddenField.value = '+218' + phone;
-    } else {
-        hiddenField.value = '';
-    }
+    if (phone.length === 9) hiddenField.value = '+218' + phone;
+    else hiddenField.value = '';
 });
 
 document.addEventListener('DOMContentLoaded', function() {
     const hasOrdering = {% if subscription.plan.ordering %}true{% else %}false{% endif %};
     const hasReview = {% if subscription.plan.review %}true{% else %}false{% endif %};
     const isDarbSabil = {% if darbasabil %}true{% else %}false{% endif %};
+    const isNawris = {% if nawris %}true{% else %}false{% endif %};
     const menuReceiving = '{{ menu.recivieing }}';
     
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <span>${message}</span>
-            <button class="close-notification">&times;</button>
-        `;
-        
+        notification.innerHTML = `<span>${message}</span><button class="close-notification">&times;</button>`;
         document.body.appendChild(notification);
-        
-        notification.querySelector('.close-notification').addEventListener('click', () => {
-            notification.remove();
-        });
-        
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.style.animation = 'slideUp 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 5000);
+        notification.querySelector('.close-notification').addEventListener('click', () => notification.remove());
+        setTimeout(() => { if(notification.parentNode) { notification.style.animation = 'slideUp 0.3s ease'; setTimeout(() => notification.remove(), 300); } }, 5000);
     }
     
-    function closeModal() {
-        document.getElementById('checkoutModal').style.display = 'none';
-    }
-    
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('checkoutModal');
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
+    function closeModal() { document.getElementById('checkoutModal').style.display = 'none'; }
+    window.addEventListener('click', function(event) { if (event.target === document.getElementById('checkoutModal')) closeModal(); });
+    const modalCloseBtn = document.querySelector('#checkoutModal .close-modal');
+    if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
     
     if (hasOrdering) {
         let cart = [];
@@ -1443,45 +1426,45 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalDeliveryPrice = document.getElementById('modalDeliveryPrice');
         const deliveryAddressSelect = document.getElementById('delivery_address');
         const darbSabilAreaSelect = document.getElementById('darb_sabil_area');
+        const nawrisAreaSelect = document.getElementById('nawris_area');
         const darbSabilPriceInput = document.getElementById('darb_sabil_price');
+        const nawrisPriceInput = document.getElementById('nawris_price');
         const serviceOptions = document.querySelectorAll('input[name="darb_sabil_service"]');
         const serviceTypeSection = document.getElementById('serviceTypeSection');
         const deliveryFields = document.getElementById('deliveryFields');
         const deliveryMethodRadios = document.querySelectorAll('input[name="receiving_method"]');
-        const addressDetailsGroup = document.getElementById('addressDetailsGroup');
+        const darbSection = document.getElementById('darb_sabil_section');
+        const nawrisSection = document.getElementById('nawris_section');
+        const selectedCompanyHidden = document.getElementById('selected_delivery_company');
+        
+        let currentDeliveryCompany = '';
+        if (isDarbSabil) currentDeliveryCompany = 'darb';
+        else if (isNawris) currentDeliveryCompany = 'nawris';
+        else currentDeliveryCompany = 'normal';
+        
+        if (currentDeliveryCompany === 'darb') { if (darbSection) darbSection.style.display = 'block'; if (nawrisSection) nawrisSection.style.display = 'none'; if (selectedCompanyHidden) selectedCompanyHidden.value = 'darb'; }
+        else if (currentDeliveryCompany === 'nawris') { if (darbSection) darbSection.style.display = 'none'; if (nawrisSection) nawrisSection.style.display = 'block'; if (selectedCompanyHidden) selectedCompanyHidden.value = 'nawris'; }
+        else { if (darbSection) darbSection.style.display = 'none'; if (nawrisSection) nawrisSection.style.display = 'none'; if (selectedCompanyHidden) selectedCompanyHidden.value = 'normal'; }
 
         document.querySelectorAll('.color-btn, .size-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const container = this.closest('.option-buttons');
-                container.querySelectorAll('.option-btn').forEach(b => {
-                    b.classList.remove('selected');
-                });
+                container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
-                
                 const hiddenField = this.closest('.option-group').querySelector('input[type="hidden"]');
                 hiddenField.value = this.getAttribute('data-value');
-                
-                const menuItem = this.closest('.menu-item');
-                checkAddToCartButton(menuItem);
+                const menuCard = this.closest('.menu-item');
+                checkAddToCartButton(menuCard);
             });
         });
         
         function checkAddToCartButton(menuItem) {
             const addButton = menuItem.querySelector('.add-to-cart');
             let isDisabled = false;
-            
             const colorGroup = menuItem.querySelector('.colors-container');
-            if (colorGroup) {
-                const selectedColor = menuItem.querySelector('.selected-color').value;
-                if (!selectedColor) isDisabled = true;
-            }
-            
+            if (colorGroup) { const selectedColor = menuItem.querySelector('.selected-color').value; if (!selectedColor) isDisabled = true; }
             const sizeGroup = menuItem.querySelector('.sizes-container');
-            if (sizeGroup) {
-                const selectedSize = menuItem.querySelector('.selected-size').value;
-                if (!selectedSize) isDisabled = true;
-            }
-            
+            if (sizeGroup) { const selectedSize = menuItem.querySelector('.selected-size').value; if (!selectedSize) isDisabled = true; }
             addButton.disabled = isDisabled;
         }
 
@@ -1490,114 +1473,135 @@ document.addEventListener('DOMContentLoaded', function() {
                 radio.addEventListener('change', function() {
                     if (this.value === 'delivery') {
                         deliveryFields.style.display = 'block';
-                        
-                        if (isDarbSabil && darbSabilAreaSelect) {
-                            darbSabilAreaSelect.setAttribute('required', 'required');
-                            if (addressDetailsGroup) {
-                                const addressInput = document.getElementById('darb_sabil_address_details');
-                                if (addressInput) addressInput.setAttribute('required', 'required');
-                            }
-                        } else if (deliveryAddressSelect) {
-                            deliveryAddressSelect.setAttribute('required', 'required');
-                        }
+                        if(currentDeliveryCompany === 'darb'){ if(darbSabilAreaSelect) darbSabilAreaSelect.setAttribute('required', 'required'); }
+                        else if(currentDeliveryCompany === 'nawris'){ if(nawrisAreaSelect) nawrisAreaSelect.setAttribute('required', 'required'); }
+                        else if(deliveryAddressSelect){ deliveryAddressSelect.setAttribute('required', 'required'); }
                     } else {
                         deliveryFields.style.display = 'none';
                         deliveryFee = 0;
                         selectedServiceId = '';
                         updateCartTotals();
                         updateModalOrderSummary();
-                        
-                        if (isDarbSabil && darbSabilAreaSelect) {
-                            darbSabilAreaSelect.removeAttribute('required');
-                            if (addressDetailsGroup) {
-                                const addressInput = document.getElementById('darb_sabil_address_details');
-                                if (addressInput) addressInput.removeAttribute('required');
-                            }
-                        } else if (deliveryAddressSelect) {
-                            deliveryAddressSelect.removeAttribute('required');
-                        }
+                        if(darbSabilAreaSelect) darbSabilAreaSelect.removeAttribute('required');
+                        if(nawrisAreaSelect) nawrisAreaSelect.removeAttribute('required');
+                        if(deliveryAddressSelect) deliveryAddressSelect.removeAttribute('required');
                     }
                 });
             });
+            const checkedRadio = document.querySelector('input[name="receiving_method"]:checked');
+            if (checkedRadio) { const event = new Event('change'); checkedRadio.dispatchEvent(event); }
+            else if (menuReceiving.includes('توصيل')) { const deliveryRadio = document.querySelector('input[name="receiving_method"][value="delivery"]'); if (deliveryRadio) { deliveryRadio.checked = true; const event = new Event('change'); deliveryRadio.dispatchEvent(event); } }
         }
 
         if (isDarbSabil && darbSabilAreaSelect && serviceOptions.length > 0) {
-            darbSabilAreaSelect.addEventListener('change', function() {
-                if (this.value) {
-                    serviceTypeSection.style.display = 'block';
-                    if (addressDetailsGroup) addressDetailsGroup.style.display = 'block';
-                    
-                    document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => {
-                        radio.checked = false;
-                    });
-                    darbSabilPriceInput.value = 0;
-                    deliveryFee = 0;
-                    selectedServiceId = '';
-                    updateCartTotals();
-                    updateModalOrderSummary();
-                    
-                    if (deliveryAddressSelect) {
-                        deliveryAddressSelect.style.display = 'none';
-                    }
-                } else {
-                    serviceTypeSection.style.display = 'none';
-                    if (addressDetailsGroup) addressDetailsGroup.style.display = 'none';
-                    
-                    if (deliveryAddressSelect) {
-                        deliveryAddressSelect.style.display = 'block';
-                    }
-                }
-            });
-            
+            darbSabilAreaSelect.addEventListener('change', function() { if (this.value) { if(serviceTypeSection) serviceTypeSection.style.display = 'block'; document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => radio.checked = false); if(darbSabilPriceInput) darbSabilPriceInput.value = 0; deliveryFee = 0; selectedServiceId = ''; updateCartTotals(); updateModalOrderSummary(); } else { if(serviceTypeSection) serviceTypeSection.style.display = 'none'; } });
             serviceOptions.forEach(radio => {
                 radio.addEventListener('change', async function() {
-                    if (!darbSabilAreaSelect || !darbSabilAreaSelect.value) {
-                        showNotification('الرجاء اختيار المنطقة أولاً', 'error');
-                        this.checked = false;
-                        return;
-                    }
-                    
-                    const areaId = darbSabilAreaSelect.value;
+                    if (!darbSabilAreaSelect || !darbSabilAreaSelect.value) { showNotification('الرجاء اختيار المنطقة أولاً', 'error'); this.checked = false; return; }
                     const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
                     const cityName = selectedOption.getAttribute('data-city-name');
                     const areaName = selectedOption.getAttribute('data-area-name');
                     const serviceId = this.value;
                     const serviceTitle = this.getAttribute('data-title');
-                    
                     selectedServiceId = serviceId;
-                    
-                    await calculateFinalPrice(serviceId, serviceTitle, cityName, areaName);
+                    await calculateDarbPrice(serviceId, serviceTitle, cityName, areaName);
                 });
             });
         }
 
-        if (cartToggle) cartToggle.addEventListener('click', toggleCartPanel);
-        if (closeCart) closeCart.addEventListener('click', closeCartPanel);
-        
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', addToCart);
-        });
-        
-        document.querySelectorAll('.quantity-btn').forEach(button => {
-            button.addEventListener('click', adjustQuantity);
-        });
-        
-        if (checkoutBtn) checkoutBtn.addEventListener('click', showCheckoutForm);
-        
-        if (deliveryAddressSelect) {
-            deliveryAddressSelect.addEventListener('change', updateDeliveryFee);
+        if(isNawris && nawrisAreaSelect){
+            nawrisAreaSelect.addEventListener('change', async function() {
+                if(this.value){
+                    const selectedOption = this.options[this.selectedIndex];
+                    const cityName = selectedOption.getAttribute('data-city-name');
+                    const cityId = selectedOption.getAttribute('data-city-id');
+                    const areaName = selectedOption.getAttribute('data-area-name');
+                    const areaId = this.value;
+                    if(document.getElementById('nawris_city_name')) document.getElementById('nawris_city_name').value = cityName;
+                    if(document.getElementById('nawris_city_id')) document.getElementById('nawris_city_id').value = cityId;
+                    if(document.getElementById('nawris_area_id')) document.getElementById('nawris_area_id').value = areaId;
+                    if(document.getElementById('nawris_area_name')) document.getElementById('nawris_area_name').value = areaName || '';
+                    const fullAddress = areaName ? `${cityName} - ${areaName}` : cityName;
+                    if(document.getElementById('delivery_address_full')) document.getElementById('delivery_address_full').value = fullAddress;
+                    await calculateNawrisPrice(cityId, areaId, cityName, areaName);
+                } else {
+                    deliveryFee = 0;
+                    if(nawrisPriceInput) nawrisPriceInput.value = 0;
+                    updateCartTotals();
+                    updateModalOrderSummary();
+                }
+            });
         }
+
+        async function calculateDarbPrice(serviceId, serviceTitle, cityName, areaName) {
+            try {
+                const productsData = cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price, name: item.name }));
+                const response = await fetch('/calculate-delivery-price/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify({ city: cityName, area: areaName, service: serviceId, products: productsData, company: 'darb' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const finalPrice = parseFloat(data.price);
+                    const chargePrice = parseFloat(data.charge);
+                    document.getElementById('darb_sabil_price').value = finalPrice;
+                    document.getElementById('company_delivery_price_final').value = finalPrice;
+                    document.getElementById('company_delivery_charge_final').value = chargePrice;
+                    document.getElementById('darb_sabil_service_id').value = serviceId;
+                    document.getElementById('darb_sabil_service_type').value = serviceTitle;
+                    document.getElementById('darb_sabil_city').value = cityName;
+                    document.getElementById('darb_sabil_area_name').value = areaName;
+                    document.getElementById('darb_sabil_area_id').value = document.getElementById('darb_sabil_area').value;
+                    const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
+                    const cityId = selectedOption.getAttribute('data-city-id') || cityName;
+                    document.getElementById('darb_sabil_city_id').value = cityId;
+                    document.getElementById('delivery_address_full').value = `${cityName} - ${areaName}`;
+                    deliveryFee = finalPrice;
+                    updateCartTotals();
+                    updateModalOrderSummary();
+                    showNotification(`سعر التوصيل): ${finalPrice} د.ل (${serviceTitle})`, 'success');
+                } else throw new Error(data.error || 'خطأ في حساب السعر');
+            } catch (error) { console.error('خطأ:', error); showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل', 'error'); document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => radio.checked = false); selectedServiceId = ''; }
+        }
+
+        async function calculateNawrisPrice(cityId, areaId, cityName, areaName) {
+            try {
+                const productsData = cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price, name: item.name }));
+                const requestBody = { customer: {{ menu.customer.id }}, city_id: cityId, products: productsData };
+                if (areaId && areaId !== '') requestBody.area_id = areaId;
+                const response = await fetch('/calculate-nawris-price/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify(requestBody)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const finalPrice = parseFloat(data.price);
+                    const chargePrice = parseFloat(data.charge);
+                    if(document.getElementById('nawris_price')) document.getElementById('nawris_price').value = finalPrice;
+                    if(document.getElementById('nawris_charge')) document.getElementById('nawris_charge').value = chargePrice;
+                    document.getElementById('company_delivery_price_final').value = finalPrice;
+                    document.getElementById('company_delivery_charge_final').value = chargePrice;
+                    deliveryFee = finalPrice;
+                    updateCartTotals();
+                    updateModalOrderSummary();
+                    showNotification(`سعر التوصيل): ${finalPrice} د.ل`, 'success');
+                } else throw new Error(data.error || 'خطأ في حساب السعر');
+            } catch (error) { console.error('خطأ في حساب سعر النورس:', error); showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل', 'error'); deliveryFee = 0; updateCartTotals(); updateModalOrderSummary(); }
+        }
+
+        if (cartToggle) cartToggle.addEventListener('click', () => cartPanel.classList.toggle('active'));
+        if (closeCart) closeCart.addEventListener('click', () => cartPanel.classList.remove('active'));
         
+        addToCartButtons.forEach(button => { button.addEventListener('click', addToCart); });
+        document.querySelectorAll('.quantity-btn').forEach(button => { button.addEventListener('click', adjustQuantity); });
+        if (checkoutBtn) checkoutBtn.addEventListener('click', showCheckoutForm);
+        if (deliveryAddressSelect) { deliveryAddressSelect.addEventListener('change', function() { const selectedOption = this.options[this.selectedIndex]; if (selectedOption && selectedOption.value) document.getElementById('delivery_address_full').value = selectedOption.text; updateDeliveryFee.call(this); }); }
         if (orderForm) orderForm.addEventListener('submit', handleFormSubmit);
         
-        function toggleCartPanel() {
-            cartPanel.classList.toggle('active');
-        }
-
-        function closeCartPanel() {
-            cartPanel.classList.remove('active');
-        }
-
+        function toggleCartPanel() { cartPanel.classList.toggle('active'); }
+        function closeCartPanel() { cartPanel.classList.remove('active'); }
 
         function addToCart() {
             const productId = this.getAttribute('data-product-id');
@@ -1608,183 +1612,72 @@ document.addEventListener('DOMContentLoaded', function() {
             const itemQuantity = parseInt(menuItem.querySelector('.quantity').textContent);
             const itemImage = menuItem.querySelector('img').src;
             const availableQuantity = parseInt(menuItem.getAttribute('data-available-quantity')) || 9999;
-            
-            if (availableQuantity <= 0) {
-                showNotification('هذا المنتج غير متوفر حالياً', 'error');
-                return;
-            }
-            
-            let itemColor = null;
-            let itemSize = null;
-            
-            const colorInput = menuItem.querySelector('.selected-color');
-            if (colorInput) itemColor = colorInput.value;
-            
-            const sizeInput = menuItem.querySelector('.selected-size');
-            if (sizeInput) itemSize = sizeInput.value;
-            
-            const existingItem = cart.find(item => 
-                item.id === productId && 
-                item.color === itemColor && 
-                item.size === itemSize
-            );
-            
+            if (availableQuantity <= 0) { showNotification('هذا المنتج غير متوفر حالياً', 'error'); return; }
+            let itemColor = null, itemSize = null;
+            const colorInput = menuItem.querySelector('.selected-color'); if (colorInput) itemColor = colorInput.value;
+            const sizeInput = menuItem.querySelector('.selected-size'); if (sizeInput) itemSize = sizeInput.value;
+            const existingItem = cart.find(item => item.id === productId && item.color === itemColor && item.size === itemSize);
             if (existingItem) {
                 const newQuantity = existingItem.quantity + itemQuantity;
-                if (newQuantity > availableQuantity) {
-                    showNotification(`الكمية المتاحة لهذا المنتج هي ${availableQuantity} فقط`, 'error');
-                    return;
-                }
+                if (newQuantity > availableQuantity) { showNotification(`الكمية المتاحة لهذا المنتج هي ${availableQuantity} فقط`, 'error'); return; }
                 existingItem.quantity = newQuantity;
             } else {
-                if (itemQuantity > availableQuantity) {
-                    showNotification(`الكمية المتاحة لهذا المنتج هي ${availableQuantity} فقط`, 'error');
-                    return;
-                }
-                cart.push({
-                    id: productId,
-                    name: itemName,
-                    price: itemPrice,
-                    quantity: itemQuantity,
-                    image: itemImage,
-                    color: itemColor,
-                    size: itemSize,
-                    availableQuantity: availableQuantity
-                });
+                if (itemQuantity > availableQuantity) { showNotification(`الكمية المتاحة لهذا المنتج هي ${availableQuantity} فقط`, 'error'); return; }
+                cart.push({ id: productId, name: itemName, price: itemPrice, quantity: itemQuantity, image: itemImage, color: itemColor, size: itemSize, availableQuantity: availableQuantity });
             }
-            
-            updateCart();
-            cartPanel.classList.add('active');
-            menuItem.querySelector('.quantity').textContent = '1';
-            
+            updateCart(); cartPanel.classList.add('active'); menuItem.querySelector('.quantity').textContent = '1';
             showCartNotification(itemName, itemQuantity);
         }
 
         function adjustQuantity() {
             const quantityElement = this.parentElement.querySelector('.quantity');
             let quantity = parseInt(quantityElement.textContent);
-            
-            if (this.classList.contains('plus')) {
-                quantity++;
-            } else {
-                if (quantity > 1) {
-                    quantity--;
-                }
-            }
-            
+            if (this.classList.contains('plus')) quantity++;
+            else if (quantity > 1) quantity--;
             quantityElement.textContent = quantity;
         }
 
         function showCartNotification(itemName, quantity) {
             const notification = document.createElement('div');
             notification.className = 'cart-notification';
-            notification.innerHTML = `
-                <span>تم إضافة ${quantity} × ${itemName} إلى السلة</span>
-            `;
+            notification.innerHTML = `<span>تم إضافة ${quantity} × ${itemName} إلى السلة</span>`;
             document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
+            setTimeout(() => notification.classList.add('show'), 10);
+            setTimeout(() => { notification.classList.remove('show'); setTimeout(() => notification.remove(), 300); }, 3000);
         }
 
         function updateCart() {
             cartItemsContainer.innerHTML = '';
-            
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p>السلة فارغة</p>';
-                updateCartTotals();
-                return;
-            }
-
-            
+            if (cart.length === 0) { cartItemsContainer.innerHTML = '<p>السلة فارغة</p>'; updateCartTotals(); return; }
             cart.forEach((item, index) => {
                 const itemTotal = item.price * item.quantity;
-                let optionsText = '';
-                
-                if (item.color) optionsText += ` | اللون: ${item.color}`;
-                if (item.size) optionsText += ` | المقاس: ${item.size}`;
-                
                 const cartItemElement = document.createElement('div');
                 cartItemElement.className = 'cart-item';
-                cartItemElement.innerHTML = `
-                    <div class="cart-item-info">
-                        
-                        <div class="cart-item-details">
-                            <h5>${item.name}</h5>
-                             <p>${item.price.toFixed(1)} د.ل × ${item.quantity}</p>
-
-                        </div>
-                    </div>
-                    <div class="cart-item-actions">
-                        <span class="cart-item-price">${itemTotal.toFixed(2)} د.ل</span>
-                        <button class="cart-item-remove" data-index="${index}">
-                            <i class="fas fa-trash"></i> حذف
-                        </button>
-                    </div>
-                `;
-                
+                cartItemElement.innerHTML = `<div class="cart-item-info"><div class="cart-item-details"><h5>${item.name}${item.color ? ` (${item.color})` : ''}${item.size ? ` (${item.size})` : ''}</h5><p>${item.price.toFixed(1)} د.ل × ${item.quantity}</p></div></div><div class="cart-item-actions"><span class="cart-item-price">${itemTotal.toFixed(2)} د.ل</span><button class="cart-item-remove" data-index="${index}"><i class="fas fa-trash"></i> حذف</button></div>`;
                 cartItemsContainer.appendChild(cartItemElement);
             });
-            
             updateCartTotals();
-            
-            document.querySelectorAll('.cart-item-remove').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    const removedItem = cart[index];
-                    cart.splice(index, 1);
-                    updateCart();
-                    
-                    showRemoveNotification(removedItem.name);
-                });
-            });
-            
+            document.querySelectorAll('.cart-item-remove').forEach(button => { button.addEventListener('click', function() { const index = parseInt(this.getAttribute('data-index')); const removedItem = cart[index]; cart.splice(index, 1); updateCart(); showRemoveNotification(removedItem.name); }); });
             if (checkoutBtn) checkoutBtn.disabled = cart.length === 0;
         }
 
         function showRemoveNotification(itemName) {
             const notification = document.createElement('div');
             notification.className = 'cart-notification';
-            notification.innerHTML = `
-                <span>تم إزالة ${itemName} من السلة</span>
-            `;
+            notification.innerHTML = `<span>تم إزالة ${itemName} من السلة</span>`;
             document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
+            setTimeout(() => notification.classList.add('show'), 10);
+            setTimeout(() => { notification.classList.remove('show'); setTimeout(() => notification.remove(), 300); }, 3000);
         }
 
         function updateCartTotals() {
             const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
             const total = subtotal + deliveryFee;
-            
-            subtotalPriceElement.textContent = subtotal.toFixed(1) + ' د.ل';
-
-            if (deliveryPriceElement) {
-                deliveryPriceElement.textContent = deliveryFee.toFixed(2) + ' د.ل';
-            }
+            subtotalPriceElement.textContent = subtotal.toFixed(2) + ' د.ل';
+            if (deliveryPriceElement) deliveryPriceElement.textContent = deliveryFee.toFixed(2) + ' د.ل';
             totalPriceElement.textContent = total.toFixed(2) + ' د.ل';
-            
             const totalCount = cart.reduce((count, item) => count + item.quantity, 0);
-            cartCountElements.forEach(el => {
-                el.textContent = totalCount;
-            });
+            cartCountElements.forEach(el => { el.textContent = totalCount; });
         }
 
         function updateDeliveryFee() {
@@ -1796,48 +1689,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function showCheckoutForm(event) {
             event.preventDefault();
-            
-            if (cart.length === 0) {
-                showNotification('السلة فارغة، أضف بعض العناصر أولاً', 'error');
-                return;
-            }
-
-            const orderData = {
-                items: cart.map(item => ({
-                    product_id: item.id,
-                    quantity: item.quantity,
-                    price: item.price,
-                    name: item.name,
-                    color: item.color,
-                    size: item.size
-                })),
-                subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
-                delivery_fee: deliveryFee,
-                total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) + deliveryFee
-            };
-
+            if (cart.length === 0) { showNotification('السلة فارغة، أضف بعض العناصر أولاً', 'error'); return; }
+            const orderData = { items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price, name: item.name, color: item.color, size: item.size })), subtotal: cart.reduce((total, item) => total + (item.price * item.quantity), 0), delivery_fee: deliveryFee, total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) + deliveryFee };
             updateModalOrderItems(orderData.items);
             updateModalOrderSummary();
-            
             sessionStorage.setItem('currentOrder', JSON.stringify(orderData));
-            
             document.getElementById('checkoutModal').style.display = 'block';
         }
 
         function updateModalOrderItems(items) {
             modalOrderItems.innerHTML = '';
-            
             items.forEach(item => {
                 let optionsText = '';
                 if (item.color) optionsText += ` | اللون: ${item.color}`;
                 if (item.size) optionsText += ` | المقاس: ${item.size}`;
-                
                 const itemElement = document.createElement('div');
                 itemElement.className = 'order-summary-item';
-                itemElement.innerHTML = `
-                    <span>${item.name} (${item.quantity}) ${optionsText}</span>
-                    <span>${(item.price * item.quantity).toFixed(2)} د.ل</span>
-                `;
+                itemElement.innerHTML = `<span>${item.name} (${item.quantity}) ${optionsText}</span><span>${(item.price * item.quantity).toFixed(2)} د.ل</span>`;
                 modalOrderItems.appendChild(itemElement);
             });
         }
@@ -1845,348 +1713,85 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateModalOrderSummary() {
             const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
             const total = subtotal + deliveryFee;
-            
-            if (deliveryFee > 0 && modalDeliveryFee) {
-                modalDeliveryFee.style.display = 'flex';
-                modalDeliveryPrice.textContent = deliveryFee.toFixed(2) + ' د.ل';
-            } else if (modalDeliveryFee) {
-                modalDeliveryFee.style.display = 'none';
-            }
-            
+            if (deliveryFee > 0 && modalDeliveryFee) { modalDeliveryFee.style.display = 'flex'; modalDeliveryPrice.textContent = deliveryFee.toFixed(2) + ' د.ل'; } 
+            else if (modalDeliveryFee) modalDeliveryFee.style.display = 'none';
             modalTotalPrice.textContent = total.toFixed(2) + ' د.ل';
-        }
-
-        async function calculateFinalPrice(serviceId, serviceTitle, cityName, areaName) {
-            try {
-                if (!cityName || !areaName) {
-                    showNotification('الرجاء اختيار المدينة والمنطقة أولاً', 'error');
-                    return;
-                }
-                
-                const productsData = cart.map(item => ({
-                    product_id: item.id,
-                    quantity: item.quantity,
-                    price: item.price,
-                    name: item.name
-                }));
-                
-                const requestData = {
-                    city: cityName,
-                    area: areaName,
-                    service: serviceId,
-                    products: productsData
-                };
-                
-                const response = await fetch('/calculate-delivery-price/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify(requestData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    const finalPrice = parseFloat(data.price);
-                    const chargePrice = parseFloat(data.charge);
-                    
-                    document.getElementById('darb_sabil_price').value = finalPrice;
-                    document.getElementById('company_delivery_charge_final').value = chargePrice;
-
-                    document.getElementById('company_delivery_price_final').value = finalPrice;
-                    document.getElementById('darb_sabil_service_id').value = serviceId;
-                    document.getElementById('darb_sabil_service_type').value = serviceTitle;
-                    document.getElementById('darb_sabil_city').value = cityName;
-                    document.getElementById('darb_sabil_area_name').value = areaName;
-                    document.getElementById('darb_sabil_area_id').value = document.getElementById('darb_sabil_area').value;
-                    
-                    deliveryFee = finalPrice;
-                    updateCartTotals();
-                    updateModalOrderSummary();
-                    
-                    showNotification(`سعر التوصيل: ${finalPrice} د.ل (${serviceTitle})`, 'success');
-                    
-                } else {
-                    throw new Error(data.error || 'خطأ في حساب السعر');
-                }
-                
-            } catch (error) {
-                console.error('خطأ في حساب سعر التوصيل:', error);
-                showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل، حاول مرة أخرى', 'error');
-                
-                document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => {
-                    radio.checked = false;
-                });
-                selectedServiceId = '';
-            }
         }
 
         async function handleFormSubmit(event) {
             event.preventDefault();
-            
             try {
                 const phoneInput = document.getElementById('customer_phone');
                 const hiddenPhoneField = document.getElementById('customer_phone_final');
-                
-                if (!hiddenPhoneField.value || hiddenPhoneField.value.length < 13) {
-                    showNotification('يرجى إدخال رقم هاتف صحيح', 'error');
-                    phoneInput.focus();
-                    return;
-                }
-                
+                if (!hiddenPhoneField.value || hiddenPhoneField.value.length < 13) { showNotification('يرجى إدخال رقم هاتف صحيح', 'error'); phoneInput.focus(); return; }
                 const formData = new FormData(orderForm);
                 const orderData = JSON.parse(sessionStorage.getItem('currentOrder'));
                 const receivingMethod = document.querySelector('input[name="receiving_method"]:checked');
-                
                 formData.append('customer_name', document.getElementById('customer_name').value);
                 formData.append('customer_phone', hiddenPhoneField.value);
                 formData.append('notes', document.getElementById('notes').value || '');
-                
                 const orderTypeRadio = document.querySelector('input[name="type"]:checked');
-                if (orderTypeRadio) {
-                    formData.append('type', orderTypeRadio.value);
-                }
+                if (orderTypeRadio) formData.append('type', orderTypeRadio.value);
+                if (receivingMethod) formData.append('receiving_method', receivingMethod.value);
                 
-                if (receivingMethod) {
-                    formData.append('receiving_method', receivingMethod.value);
-                }
-                
-                if (menuReceiving === 'التوصيل') {
-                    formData.append('receiving_method', 'delivery');
-                    
-                    if (isDarbSabil) {
-                        if (!darbSabilAreaSelect || !darbSabilAreaSelect.value) {
-                            showNotification('الرجاء اختيار العنوان', 'error');
-                            return;
-                        }
-                        
-                        if (!selectedServiceId) {
-                            showNotification('يرجى اختيار خدمة التوصيل', 'error');
-                            return;
-                        }
-                        
-                        if (!deliveryFee || deliveryFee <= 0) {
-                            const price1 = document.getElementById('darb_sabil_price').value;
-                            const price2 = document.getElementById('company_delivery_price_final').value;
-                            
-                            let finalPrice = 0;
-                            if (price1 && price1 !== "0") {
-                                finalPrice = parseFloat(price1);
-                            } else if (price2 && price2 !== "0") {
-                                finalPrice = parseFloat(price2);
-                            }
-                            
-                            if (!finalPrice || finalPrice <= 0) {
-                                showNotification('يرجى حساب سعر التوصيل أولاً', 'error');
-                                return;
-                            }
-                            deliveryFee = finalPrice;
-                        }
-                        
-                        const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
-                        const city = selectedOption.getAttribute('data-city-name');
-                        const area = selectedOption.getAttribute('data-area-name');
-                        const chargePrice = document.getElementById('company_delivery_charge_final').value;
-                        formData.append('company_delivery_charge', chargePrice);
-
-                        formData.append('darb_sabil_city', city);
-                        formData.append('darb_sabil_area', area);
-                        formData.append('company_delivery_price', deliveryFee.toString());
-                        formData.append('darb_sabil_service_id', selectedServiceId);
-                        formData.append('company_delivery_address', `${city} - ${area}`);
-                        formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');
+                if (menuReceiving === 'التوصيل' || (receivingMethod && receivingMethod.value === 'delivery')) {
+                    if(currentDeliveryCompany === 'darb' && isDarbSabil){
+                        if (!darbSabilAreaSelect.value) { showNotification('الرجاء اختيار العنوان', 'error'); return; }
+                        if (!selectedServiceId) { showNotification('يرجى اختيار خدمة التوصيل', 'error'); return; }
                         formData.append('delivery_type', 'darb_sabil');
+                        formData.append('company_delivery_price', deliveryFee.toString());
+                        formData.append('company_delivery_charge', document.getElementById('company_delivery_charge_final').value);
+                        formData.append('darb_sabil_service_id', selectedServiceId);
+                        const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
+                        formData.append('darb_sabil_city', selectedOption.getAttribute('data-city-name'));
+                        formData.append('darb_sabil_area', selectedOption.getAttribute('data-area-name'));
+                        formData.append('darb_sabil_city_id', selectedOption.getAttribute('data-city-id'));
+                        formData.append('darb_sabil_area_id', darbSabilAreaSelect.value);
+                        formData.append('company_delivery_address', `${selectedOption.getAttribute('data-city-name')} - ${selectedOption.getAttribute('data-area-name')}`);
+                        formData.append('delivery_address_full', document.getElementById('delivery_address_full').value);
+                    } else if(currentDeliveryCompany === 'nawris' && isNawris){
+                        if (!nawrisAreaSelect.value) { showNotification('الرجاء اختيار المنطقة', 'error'); return; }
+                        const selectedOption = nawrisAreaSelect.options[nawrisAreaSelect.selectedIndex];
+                        const cityName = document.getElementById('nawris_city_name').value || selectedOption.getAttribute('data-city-name');
+                        const areaName = document.getElementById('nawris_area_name').value || selectedOption.getAttribute('data-area-name');
+                        formData.append('delivery_type', 'nawris');
+                        formData.append('company_delivery_price', deliveryFee.toString());
+                        formData.append('company_delivery_charge', document.getElementById('nawris_charge').value || '0');
+                        formData.append('darb_sabil_city', cityName);
+                        formData.append('darb_sabil_area', areaName || '');
+                        formData.append('company_delivery_address', `${cityName}${areaName ? ' - ' + areaName : ''}`);
+                        formData.append('delivery_address_full', `${cityName}${areaName ? ' - ' + areaName : ''}`);
                     } else {
-                        if (!deliveryAddressSelect || !deliveryAddressSelect.value) {
-                            showNotification('الرجاء اختيار العنوان', 'error');
-                            return;
-                        }
+                        if (!deliveryAddressSelect.value) { showNotification('الرجاء اختيار العنوان', 'error'); return; }
+                        const selectedOption = deliveryAddressSelect.options[deliveryAddressSelect.selectedIndex];
                         formData.append('delivery_type', 'normal');
+                        formData.append('delivery_address_id', deliveryAddressSelect.value);
+                        formData.append('company_delivery_address', selectedOption.text);
+                        formData.append('company_delivery_price', deliveryFee.toString());
+                        formData.append('delivery_address_full', selectedOption.text);
                     }
-                    
-                } else if (menuReceiving === 'التوصيل والتسليم في المحل') {
-                    if (receivingMethod) {
-                        formData.append('receiving_method', receivingMethod.value);
-                        
-                        if (receivingMethod.value === 'delivery') {
-                            if (isDarbSabil) {
-                                if (!darbSabilAreaSelect || !darbSabilAreaSelect.value) {
-                                    showNotification('الرجاء اختيار العنوان', 'error');
-                                    return;
-                                }
-                                
-                                if (!selectedServiceId) {
-                                    showNotification('يرجى اختيار خدمة التوصيل', 'error');
-                                    return;
-                                }
-                                
-                                if (!deliveryFee || deliveryFee <= 0) {
-                                    const price1 = document.getElementById('darb_sabil_price').value;
-                                    const price2 = document.getElementById('company_delivery_price_final').value;
-                                    
-                                    let finalPrice = 0;
-                                    if (price1 && price1 !== "0") {
-                                        finalPrice = parseFloat(price1);
-                                    } else if (price2 && price2 !== "0") {
-                                        finalPrice = parseFloat(price2);
-                                    }
-                                    
-                                    if (!finalPrice || finalPrice <= 0) {
-                                        showNotification('يرجى حساب سعر التوصيل أولاً', 'error');
-                                        return;
-                                    }
-                                    deliveryFee = finalPrice;
-                                }
-                                
-                                const selectedOption = darbSabilAreaSelect.options[darbSabilAreaSelect.selectedIndex];
-                                const city = selectedOption.getAttribute('data-city-name');
-                                const area = selectedOption.getAttribute('data-area-name');
-                                const chargePrice = document.getElementById('company_delivery_charge_final').value;
-
-                                formData.append('company_delivery_charge', chargePrice);
-
-                                formData.append('darb_sabil_city', city);
-                                formData.append('darb_sabil_area', area);
-                                formData.append('company_delivery_price', deliveryFee.toString());
-                                formData.append('darb_sabil_service_id', selectedServiceId);
-                                formData.append('company_delivery_address', `${city} - ${area}`);
-                                formData.append('darb_sabil_address_details', document.getElementById('darb_sabil_address_details')?.value || '');
-                                formData.append('delivery_type', 'darb_sabil');
-                            } else {
-                                if (!deliveryAddressSelect || !deliveryAddressSelect.value) {
-                                    showNotification('الرجاء اختيار العنوان', 'error');
-                                    return;
-                                }
-                                formData.append('delivery_type', 'normal');
-                            }
-                        } else {
-                            formData.append('delivery_type', 'none');
-                        }
-                    }
-                }
-                
+                } else formData.append('delivery_type', 'none');
                 formData.append('order_data', JSON.stringify(orderData));
-                
-                const response = await fetch(orderForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-                    }
-                });
-                
+                const response = await fetch(orderForm.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': formData.get('csrfmiddlewaretoken') } });
                 const data = await response.json();
-                
-                if (response.ok) {
-                    cart = [];
-                    deliveryFee = 0;
-                    selectedServiceId = '';
-                    updateCart();
-                    closeModal();
-                    
-                    if (data.order_id) {
-                        window.location.href = `/order/success/${data.order_id}`;
-                    } else {
-                        showNotification('تم تقديم الطلب بنجاح!', 'success');
-                    }
-                } else {
-                    throw new Error(data.error || 'فشل في تقديم الطلب');
-                }
-            } catch (error) {
-                console.error('Error submitting order:', error);
-                showNotification(`حدث خطأ: ${error.message}`, 'error');
-            }
+                if (response.ok) { cart = []; deliveryFee = 0; selectedServiceId = ''; updateCart(); closeModal(); if (data.order_id) window.location.href = `/order/success/${data.order_id}`; else showNotification('تم تقديم الطلب بنجاح!', 'success'); }
+                else throw new Error(data.error || 'فشل في تقديم الطلب');
+            } catch (error) { console.error('Error:', error); showNotification(`حدث خطأ: ${error.message}`, 'error'); }
         }
     }
 
     if (hasReview) {
         const openRatingModal = document.getElementById('openRatingModal');
         const ratingModal = document.getElementById('ratingModal');
-        const stars = document.querySelectorAll('.rating-stars i');
+        const stars = document.querySelectorAll('.modal-rating-stars i');
         const selectedRating = document.getElementById('selectedRating');
         const submitRating = document.getElementById('submitRating');
-        
-        if (openRatingModal) {
-            openRatingModal.addEventListener('click', function() {
-                ratingModal.style.display = 'flex';
-            });
-        }
-        
-        if (ratingModal) {
-            ratingModal.addEventListener('click', function(e) {
-                if (e.target === ratingModal) {
-                    ratingModal.style.display = 'none';
-                }
-            });
-        }
-        
-        if (stars) {
-            stars.forEach(star => {
-                star.addEventListener('click', function() {
-                    const rating = parseInt(this.getAttribute('data-rating'));
-                    selectedRating.value = rating;
-                    
-                    stars.forEach((s, index) => {
-                        if (index < rating) {
-                            s.classList.add('active');
-                        } else {
-                            s.classList.remove('active');
-                        }
-                    });
-                });
-            });
-        }
-        
-        if (submitRating) {
-            submitRating.addEventListener('click', function() {
-                const rating = selectedRating.value;
-                
-                if (rating === '0') {
-                    showNotification('الرجاء اختيار تقييم من 1 إلى 5 نجوم', 'error');
-                    return;
-                }
-                
-                fetch('{% url "submit_review" %}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({
-                        menu_id: {{ menu.id }},
-                        rating: rating
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('شكراً لتقييمك!', 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('حدث خطأ في إرسال التقييم', 'error');
-                });
-            });
-        }
+        if (openRatingModal) openRatingModal.addEventListener('click', function() { ratingModal.style.display = 'flex'; });
+        if (ratingModal) ratingModal.addEventListener('click', function(e) { if (e.target === ratingModal) ratingModal.style.display = 'none'; });
+        if (stars) stars.forEach(star => { star.addEventListener('click', function() { const rating = parseInt(this.getAttribute('data-rating')); selectedRating.value = rating; stars.forEach((s, index) => { if (index < rating) s.classList.add('active'); else s.classList.remove('active'); }); }); });
+        if (submitRating) submitRating.addEventListener('click', function() { const rating = selectedRating.value; if (rating === '0') { showNotification('الرجاء اختيار تقييم من 1 إلى 5 نجوم', 'error'); return; } fetch('{% url "submit_review" %}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' }, body: JSON.stringify({ menu_id: {{ menu.id }}, rating: rating }) }).then(response => response.json()).then(data => { if (data.success) { showNotification('شكراً لتقييمك!', 'success'); setTimeout(() => location.reload(), 1500); } }).catch(error => { console.error('Error:', error); showNotification('حدث خطأ في إرسال التقييم', 'error'); }); });
     }
-
-    document.querySelectorAll('.menu-item').forEach(item => {
-        const availableQuantity = parseInt(item.getAttribute('data-available-quantity')) || 9999;
-        if (availableQuantity <= 0) {
-            item.classList.add('sold-out');
-            const addButton = item.querySelector('.add-to-cart');
-            addButton.disabled = true;
-            addButton.textContent = 'نفذ من المخزن';
-            addButton.style.backgroundColor = '#ccc';
-        }
-    });
+    document.querySelectorAll('.menu-item').forEach(item => { const availableQuantity = parseInt(item.getAttribute('data-available-quantity')) || 9999; if (availableQuantity <= 0) { item.classList.add('sold-out'); const addButton = item.querySelector('.add-to-cart'); if(addButton) { addButton.disabled = true; addButton.textContent = 'نفذ من المخزن'; } } });
 });
 </script>
 </body>

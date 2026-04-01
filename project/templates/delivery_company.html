@@ -290,8 +290,7 @@
                 </div>
                 <div class="company-info">
                     <h3 class="company-name">درب السبيل</h3>
-                    {% if darb_connection %}
-                        {% if darb_connection.is_active %}
+                        {% if darb_connection%}
                             <span class="company-status status-active">
                                 <i class="fas fa-check-circle"></i> مرتبط
                             </span>
@@ -300,14 +299,12 @@
                                 <i class="fas fa-times-circle"></i> غير نشط
                             </span>
                         {% endif %}
-                    {% else %}
                       {% if not nawris_connection %}
 
                         <span class="company-status status-available">
                             <i class="fas fa-plug"></i> متاح للربط
                         </span>
                       {% endif %}
-                    {% endif %}
                 </div>
             </div>
             
@@ -330,6 +327,10 @@
                         <i class="fas fa-link"></i>
                         ربط الحساب
                     </a>
+                    {% else %}
+                    <div class="info-message">
+                     لايمكنك الربط مع هذه الشركة حاليا!
+                    </div>
                     {% endif %}
                    
                 {% endif %}
@@ -345,8 +346,7 @@
                 </div>
                 <div class="company-info">
                     <h3 class="company-name"> النورس</h3>
-                    {% if nawris_connection %}
-                        {% if nawris_connection.is_active %}
+                        {% if nawris_connection %}
                             <span class="company-status status-active">
                                 <i class="fas fa-check-circle"></i> مرتبط
                             </span>
@@ -355,14 +355,12 @@
                                 <i class="fas fa-times-circle"></i> غير نشط
                             </span>
                         {% endif %}
-                    {% else %}
                         {% if not darb_connection %}
 
                         <span class="company-status status-available">
                             <i class="fas fa-plug"></i> متاح للربط
                         </span>
                            {% endif %}
-                    {% endif %}
                 </div>
             </div>
             
@@ -385,6 +383,10 @@
                         <i class="fas fa-link"></i>
                         ربط الحساب
                     </a>
+                    {% else %}
+                    <div class="info-message">
+                     لايمكنك الربط مع هذه الشركة حاليا!
+                    </div>
                     {% endif %}
                    
                 {% endif %}
