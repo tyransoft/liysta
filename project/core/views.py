@@ -2573,7 +2573,7 @@ def manage_storage(request,menu_id):
     finished_products=Products.objects.filter(menu__id=menu_id,quantity=0) 
     soon_finish_products=Products.objects.filter(menu__id=menu_id,quantity__lte=5)
 
-    products_total = Products.objects.all().aggregate(
+    products_total = Products.objects.filter(menu__id=menu_id).aggregate(
       total_cost_value=Sum(F('bought_price') * F('quantity'), output_field=DecimalField()),
       total_sales_value=Sum(F('price') * F('quantity'), output_field=DecimalField())
     )
