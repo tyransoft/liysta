@@ -2995,9 +2995,9 @@ def calucate_delivery_price(request,menu_id):
                     product_json = {
                         "title": product.name,
                         "quantity": product_item['quantity'],
-                        "widthCM": product.latitude if  product.latitude != 0 else 10,
-                        "heightCM": product.high if  product.high != 0 else 10,
-                        "lengthCM": product.length if  product.length != 0 else 10,
+                        "widthCM": product.latitude if  product.latitude != None else 10,
+                        "heightCM": product.high if  product.high != None else 10,
+                        "lengthCM": product.length if  product.length != None else 10,
                         "amount": 0,
                         "currency": "lyd",
                         "isChargeable": True
