@@ -3054,7 +3054,7 @@ def calucate_delivery_price(request,menu_id):
                   return JsonResponse({
                     'success': True,
                     'price': price,
-                    'charge':charge charge if charge else 0,
+                    'charge':charge if charge else 0,
                     'service_type': service
                   })
             else:
