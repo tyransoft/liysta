@@ -1751,7 +1751,9 @@ document.addEventListener('DOMContentLoaded', function() {
         async function calculateDarbPrice(serviceId, serviceTitle, cityName, areaName) {
             try {
                 const productsData = cart.map(item => ({ product_id: item.id, quantity: item.quantity, price: item.price, name: item.name }));
-                const response = await fetch('/calculate-delivery-price/', {
+                    const menuId = {{ menu.id }}; 
+
+                const response = await fetch(`/calculate-delivery-price/${menuId}/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
                     body: JSON.stringify({ city: cityName, area: areaName, service: serviceId, products: productsData, company: 'darb' })

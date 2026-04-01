@@ -2937,10 +2937,10 @@ def dilver_darbasabil(request,order_id):
 
 
 @csrf_exempt
-def calucate_delivery_price(request):
+def calucate_delivery_price(request,menu_id):
     try:
-
-        menu = Menu.objects.get(customer__user=request.user)
+        
+        menu = Menu.objects.get(id=menu_id)
         
         darb = DarbAsabilConnection.objects.get(
             customer=menu.customer,

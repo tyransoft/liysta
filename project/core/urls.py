@@ -86,7 +86,7 @@ urlpatterns = [
     path('delivery-darbasabil-settings/', darbasabil_settings, name='darbasabil_settings'),
 
     path('delivery-darbasabil-shipping/<int:order_id>', dilver_darbasabil, name='dilver_darbasabil'),
-    path('calculate-delivery-price/', calucate_delivery_price, name='calucate_delivery_price'),
+    path('calculate-delivery-price/<int:menu_id>/', calucate_delivery_price, name='calucate_delivery_price'),
 
     path('submit-review/', submit_review, name='submit_review'),
     path('customer-dashboard/reports', reports_dashboard, name='reports_dashboard'),

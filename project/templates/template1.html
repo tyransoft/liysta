@@ -1988,8 +1988,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     name: item.name
                 }));
                 
-                const response = await fetch('/calculate-delivery-price/', {
-                    method: 'POST',
+                const menuId = {{ menu.id }}; 
+
+                const response = await fetch(`/calculate-delivery-price/${menuId}/`, {
+                method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': '{{ csrf_token }}'
@@ -2390,7 +2392,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('company_delivery_price', deliveryFee.toString());
                 formData.append('company_delivery_charge', document.getElementById('nawris_charge').value || '0');
                 
-                // إرسال بنفس أسماء حقول درب السبيل التي تستخدمها create_order
                 formData.append('darb_sabil_city', cityName);
                 formData.append('darb_sabil_area', areaName || '');
                 formData.append('company_delivery_address', `${cityName}${areaName ? ' - ' + areaName : ''}`);
