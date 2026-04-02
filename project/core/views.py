@@ -1834,18 +1834,6 @@ def manege_order(request,menu_id):
     return render(request, 'manege_orders.html', context)
 
 
-def edite_order(request,order_id):
-    order = get_object_or_404(Order, id=order_id)
-    order_items = OrderItem.objects.filter(order=order)
-    cities = City.objects.filter(menu=order.menu)
-    
-    context = {
-        'order': order,
-        'order_items': order_items,
-        'cities': cities,
-        'status_choices': Order.STATUS_CHOICES
-    }
-    return render(request, 'edite_order.html', context)
 
 def update_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -1853,16 +1841,79 @@ def update_order(request, order_id):
     if request.method == 'POST':
         order.customer_name = request.POST.get('customer_name')
         order.customer_phone = request.POST.get('customer_phone')
-        
-        delivery_address_id = request.POST.get('delivery_address')
-        if delivery_address_id:
-            order.delivery_address = get_object_or_404(City, id=delivery_address_id)
-            
         order.notes = request.POST.get('notes')
         order.status = request.POST.get('status')
         
+     
+        
+        delivery_price = Decimal('0')
+        delivery_type = request.POST.get('delivery_type', 'normal')
+
+        if delivery_type == 'darb_sabil':
+            darb_area_id = request.POST.get('darb_sabil_area')
+            darb_service_id = request.POST.get('darb_sabil_service_id')
+            darb_price = request.POST.get('company_delivery_price_final', '0')
+            darb_charge = request.POST.get('company_delivery_charge_final', '0')
+            darb_city = request.POST.get('darb_sabil_city', '')
+            darb_area = request.POST.get('darb_sabil_area_name', '')
+            darb_city_id = request.POST.get('darb_sabil_city_id', '')
+            
+            if darb_area_id:
+                
+                order.serviceid = darb_service_id
+                order.company_delivery_price = Decimal(darb_price) if darb_price else Decimal('0')
+                order.company_delivery_charge = Decimal(darb_charge) if darb_charge else Decimal('0')
+                order.company_delivery_city = darb_city
+                order.company_delivery_area = darb_area
+                
+                delivery_price = order.company_delivery_price
+                order.delivery_address = None
+                
+        elif delivery_type == 'nawris':
+            nawris_city_id = request.POST.get('nawris_city_id')
+            nawris_area_id = request.POST.get('nawris_area_id')
+            nawris_price = request.POST.get('company_delivery_price_final', '0')
+            nawris_charge = request.POST.get('company_delivery_charge_final', '0')
+            nawris_city_name = request.POST.get('nawris_city_name', '')
+            nawris_area_name = request.POST.get('nawris_area_name', '')
+            
+            if nawris_city_id:
+                order.company_delivery_city = nawris_city_name
+                order.company_delivery_area = nawris_area_name
+                order.company_delivery_price = Decimal(nawris_price) if nawris_price else Decimal('0')
+                order.company_delivery_charge = Decimal(nawris_charge) if nawris_charge else Decimal('0')
+                
+                delivery_price = order.company_delivery_price
+                order.delivery_address = None
+                
+        elif delivery_type == 'normal':
+            delivery_address_id = request.POST.get('delivery_address')
+            delivery_price_input = request.POST.get('delivery_price', '0')
+            
+            if delivery_address_id:
+                city = get_object_or_404(City, id=delivery_address_id)
+                order.delivery_address = city
+                delivery_price = Decimal(str(city.price))
+            else:
+                order.delivery_address = None
+                delivery_price = Decimal(delivery_price_input) if delivery_price_input else Decimal('0')
+            
+            order.company_delivery_price = delivery_price
+            order.company_delivery_city = None
+            order.company_delivery_area = None
+            order.company_delivery_charge = Decimal('0')
+            
+        else:
+            delivery_price = Decimal('0')
+            order.company_delivery_price = Decimal('0')
+            order.company_delivery_city = None
+            order.company_delivery_area = None
+            order.company_delivery_charge = Decimal('0')
+            order.delivery_address = None
+        
+        
         order_items = OrderItem.objects.filter(order=order)
-        total_sales = 0
+        total_sales = Decimal('0')
         
         try:
             with transaction.atomic():
@@ -1890,7 +1941,7 @@ def update_order(request, order_id):
                                 quantity_diff = new_quantity - item.quantity
                                 product = item.product
                                 
-                                if quantity_diff > 0:  
+                                if quantity_diff > 0: 
                                     if quantity_diff <= product.quantity:
                                         product.quantity -= quantity_diff
                                         product.save()
@@ -1900,28 +1951,28 @@ def update_order(request, order_id):
                                     else:
                                         messages.error(request, f'لا يوجد مخزون كافٍ من {product.name}. المتاح: {product.quantity}')
                                         return redirect('edite_order', order_id=order.id)
-                                else: 
+                                else:  
                                     product.quantity += abs(quantity_diff)
                                     product.save()
                                     item.quantity = new_quantity
                                     item.save()
                                     messages.success(request, f'تم تحديث كمية {product.name} وإضافة الفرق إلى المخزون')
                         
-                        item.refresh_from_db() 
+                        item.refresh_from_db()
                         total_sales += item.get_final_price()
                 
                 order.sales_total = total_sales
+                order.company_delivery_price = delivery_price
                 order.save()
+                
                 messages.success(request, 'تم تحديث الطلب بنجاح')
                 return redirect('manege_order', menu_id=order.menu.id)
                 
         except Exception as e:
             messages.error(request, f'حدث خطأ أثناء تحديث الطلب: {str(e)}')
-        
-        return redirect('edite_order', order_id=order.id)
+            return redirect('edite_order', order_id=order.id)
     
     return redirect('manege_order', menu_id=order.menu.id)
-
 def update_menu_statistics(menu):
     today = localdate()
     stat, created = MenuStatistics.objects.get_or_create(menu=menu, date=today)
@@ -3225,7 +3276,7 @@ def disconnect_nawris(request):
           customer=customer,
           is_active=True,
         ).delete()
- 
+        Products.objects.filter(menu__customer=customer).update(del_id=None)
         customer.connected_del_method='normal'
         customer.save()
         messages.success(request,'تم فك الربط مع شركة النورس ') 

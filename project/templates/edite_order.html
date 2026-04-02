@@ -23,6 +23,8 @@
         .order-card {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
         }
         .product-img {
             width: 60px;
@@ -35,10 +37,55 @@
             color: white;
         }
         .btn-update:hover {
-            background-color: #F97316;
+            background-color: #e06812;
+            color: white;
         }
         .quantity-control {
             width: 100px;
+        }
+        .delivery-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .delivery-section h6 {
+            color: #4361ee;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .company-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .company-darb {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .company-nawris {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .company-normal {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .delivery-price-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #F97316;
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .loading-price {
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -64,10 +111,8 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="card order-card">
-                        
                         <div class="card-body">
-                            <h5 class="mb-0">منتجات الطلب</h5>
-                            <p> </p>
+                            <h5 class="mb-3">منتجات الطلب</h5>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -119,17 +164,13 @@
                                             <td colspan="5" class="text-end"><strong>المجموع الفرعي:</strong></td>
                                             <td colspan="3" id="subtotal">{{ order.sales_total }} د.ل</td>
                                         </tr>
-                                        {% if order.delivery_address %}
-                                        <tr>
+                                        <tr id="delivery-row">
                                             <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
-                                            <td colspan="3" id="delivery-cost">{{ order.delivery_address.price|default:0 }} د.ل</td>
+                                            <td colspan="3">
+                                                <span id="delivery-cost-display">{{ order.delivery_address.price|default:order.company_delivery_price|default:0 }} د.ل</span>
+                                                <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.delivery_address.price|default:order.company_delivery_price|default:0 }}">
+                                            </td>
                                         </tr>
-                                        {% elif order.company_delivery_city %}
-                                        <tr>
-                                            <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
-                                            <td colspan="3" id="delivery-cost">{{ order.company_delivery_price|default:0 }} د.ل</td>
-                                        </tr>
-                                        {% endif  %}
                                         <tr class="fw-bold fs-5">
                                             <td colspan="5" class="text-end"><strong>المجموع الكلي:</strong></td>
                                             <td colspan="3" id="grand-total">{{ order.get_total }} د.ل</td>
@@ -144,33 +185,136 @@
                 <div class="col-md-4">
                     <div class="card order-card">
                         <div class="card-body">
-                            <h5 class="mb-0">معلومات الطلب</h5>
-                            <p> </p>
+                            <h5 class="mb-3">معلومات الطلب</h5>
+                            
                             <div class="mb-3">
                                 <label class="form-label">اسم الزبون</label>
                                 <input type="text" class="form-control" name="customer_name" value="{{ order.customer_name }}" required>
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">رقم الهاتف</label>
                                 <input type="text" class="form-control" name="customer_phone" value="{{ order.customer_phone }}" required>
                             </div>
-                            {% if order.delivery_address %}
-                            <div class="mb-3">
-                                <label class="form-label">عنوان التوصيل</label>
-                                <select class="form-select" name="delivery_address" >
-                                    <option value="">اختر عنوان التوصيل</option>
-                                    {% for city in cities %}
-                                    <option value="{{ city.id }}" data-price="{{ city.price }}" {% if order.delivery_address and city.id == order.delivery_address.id %}selected{% endif %}>
-                                        {{ city.name }} ({{ city.price }} د.ل)
-                                    </option>
-                                    {% endfor %}
-                                </select>
+                            
+                            <div class="delivery-section">
+                                <h6><i class="bi bi-truck"></i> معلومات التوصيل</h6>
+                                
+                                {% if order.delivery_type == 'darb_sabil' or order.company_delivery_city %}
+                                <div class="company-badge company-darb mb-2">
+                                    <i class="bi bi-building"></i> شركة درب السبيل
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">اختر العنوان:</label>
+                                    <select id="darb_sabil_area" name="darb_sabil_area" class="form-select">
+                                        <option value="">-- اختر المدينة --</option>
+                                        {% for city in darb_cities %}
+                                        <option value="{{ city.id }}" 
+                                                data-city-name="{{ city.city }}" 
+                                                data-area-name="{{ city.area }}"
+                                                data-city-id="{{ city.city_id|default:city.id }}"
+                                                {% if order.darb_sabil_city == city.city and order.darb_sabil_area == city.area %}selected{% endif %}>
+                                            {{ city.city }}-{{ city.area }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="service-type-section" id="serviceTypeSection" style="display: {% if order.darb_sabil_city %}block{% else %}none{% endif %};">
+                                    <label class="form-label">نوع الخدمة:</label>
+                                    <div class="service-options" id="serviceOptions">
+                                        <div class="service-option">
+                                            <input type="radio" name="darb_sabil_service" value="6783c612dcf305c9e775c987" id="service_male" data-title="توصيل رجالي" {% if order.darb_sabil_service_id == "6783c612dcf305c9e775c987" %}checked{% endif %}>
+                                            <label for="service_male">توصيل رجالي</label>
+                                        </div>
+                                        <div class="service-option">
+                                            <input type="radio" name="darb_sabil_service" value="67c84fbc9ed6c0d5c5bb1d2b" id="service_female" data-title="توصيل نسائي" {% if order.darb_sabil_service_id == "67c84fbc9ed6c0d5c5bb1d2b" %}checked{% endif %}>
+                                            <label for="service_female">توصيل نسائي</label>
+                                        </div>
+                                        <div class="service-option">
+                                            <input type="radio" name="darb_sabil_service" value="67c84fea9ed6c0d5c5bb1d2c" id="service_express" data-title="توصيل فوري" {% if order.darb_sabil_service_id == "67c84fea9ed6c0d5c5bb1d2c" %}checked{% endif %}>
+                                            <label for="service_express">توصيل فوري</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" id="darb_sabil_price" name="darb_sabil_price" value="{{ order.company_delivery_price|default:0 }}">
+                                <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="{{ order.company_delivery_charge|default:0 }}">
+                                <input type="hidden" id="company_delivery_price_final" name="company_delivery_price" value="{{ order.company_delivery_price|default:0 }}">
+                                <input type="hidden" id="darb_sabil_service_id" name="darb_sabil_service_id" value="{{ order.darb_sabil_service_id|default:'' }}">
+                                <input type="hidden" id="darb_sabil_service_type" name="darb_sabil_service_type" value="">
+                                <input type="hidden" id="darb_sabil_city" name="darb_sabil_city" value="{{ order.darb_sabil_city|default:'' }}">
+                                <input type="hidden" id="darb_sabil_area_name" name="darb_sabil_area_name" value="{{ order.darb_sabil_area|default:'' }}">
+                                <input type="hidden" id="darb_sabil_area_id" name="darb_sabil_area_id" value="">
+                                <input type="hidden" id="darb_sabil_city_id" name="darb_sabil_city_id" value="">
+                                <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="darb">
+                                <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
+                                
+                                {% elif order.delivery_type == 'nawris' %}
+                                <div class="company-badge company-nawris mb-2">
+                                    <i class="bi bi-building"></i> شركة النورس
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">اختر العنوان:</label>
+                                    <select id="nawris_area" name="nawris_area" class="form-select">
+                                        <option value="">-- اختر المنطقة --</option>
+                                        {% for area in nawris_areas %}
+                                        <option value="{{ area.city_id }}" 
+                                                data-city-name="{{ area.city_name }}" 
+                                                data-area-name="{{ area.area_name }}"
+                                                data-city-id="{{ area.city_id }}"
+                                                data-area-id="{{ area.area_id }}"
+                                                {% if order.company_delivery_city == area.city_name %}selected{% endif %}>
+                                            {{ area.city_name }}{% if area.area_name %} - {{ area.area_name }}{% endif %}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <input type="hidden" id="nawris_price" name="nawris_price" value="{{ order.company_delivery_price|default:0 }}">
+                                <input type="hidden" id="nawris_charge" name="nawris_charge" value="{{ order.company_delivery_charge|default:0 }}">
+                                <input type="hidden" id="nawris_city_name" name="nawris_city_name" value="{{ order.company_delivery_city|default:'' }}">
+                                <input type="hidden" id="nawris_city_id" name="nawris_city_id" value="">
+                                <input type="hidden" id="nawris_area_id" name="nawris_area_id" value="">
+                                <input type="hidden" id="nawris_area_name" name="nawris_area_name" value="{{ order.company_delivery_area|default:'' }}">
+                                <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="{{ order.company_delivery_charge|default:0 }}">
+                                <input type="hidden" id="company_delivery_price_final" name="company_delivery_price" value="{{ order.company_delivery_price|default:0 }}">
+                                <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="nawris">
+                                <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
+                                
+                                {% else %}
+                                <div class="company-badge company-normal mb-2">
+                                    <i class="bi bi-geo-alt"></i> توصيل عادي
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">العنوان:</label>
+                                    <select id="delivery_address" name="delivery_address" class="form-select">
+                                        <option value="">اختر العنوان</option>
+                                        {% for city in cities %}
+                                        <option value="{{ city.id }}" data-price="{{ city.price }}" {% if order.delivery_address and city.id == order.delivery_address.id %}selected{% endif %}>
+                                            {{ city.name }} - {{ city.price }} د.ل
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="normal">
+                                <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
+                                {% endif %}
+                                
+                                <div class="delivery-price-display mt-3">
+                                    <span>سعر التوصيل:</span>
+                                    <strong id="delivery_price_value">{{ order.delivery_address.price|default:order.company_delivery_price|default:0 }} د.ل</strong>
+                                </div>
                             </div>
-                            {% endif %}
+                            
                             <div class="mb-3">
                                 <label class="form-label">ملاحظات</label>
                                 <textarea class="form-control" name="notes" rows="3">{{ order.notes }}</textarea>
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">حالة الطلب</label>
                                 <select class="form-select" name="status" required>
@@ -179,26 +323,24 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            
                             <hr>
+                            
                             <div class="d-flex justify-content-between mb-2">
                                 <strong>مجموع المنتجات:</strong>
                                 <span id="summary-subtotal">{{ order.sales_total }} د.ل</span>
                             </div>
-                            {% if not order.company_delivery_city %}
+                            
                             <div class="d-flex justify-content-between mb-2">
                                 <strong>رسوم التوصيل:</strong>
-                                <span id="summary-delivery">{{ order.delivery_address.price|default:0 }} د.ل</span>
+                                <span id="summary-delivery">{{ order.delivery_address.price|default:order.company_delivery_price|default:0 }} د.ل</span>
                             </div>
-                            {% elif  order.company_delivery_city %}
-                            <div class="d-flex justify-content-between mb-2">
-                                <strong>رسوم التوصيل:</strong>
-                                <span id="summary-delivery">{{ order.company_delivery_price|default:0 }} د.ل</span>
-                            </div>
-                            {% endif %}
+                            
                             <div class="d-flex justify-content-between mb-3 fs-5">
                                 <strong>المجموع الكلي:</strong>
                                 <span class="text-primary" id="summary-total">{{ order.get_total }} د.ل</span>
                             </div>
+                            
                             <button type="submit" class="btn btn-update w-100">
                                 <i class="bi bi-check-circle"></i> حفظ التعديلات
                             </button>
@@ -206,12 +348,251 @@
                     </div>
                 </div>
             </div>
+            
+            <input type="hidden" name="delivery_type" id="delivery_type" value="{{ order.delivery_type|default:'normal' }}">
         </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const isDarbSabil = {% if order.delivery_type == 'darb_sabil' %}true{% else %}false{% endif %};
+            const isNawris = {% if order.delivery_type == 'nawris' %}true{% else %}false{% endif %};
+            const orderId = {{ order.id }};
+            
+            const orderItems = [];
+            {% for item in order_items %}
+            orderItems.push({
+                id: {{ item.product.id }},
+                quantity: {{ item.quantity }},
+                price: {{ item.product.price }},
+                name: "{{ item.product.name|escapejs }}"
+            });
+            {% endfor %}
+            
+            let deliveryFee = parseFloat(document.getElementById('delivery_price_value').textContent) || 0;
+            
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+                notification.style.zIndex = '9999';
+                notification.style.minWidth = '300px';
+                notification.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+            
+            function updateTotals() {
+                let subtotal = 0;
+                
+                document.querySelectorAll('[id^="item-total-"]').forEach(element => {
+                    if (element.closest('tr') && element.closest('tr').style.display !== 'none') {
+                        const totalText = element.textContent.replace(' د.ل', '').trim();
+                        subtotal += parseFloat(totalText) || 0;
+                    }
+                });
+                
+                const grandTotal = subtotal + deliveryFee;
+                
+                document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
+                document.getElementById('delivery-cost-display').textContent = deliveryFee.toFixed(2) + ' د.ل';
+                document.getElementById('grand-total').textContent = grandTotal.toFixed(2) + ' د.ل';
+                document.getElementById('delivery_price_hidden').value = deliveryFee.toFixed(2);
+                
+                document.getElementById('summary-subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
+                document.getElementById('summary-delivery').textContent = deliveryFee.toFixed(2) + ' د.ل';
+                document.getElementById('summary-total').textContent = grandTotal.toFixed(2) + ' د.ل';
+                document.getElementById('delivery_price_value').textContent = deliveryFee.toFixed(2) + ' د.ل';
+            }
+            
+            async function calculateDarbPrice(serviceId, serviceTitle, cityName, areaName) {
+                try {
+                    const productsData = orderItems.map(item => ({
+                        product_id: item.id,
+                        quantity: item.quantity,
+                        price: item.price,
+                        name: item.name
+                    }));
+                    
+                    const response = await fetch('/calculate-delivery-price/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            city: cityName,
+                            area: areaName,
+                            service: serviceId,
+                            products: productsData,
+                            company: 'darb'
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        const finalPrice = parseFloat(data.price);
+                        const chargePrice = parseFloat(data.charge);
+                        
+                        document.getElementById('darb_sabil_price').value = finalPrice;
+                        document.getElementById('company_delivery_price_final').value = finalPrice;
+                        document.getElementById('company_delivery_charge_final').value = chargePrice;
+                        document.getElementById('darb_sabil_service_id').value = serviceId;
+                        document.getElementById('darb_sabil_service_type').value = serviceTitle;
+                        document.getElementById('darb_sabil_city').value = cityName;
+                        document.getElementById('darb_sabil_area_name').value = areaName;
+                        
+                        deliveryFee = finalPrice;
+                        updateTotals();
+                        
+                        showNotification(`سعر التوصيل: ${finalPrice} د.ل (${serviceTitle})`, 'success');
+                    } else {
+                        throw new Error(data.error || 'خطأ في حساب السعر');
+                    }
+                } catch (error) {
+                    console.error('خطأ:', error);
+                    showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل', 'error');
+                }
+            }
+            
+            async function calculateNawrisPrice(cityId, areaId, cityName, areaName) {
+                try {
+                    const productsData = orderItems.map(item => ({
+                        product_id: item.id,
+                        quantity: item.quantity,
+                        price: item.price,
+                        name: item.name
+                    }));
+                    
+                    const requestBody = {
+                        customer: {{ order.menu.customer.id }},
+                        city_id: cityId,
+                        products: productsData
+                    };
+                    
+                    if (areaId && areaId !== '') {
+                        requestBody.area_id = areaId;
+                    }
+                    
+                    const response = await fetch('/calculate-nawris-price/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        const finalPrice = parseFloat(data.price);
+                        const chargePrice = parseFloat(data.charge);
+                        
+                        document.getElementById('nawris_price').value = finalPrice;
+                        document.getElementById('nawris_charge').value = chargePrice;
+                        document.getElementById('company_delivery_price_final').value = finalPrice;
+                        document.getElementById('company_delivery_charge_final').value = chargePrice;
+                        document.getElementById('nawris_city_name').value = cityName;
+                        document.getElementById('nawris_area_name').value = areaName || '';
+                        
+                        deliveryFee = finalPrice;
+                        updateTotals();
+                        
+                        showNotification(`سعر التوصيل: ${finalPrice} د.ل`, 'success');
+                    } else {
+                        throw new Error(data.error || 'خطأ في حساب السعر');
+                    }
+                } catch (error) {
+                    console.error('خطأ في حساب سعر النورس:', error);
+                    showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل', 'error');
+                }
+            }
+            
+            if (isDarbSabil) {
+                const darbAreaSelect = document.getElementById('darb_sabil_area');
+                const serviceOptions = document.querySelectorAll('input[name="darb_sabil_service"]');
+                const serviceTypeSection = document.getElementById('serviceTypeSection');
+                
+                if (darbAreaSelect) {
+                    darbAreaSelect.addEventListener('change', function() {
+                        if (this.value) {
+                            serviceTypeSection.style.display = 'block';
+                            serviceOptions.forEach(radio => radio.checked = false);
+                            deliveryFee = 0;
+                            updateTotals();
+                        } else {
+                            serviceTypeSection.style.display = 'none';
+                        }
+                    });
+                    
+                    serviceOptions.forEach(radio => {
+                        radio.addEventListener('change', async function() {
+                            if (!darbAreaSelect.value) {
+                                showNotification('الرجاء اختيار المنطقة أولاً', 'error');
+                                this.checked = false;
+                                return;
+                            }
+                            
+                            const selectedOption = darbAreaSelect.options[darbAreaSelect.selectedIndex];
+                            const cityName = selectedOption.getAttribute('data-city-name');
+                            const areaName = selectedOption.getAttribute('data-area-name');
+                            const serviceId = this.value;
+                            const serviceTitle = this.getAttribute('data-title');
+                            
+                            await calculateDarbPrice(serviceId, serviceTitle, cityName, areaName);
+                        });
+                    });
+                }
+            }
+            
+            if (isNawris) {
+                const nawrisAreaSelect = document.getElementById('nawris_area');
+                
+                if (nawrisAreaSelect) {
+                    nawrisAreaSelect.addEventListener('change', async function() {
+                        if (this.value) {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const cityName = selectedOption.getAttribute('data-city-name');
+                            const cityId = selectedOption.getAttribute('data-city-id');
+                            const areaName = selectedOption.getAttribute('data-area-name');
+                            const areaId = this.value;
+                            
+                            document.getElementById('nawris_city_id').value = cityId;
+                            document.getElementById('nawris_area_id').value = areaId;
+                            
+                            await calculateNawrisPrice(cityId, areaId, cityName, areaName);
+                        } else {
+                            deliveryFee = 0;
+                            updateTotals();
+                        }
+                    });
+                }
+            }
+            
+            if (!isDarbSabil && !isNawris) {
+                const deliveryAddressSelect = document.getElementById('delivery_address');
+                
+                if (deliveryAddressSelect) {
+                    deliveryAddressSelect.addEventListener('change', function() {
+                        const selectedOption = this.options[this.selectedIndex];
+                        const price = selectedOption.getAttribute('data-price');
+                        if (price) {
+                            deliveryFee = parseFloat(price);
+                            updateTotals();
+                            document.getElementById('delivery_address_full').value = selectedOption.text;
+                        } else {
+                            deliveryFee = 0;
+                            updateTotals();
+                        }
+                    });
+                }
+            }
+            
             document.querySelectorAll('.increase-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const itemId = this.dataset.itemId;
@@ -223,8 +604,30 @@
                         input.value = parseInt(input.value) + 1;
                         updateStock(input.dataset.productId, -1);
                         updateItemTotal(itemId, price);
+                        
+                        if (isDarbSabil) {
+                            const selectedService = document.querySelector('input[name="darb_sabil_service"]:checked');
+                            const selectedArea = document.getElementById('darb_sabil_area');
+                            if (selectedService && selectedArea && selectedArea.value) {
+                                const selectedOption = selectedArea.options[selectedArea.selectedIndex];
+                                const cityName = selectedOption.getAttribute('data-city-name');
+                                const areaName = selectedOption.getAttribute('data-area-name');
+                                const serviceId = selectedService.value;
+                                const serviceTitle = selectedService.getAttribute('data-title');
+                                calculateDarbPrice(serviceId, serviceTitle, cityName, areaName);
+                            }
+                        } else if (isNawris) {
+                            const selectedArea = document.getElementById('nawris_area');
+                            if (selectedArea && selectedArea.value) {
+                                const selectedOption = selectedArea.options[selectedArea.selectedIndex];
+                                const cityName = selectedOption.getAttribute('data-city-name');
+                                const cityId = selectedOption.getAttribute('data-city-id');
+                                const areaName = selectedOption.getAttribute('data-area-name');
+                                calculateNawrisPrice(cityId, selectedArea.value, cityName, areaName);
+                            }
+                        }
                     } else {
-                        alert('لا يمكن تجاوز الحد الأقصى للمخزون المتاح');
+                        showNotification('لا يمكن تجاوز الحد الأقصى للمخزون المتاح', 'warning');
                     }
                 });
             });
@@ -239,6 +642,28 @@
                         input.value = parseInt(input.value) - 1;
                         updateStock(input.dataset.productId, 1);
                         updateItemTotal(itemId, price);
+                        
+                        if (isDarbSabil) {
+                            const selectedService = document.querySelector('input[name="darb_sabil_service"]:checked');
+                            const selectedArea = document.getElementById('darb_sabil_area');
+                            if (selectedService && selectedArea && selectedArea.value) {
+                                const selectedOption = selectedArea.options[selectedArea.selectedIndex];
+                                const cityName = selectedOption.getAttribute('data-city-name');
+                                const areaName = selectedOption.getAttribute('data-area-name');
+                                const serviceId = selectedService.value;
+                                const serviceTitle = selectedService.getAttribute('data-title');
+                                calculateDarbPrice(serviceId, serviceTitle, cityName, areaName);
+                            }
+                        } else if (isNawris) {
+                            const selectedArea = document.getElementById('nawris_area');
+                            if (selectedArea && selectedArea.value) {
+                                const selectedOption = selectedArea.options[selectedArea.selectedIndex];
+                                const cityName = selectedOption.getAttribute('data-city-name');
+                                const cityId = selectedOption.getAttribute('data-city-id');
+                                const areaName = selectedOption.getAttribute('data-area-name');
+                                calculateNawrisPrice(cityId, selectedArea.value, cityName, areaName);
+                            }
+                        }
                     }
                 });
             });
@@ -255,61 +680,15 @@
                 const quantity = parseInt(quantityInput.value);
                 const total = quantity * price;
                 
-                document.getElementById(`item-total-${itemId}`).textContent = total + ' د.ل';
-                updateOrderSummary();
+                document.getElementById(`item-total-${itemId}`).textContent = total.toFixed(2) + ' د.ل';
+                
+                const itemIndex = orderItems.findIndex(item => item.id == quantityInput.dataset.productId);
+                if (itemIndex !== -1) {
+                    orderItems[itemIndex].quantity = quantity;
+                }
+                
+                updateTotals();
             }
-
-            function updateOrderSummary() {
-                let subtotal = 0;
-                
-                document.querySelectorAll('[id^="item-total-"]').forEach(element => {
-                    if (element.closest('tr').style.display !== 'none') {
-                        const totalText = element.textContent.replace(' د.ل', '').trim();
-                        subtotal += parseFloat(totalText) || 0;
-                    }
-                });
-                
-                const deliverySelect = document.querySelector('select[name="delivery_address"]');
-                const selectedOption = deliverySelect.options[deliverySelect.selectedIndex];
-                const deliveryCost = parseFloat(selectedOption.getAttribute('data-price')) || 0;
-                
-                const grandTotal = subtotal + deliveryCost;
-                
-                document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
-                document.getElementById('delivery-cost').textContent = deliveryCost.toFixed(2) + ' د.ل';
-                document.getElementById('grand-total').textContent = grandTotal.toFixed(2) + ' د.ل';
-                
-                document.getElementById('summary-subtotal').textContent = subtotal.toFixed(2) + ' د.ل';
-                document.getElementById('summary-delivery').textContent = deliveryCost.toFixed(2) + ' د.ل';
-                document.getElementById('summary-total').textContent = grandTotal.toFixed(2) + ' د.ل';
-            }
-
-            document.querySelectorAll('.remove-item').forEach(button => {
-                button.addEventListener('click', function() {
-                    const itemId = this.dataset.itemId;
-                    if (confirm('هل أنت متأكد من إزالة هذا المنتج من الطلب؟')) {
-                        const input = document.querySelector(`input[name="quantity_${itemId}"]`);
-                        const productId = input.dataset.productId;
-                        const quantity = parseInt(input.value);
-                        
-                        updateStock(productId, quantity);
-                        
-                        this.closest('tr').style.display = 'none';
-                        
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = `remove_${itemId}`;
-                        hiddenInput.value = 'true';
-                        document.getElementById('orderForm').appendChild(hiddenInput);
-                        
-                        updateOrderSummary();
-                    }
-                });
-            });
-
-            document.querySelector('select[name="delivery_address"]').addEventListener('change', function() {
-                updateOrderSummary();
-            });
 
             document.querySelectorAll('.quantity-input').forEach(input => {
                 input.addEventListener('change', function() {
@@ -318,7 +697,7 @@
                     const maxQuantity = parseInt(this.dataset.maxQuantity);
                     
                     if (parseInt(this.value) > maxQuantity) {
-                        alert('لا يمكن تجاوز الحد الأقصى للمخزون المتاح');
+                        showNotification('لا يمكن تجاوز الحد الأقصى للمخزون المتاح', 'warning');
                         this.value = maxQuantity;
                     }
                     
@@ -336,6 +715,33 @@
                     }
                     
                     updateItemTotal(itemId, price);
+                });
+            });
+
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    if (confirm('هل أنت متأكد من إزالة هذا المنتج من الطلب؟')) {
+                        const input = document.querySelector(`input[name="quantity_${itemId}"]`);
+                        const productId = input.dataset.productId;
+                        const quantity = parseInt(input.value);
+                        
+                        updateStock(productId, quantity);
+                        this.closest('tr').style.display = 'none';
+                        
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = `remove_${itemId}`;
+                        hiddenInput.value = 'true';
+                        document.getElementById('orderForm').appendChild(hiddenInput);
+                        
+                        const itemIndex = orderItems.findIndex(item => item.id == productId);
+                        if (itemIndex !== -1) {
+                            orderItems.splice(itemIndex, 1);
+                        }
+                        
+                        updateTotals();
+                    }
                 });
             });
         });

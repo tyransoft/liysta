@@ -664,7 +664,7 @@
                                 <button class="btn btn-primary btn-sm" onclick="bulkPrintNew()" id="newBulkPrint" disabled>
                                     <i class="fas fa-print"></i> طباعة
                                 </button>
-                                {% if not darb_connection %}
+                                {% if not darb_connection or not nawris_connection %}
                                 <button class="btn btn-success btn-sm" onclick="bulkShipNew()" id="newBulkShip" disabled>
                                     <i class="fas fa-truck"></i> شحن
                                 </button>
@@ -733,6 +733,10 @@
                                             <div class="single-actions">
                                                 {% if darb_connection %}
                                                 <a href="{% url 'dilver_darbasabil' order.id %}" class="action-btn btn-sm btn-success" title="شحن">
+                                                    <i class="fas fa-truck"></i>
+                                                </a>
+                                                {% elif nawris_connection %}
+                                                <a href="{% url 'dilver_nawris' order.id %}" class="action-btn btn-sm btn-success" title="شحن">
                                                     <i class="fas fa-truck"></i>
                                                 </a>
                                                 {% else %}
@@ -1078,7 +1082,7 @@
                 </div>
                 
                 <div class="company-actions">
-                    {% if darb_connection.is_active %}
+                    {% if nawris_connection.is_active %}
                         <a href="{% url 'delivery_companies' %}" class="btn btn-success btn-manage">
                             <i class="fas fa-cog"></i>
                             إدارة الربط
@@ -1116,7 +1120,7 @@
         </div>
         {% endif %}
         
-        {% if not darb_connection or menus.customer.connected_del_method == 'normal' %}
+        {% if not darb_connection or not nawris_connection or menus.customer.connected_del_method == 'normal' %}
         <div class="dashboard-section" style="margin-top: 2rem;">
             <div class="section-header">
                 <h2 class="section-title">مدن/مناطق التوصيل</h2>
