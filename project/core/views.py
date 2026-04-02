@@ -1836,16 +1836,19 @@ def manege_order(request,menu_id):
 
 
 def update_order(request, order_id):
-    order =Order.objects.get(id=order_id)
+    order = Order.objects.get(id=order_id)
     order_items = OrderItem.objects.filter(order=order)
-    customer=Customer.objects.get(user=request.user)
+    customer = Customer.objects.get(user=request.user)
+    
     if request.method == 'POST':
-        order.customer_name = request.POST.get('customer_name')
-        order.customer_phone = request.POST.get('customer_phone')
-        order.notes = request.POST.get('notes')
-        order.status = request.POST.get('status')
-        
-     
+        if 'customer_name' in request.POST:
+            order.customer_name = request.POST.get('customer_name')
+        if 'customer_phone' in request.POST:
+            order.customer_phone = request.POST.get('customer_phone')
+        if 'notes' in request.POST:
+            order.notes = request.POST.get('notes')
+        if 'status' in request.POST:
+            order.status = request.POST.get('status')
         
         delivery_price = 0
         delivery_type = customer.connected_del_method
@@ -1860,29 +1863,41 @@ def update_order(request, order_id):
             darb_city_id = request.POST.get('darb_sabil_city_id', '')
             
             if darb_area_id:
-                
                 order.serviceid = darb_service_id
-                order.company_delivery_price = darb_price if darb_price else 0
-                order.company_delivery_charge = darb_charge if darb_charge else 0
+                try:
+                    order.company_delivery_price = float(darb_price) if darb_price else 0
+                except (ValueError, TypeError):
+                    order.company_delivery_price = 0
+                    
+                try:
+                    order.company_delivery_charge = float(darb_charge) if darb_charge else 0
+                except (ValueError, TypeError):
+                    order.company_delivery_charge = 0
+                    
                 order.company_delivery_city = darb_city
                 order.company_delivery_area = darb_area
-                
                 delivery_price = order.company_delivery_price
                 
         elif delivery_type == 'nawris':
-
             nawris_price = request.POST.get('company_delivery_price_final', '0')
             nawris_charge = request.POST.get('company_delivery_charge_final', '0')
             nawris_city_name = request.POST.get('nawris_city_name', '')
             nawris_area_name = request.POST.get('nawris_area_name', '')
             
-            if nawris_city_id:
-                order.company_delivery_city = nawris_city_name
-                order.company_delivery_area = nawris_area_name
-                order.company_delivery_price = nawris_price if nawris_price else 0
-                order.company_delivery_charge = nawris_charge if nawris_charge else 0
+            order.company_delivery_city = nawris_city_name
+            order.company_delivery_area = nawris_area_name
+            
+            try:
+                order.company_delivery_price = float(nawris_price) if nawris_price else 0
+            except (ValueError, TypeError):
+                order.company_delivery_price = 0
                 
-                delivery_price = order.company_delivery_price
+            try:
+                order.company_delivery_charge = float(nawris_charge) if nawris_charge else 0
+            except (ValueError, TypeError):
+                order.company_delivery_charge = 0
+                
+            delivery_price = order.company_delivery_price
                 
         elif delivery_type == 'normal':
             delivery_address_id = request.POST.get('delivery_address')
@@ -1891,13 +1906,14 @@ def update_order(request, order_id):
             if delivery_address_id:
                 city = get_object_or_404(City, id=delivery_address_id)
                 order.delivery_address = city
+                delivery_price = float(city.price)
             else:
-                delivery_price = delivery_price_input if delivery_price_input else 0
+                try:
+                    delivery_price = float(delivery_price_input) if delivery_price_input else 0
+                except (ValueError, TypeError):
+                    delivery_price = 0
             
             order.company_delivery_price = delivery_price
-
-            
-        
         
         total_sales = 0
         
@@ -1921,34 +1937,36 @@ def update_order(request, order_id):
                     
                     if OrderItem.objects.filter(id=item.id).exists():
                         if quantity_field in request.POST:
-                            new_quantity = int(request.POST.get(quantity_field))
-                            
-                            if new_quantity != item.quantity:
-                                quantity_diff = new_quantity - item.quantity
-                                product = item.product
+                            try:
+                                new_quantity = int(request.POST.get(quantity_field))
                                 
-                                if quantity_diff > 0: 
-                                    if quantity_diff <= product.quantity:
-                                        product.quantity -= quantity_diff
+                                if new_quantity != item.quantity:
+                                    quantity_diff = new_quantity - item.quantity
+                                    product = item.product
+                                    
+                                    if quantity_diff > 0: 
+                                        if quantity_diff <= product.quantity:
+                                            product.quantity -= quantity_diff
+                                            product.save()
+                                            item.quantity = new_quantity
+                                            item.save()
+                                            messages.success(request, f'تم تحديث كمية {product.name} وتقليل المخزون')
+                                        else:
+                                            messages.error(request, f'لا يوجد مخزون كافٍ من {product.name}. المتاح: {product.quantity}')
+                                            return redirect('update_order', order_id=order.id)
+                                    else:  
+                                        product.quantity += abs(quantity_diff)
                                         product.save()
                                         item.quantity = new_quantity
                                         item.save()
-                                        messages.success(request, f'تم تحديث كمية {product.name} وتقليل المخزون')
-                                    else:
-                                        messages.error(request, f'لا يوجد مخزون كافٍ من {product.name}. المتاح: {product.quantity}')
-                                        return redirect('edite_order', order_id=order.id)
-                                else:  
-                                    product.quantity += abs(quantity_diff)
-                                    product.save()
-                                    item.quantity = new_quantity
-                                    item.save()
-                                    messages.success(request, f'تم تحديث كمية {product.name} وإضافة الفرق إلى المخزون')
+                                        messages.success(request, f'تم تحديث كمية {product.name} وإضافة الفرق إلى المخزون')
+                            except (ValueError, TypeError):
+                                pass
                         
                         item.refresh_from_db()
-                        total_sales += item.get_final_price()
+                        total_sales += float(item.get_final_price())
                 
                 order.sales_total = total_sales
-                order.company_delivery_price = delivery_price
                 order.save()
                 
                 messages.success(request, 'تم تحديث الطلب بنجاح')
@@ -1956,26 +1974,27 @@ def update_order(request, order_id):
                 
         except Exception as e:
             messages.error(request, f'حدث خطأ أثناء تحديث الطلب: {str(e)}')
-            return redirect('edite_order', order_id=order.id)
-    try:
-     darb=DarbAsabilConnection.objects.get(customer=customer)
-    except:   
-     darb=None
+            return redirect('update_order', order_id=order.id)
     
     try:
-     nawris=NawrisConnection.objects.get(customer=customer)
+        darb = DarbAsabilConnection.objects.get(customer=customer)
     except:   
-     nawris=None
+        darb = None
+    
+    try:
+        nawris = NawrisConnection.objects.get(customer=customer)
+    except:   
+        nawris = None
     
     context = {
         'order': order,
         'order_items': order_items,
-        'status_choices':Order.STATUS_CHOICES,  
+        'status_choices': Order.STATUS_CHOICES,  
         'cities': City.objects.all(), 
         'darb_cities': Darbasabilbranches.objects.all(), 
         'nawris_areas': NawrisArea.objects.all(), 
-        'darb':darb, 
-        'nawris':nawris,
+        'darb': darb, 
+        'nawris': nawris,
     }
     
     return render(request, 'edite_order.html', context)
