@@ -1995,6 +1995,7 @@ def update_order(request, order_id):
         'nawris_areas': NawrisArea.objects.all(), 
         'darb': darb, 
         'nawris': nawris,
+        'customer_id':customer.id,
     }
     
     return render(request, 'edite_order.html', context)
