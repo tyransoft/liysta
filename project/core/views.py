@@ -1836,7 +1836,7 @@ def manege_order(request,menu_id):
 
 
 def update_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
+    order =Order.objects.get(id=order_id)
     
     if request.method == 'POST':
         order.customer_name = request.POST.get('customer_name')
@@ -1965,7 +1965,7 @@ def update_order(request, order_id):
             messages.error(request, f'حدث خطأ أثناء تحديث الطلب: {str(e)}')
             return redirect('edite_order', order_id=order.id)
     
-    return render(request,'edite_order.html')
+    return render(request,'edite_order.html',{'order':order})
 def update_menu_statistics(menu):
     today = localdate()
     stat, created = MenuStatistics.objects.get_or_create(menu=menu, date=today)
