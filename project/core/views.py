@@ -1965,7 +1965,7 @@ def update_order(request, order_id):
             messages.error(request, f'حدث خطأ أثناء تحديث الطلب: {str(e)}')
             return redirect('edite_order', order_id=order.id)
     
-    return redirect('manege_order', menu_id=order.menu.id)
+    return render(request,'edite_order.html')
 def update_menu_statistics(menu):
     today = localdate()
     stat, created = MenuStatistics.objects.get_or_create(menu=menu, date=today)
