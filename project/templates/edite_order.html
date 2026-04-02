@@ -408,111 +408,115 @@
                 document.getElementById('delivery_price_value').textContent = deliveryFee.toFixed(2) + ' د.ل';
             }
             
-            async function calculateDarbPrice(serviceId, serviceTitle, cityName, areaName) {
-                try {
-                    const productsData = orderItems.map(item => ({
-                        product_id: item.id,
-                        quantity: item.quantity,
-                        price: item.price,
-                        name: item.name
-                    }));
-                    
-                    const response = await fetch('/calculate-delivery-price/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: JSON.stringify({
-                            city: cityName,
-                            area: areaName,
-                            service: serviceId,
-                            products: productsData,
-                            company: 'darb'
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        const finalPrice = parseFloat(data.price);
-                        const chargePrice = parseFloat(data.charge);
-                        
-                        document.getElementById('darb_sabil_price').value = finalPrice;
-                        document.getElementById('company_delivery_price_final').value = finalPrice;
-                        document.getElementById('company_delivery_charge_final').value = chargePrice;
-                        document.getElementById('darb_sabil_service_id').value = serviceId;
-                        document.getElementById('darb_sabil_service_type').value = serviceTitle;
-                        document.getElementById('darb_sabil_city').value = cityName;
-                        document.getElementById('darb_sabil_area_name').value = areaName;
-                        
-                        deliveryFee = finalPrice;
-                        updateTotals();
-                        
-                        showNotification(`سعر التوصيل: ${finalPrice} د.ل (${serviceTitle})`, 'success');
-                    } else {
-                        throw new Error(data.error || 'خطأ في حساب السعر');
-                    }
-                } catch (error) {
-                    console.error('خطأ:', error);
-                    showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل', 'error');
-                }
-            }
+
+async function calculateDarbPrice(serviceId, serviceTitle, cityName, areaName) {
+    try {
+        const productsData = orderItems.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            name: item.name
+        }));
+        
+        const response = await fetch('/calculate-delivery-price/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                city: cityName,
+                area: areaName,
+                service: serviceId,
+                products: productsData,
+                company: 'darb'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const finalPrice = parseFloat(data.price);
+            const chargePrice = parseFloat(data.charge);
             
-            async function calculateNawrisPrice(cityId, areaId, cityName, areaName) {
-                try {
-                    const productsData = orderItems.map(item => ({
-                        product_id: item.id,
-                        quantity: item.quantity,
-                        price: item.price,
-                        name: item.name
-                    }));
-                    
-                    const requestBody = {
-                        customer: {{ order.menu.customer.id }},
-                        city_id: cityId,
-                        products: productsData
-                    };
-                    
-                    if (areaId && areaId !== '') {
-                        requestBody.area_id = areaId;
-                    }
-                    
-                    const response = await fetch('/calculate-nawris-price/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: JSON.stringify(requestBody)
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        const finalPrice = parseFloat(data.price);
-                        const chargePrice = parseFloat(data.charge);
-                        
-                        document.getElementById('nawris_price').value = finalPrice;
-                        document.getElementById('nawris_charge').value = chargePrice;
-                        document.getElementById('company_delivery_price_final').value = finalPrice;
-                        document.getElementById('company_delivery_charge_final').value = chargePrice;
-                        document.getElementById('nawris_city_name').value = cityName;
-                        document.getElementById('nawris_area_name').value = areaName || '';
-                        
-                        deliveryFee = finalPrice;
-                        updateTotals();
-                        
-                        showNotification(`سعر التوصيل: ${finalPrice} د.ل`, 'success');
-                    } else {
-                        throw new Error(data.error || 'خطأ في حساب السعر');
-                    }
-                } catch (error) {
-                    console.error('خطأ في حساب سعر النورس:', error);
-                    showNotification(error.message || 'حدث خطأ في حساب سعر التوصيل', 'error');
-                }
-            }
+            document.getElementById('darb_sabil_price').value = finalPrice;
+            document.getElementById('company_delivery_price_final').value = finalPrice;
+            document.getElementById('company_delivery_charge_final').value = chargePrice;
+            document.getElementById('darb_sabil_service_id').value = serviceId;
+            document.getElementById('darb_sabil_service_type').value = serviceTitle;
+            document.getElementById('darb_sabil_city').value = cityName;
+            document.getElementById('darb_sabil_area_name').value = areaName;
             
+            deliveryFee = finalPrice;
+            updateTotals();
+            
+            showNotification(` تم حساب سعر التوصيل بنجاح: ${finalPrice} د.ل (${serviceTitle})`, 'success');
+        } else {
+            const errorMsg = data.error || 'سعر التوصيل غير متاح لهذه المنطقة';
+            showNotification(` ${errorMsg}`, 'error');
+            
+        }
+    } catch (error) {
+        console.error('خطأ:', error);
+        showNotification(' حدث خطأ في الاتصال بخادم التوصيل، يرجى المحاولة مرة أخرى', 'error');
+    }
+}
+
+async function calculateNawrisPrice(cityId, areaId, cityName, areaName) {
+    try {
+        const productsData = orderItems.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            name: item.name
+        }));
+        
+        const requestBody = {
+            customer: {{ order.menu.customer.id }},
+            city_id: cityId,
+            products: productsData
+        };
+        
+        if (areaId && areaId !== '') {
+            requestBody.area_id = areaId;
+        }
+        
+        const response = await fetch('/calculate-nawris-price/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const finalPrice = parseFloat(data.price);
+            const chargePrice = parseFloat(data.charge);
+            
+            document.getElementById('nawris_price').value = finalPrice;
+            document.getElementById('nawris_charge').value = chargePrice;
+            document.getElementById('company_delivery_price_final').value = finalPrice;
+            document.getElementById('company_delivery_charge_final').value = chargePrice;
+            document.getElementById('nawris_city_name').value = cityName;
+            document.getElementById('nawris_area_name').value = areaName || '';
+            
+            deliveryFee = finalPrice;
+            updateTotals();
+            
+            showNotification(` تم حساب سعر التوصيل بنجاح: ${finalPrice} د.ل`, 'success');
+        } else {
+            const errorMsg = data.error || 'سعر التوصيل غير متاح لهذه المنطقة';
+            showNotification(` ${errorMsg}`, 'error');
+            
+        }
+    } catch (error) {
+        console.error('خطأ في حساب سعر النورس:', error);
+        showNotification(' حدث خطأ في الاتصال بخادم التوصيل، يرجى المحاولة مرة أخرى', 'error');
+    }
+}
             if (isDarbSabil) {
                 const darbAreaSelect = document.getElementById('darb_sabil_area');
                 const serviceOptions = document.querySelectorAll('input[name="darb_sabil_service"]');

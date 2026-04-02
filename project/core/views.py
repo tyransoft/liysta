@@ -1847,10 +1847,10 @@ def update_order(request, order_id):
         
      
         
-        delivery_price = Decimal('0')
-        delivery_type = request.POST.get('delivery_type', 'normal')
+        delivery_price = 0
+        delivery_type = customer.connected_del_method
 
-        if delivery_type == 'darb_sabil':
+        if delivery_type == 'darbasabil':
             darb_area_id = request.POST.get('darb_sabil_area')
             darb_service_id = request.POST.get('darb_sabil_service_id')
             darb_price = request.POST.get('company_delivery_price_final', '0')
@@ -1862,16 +1862,15 @@ def update_order(request, order_id):
             if darb_area_id:
                 
                 order.serviceid = darb_service_id
-                order.company_delivery_price = Decimal(darb_price) if darb_price else Decimal('0')
-                order.company_delivery_charge = Decimal(darb_charge) if darb_charge else Decimal('0')
+                order.company_delivery_price = darb_price if darb_price else 0
+                order.company_delivery_charge = darb_charge if darb_charge else 0
                 order.company_delivery_city = darb_city
                 order.company_delivery_area = darb_area
                 
                 delivery_price = order.company_delivery_price
                 
         elif delivery_type == 'nawris':
-            nawris_city_id = request.POST.get('nawris_city_id')
-            nawris_area_id = request.POST.get('nawris_area_id')
+
             nawris_price = request.POST.get('company_delivery_price_final', '0')
             nawris_charge = request.POST.get('company_delivery_charge_final', '0')
             nawris_city_name = request.POST.get('nawris_city_name', '')
@@ -1880,8 +1879,8 @@ def update_order(request, order_id):
             if nawris_city_id:
                 order.company_delivery_city = nawris_city_name
                 order.company_delivery_area = nawris_area_name
-                order.company_delivery_price = Decimal(nawris_price) if nawris_price else Decimal('0')
-                order.company_delivery_charge = Decimal(nawris_charge) if nawris_charge else Decimal('0')
+                order.company_delivery_price = nawris_price if nawris_price else 0
+                order.company_delivery_charge = nawris_charge if nawris_charge else 0
                 
                 delivery_price = order.company_delivery_price
                 
@@ -1892,21 +1891,15 @@ def update_order(request, order_id):
             if delivery_address_id:
                 city = get_object_or_404(City, id=delivery_address_id)
                 order.delivery_address = city
-                delivery_price = Decimal(str(city.price))
             else:
-                delivery_price = Decimal(delivery_price_input) if delivery_price_input else Decimal('0')
+                delivery_price = delivery_price_input if delivery_price_input else 0
             
             order.company_delivery_price = delivery_price
 
-            order.company_delivery_charge = Decimal('0')
             
-        else:
-            delivery_price = Decimal('0')
-            order.company_delivery_price = Decimal('0')
-            order.company_delivery_charge = Decimal('0')
         
         
-        total_sales = Decimal('0')
+        total_sales = 0
         
         try:
             with transaction.atomic():
