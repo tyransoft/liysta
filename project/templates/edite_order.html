@@ -200,9 +200,9 @@
                             <div class="delivery-section">
                                 <h6><i class="bi bi-truck"></i> معلومات التوصيل</h6>
                                 
-                                {% if order.delivery_type == 'darb_sabil' or order.company_delivery_city %}
+                                {% if order.menu.customer.connected_del_method == 'darbasabil' %}
                                 <div class="company-badge company-darb mb-2">
-                                    <i class="bi bi-building"></i> شركة درب السبيل
+                                    شركة درب السبيل
                                 </div>
                                 
                                 <div class="mb-3">
@@ -251,9 +251,9 @@
                                 <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="darb">
                                 <input type="hidden" id="delivery_address_full" name="delivery_address_full" value="">
                                 
-                                {% elif order.delivery_type == 'nawris' %}
+                                {% elif order.menu.customer.connected_del_method  == 'nawris' %}
                                 <div class="company-badge company-nawris mb-2">
-                                    <i class="bi bi-building"></i> شركة النورس
+                                     شركة النورس
                                 </div>
                                 
                                 <div class="mb-3">

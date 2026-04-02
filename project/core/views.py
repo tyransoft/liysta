@@ -1837,7 +1837,8 @@ def manege_order(request,menu_id):
 
 def update_order(request, order_id):
     order =Order.objects.get(id=order_id)
-    
+    order_items = OrderItem.objects.filter(order=order)
+
     if request.method == 'POST':
         order.customer_name = request.POST.get('customer_name')
         order.customer_phone = request.POST.get('customer_phone')
@@ -1905,7 +1906,6 @@ def update_order(request, order_id):
             order.company_delivery_charge = Decimal('0')
         
         
-        order_items = OrderItem.objects.filter(order=order)
         total_sales = Decimal('0')
         
         try:
@@ -1965,7 +1965,18 @@ def update_order(request, order_id):
             messages.error(request, f'حدث خطأ أثناء تحديث الطلب: {str(e)}')
             return redirect('edite_order', order_id=order.id)
     
-    return render(request,'edite_order.html',{'order':order})
+    
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'status_choices':Order.STATUS_CHOICES,  
+        'cities': City.objects.all(), 
+        'darb_cities': Darbasabilbranches.objects.all(), 
+        'nawris_areas': NawrisArea.objects.all(),  
+    }
+    
+    return render(request, 'edite_order.html', context)
+
 def update_menu_statistics(menu):
     today = localdate()
     stat, created = MenuStatistics.objects.get_or_create(menu=menu, date=today)
