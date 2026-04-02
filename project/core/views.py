@@ -1965,12 +1965,12 @@ def update_order(request, order_id):
             messages.error(request, f'حدث خطأ أثناء تحديث الطلب: {str(e)}')
             return redirect('edite_order', order_id=order.id)
     try:
-     darb=DarbAsabilConnection(customer=customer)
+     darb=DarbAsabilConnection.objects.get(customer=customer)
     except:   
      darb=None
     
     try:
-     nawris=NawrisConnection(customer=customer)
+     nawris=NawrisConnection.objects.get(customer=customer)
     except:   
      nawris=None
     
