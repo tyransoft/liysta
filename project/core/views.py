@@ -1867,7 +1867,6 @@ def update_order(request, order_id):
                 order.company_delivery_area = darb_area
                 
                 delivery_price = order.company_delivery_price
-                order.delivery_address = None
                 
         elif delivery_type == 'nawris':
             nawris_city_id = request.POST.get('nawris_city_id')
@@ -1884,7 +1883,6 @@ def update_order(request, order_id):
                 order.company_delivery_charge = Decimal(nawris_charge) if nawris_charge else Decimal('0')
                 
                 delivery_price = order.company_delivery_price
-                order.delivery_address = None
                 
         elif delivery_type == 'normal':
             delivery_address_id = request.POST.get('delivery_address')
@@ -1895,21 +1893,16 @@ def update_order(request, order_id):
                 order.delivery_address = city
                 delivery_price = Decimal(str(city.price))
             else:
-                order.delivery_address = None
                 delivery_price = Decimal(delivery_price_input) if delivery_price_input else Decimal('0')
             
             order.company_delivery_price = delivery_price
-            order.company_delivery_city = None
-            order.company_delivery_area = None
+
             order.company_delivery_charge = Decimal('0')
             
         else:
             delivery_price = Decimal('0')
             order.company_delivery_price = Decimal('0')
-            order.company_delivery_city = None
-            order.company_delivery_area = None
             order.company_delivery_charge = Decimal('0')
-            order.delivery_address = None
         
         
         order_items = OrderItem.objects.filter(order=order)
