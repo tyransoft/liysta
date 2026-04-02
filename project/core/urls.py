@@ -121,7 +121,6 @@ urlpatterns = [
     path('manage-storage/<int:menu_id>', manage_storage, name='storage'),
 
     path('orders/<int:menu_id>', manege_order, name='manege_order'),
-    path('edite-order/<int:order_id>', update_order, name='edite_order'),
     path('update-order/<int:order_id>/', update_order, name='update_order'),
     path('create_order/', create_order, name='create_order'),
     path('order/success/<int:order_id>/', order_success, name='order_success'),
