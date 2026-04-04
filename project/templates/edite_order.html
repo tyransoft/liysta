@@ -52,7 +52,7 @@
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
-                                    <tr><th>الصورة</th><th>المنتج</th><th>اللون</th><th>المقاس</th><th>السعر</th><th>الكمية</th><th>المجموع</th><th></th><tr>
+                                    <tr><th>الصورة</th><th>المنتج</th><th>اللون</th><th>المقاس</th><th>السعر</th><th>الكمية</th><th>المجموع</th><th></th></tr>
                                 </thead>
                                 <tbody>
                                     {% for item in order_items %}
@@ -283,6 +283,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         darbSelect.addEventListener('change', updateDarbHiddenFields);
         updateDarbHiddenFields();
+        
+        if (darbServiceSelect) {
+            darbServiceSelect.addEventListener('change', function() {
+                console.log('تم اختيار الخدمة:', this.value);
+            });
+        }
     }
     
     if (nawrisSelect) {
@@ -316,7 +322,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     deliveryPriceInput.addEventListener('input', function() {
-        companyPriceFinal.value = this.value;
+        let value = this.value.replace(',', '.');
+        this.value = value;
+        companyPriceFinal.value = value;
         updateTotals();
     });
     
