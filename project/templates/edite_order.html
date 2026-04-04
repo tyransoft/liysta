@@ -1,4 +1,4 @@
-{ % load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -85,13 +85,12 @@
                                     <tr>
                                         <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
                                         <td colspan="3">
-                                            {% if  order.delivery_address %}
+                                            {% if order.delivery_address %}
                                             <span id="delivery-cost-display">{{ order.delivery_address.price|default:0 }}</span> د.ل
                                             <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}">
                                             {% else %}
                                             <span id="delivery-cost-display">{{ order.company_delivery_price|default:0 }}</span> د.ل
                                             <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}">
-                                        
                                             {% endif %}
                                         </div></div>
                                     </tr>
@@ -123,32 +122,31 @@
                             
                             {% if darb %}
                             <div>
-                              <div class="company-badge company-darb">شركة درب السبيل</div>
-                              <div class="mb-3">
-                              <label class="form-label">المنطقة:</label>
-                              <select name="darb_sabil_area" id="darb_sabil_area" class="form-select">
-                                    <option value="">-- اختر المنطقة --</option>
-                                    {% for city in darb_cities %}
-                                      <option value="{{ city.id }}" 
-                                       data-city-name="{{ city.city }}" 
-                                       data-area-name="{{ city.area }}"
-                                       {% if order.company_delivery_city == city.city and order.company_delivery_area == city.area %}selected{% endif %}>
-                                        {{ city.city }} - {{ city.area }}
-                                       </option>
-                                    {% endfor %}
-                              </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">نوع الخدمة:</label>
-                                <select name="darb_sabil_service_id" id="darb_sabil_service_id" class="form-select">
-                                     <option value="">-- اختر الخدمة --</option>
-                                     <option value="6783c612dcf305c9e775c987" {% if order.serviceid == "6783c612dcf305c9e775c987" %}selected{% endif %}>توصيل رجالي</option>
-                                     <option value="67c84fbc9ed6c0d5c5bb1d2b" {% if order.serviceid == "67c84fbc9ed6c0d5c5bb1d2b" %}selected{% endif %}>توصيل نسائي</option>
-                                     <option value="67c84fea9ed6c0d5c5bb1d2c" {% if order.serviceid == "67c84fea9ed6c0d5c5bb1d2c" %}selected{% endif %}>توصيل فوري</option>
-                                </select>
-                            </div>
-                            <input type="hidden" name="darb_sabil_city" id="darb_sabil_city" value="{{ order.company_delivery_city|default:'' }}">
-                            <input type="hidden" name="darb_sabil_area_name" id="darb_sabil_area_name" value="{{ order.company_delivery_area|default:'' }}">
+                                <div class="company-badge company-darb">شركة درب السبيل</div>
+                                <div class="mb-3">
+                                    <label class="form-label">المنطقة:</label>
+                                    <select name="darb_sabil_area" id="darb_sabil_area" class="form-select">
+                                        <option value="">-- اختر المنطقة --</option>
+                                        {% for city in darb_cities %}
+                                        <option value="{{ city.id }}" 
+                                                data-city-name="{{ city.city }}" 
+                                                data-area-name="{{ city.area }}"
+                                                {% if order.company_delivery_city == city.city and order.company_delivery_area == city.area %}selected{% endif %}>
+                                            {{ city.city }} - {{ city.area }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">نوع الخدمة:</label>
+                                    <select name="darb_sabil_service_id" id="darb_sabil_service_id" class="form-select">
+                                        <option value="">-- اختر الخدمة --</option>
+                                        <option value="6783c612dcf305c9e775c987" {% if order.serviceid == "6783c612dcf305c9e775c987" %}selected{% endif %}>توصيل رجالي</option>
+                                        <option value="67c84fbc9ed6c0d5c5bb1d2b" {% if order.serviceid == "67c84fbc9ed6c0d5c5bb1d2b" %}selected{% endif %}>توصيل نسائي</option>
+                                        <option value="67c84fea9ed6c0d5c5bb1d2c" {% if order.serviceid == "67c84fea9ed6c0d5c5bb1d2c" %}selected{% endif %}>توصيل فوري</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="darb_area_id" id="darb_area_id" value="">
                             </div>
                             {% endif %}
                             
@@ -161,16 +159,19 @@
                                         <option value="">-- اختر المنطقة --</option>
                                         {% for area in nawris_areas %}
                                         <option value="{{ area.area_id|default:area.city_id }}" 
+                                                data-city-id="{{ area.city_id }}" 
+                                                data-area-id="{{ area.area_id }}"
                                                 data-city-name="{{ area.city_name }}" 
                                                 data-area-name="{{ area.area_name }}"
-                                                {% if order.company_delivery_city == area.city_name %}selected{% endif %}>
+                                                {% if order.company_delivery_city == area.city_name and order.company_delivery_area == area.area_name %}selected{% endif %}>
                                             {{ area.city_name }}{% if area.area_name %} - {{ area.area_name }}{% endif %}
                                         </option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                    <input type="hidden" name="nawris_city_name" id="nawris_city_name" value="">
-                                    <input type="hidden" name="nawris_area_name" id="nawris_area_name" value="">
+                                <input type="hidden" name="nawris_city_id" id="nawris_city_id" value="">
+                                <input type="hidden" name="nawris_area_id" id="nawris_area_id" value="">
+                                <input type="hidden" name="nawris_value_type" id="nawris_value_type" value="">
                             </div>
                             {% endif %}
                             
@@ -195,7 +196,6 @@
                                 <span>سعر التوصيل:</span>
                                 {% if order.delivery_address %}
                                 <input type="number" id="delivery_price_input" name="delivery_price" value="{{ order.delivery_address.price|default:0 }}" step="0.5"> د.ل
-                                
                                 {% else %}
                                 <input type="number" id="delivery_price_input" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}" step="0.5"> د.ل
                                 {% endif %}
@@ -243,12 +243,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const darbSelect = document.getElementById('darb_sabil_area');
     const darbServiceSelect = document.getElementById('darb_sabil_service_id');
-    const darbCityHidden = document.getElementById('darb_sabil_city');
-    const darbAreaHidden = document.getElementById('darb_sabil_area_name');
+    const darbAreaIdHidden = document.getElementById('darb_area_id');
     
     const nawrisSelect = document.getElementById('nawris_area');
-    const nawrisCityHidden = document.getElementById('nawris_city_name');
-    const nawrisAreaHidden = document.getElementById('nawris_area_name');
+    const nawrisCityIdHidden = document.getElementById('nawris_city_id');
+    const nawrisAreaIdHidden = document.getElementById('nawris_area_id');
+    const nawrisValueTypeHidden = document.getElementById('nawris_value_type');
     
     const normalSelect = document.getElementById('delivery_address');
     
@@ -278,38 +278,57 @@ document.addEventListener('DOMContentLoaded', function() {
         companyPriceFinal.value = deliveryFee;
     }
     
-   if (darbSelect) {
-    function updateDarbHiddenFields() {
-        const selected = darbSelect.options[darbSelect.selectedIndex];
-        if (selected && selected.value) {
-            const cityName = selected.getAttribute('data-city-name') || '';
-            const areaName = selected.getAttribute('data-area-name') || '';
-            if (darbCityHidden) darbCityHidden.value = cityName;
-            if (darbAreaHidden) darbAreaHidden.value = areaName;
+    // ==================== درب السبيل ====================
+    if (darbSelect) {
+        function updateDarbHiddenFields() {
+            const selected = darbSelect.options[darbSelect.selectedIndex];
+            if (selected && selected.value) {
+                if (darbAreaIdHidden) darbAreaIdHidden.value = selected.value;
+            } else {
+                if (darbAreaIdHidden) darbAreaIdHidden.value = '';
+            }
         }
+        
+        darbSelect.addEventListener('change', function() {
+            updateDarbHiddenFields();
+        });
+        
+        updateDarbHiddenFields();
     }
-    darbSelect.addEventListener('change', updateDarbHiddenFields);
-    updateDarbHiddenFields();
-}
-       
+    
+    // ==================== النورس ====================
     if (nawrisSelect) {
         function updateNawrisHiddenFields() {
             const selected = nawrisSelect.options[nawrisSelect.selectedIndex];
             if (selected && selected.value) {
-                const cityName = selected.getAttribute('data-city-name') || '';
-                const areaName = selected.getAttribute('data-area-name') || '';
-                if (nawrisCityHidden) nawrisCityHidden.value = cityName;
-                if (nawrisAreaHidden) nawrisAreaHidden.value = areaName;
+                const cityId = selected.getAttribute('data-city-id') || '';
+                const areaId = selected.getAttribute('data-area-id') || '';
+                
+                if (nawrisCityIdHidden) nawrisCityIdHidden.value = cityId;
+                if (nawrisAreaIdHidden) nawrisAreaIdHidden.value = areaId;
+                
+                if (areaId && areaId !== '' && areaId !== 'None') {
+                    nawrisValueTypeHidden.value = 'area';
+                } else {
+                    nawrisValueTypeHidden.value = 'city';
+                }
             } else {
-                if (nawrisCityHidden) nawrisCityHidden.value = '';
-                if (nawrisAreaHidden) nawrisAreaHidden.value = '';
+                if (nawrisCityIdHidden) nawrisCityIdHidden.value = '';
+                if (nawrisAreaIdHidden) nawrisAreaIdHidden.value = '';
+                nawrisValueTypeHidden.value = '';
             }
         }
         
-        nawrisSelect.addEventListener('change', updateNawrisHiddenFields);
-        updateNawrisHiddenFields();
+        nawrisSelect.addEventListener('change', function() {
+            updateNawrisHiddenFields();
+        });
+        
+        if (nawrisSelect.value) {
+            updateNawrisHiddenFields();
+        }
     }
     
+    // ==================== التوصيل العادي ====================
     if (normalSelect) {
         normalSelect.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];
