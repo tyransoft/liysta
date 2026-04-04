@@ -120,8 +120,7 @@
                         
                         <div class="delivery-section">
                             <h6><i class="bi bi-truck"></i> معلومات التوصيل</h6>
-                            
-                            {% if darb %}
+                                  {% if darb %}
                             <div>
                               <div class="company-badge company-darb">شركة درب السبيل</div>
                               <div class="mb-3">
@@ -147,8 +146,8 @@
                                      <option value="67c84fea9ed6c0d5c5bb1d2c" {% if order.serviceid == "67c84fea9ed6c0d5c5bb1d2c" %}selected{% endif %}>توصيل فوري</option>
                                 </select>
                             </div>
-                            <input type="hidden" name="darb_sabil_city" id="darb_sabil_city" value="{{ order.company_delivery_city|default:'' }}">
-                            <input type="hidden" name="darb_sabil_area_name" id="darb_sabil_area_name" value="{{ order.company_delivery_area|default:'' }}">
+                            <input type="hidden" name="darb_city" id="darb_city" value="{{ order.company_delivery_city|default:'' }}">
+                            <input type="hidden" name="darb_area" id="darb_area" value="{{ order.company_delivery_area|default:'' }}">
                             </div>
                             {% endif %}
                             
@@ -233,6 +232,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
     const isDarb = {% if darb %}true{% else %}false{% endif %};
     const isNawris = {% if nawris %}true{% else %}false{% endif %};
@@ -243,8 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const darbSelect = document.getElementById('darb_sabil_area');
     const darbServiceSelect = document.getElementById('darb_sabil_service_id');
-    const darbCityHidden = document.getElementById('darb_sabil_city');
-    const darbAreaHidden = document.getElementById('darb_sabil_area_name');
+    const darbCityHidden = document.getElementById('darb_city');
+    const darbAreaHidden = document.getElementById('darb_area');
     
     const nawrisSelect = document.getElementById('nawris_area');
     const nawrisCityHidden = document.getElementById('nawris_city_name');
@@ -278,19 +278,22 @@ document.addEventListener('DOMContentLoaded', function() {
         companyPriceFinal.value = deliveryFee;
     }
     
-   if (darbSelect) {
-    function updateDarbHiddenFields() {
-        const selected = darbSelect.options[darbSelect.selectedIndex];
-        if (selected && selected.value) {
-            const cityName = selected.getAttribute('data-city-name') || '';
-            const areaName = selected.getAttribute('data-area-name') || '';
-            if (darbCityHidden) darbCityHidden.value = cityName;
-            if (darbAreaHidden) darbAreaHidden.value = areaName;
+    if (darbSelect) {
+        function updateDarbHiddenFields() {
+            const selected = darbSelect.options[darbSelect.selectedIndex];
+            if (selected && selected.value) {
+                const cityName = selected.getAttribute('data-city-name') || '';
+                const areaName = selected.getAttribute('data-area-name') || '';
+                if (darbCityHidden) darbCityHidden.value = cityName;
+                if (darbAreaHidden) darbAreaHidden.value = areaName;
+            } else {
+                if (darbCityHidden) darbCityHidden.value = '';
+                if (darbAreaHidden) darbAreaHidden.value = '';
+            }
         }
+        darbSelect.addEventListener('change', updateDarbHiddenFields);
+        updateDarbHiddenFields();
     }
-    darbSelect.addEventListener('change', updateDarbHiddenFields);
-    updateDarbHiddenFields();
-}
        
     if (nawrisSelect) {
         function updateNawrisHiddenFields() {
@@ -432,6 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     updateTotals();
 });
+
 </script>
 </body>
 </html>
