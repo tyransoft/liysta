@@ -1852,6 +1852,17 @@ def update_order(request, order_id):
         delivery_price = 0
         delivery_type = customer.connected_del_method
 
+        # دالة مساعدة لتحويل السعر
+        def clean_price(value):
+            if not value:
+                return 0
+            # استبدال الفاصلة بنقطة
+            value = str(value).replace(',', '.')
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                return 0
+
         if delivery_type == 'darbasabil':
             darb_area_id = request.POST.get('darb_sabil_area')
             darb_service_id = request.POST.get('darb_sabil_service_id')
@@ -1864,23 +1875,8 @@ def update_order(request, order_id):
 
             if darb_area_id:
                 order.serviceid = darb_service_id
-                
-                if darb_price and float(darb_price) != 0:
-                    try:
-                        order.company_delivery_price = float(darb_price) if darb_price else 0
-                    except (ValueError, TypeError):
-                        order.company_delivery_price = 0
-                else:
-                    pass
-                    
-                if darb_charge and float(darb_charge) != 0:
-                    try:
-                        order.company_delivery_charge = float(darb_charge) if darb_charge else 0
-                    except (ValueError, TypeError):
-                        order.company_delivery_charge = 0
-                else:
-                    pass
-                    
+                order.company_delivery_price = clean_price(darb_price)
+                order.company_delivery_charge = clean_price(darb_charge)
                 order.company_delivery_city = darb_city
                 order.company_delivery_area = darb_area
                 delivery_price = order.company_delivery_price
@@ -1895,22 +1891,8 @@ def update_order(request, order_id):
             order.company_delivery_area = nawris_area_name
             order.delivery_address = None
 
-            if nawris_price and float(nawris_price) != 0:
-                try:
-                    order.company_delivery_price = float(nawris_price) if nawris_price else 0
-                except (ValueError, TypeError):
-                    order.company_delivery_price = 0
-            else:
-                pass
-                
-            if nawris_charge and float(nawris_charge) != 0:
-                try:
-                    order.company_delivery_charge = float(nawris_charge) if nawris_charge else 0
-                except (ValueError, TypeError):
-                    order.company_delivery_charge = 0
-            else:
-                pass
-                
+            order.company_delivery_price = clean_price(nawris_price)
+            order.company_delivery_charge = clean_price(nawris_charge)
             delivery_price = order.company_delivery_price
                 
         elif delivery_type == 'normal':
@@ -1921,21 +1903,12 @@ def update_order(request, order_id):
                 city = get_object_or_404(City, id=delivery_address_id)
                 order.delivery_address = city
                 order.company_delivery_city = None
-                order.company_delivery_area = None
-                
-                if city.price and city.price != 0:
-                    order.company_delivery_price = city.price
-                else:
-                    pass
+                order.company_delivery_area = None     
+                order.company_delivery_price = city.price
+                delivery_price = city.price
             else:
-                if delivery_price_input and float(delivery_price_input) != 0:
-                    try:
-                        delivery_price = float(delivery_price_input) if delivery_price_input else 0
-                        order.company_delivery_price = delivery_price
-                    except (ValueError, TypeError):
-                        delivery_price = 0
-                else:
-                    pass
+                delivery_price = clean_price(delivery_price_input)
+                order.company_delivery_price = delivery_price
 
         total_sales = 0
         
@@ -2007,6 +1980,8 @@ def update_order(request, order_id):
         nawris = NawrisConnection.objects.get(customer=customer)
     except:   
         nawris = None
+    
+
     
     context = {
         'order': order,
