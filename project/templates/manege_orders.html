@@ -787,7 +787,7 @@
                         
                         <div class="mobile-order-detail">
                             <span class="mobile-order-label">المجموع:</span>
-                            <span class="mobile-order-value order-total">{{ order.get_total }} د.ل</span>
+                            <span class="mobile-order-value order-total">{{ order.sales_total }} د.ل</span>
                         </div>
                         {% if order.company_delivery_charge > 0 %}
                         <div class="mobile-order-detail">
@@ -886,6 +886,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        if (nawrisSelect && nawrisSelect.value) {
+    const selected = nawrisSelect.options[nawrisSelect.selectedIndex];
+    const cityName = selected.getAttribute('data-city-name') || '';
+    const areaName = selected.getAttribute('data-area-name') || '';
+    if (nawrisCityHidden) nawrisCityHidden.value = cityName;
+    if (nawrisAreaHidden) nawrisAreaHidden.value = areaName;
+    console.log('تم تعبئة الحقول:', cityName, areaName);
+}
         function toggleSelectAll(selectAllCheckbox) {
             const checkboxes = document.querySelectorAll('.order-checkbox, .mobile-checkbox');
             checkboxes.forEach(cb => {

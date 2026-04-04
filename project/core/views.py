@@ -1834,7 +1834,6 @@ def manege_order(request,menu_id):
     return render(request, 'manege_orders.html', context)
 
 
-
 def update_order(request, order_id):
     order = Order.objects.get(id=order_id)
     order_items = OrderItem.objects.filter(order=order)
@@ -1865,15 +1864,22 @@ def update_order(request, order_id):
 
             if darb_area_id:
                 order.serviceid = darb_service_id
-                try:
-                    order.company_delivery_price = float(darb_price) if darb_price else 0
-                except (ValueError, TypeError):
-                    order.company_delivery_price = 0
+                
+                if darb_price and float(darb_price) != 0:
+                    try:
+                        order.company_delivery_price = float(darb_price) if darb_price else 0
+                    except (ValueError, TypeError):
+                        order.company_delivery_price = 0
+                else:
+                    pass
                     
-                try:
-                    order.company_delivery_charge = float(darb_charge) if darb_charge else 0
-                except (ValueError, TypeError):
-                    order.company_delivery_charge = 0
+                if darb_charge and float(darb_charge) != 0:
+                    try:
+                        order.company_delivery_charge = float(darb_charge) if darb_charge else 0
+                    except (ValueError, TypeError):
+                        order.company_delivery_charge = 0
+                else:
+                    pass
                     
                 order.company_delivery_city = darb_city
                 order.company_delivery_area = darb_area
@@ -1889,15 +1895,21 @@ def update_order(request, order_id):
             order.company_delivery_area = nawris_area_name
             order.delivery_address = None
 
-            try:
-                order.company_delivery_price = float(nawris_price) if nawris_price else 0
-            except (ValueError, TypeError):
-                order.company_delivery_price = 0
+            if nawris_price and float(nawris_price) != 0:
+                try:
+                    order.company_delivery_price = float(nawris_price) if nawris_price else 0
+                except (ValueError, TypeError):
+                    order.company_delivery_price = 0
+            else:
+                pass
                 
-            try:
-                order.company_delivery_charge = float(nawris_charge) if nawris_charge else 0
-            except (ValueError, TypeError):
-                order.company_delivery_charge = 0
+            if nawris_charge and float(nawris_charge) != 0:
+                try:
+                    order.company_delivery_charge = float(nawris_charge) if nawris_charge else 0
+                except (ValueError, TypeError):
+                    order.company_delivery_charge = 0
+            else:
+                pass
                 
             delivery_price = order.company_delivery_price
                 
@@ -1909,15 +1921,21 @@ def update_order(request, order_id):
                 city = get_object_or_404(City, id=delivery_address_id)
                 order.delivery_address = city
                 order.company_delivery_city = None
-                order.company_delivery_area = None     
-                order.company_delivery_price= None 
+                order.company_delivery_area = None
+                
+                if city.price and city.price != 0:
+                    order.company_delivery_price = city.price
+                else:
+                    pass
             else:
-                try:
-                    delivery_price = float(delivery_price_input) if delivery_price_input else 0
-                except (ValueError, TypeError):
-                    delivery_price = 0
-            
-            order.company_delivery_price = delivery_price
+                if delivery_price_input and float(delivery_price_input) != 0:
+                    try:
+                        delivery_price = float(delivery_price_input) if delivery_price_input else 0
+                        order.company_delivery_price = delivery_price
+                    except (ValueError, TypeError):
+                        delivery_price = 0
+                else:
+                    pass
 
         total_sales = 0
         
@@ -1973,7 +1991,7 @@ def update_order(request, order_id):
                 order.sales_total = total_sales
                 order.save()
                 
-                messages.success(request, 'تم تحديث الطلب بنجاح')
+                messages.success(request, f'{request.POST}تم تحديث الطلب بنجاح')
                 return redirect('manege_order', menu_id=order.menu.id)
                 
         except Exception as e:

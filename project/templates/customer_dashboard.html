@@ -726,7 +726,7 @@
                                         <td>استلام شخصي</td>
                                         {% endif %}
                                         <td>{{ order.created_at|date:"Y-m-d" }}</td>
-                                        <td>{{ order.get_total|default:0 }} د.ل</td>
+                                        <td>{{ order.sales_total|default:0 }} د.ل</td>
                                         <td>{{ order.company_delivery_charge }} د.ل</td>
                                        
                                         <td>
@@ -834,7 +834,7 @@
                                         <td>استلام شخصي</td>
                                         {% endif %}
                                         <td>{{ order.created_at|date:"Y-m-d" }}</td>
-                                        <td>{{ order.get_total|default:0 }} د.ل</td>
+                                        <td>{{ order.sales_total|default:0 }} د.ل</td>
                                         <td>{{ order.company_delivery_charge  }} د.ل</td>
 
                                         <td>
