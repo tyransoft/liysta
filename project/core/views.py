@@ -1865,15 +1865,16 @@ def update_order(request, order_id):
             darb_service_id = request.POST.get('darb_sabil_service_id')
             darb_price = request.POST.get('company_delivery_price_final', '0')
             darb_charge = request.POST.get('company_delivery_charge_final', '0')
-            darb_city_id = request.POST.get('darb_area_id', '')
+            darb_city_id = request.POST.get('darb_sabil_area', '')
             order.delivery_address = None
-            #darb=Darbasabilbranches.objects.get(id=darb_city_id)
             if darb_city_id:
+                darb=Darbasabilbranches.objects.get(id=int(darb_city_id))            
                 order.serviceid = darb_service_id
                 order.company_delivery_price = clean_price(darb_price)
                 order.company_delivery_charge = clean_price(darb_charge)
                 delivery_price = order.company_delivery_price
-                
+                order.company_delivery_city = darb.city
+                order.company_delivery_area =  darb.area
         elif delivery_type == 'nawris':
             nawris_price = request.POST.get('company_delivery_price_final', '0')
             nawris_charge = request.POST.get('company_delivery_charge_final', '0')
