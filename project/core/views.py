@@ -2012,7 +2012,7 @@ def update_order(request, order_id):
         'order': order,
         'order_items': order_items,
         'status_choices': Order.STATUS_CHOICES,  
-        'cities': City.objects.all(), 
+        'cities': City.objects.filter(menu=order.menu), 
         'darb_cities': Darbasabilbranches.objects.all(), 
         'nawris_areas': NawrisArea.objects.all(), 
         'darb': darb, 
