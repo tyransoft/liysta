@@ -1978,7 +1978,7 @@ def update_order(request, order_id):
                 order.sales_total = total_sales
                 order.save()
                 
-                messages.success(request, 'تم تحديث الطلب بنجاح')
+                messages.success(request, f'تم تحديث الطلب بنجاح{request.POST}')
                 return redirect('manege_order', menu_id=order.menu.id)
                 
         except Exception as e:
