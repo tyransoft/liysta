@@ -1862,21 +1862,18 @@ def update_order(request, order_id):
                 return 0
 
         if delivery_type == 'darbasabil':
-            darb_area_id = request.POST.get('darb_sabil_area')
             darb_service_id = request.POST.get('darb_sabil_service_id')
             darb_price = request.POST.get('company_delivery_price_final', '0')
             darb_charge = request.POST.get('company_delivery_charge_final', '0')
-            darb_city = request.POST.get('darb_sabil_city', '')
-            darb_area = request.POST.get('darb_sabil_area_name', '')
-            darb_city_id = request.POST.get('darb_sabil_city_id', '')
+            darb_city_id = request.POST.get('darb_area_id', '')
             order.delivery_address = None
-
+            darb=Darbasabilbranches.objects.get(id=darb_city_id)
             if darb_area_id:
                 order.serviceid = darb_service_id
                 order.company_delivery_price = clean_price(darb_price)
                 order.company_delivery_charge = clean_price(darb_charge)
-                order.company_delivery_city = darb_city
-                order.company_delivery_area = darb_area
+                order.company_delivery_city = darb.city
+                order.company_delivery_area = darb.area
                 delivery_price = order.company_delivery_price
                 
         elif delivery_type == 'nawris':
