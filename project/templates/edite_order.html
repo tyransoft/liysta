@@ -61,7 +61,7 @@
                                         <td>{{ item.product.name }}</td>
                                         <td>{{ item.color|default:"-" }}</td>
                                         <td>{{ item.size|default:"-" }}</td>
-                                        <td>{{ item.product.price }} د.ل</div></div></td>
+                                        <td>{{ item.product.price }} د.л</div></div></td>
                                         <td>
                                             <div class="input-group quantity-control">
                                                 <button class="btn btn-outline-secondary dec-qty" type="button" data-id="{{ item.id }}">-</button>
@@ -158,7 +158,7 @@
                                     <select name="nawris_area" id="nawris_area" class="form-select">
                                         <option value="">-- اختر المنطقة --</option>
                                         {% for area in nawris_areas %}
-                                        <option value="{{ area.area_id|default:area.city_id }}" 
+                                        <option value="{% if area.area_id %}a{{ area.area_id }}{% else %}c{{ area.city_id }}{% endif %}" 
                                                 data-city-id="{{ area.city_id }}" 
                                                 data-area-id="{{ area.area_id }}"
                                                 data-city-name="{{ area.city_name }}" 
@@ -278,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
         companyPriceFinal.value = deliveryFee;
     }
     
-    // ==================== درب السبيل ====================
     if (darbSelect) {
         function updateDarbHiddenFields() {
             const selected = darbSelect.options[darbSelect.selectedIndex];
@@ -296,21 +295,22 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDarbHiddenFields();
     }
     
-    // ==================== النورس ====================
     if (nawrisSelect) {
         function updateNawrisHiddenFields() {
             const selected = nawrisSelect.options[nawrisSelect.selectedIndex];
             if (selected && selected.value) {
+                const value = selected.value;
                 const cityId = selected.getAttribute('data-city-id') || '';
                 const areaId = selected.getAttribute('data-area-id') || '';
                 
-                if (nawrisCityIdHidden) nawrisCityIdHidden.value = cityId;
-                if (nawrisAreaIdHidden) nawrisAreaIdHidden.value = areaId;
-                
-                if (areaId && areaId !== '' && areaId !== 'None') {
+                if (value.startsWith('a')) {
                     nawrisValueTypeHidden.value = 'area';
-                } else {
+                    if (nawrisAreaIdHidden) nawrisAreaIdHidden.value = value.substring(1);
+                    if (nawrisCityIdHidden) nawrisCityIdHidden.value = cityId;
+                } else if (value.startsWith('c')) {
                     nawrisValueTypeHidden.value = 'city';
+                    if (nawrisCityIdHidden) nawrisCityIdHidden.value = value.substring(1);
+                    if (nawrisAreaIdHidden) nawrisAreaIdHidden.value = '';
                 }
             } else {
                 if (nawrisCityIdHidden) nawrisCityIdHidden.value = '';
@@ -328,7 +328,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // ==================== التوصيل العادي ====================
     if (normalSelect) {
         normalSelect.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];

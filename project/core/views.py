@@ -1878,33 +1878,33 @@ def update_order(request, order_id):
         elif delivery_type == 'nawris':
             nawris_price = request.POST.get('company_delivery_price_final', '0')
             nawris_charge = request.POST.get('company_delivery_charge_final', '0')
-            nawris_city_id = request.POST.get('nawris_city_id', '')   
-            nawris_area_id = request.POST.get('nawris_area_id', '')  
-            nawris_value_type = request.POST.get('nawris_value_type', '')  
-            
-            if nawris_value_type == 'area':
-              try:
-               nawris_obj = NawrisArea.objects.get(area_id=int(nawris_area_id))
-
-               order.company_delivery_city = nawris_obj.city_name
-               order.company_delivery_area = nawris_obj.area_name
-              except NawrisArea.DoesNotExist:
-                order.company_delivery_city = ''
-                order.company_delivery_area = ''
-            
-            elif nawris_value_type == 'city':
-               try:
-                 nawris_obj = NawrisArea.objects.get(city_id=int(nawris_city_id), area_id__isnull=True)
+            nawris_value = request.POST.get('nawris_area', '')            
+                    
+            order.delivery_address = None
+    
+            if nawris_value and nawris_value != '':
+              if nawris_value[0] == 'a':  
+                area_id = nawris_value[1:]  
+                try:
+                 nawris_obj = NawrisArea.objects.get(area_id=int(area_id))
                  order.company_delivery_city = nawris_obj.city_name
-                 order.company_delivery_area = ''  
-               except NawrisArea.DoesNotExist:
+                 order.company_delivery_area = nawris_obj.area_name
+                except NawrisArea.DoesNotExist:
                  order.company_delivery_city = ''
                  order.company_delivery_area = ''
-            else:
+                
+            elif nawris_value[0] == 'c': 
+             city_id = nawris_value[1:] 
+             try:
+                nawris_obj = NawrisArea.objects.get(city_id=int(city_id))
+                order.company_delivery_city = nawris_obj.city_name
+                order.company_delivery_area = ''
+             except NawrisArea.DoesNotExist:
                 order.company_delivery_city = ''
-                order.company_delivery_area = ''            
-            order.delivery_address = None
-
+                order.company_delivery_area = ''
+            else:
+             order.company_delivery_city = ''
+             order.company_delivery_area = ''
             order.company_delivery_price = clean_price(nawris_price)
             order.company_delivery_charge = clean_price(nawris_charge)
             delivery_price = order.company_delivery_price
