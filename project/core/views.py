@@ -1893,18 +1893,19 @@ def update_order(request, order_id):
                  order.company_delivery_city = ''
                  order.company_delivery_area = ''
                 
-            elif nawris_value[0] == 'c': 
-             city_id = nawris_value[1:] 
-             try:
-                nawris_obj = NawrisArea.objects.get(city_id=int(city_id))
-                order.company_delivery_city = nawris_obj.city_name
-                order.company_delivery_area = ''
-             except NawrisArea.DoesNotExist:
+              elif nawris_value[0] == 'c': 
+                city_id = nawris_value[1:] 
+                try:
+                 nawris_obj = NawrisArea.objects.get(city_id=int(city_id))
+                 order.company_delivery_city = nawris_obj.city_name
+                 order.company_delivery_area = ''
+                except NawrisArea.DoesNotExist:
+                 order.company_delivery_city = ''
+                 order.company_delivery_area = ''
+              else:
                 order.company_delivery_city = ''
                 order.company_delivery_area = ''
-            else:
-             order.company_delivery_city = ''
-             order.company_delivery_area = ''
+           
             order.company_delivery_price = clean_price(nawris_price)
             order.company_delivery_charge = clean_price(nawris_charge)
             delivery_price = order.company_delivery_price
@@ -1978,7 +1979,7 @@ def update_order(request, order_id):
                 order.sales_total = total_sales
                 order.save()
                 
-                messages.success(request, f'تم تحديث الطلب بنجاح{request.POST}')
+                messages.success(request, 'تم تحديث الطلب بنجاح')
                 return redirect('manege_order', menu_id=order.menu.id)
                 
         except Exception as e:
