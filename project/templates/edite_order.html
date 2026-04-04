@@ -85,8 +85,15 @@
                                     <tr>
                                         <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
                                         <td colspan="3">
+                                           {% if order.delivery_address %}
+                                            <span id="delivery-cost-display">{{ order.delivery_address.price|default:0 }}</span> د.ل
+                                            <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}">
+                                            {% else %}
                                             <span id="delivery-cost-display">{{ order.company_delivery_price|default:0 }}</span> د.ل
                                             <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}">
+
+                                            {% endif %}
+                                        
                                         </div></div>
                                     </tr>
                                     <tr class="fw-bold fs-5"><td colspan="5" class="text-end"><strong>المجموع الكلي:</strong></div></div><td colspan="3" id="grand-total">{{ order.get_total }} د.ل</div></div></div></div></tr>
@@ -209,7 +216,12 @@
                         
                         <hr>
                         <div class="d-flex justify-content-between mb-2"><strong>مجموع المنتجات:</strong><span id="summary-subtotal">{{ order.sales_total }} د.ل</span></div>
+                        
+                        {% if order.delivery_address %}
+                        <div class="d-flex justify-content-between mb-2"><strong>رسوم التوصيل:</strong><span id="summary-delivery">{{ order.delivery_address.price|default:0 }} د.ل</span></div>
+                        {% else %}
                         <div class="d-flex justify-content-between mb-2"><strong>رسوم التوصيل:</strong><span id="summary-delivery">{{ order.company_delivery_price|default:0 }} د.ل</span></div>
+                        {% endif %}
                         <div class="d-flex justify-content-between mb-3 fs-5"><strong>المجموع الكلي:</strong><span class="text-primary" id="summary-total">{{ order.get_total }} د.ل</span></div>
                         
                         <button type="submit" class="btn-update"><i class="bi bi-check-circle"></i> حفظ التعديلات</button>

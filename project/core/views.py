@@ -3364,7 +3364,8 @@ def connect_nawris(request):
                     auth=auth,
                     is_active=True
                 )
-            
+                customer.connected_del_method='nawris'
+                customer.save()
             messages.success(request, 'تم ربط المتجر مع شركة النورس بنجاح!')
             return redirect('nawris_settings')
     
