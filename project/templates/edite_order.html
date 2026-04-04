@@ -123,32 +123,32 @@
                             
                             {% if darb %}
                             <div>
-                                <div class="company-badge company-darb">شركة درب السبيل</div>
-                                <div class="mb-3">
-                                    <label class="form-label">المنطقة:</label>
-                                    <select name="darb_sabil_area" id="darb_sabil_area" class="form-select">
-                                        <option value="">-- اختر المنطقة --</option>
-                                        {% for city in darb_cities %}
-                                        <option value="{{ city.id }}" 
-                                                data-city-name="{{ city.city }}" 
-                                                data-area-name="{{ city.area }}"
-                                                {% if order.darb_sabil_city == city.city and order.darb_sabil_area == city.area %}selected{% endif %}>
-                                            {{ city.city }} - {{ city.area }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">نوع الخدمة:</label>
-                                    <select name="darb_sabil_service_id" id="darb_sabil_service_id" class="form-select">
-                                        <option value="">-- اختر الخدمة --</option>
-                                        <option value="6783c612dcf305c9e775c987" {% if order.serviceid == "6783c612dcf305c9e775c987" %}selected{% endif %}>توصيل رجالي</option>
-                                        <option value="67c84fbc9ed6c0d5c5bb1d2b" {% if order.serviceid == "67c84fbc9ed6c0d5c5bb1d2b" %}selected{% endif %}>توصيل نسائي</option>
-                                        <option value="67c84fea9ed6c0d5c5bb1d2c" {% if order.serviceid == "67c84fea9ed6c0d5c5bb1d2c" %}selected{% endif %}>توصيل فوري</option>
-                                    </select>
-                                </div>
-                                <input type="hidden" name="darb_sabil_city" id="darb_sabil_city" value="{{ order.company_delivery_city|default:'' }}">
-                                <input type="hidden" name="darb_sabil_area_name" id="darb_sabil_area_name" value="{{ order.company_delivery_area|default:'' }}">
+                              <div class="company-badge company-darb">شركة درب السبيل</div>
+                              <div class="mb-3">
+                              <label class="form-label">المنطقة:</label>
+                              <select name="darb_sabil_area" id="darb_sabil_area" class="form-select">
+                                    <option value="">-- اختر المنطقة --</option>
+                                    {% for city in darb_cities %}
+                                      <option value="{{ city.id }}" 
+                                       data-city-name="{{ city.city }}" 
+                                       data-area-name="{{ city.area }}"
+                                       {% if order.company_delivery_city == city.city and order.company_delivery_area == city.area %}selected{% endif %}>
+                                        {{ city.city }} - {{ city.area }}
+                                       </option>
+                                    {% endfor %}
+                              </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">نوع الخدمة:</label>
+                                <select name="darb_sabil_service_id" id="darb_sabil_service_id" class="form-select">
+                                     <option value="">-- اختر الخدمة --</option>
+                                     <option value="6783c612dcf305c9e775c987" {% if order.serviceid == "6783c612dcf305c9e775c987" %}selected{% endif %}>توصيل رجالي</option>
+                                     <option value="67c84fbc9ed6c0d5c5bb1d2b" {% if order.serviceid == "67c84fbc9ed6c0d5c5bb1d2b" %}selected{% endif %}>توصيل نسائي</option>
+                                     <option value="67c84fea9ed6c0d5c5bb1d2c" {% if order.serviceid == "67c84fea9ed6c0d5c5bb1d2c" %}selected{% endif %}>توصيل فوري</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="darb_sabil_city" id="darb_sabil_city" value="{{ order.company_delivery_city|default:'' }}">
+                            <input type="hidden" name="darb_sabil_area_name" id="darb_sabil_area_name" value="{{ order.company_delivery_area|default:'' }}">
                             </div>
                             {% endif %}
                             
@@ -278,30 +278,20 @@ document.addEventListener('DOMContentLoaded', function() {
         companyPriceFinal.value = deliveryFee;
     }
     
-    if (darbSelect) {
-        function updateDarbHiddenFields() {
-            const selected = darbSelect.options[darbSelect.selectedIndex];
-            if (selected && selected.value) {
-                const cityName = selected.getAttribute('data-city-name') || '';
-                const areaName = selected.getAttribute('data-area-name') || '';
-                if (darbCityHidden) darbCityHidden.value = cityName;
-                if (darbAreaHidden) darbAreaHidden.value = areaName;
-            } else {
-                if (darbCityHidden) darbCityHidden.value = '';
-                if (darbAreaHidden) darbAreaHidden.value = '';
-            }
-        }
-        
-        darbSelect.addEventListener('change', updateDarbHiddenFields);
-        updateDarbHiddenFields();
-        
-        if (darbServiceSelect) {
-            darbServiceSelect.addEventListener('change', function() {
-                console.log('تم اختيار الخدمة:', this.value);
-            });
+   if (darbSelect) {
+    function updateDarbHiddenFields() {
+        const selected = darbSelect.options[darbSelect.selectedIndex];
+        if (selected && selected.value) {
+            const cityName = selected.getAttribute('data-city-name') || '';
+            const areaName = selected.getAttribute('data-area-name') || '';
+            if (darbCityHidden) darbCityHidden.value = cityName;
+            if (darbAreaHidden) darbAreaHidden.value = areaName;
         }
     }
-    
+    darbSelect.addEventListener('change', updateDarbHiddenFields);
+    updateDarbHiddenFields();
+}
+       
     if (nawrisSelect) {
         function updateNawrisHiddenFields() {
             const selected = nawrisSelect.options[nawrisSelect.selectedIndex];
