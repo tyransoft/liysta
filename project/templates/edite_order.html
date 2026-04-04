@@ -85,14 +85,9 @@
                                     <tr>
                                         <td colspan="5" class="text-end"><strong>رسوم التوصيل:</strong></td>
                                         <td colspan="3">
-                                            {% if order.delivery_address %}
-                                           <span id="delivery-cost-display">{{ order.delivery_address.price|default:0 }}</span> د.ل
-                                            
-                                            {% else %}
-                                           <span id="delivery-cost-display">{{ order.company_delivery_price|default:0 }}</span> د.ل
-                                              <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}">
-                                            {% endif %}
-                                        </td>
+                                            <span id="delivery-cost-display">{{ order.company_delivery_price|default:0 }}</span> د.ل
+                                            <input type="hidden" id="delivery_price_hidden" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}">
+                                        </div></div>
                                     </tr>
                                     <tr class="fw-bold fs-5"><td colspan="5" class="text-end"><strong>المجموع الكلي:</strong></div></div><td colspan="3" id="grand-total">{{ order.get_total }} د.ل</div></div></div></div></tr>
                                 </tfoot>
@@ -125,7 +120,7 @@
                                 <div class="company-badge company-darb">شركة درب السبيل</div>
                                 <div class="mb-3">
                                     <label class="form-label">المنطقة:</label>
-                                    <select name="darb_sabil_area" class="form-select">
+                                    <select name="darb_sabil_area" id="darb_sabil_area" class="form-select">
                                         <option value="">-- اختر المنطقة --</option>
                                         {% for city in darb_cities %}
                                         <option value="{{ city.id }}" 
@@ -139,7 +134,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">نوع الخدمة:</label>
-                                    <select name="darb_sabil_service_id" class="form-select">
+                                    <select name="darb_sabil_service_id" id="darb_sabil_service_id" class="form-select">
                                         <option value="">-- اختر الخدمة --</option>
                                         <option value="6783c612dcf305c9e775c987" {% if order.serviceid == "6783c612dcf305c9e775c987" %}selected{% endif %}>توصيل رجالي</option>
                                         <option value="67c84fbc9ed6c0d5c5bb1d2b" {% if order.serviceid == "67c84fbc9ed6c0d5c5bb1d2b" %}selected{% endif %}>توصيل نسائي</option>
@@ -156,7 +151,7 @@
                                 <div class="company-badge company-nawris">شركة النورس</div>
                                 <div class="mb-3">
                                     <label class="form-label">المنطقة:</label>
-                                    <select name="nawris_area" class="form-select">
+                                    <select name="nawris_area" id="nawris_area" class="form-select">
                                         <option value="">-- اختر المنطقة --</option>
                                         {% for area in nawris_areas %}
                                         <option value="{{ area.area_id|default:area.city_id }}" 
@@ -178,7 +173,7 @@
                                 <div class="company-badge company-normal">توصيل عادي</div>
                                 <div class="mb-3">
                                     <label class="form-label">العنوان:</label>
-                                    <select name="delivery_address" class="form-select">
+                                    <select name="delivery_address" id="delivery_address" class="form-select">
                                         <option value="">اختر العنوان</option>
                                         {% for city in cities %}
                                         <option value="{{ city.id }}" data-price="{{ city.price }}" {% if order.delivery_address and city.id == order.delivery_address.id %}selected{% endif %}>
@@ -189,15 +184,13 @@
                                 </div>
                             </div>
                             {% endif %}
-                            {% if darb or nawris %}
-
+                            
                             <div class="delivery-price-input mt-3">
                                 <span>سعر التوصيل:</span>
                                 <input type="number" id="delivery_price_input" name="delivery_price" value="{{ order.company_delivery_price|default:0 }}" step="0.5"> د.ل
                                 <input type="hidden" name="company_delivery_price_final" id="company_delivery_price_final" value="{{ order.company_delivery_price|default:0 }}">
                                 <input type="hidden" name="company_delivery_charge_final" id="company_delivery_charge_final" value="{{ order.company_delivery_charge|default:0 }}">
                             </div>
-                            {% endif %}
                         </div>
                         
                         <div class="mb-3">
@@ -216,11 +209,7 @@
                         
                         <hr>
                         <div class="d-flex justify-content-between mb-2"><strong>مجموع المنتجات:</strong><span id="summary-subtotal">{{ order.sales_total }} د.ل</span></div>
-                        {% if not order.delivery_address %}
                         <div class="d-flex justify-content-between mb-2"><strong>رسوم التوصيل:</strong><span id="summary-delivery">{{ order.company_delivery_price|default:0 }} د.ل</span></div>
-                        {% else %}
-                        <div class="d-flex justify-content-between mb-2"><strong>رسوم التوصيل:</strong><span id="summary-delivery">{{ order.delivery_address.price|default:0 }} د.ل</span></div>
-                        {% endif %}
                         <div class="d-flex justify-content-between mb-3 fs-5"><strong>المجموع الكلي:</strong><span class="text-primary" id="summary-total">{{ order.get_total }} د.ل</span></div>
                         
                         <button type="submit" class="btn-update"><i class="bi bi-check-circle"></i> حفظ التعديلات</button>
@@ -239,50 +228,72 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const deliveryPriceInput = document.getElementById('delivery_price_input');
     const companyPriceFinal = document.getElementById('company_delivery_price_final');
+    const deliveryCostDisplay = document.getElementById('delivery-cost-display');
     
-    const darbSelect = document.querySelector('select[name="darb_sabil_area"]');
-    const darbServiceSelect = document.querySelector('select[name="darb_sabil_service_id"]');
+    const darbSelect = document.getElementById('darb_sabil_area');
+    const darbServiceSelect = document.getElementById('darb_sabil_service_id');
     const darbCityHidden = document.getElementById('darb_sabil_city');
     const darbAreaHidden = document.getElementById('darb_sabil_area_name');
     
-    const nawrisSelect = document.querySelector('select[name="nawris_area"]');
+    const nawrisSelect = document.getElementById('nawris_area');
     const nawrisCityHidden = document.getElementById('nawris_city_name');
     const nawrisAreaHidden = document.getElementById('nawris_area_name');
     
-    const normalSelect = document.querySelector('select[name="delivery_address"]');
+    const normalSelect = document.getElementById('delivery_address');
+    
+    function updateTotals() {
+        let subtotal = 0;
+        document.querySelectorAll('.item-total').forEach(el => {
+            let val = parseFloat(el.textContent.replace(' د.ل', '').trim());
+            if (!isNaN(val)) subtotal += val;
+        });
+        let deliveryFee = parseFloat(deliveryPriceInput.value) || 0;
+        const total = subtotal + deliveryFee;
+        
+        document.getElementById('subtotal').innerHTML = subtotal.toFixed(2) + ' د.ل';
+        document.getElementById('grand-total').innerHTML = total.toFixed(2) + ' د.ل';
+        document.getElementById('summary-subtotal').innerHTML = subtotal.toFixed(2) + ' د.ل';
+        document.getElementById('summary-delivery').innerHTML = deliveryFee.toFixed(2) + ' د.ل';
+        document.getElementById('summary-total').innerHTML = total.toFixed(2) + ' د.ل';
+        
+        if (deliveryCostDisplay) deliveryCostDisplay.innerHTML = deliveryFee.toFixed(2);
+        companyPriceFinal.value = deliveryFee;
+    }
     
     if (darbSelect) {
-        darbSelect.addEventListener('change', function() {
-            const selected = this.options[this.selectedIndex];
-            const cityName = selected.getAttribute('data-city-name');
-            const areaName = selected.getAttribute('data-area-name');
-            if (darbCityHidden) darbCityHidden.value = cityName || '';
-            if (darbAreaHidden) darbAreaHidden.value = areaName || '';
-        });
-        if (darbSelect.value) {
+        function updateDarbHiddenFields() {
             const selected = darbSelect.options[darbSelect.selectedIndex];
-            if (selected && darbCityHidden) {
-                darbCityHidden.value = selected.getAttribute('data-city-name') || '';
-                darbAreaHidden.value = selected.getAttribute('data-area-name') || '';
+            if (selected && selected.value) {
+                const cityName = selected.getAttribute('data-city-name') || '';
+                const areaName = selected.getAttribute('data-area-name') || '';
+                if (darbCityHidden) darbCityHidden.value = cityName;
+                if (darbAreaHidden) darbAreaHidden.value = areaName;
+            } else {
+                if (darbCityHidden) darbCityHidden.value = '';
+                if (darbAreaHidden) darbAreaHidden.value = '';
             }
         }
+        
+        darbSelect.addEventListener('change', updateDarbHiddenFields);
+        updateDarbHiddenFields();
     }
     
     if (nawrisSelect) {
-        nawrisSelect.addEventListener('change', function() {
-            const selected = this.options[this.selectedIndex];
-            const cityName = selected.getAttribute('data-city-name');
-            const areaName = selected.getAttribute('data-area-name');
-            if (nawrisCityHidden) nawrisCityHidden.value = cityName || '';
-            if (nawrisAreaHidden) nawrisAreaHidden.value = areaName || '';
-        });
-        if (nawrisSelect.value) {
+        function updateNawrisHiddenFields() {
             const selected = nawrisSelect.options[nawrisSelect.selectedIndex];
-            if (selected && nawrisCityHidden) {
-                nawrisCityHidden.value = selected.getAttribute('data-city-name') || '';
-                nawrisAreaHidden.value = selected.getAttribute('data-area-name') || '';
+            if (selected && selected.value) {
+                const cityName = selected.getAttribute('data-city-name') || '';
+                const areaName = selected.getAttribute('data-area-name') || '';
+                if (nawrisCityHidden) nawrisCityHidden.value = cityName;
+                if (nawrisAreaHidden) nawrisAreaHidden.value = areaName;
+            } else {
+                if (nawrisCityHidden) nawrisCityHidden.value = '';
+                if (nawrisAreaHidden) nawrisAreaHidden.value = '';
             }
         }
+        
+        nawrisSelect.addEventListener('change', updateNawrisHiddenFields);
+        updateNawrisHiddenFields();
     }
     
     if (normalSelect) {
@@ -302,22 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTotals();
     });
     
-    function updateTotals() {
-        let subtotal = 0;
-        document.querySelectorAll('.item-total').forEach(el => {
-            let val = parseFloat(el.textContent.replace(' د.ل', '').trim());
-            if (!isNaN(val)) subtotal += val;
-        });
-        let deliveryFee = parseFloat(deliveryPriceInput.value) || 0;
-        const total = subtotal + deliveryFee;
-        document.getElementById('subtotal').innerHTML = subtotal.toFixed(2) + ' د.ل';
-        document.getElementById('grand-total').innerHTML = total.toFixed(2) + ' د.ل';
-        document.getElementById('summary-subtotal').innerHTML = subtotal.toFixed(2) + ' د.ل';
-        document.getElementById('summary-delivery').innerHTML = deliveryFee.toFixed(2) + ' د.ل';
-        document.getElementById('summary-total').innerHTML = total.toFixed(2) + ' د.ل';
-        companyPriceFinal.value = deliveryFee;
-    }
-    
     function updateItemTotal(rowId, price) {
         const qtyInput = document.querySelector(`input[name="quantity_${rowId}"]`);
         const qty = parseInt(qtyInput.value);
@@ -333,6 +328,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    function showNotification(msg, type) {
+        const old = document.querySelector('.notification');
+        if (old) old.remove();
+        const notif = document.createElement('div');
+        notif.className = `notification ${type}`;
+        notif.innerHTML = `<span>${msg}</span><button class="btn-close btn-close-white ms-2" style="font-size:12px;"></button>`;
+        document.body.appendChild(notif);
+        setTimeout(() => {
+            if (notif.parentNode) notif.remove();
+        }, 3000);
+    }
+    
     document.querySelectorAll('.inc-qty').forEach(btn => {
         btn.addEventListener('click', function() {
             const rowId = this.dataset.id;
@@ -344,11 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateStock(input.dataset.productId, -1);
                 updateItemTotal(rowId, price);
             } else {
-                const notif = document.createElement('div');
-                notif.className = 'notification warning';
-                notif.innerHTML = `<span>الحد الأقصى ${max}</span><button class="btn-close btn-close-white ms-2" style="font-size:12px;"></button>`;
-                document.body.appendChild(notif);
-                setTimeout(() => notif.remove(), 3000);
+                showNotification(`الحد الأقصى ${max}`, 'warning');
             }
         });
     });
@@ -374,11 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let newVal = parseInt(this.value);
             if (isNaN(newVal)) newVal = 1;
             if (newVal > max) {
-                const notif = document.createElement('div');
-                notif.className = 'notification warning';
-                notif.innerHTML = `<span>الحد الأقصى ${max}</span><button class="btn-close btn-close-white ms-2" style="font-size:12px;"></button>`;
-                document.body.appendChild(notif);
-                setTimeout(() => notif.remove(), 3000);
+                showNotification(`الحد الأقصى ${max}`, 'warning');
                 newVal = max;
                 this.value = max;
             }
@@ -410,11 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 hidden.value = 'true';
                 document.getElementById('orderForm').appendChild(hidden);
                 updateTotals();
-                const notif = document.createElement('div');
-                notif.className = 'notification success';
-                notif.innerHTML = `<span>تم إزالة المنتج</span><button class="btn-close btn-close-white ms-2" style="font-size:12px;"></button>`;
-                document.body.appendChild(notif);
-                setTimeout(() => notif.remove(), 3000);
+                showNotification('تم إزالة المنتج', 'success');
             }
         });
     });

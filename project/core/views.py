@@ -1861,7 +1861,8 @@ def update_order(request, order_id):
             darb_city = request.POST.get('darb_sabil_city', '')
             darb_area = request.POST.get('darb_sabil_area_name', '')
             darb_city_id = request.POST.get('darb_sabil_city_id', '')
-            
+            order.delivery_address = None
+
             if darb_area_id:
                 order.serviceid = darb_service_id
                 try:
@@ -1886,7 +1887,8 @@ def update_order(request, order_id):
             
             order.company_delivery_city = nawris_city_name
             order.company_delivery_area = nawris_area_name
-            
+            order.delivery_address = None
+
             try:
                 order.company_delivery_price = float(nawris_price) if nawris_price else 0
             except (ValueError, TypeError):
@@ -1906,7 +1908,9 @@ def update_order(request, order_id):
             if delivery_address_id:
                 city = get_object_or_404(City, id=delivery_address_id)
                 order.delivery_address = city
-                delivery_price = float(city.price)
+                order.company_delivery_city = None
+                order.company_delivery_area = None     
+                order.company_delivery_price= None 
             else:
                 try:
                     delivery_price = float(delivery_price_input) if delivery_price_input else 0
@@ -1914,7 +1918,7 @@ def update_order(request, order_id):
                     delivery_price = 0
             
             order.company_delivery_price = delivery_price
-        
+
         total_sales = 0
         
         try:
