@@ -1852,11 +1852,9 @@ def update_order(request, order_id):
         delivery_price = 0
         delivery_type = customer.connected_del_method
 
-        # دالة مساعدة لتحويل السعر
         def clean_price(value):
             if not value:
                 return 0
-            # استبدال الفاصلة بنقطة
             value = str(value).replace(',', '.')
             try:
                 return float(value)
@@ -1964,7 +1962,7 @@ def update_order(request, order_id):
                 order.sales_total = total_sales
                 order.save()
                 
-                messages.success(request, 'تم تحديث الطلب بنجاح')
+                messages.success(request, f'{request.POST}تم تحديث الطلب بنجاح')
                 return redirect('manege_order', menu_id=order.menu.id)
                 
         except Exception as e:
