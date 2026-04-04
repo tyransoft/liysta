@@ -278,23 +278,32 @@ document.addEventListener('DOMContentLoaded', function() {
         companyPriceFinal.value = deliveryFee;
     }
     
-    if (darbSelect) {
-        function updateDarbHiddenFields() {
-            const selected = darbSelect.options[darbSelect.selectedIndex];
-            if (selected && selected.value) {
-                const cityName = selected.getAttribute('data-city-name') || '';
-                const areaName = selected.getAttribute('data-area-name') || '';
-                if (darbCityHidden) darbCityHidden.value = cityName;
-                if (darbAreaHidden) darbAreaHidden.value = areaName;
-            } else {
-                if (darbCityHidden) darbCityHidden.value = '';
-                if (darbAreaHidden) darbAreaHidden.value = '';
-            }
+ if (darbSelect) {
+    function updateDarbHiddenFields() {
+        const selected = darbSelect.options[darbSelect.selectedIndex];
+        if (selected && selected.value) {
+            const cityName = selected.getAttribute('data-city-name') || '';
+            const areaName = selected.getAttribute('data-area-name') || '';
+            if (darbCityHidden) darbCityHidden.value = cityName;
+            if (darbAreaHidden) darbAreaHidden.value = areaName;
+            console.log('درب السبيل - تم التحديث:', cityName, areaName);
         }
-        darbSelect.addEventListener('change', updateDarbHiddenFields);
-        updateDarbHiddenFields();
     }
-       
+    
+    darbSelect.addEventListener('change', function() {
+        console.log('تم تغيير المنطقة في درب السبيل');
+        updateDarbHiddenFields();
+    });
+    
+    updateDarbHiddenFields();
+    
+    if (darbServiceSelect) {
+        darbServiceSelect.addEventListener('change', function() {
+            console.log('تم تغيير الخدمة في درب السبيل');
+            updateDarbHiddenFields();
+        });
+    }
+}
     if (nawrisSelect) {
         function updateNawrisHiddenFields() {
             const selected = nawrisSelect.options[nawrisSelect.selectedIndex];
