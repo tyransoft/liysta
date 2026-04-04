@@ -1878,11 +1878,25 @@ def update_order(request, order_id):
         elif delivery_type == 'nawris':
             nawris_price = request.POST.get('company_delivery_price_final', '0')
             nawris_charge = request.POST.get('company_delivery_charge_final', '0')
-            nawris_city_name = request.POST.get('nawris_city_name', '')
-            nawris_area_name = request.POST.get('nawris_area_name', '')
+            nawris_value = request.POST.get('nawris_area', '')             
             
-            order.company_delivery_city = nawris_city_name
-            order.company_delivery_area = nawris_area_name
+            
+            if nawris_value and nawris_value != '':
+               try:
+                  nawris_obj = NawrisArea.objects.get(area_id=int(nawris_value))
+                  order.company_delivery_city = nawris_obj.city_name
+                  order.company_delivery_area = nawris_obj.area_name or ''
+               except NawrisArea.DoesNotExist:
+                  try:
+                      nawris_obj = NawrisArea.objects.get(city_id=int(nawris_value))
+                      order.company_delivery_city = nawris_obj.city_name
+                      order.company_delivery_area = nawris_obj.area_name or ''
+                  except NawrisArea.DoesNotExist:
+                        order.company_delivery_city = ''
+                        order.company_delivery_area = ''
+            else:
+                order.company_delivery_city = ''
+                order.company_delivery_area = ''            
             order.delivery_address = None
 
             order.company_delivery_price = clean_price(nawris_price)
@@ -1957,9 +1971,8 @@ def update_order(request, order_id):
                 
                 order.sales_total = total_sales
                 order.save()
-                messages.success(request, f'{request.POST}تم تحديث الطلب بنجاح')
                 
-                #messages.success(request, 'تم تحديث الطلب بنجاح')
+                messages.success(request, 'تم تحديث الطلب بنجاح')
                 return redirect('manege_order', menu_id=order.menu.id)
                 
         except Exception as e:
