@@ -137,13 +137,18 @@ def clean_cards():
 
 
 
+
 def deactivate_users_subs():
     today=date.today()
     subs=Subscription.objects.filter(end_date__lt=today,is_active=True)
     for sub in subs:
         if sub.plan.duration != 'forever':
-         sub.is_active=False
-         sub.save()
+          customer = sub.customer 
+          customer.customer_status = 'inactive'
+          customer.save()
+        
+          sub.is_active=False
+          sub.save()
         else:
           sub.end_date = sub.end_date + timedelta(days=10000) 
           sub.save()  
