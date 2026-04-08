@@ -20,7 +20,7 @@ urlpatterns = [
     path('blog/<slug:slug>',blog_post,name='blog_post'),
 
     path('faqs/',faqs,name='faqs'),
-
+    path('googlee1e0721b81379543.html', google_verify),
     path('How-it-works/',learn,name='how-it-works'),
     path('terms/',terms,name='terms'),
     path('Privacy/',privacy,name='privacy'),

@@ -34,6 +34,8 @@ import base64
 import requests
 #guest user and so on
 
+def google_verify(request):
+    return HttpResponse("google-site-verification: googlee1e0721b81379543.html")
 
 def home(request):
     plans=Plan.objects.all()
