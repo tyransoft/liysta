@@ -662,7 +662,6 @@
                      onerror="this.src='https://via.placeholder.com/60?text=🚚'">
                 <div class="brand-text">
                     <h1 class="page-title">
-                        <i class="fas fa-truck"></i>
                         إعدادات درب السبيل
                     </h1>
                     <p class="page-subtitle">قم بإدارة إعدادات الشحن والتخزين مع شركة درب السبيل</p>
@@ -713,7 +712,6 @@
                                class="real-checkbox-input">
                         <span class="custom-checkbox-visual" id="storeing_visual"></span>
                         <label for="storeing_real" class="custom-checkbox-label">
-                            <i class="fas fa-warehouse"></i>
                             هل منتجاتك مخزنة لدى درب السبيل؟
                         </label>
                     </div>
@@ -726,7 +724,6 @@
             
             <div class="form-group">
                 <label class="form-label">
-                    <i class="fas fa-money-bill-wave"></i>
                     من يدفع قيمة الشحن؟
                 </label>
                 <div class="custom-radio-group">
@@ -772,7 +769,6 @@
                                class="real-checkbox-input">
                         <span class="custom-checkbox-visual" id="collecting_visual"></span>
                         <label for="collecting_real" class="custom-checkbox-label">
-                            <i class="fas fa-boxes"></i>
                             تفعيل خدمة التجميع
                         </label>
                     </div>
@@ -790,7 +786,6 @@
                                class="real-checkbox-input">
                         <span class="custom-checkbox-visual" id="epay_visual"></span>
                         <label for="epay_real" class="custom-checkbox-label">
-                            <i class="fas fa-credit-card"></i>
                             تفعيل الدفع الإلكتروني
                         </label>
                     </div>
@@ -801,7 +796,6 @@
                 
                 <div class="conditional-field" id="epayOptions">
                     <label class="form-label">
-                        <i class="fas fa-percent"></i>
                         من يتحمل تكلفة الدفع الإلكتروني؟
                     </label>
                     <div class="custom-radio-group">
@@ -843,7 +837,6 @@
             {% if api_error %}
                 <div class="settings-card">
                     <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle"></i>
                         <div>
                             <strong>خطأ في جلب المنتجات:</strong>
                             <p>{{ api_error }}</p>
@@ -853,7 +846,6 @@
             {% elif darb_products %}
                 <div class="settings-card">
                     <div class="info-box">
-                        <i class="fas fa-info-circle"></i>
                         <div class="info-box-content">
                             <strong>منتجات درب السبيل</strong>
                             <p>يمكنك نسخ الـ ID من الجدول أدناه ولصقه في منتجك المقابل</p>
@@ -861,7 +853,6 @@
                     </div>
                     
                     <h3 class="section-title">
-                        <i class="fas fa-warehouse"></i>
                         منتجات درب السبيل المتاحة
                     </h3>
                     <div class="mapping-table-wrapper">
@@ -870,7 +861,6 @@
                                 <tr>
                                     <th>المعرف (ID)</th>
                                     <th>اسم المنتج</th>
-                                    <th>سعر البيع</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -880,12 +870,11 @@
                                         <div class="id-container">
                                             <span class="id-badge" dir="ltr">{{ product.id }}</span>
                                             <button type="button" class="copy-btn" data-id="{{ product.id }}">
-                                                <i class="fas fa-copy"></i> نسخ
+                                                <i class="fas fa-copy"></i> 
                                             </button>
                                         </div>
                                     </td>
                                     <td class="product-name">{{ product.name }}</td>
-                                    <td>{{ product.salePrice|default:"—" }} ل.د</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -895,7 +884,6 @@
                 
                 <div class="settings-card">
                     <h3 class="section-title">
-                        <i class="fas fa-link"></i>
                         ربط منتجات متجرك
                     </h3>
                     
