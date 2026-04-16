@@ -2859,38 +2859,128 @@ def darbasabil_callback(request):
       messages.error(request,"فشلت عملية الربط حاول مرة اخرى")
       return redirect('customer_dashboard')   
     
-
+def fetch_darb_products(access_token):
+    url = "https://v2.sabil.ly/api/warehouse/products/"
+    
+    try:
+        response = requests.get(
+            url, 
+            headers={
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            },
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            if data.get("status") == True:
+                products_data = data.get("data", {})
+                results = products_data.get("results", [])
+                
+                products = []
+                for item in results:
+                    product = {
+                        'id': item.get('_id'),  
+                        'name': item.get('productName'),
+                        'sku': item.get('variants', [{}])[0].get('sku') if item.get('variants') else None,
+                        
+                    }
+                    products.append(product)
+                
+                return True, products
+            else:
+                return False, "فشل في جلب المنتجات من درب السبيل"
+        
+        elif response.status_code == 401:
+            return False, "رمز الوصول (Access Token) غير صالح أو منتهي الصلاحية"
+        elif response.status_code == 403:
+            return False, "غير مصرح لك بالوصول إلى هذه البيانات"
+        else:
+            return False, f"خطأ في الاتصال: {response.status_code}"
+            
+    except requests.exceptions.Timeout:
+        return False, "انتهى وقت الاتصال، يرجى المحاولة مرة أخرى"
+    except requests.exceptions.ConnectionError:
+        return False, "فشل الاتصال بالخادم"
+    except Exception as e:
+        return False, f"خطأ غير متوقع: {str(e)}"
+     
 @login_required
 def darbasabil_settings(request):
-
     try:
-       customer=Customer.objects.get(user=request.user)
-       darb=DarbAsabilConnection.objects.get(customer=customer)
-       if request.method == 'POST':
-          form=DarbasabilForm(request.POST,instance=darb)
-          if form.is_valid():
-            form.save()
-            messages.success(request,"تم الربط مع درب السبيل بنجاح.") 
-            return redirect('customer_dashboard')   
-          else:
-            messages.error(request,"فشلت عملية ضبط الاعدادات حاول مرة اخرى")
-            return redirect('darbasabil_settings')             
-       else:
-          form=DarbasabilForm(instance=darb)
-    
+        customer = Customer.objects.get(user=request.user)
+        darb = DarbAsabilConnection.objects.get(customer=customer)
+        darb_products = []
+        api_error = None
+        my_products = Products.objects.filter(menu__customer=customer)
+        
+        if darb and darb.is_active and darb.access_token:
+            success, result = fetch_darb_products(darb.access_token)
+            if success:
+                darb_products = result
+                request.session['darb_products'] = darb_products
+            else:
+                api_error = result
+        else:
+            if not darb.access_token:
+                api_error = "رمز الوصول (Access Token) غير متوفر، يرجى إعادة ربط حساب درب السبيل"
+
+        if request.method == 'POST':
+            form = DarbasabilForm(request.POST, instance=darb)
+            
+            if form.is_valid():
+                for product in my_products:
+                    del_id_key = f'del_id_{product.id}'
+                    if del_id_key in request.POST:
+                        del_id_value = request.POST.get(del_id_key)
+                        if del_id_value and del_id_value.strip():
+                            product_exists = any(
+                                str(p.get('id')) == del_id_value.strip() 
+                                for p in darb_products
+                            )
+                            if product_exists:
+                                product.del_id = del_id_value.strip()
+                            else:
+                                messages.warning(
+                                    request, 
+                                    f'المعرف {del_id_value} غير موجود في منتجات درب السبيل للمنتج {product.name}'
+                                )
+                        elif del_id_value == '':
+                            product.del_id = None
+                        product.save()
+                
+                darb_settings = form.save(commit=False)
+                
+                storeing_value = request.POST.get('storeing')
+                darb_settings.storeing = storeing_value == 'on'
+                
+                darb_settings.save()
+                messages.success(request, "تم حفظ إعدادات درب السبيل بنجاح.")
+                return redirect('customer_dashboard')
+            else:
+                messages.error(request, "فشلت عملية ضبط الإعدادات، حاول مرة أخرى")
+                return redirect('darbasabil_settings')
+        else:
+            form = DarbasabilForm(instance=darb)
+            
     except DarbAsabilConnection.DoesNotExist:
-      messages.error(request,"لم يتم  العثور على اتصالك في درب السبيل")
-      return redirect('delivery_companies') 
+        messages.error(request, "لم يتم العثور على اتصالك في درب السبيل")
+        return redirect('delivery_companies')
     except Exception as e:
-      messages.error(request,f"خطأ:{e}")
-      return redirect('delivery_companies')  
-    context={
-       'form':form,
-       'darb_connection':darb,
+        messages.error(request, f"خطأ: {str(e)}")
+        return redirect('delivery_companies')
+    
+    context = {
+        'form': form,
+        'darb_connection': darb,
+        'my_products': my_products,
+        'darb_products': darb_products, 
+        'api_error': api_error,
     }
     
-    return render(request, 'darb_settings.html',context)     
-
+    return render(request, 'darb_settings.html', context)
 
 @login_required
 def disconnect_darbasabil(request):
@@ -3188,7 +3278,7 @@ def calucate_delivery_price(request, menu_id):
         })
 
     except Exception as e:
-        print("ERROR:", str(e))  # debugging
+        print("ERROR:", str(e))  
         return JsonResponse({
             'success': False,
             'error': 'حدث خطأ غير متوقع'

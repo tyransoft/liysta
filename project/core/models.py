@@ -657,7 +657,7 @@ class DarbAsabilConnection(models.Model):
     paymentby=models.CharField(max_length=10, choices=PAY_CHOICES,default='reciver')
     epay=models.BooleanField(default=False)
     epay_coast=models.CharField(max_length=10, choices=EPAY_CHOICES,null=True,blank=True)
-    
+    storeing=models.BooleanField(default=False)
     is_active=models.BooleanField(default=False)
     connected_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):

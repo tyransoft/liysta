@@ -306,7 +306,7 @@ class DarbasabilForm(forms.ModelForm):
     class Meta:
         model = DarbAsabilConnection
         exclude = ['customer', 'state', 'access_token', 'refresh_token', 
-                   'token_expire_at', 'refresh_expire_at', 'is_active']
+                   'token_expire_at', 'refresh_expire_at', 'is_active','storeing']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -314,7 +314,7 @@ class DarbasabilForm(forms.ModelForm):
         self.fields['epay'].widget.attrs.update({'class': 'custom-checkbox'})
         self.fields['paymentby'].widget.attrs.update({'class': 'radio-group'})
         self.fields['epay_coast'].widget.attrs.update({'class': 'radio-group'})
-
+        self.fields['storeing'].widget.attrs.update({'class': 'real-checkbox-input'})
         self.fields['epay_coast'].required = False
 
 class NawrisForm(forms.ModelForm):
