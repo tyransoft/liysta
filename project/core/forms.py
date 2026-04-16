@@ -306,7 +306,7 @@ class DarbasabilForm(forms.ModelForm):
     class Meta:
         model = DarbAsabilConnection
         exclude = ['customer', 'state', 'access_token', 'refresh_token', 
-                   'token_expire_at', 'refresh_expire_at', 'is_active','storeing']
+                   'token_expire_at', 'refresh_expire_at', 'is_active']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
