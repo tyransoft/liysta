@@ -2793,72 +2793,88 @@ def connect_darbasabil(request):
 
 def darbasabil_callback(request):
 
-    customer=Customer.objects.get(user=request.user)
+    customer = Customer.objects.get(user=request.user)
 
-    get_code=request.GET.get('code') 
-    get_state=request.GET.get('state') 
+    get_code = request.GET.get('code') 
+    get_state = request.GET.get('state') 
 
     try:
-       darb=DarbAsabilConnection.objects.get(
-           state=get_state,
-       )
+        darb = DarbAsabilConnection.objects.get(state=get_state)
     except DarbAsabilConnection.DoesNotExist:
-      messages.error(request,'هناك خطا في المعلومات حاول مجددا') 
-      return redirect('customer_dashboard') 
-    
-    code_verifier=request.session.get('darb_code_verifier')
+        messages.error(request, 'هناك خطأ في المعلومات حاول مجددا') 
+        return redirect('customer_dashboard') 
+
+    code_verifier = request.session.get('darb_code_verifier')
     if not code_verifier:
-      messages.error(request,'انتهت الجلسة الخاصة بك.') 
-      return redirect('customer_dashboard')  
-   
-   
-    response=requests.post(
+        messages.error(request, 'انتهت الجلسة الخاصة بك.') 
+        return redirect('customer_dashboard')  
+
+    response = requests.post(
         'https://v2.sabil.ly/api/oauth/exchange/code/',
         json={
-          'code':get_code,
-          'codeVerifier':code_verifier,
+            'code': get_code,
+            'codeVerifier': code_verifier,
         },
-        headers={'Content-Type':'application/json'},
+        headers={'Content-Type': 'application/json'},
     )
-    data=response.json()
 
-    if response.status_code ==200:
-      data=response.json()
-      
-      refreshexpires=data['data']['refresh']['expiresAtSeconds']
-      if refreshexpires:
-        refresh_expires=timezone.datetime.fromtimestamp(refreshexpires)
-        darb.refresh_expire_at=refresh_expires 
+    try:
+        data = response.json()
+    except:
+        messages.error(request, "فشل في قراءة رد السيرفر")
+        return redirect('customer_dashboard')
 
-      tokenexpires=data['data']['access']['expiresAtSeconds']
-      if tokenexpires:
-        token_expires=timezone.datetime.fromtimestamp(tokenexpires)
-        darb.token_expire_at=token_expires 
-      refreshtoken=data['data']['refresh']['token']
-      if refreshtoken:
-         darb.refresh_token=refreshtoken
-     
-      try: 
-       token=data['data']['access']['token']
-       if token: 
-         darb.access_token=token
-         darb.is_active= True  
-         darb.save()
-
-         del request.session['darb_code_verifier']
-      
-         customer.connected_del_method='darbasabil'
-         customer.save()
-      
-         messages.success(request,"تم الربط مع درب السبيل بنجاح.نرجو اكمال لاعدادات الخاصة بالتوصيل") 
-         return redirect('darbasabil_settings') 
-      except:
-        messages.error(request,"فشل في الحصول على صلاحيات الربط مع درب السبيل حاول مرة اخرى.")
-        return redirect('customer_dashboard')       
-    else:
-      messages.error(request,"فشلت عملية الربط حاول مرة اخرى")
-      return redirect('customer_dashboard')   
     
+
+    if response.status_code == 200 and 'data' in data:
+
+        access_data = data['data'].get('access')
+
+        if not access_data:
+            messages.error(request, "لم يتم الحصول على access token")
+            return redirect('customer_dashboard')
+
+        token = access_data.get('token')
+        token_expires = access_data.get('expiresAtSeconds')
+
+        if not token:
+            messages.error(request, "التوكن غير موجود في الرد")
+            return redirect('customer_dashboard')
+
+        darb.access_token = token
+
+        if token_expires:
+            try:
+                darb.token_expire_at = timezone.datetime.fromtimestamp(token_expires)
+            except:
+                pass 
+
+        refresh_data = data['data'].get('refresh')
+        if refresh_data:
+            darb.refresh_token = refresh_data.get('token', '')
+            refreshexpires = refresh_data.get('expiresAtSeconds')
+            if refreshexpires:
+                try:
+                    darb.refresh_expire_at = timezone.datetime.fromtimestamp(refreshexpires)
+                except:
+                    pass
+
+        darb.is_active = True
+        darb.save()
+
+        if 'darb_code_verifier' in request.session:
+            del request.session['darb_code_verifier']
+
+        customer.connected_del_method = 'darbasabil'
+        customer.save()
+
+        messages.success(request, "تم الربط مع درب السبيل بنجاح")
+        return redirect('darbasabil_settings')
+
+    else:
+        messages.error(request, "فشلت عملية الربط حاول مرة اخرى")
+        return redirect('customer_dashboard')
+
 def fetch_darb_products(access_token):
     url = "https://v2.sabil.ly/api/warehouse/products/"
     
