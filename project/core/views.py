@@ -3016,7 +3016,7 @@ def disconnect_darbasabil(request):
     
     
     
-    return redirect('customer_dashboard')        
+    return redirect('delivery_companies')        
 
 @login_required
 def dilver_darbasabil(request,order_id):
@@ -3414,7 +3414,7 @@ def disconnect_nawris(request):
     except NawrisConnection.DoesNotExist:
         messages.error(request,'ليس لديك ربط حالي مع شركة النورس') 
 
-    return redirect('customer_dashboard')        
+    return redirect('delivery_companies')        
 
 
 @login_required
