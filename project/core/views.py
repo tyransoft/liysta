@@ -2936,7 +2936,6 @@ def darbasabil_settings(request):
             success, result = fetch_darb_products(darb.access_token)
             if success:
                 darb_products = result
-                request.session['darb_products'] = darb_products
             else:
                 api_error = result
         else:
@@ -2967,12 +2966,10 @@ def darbasabil_settings(request):
                             product.del_id = None
                         product.save()
                 
-                darb_settings = form.save(commit=False)
                 
-                storeing_value = request.POST.get('storeing')
-                darb_settings.storeing = storeing_value == 'on'
                 
-                darb_settings.save()
+                
+                form.save()
                 messages.success(request, "تم حفظ إعدادات درب السبيل بنجاح.")
                 return redirect('customer_dashboard')
             else:

@@ -243,18 +243,6 @@
             background: #FEE2E2;
             color: #991B1B;
         }
-        
-        @media (max-width: 768px) {
-            .company-logo {
-                width: 60px;
-                height: 60px;
-                padding: 10px;
-            }
-            
-            .company-name {
-                font-size: 18px;
-            }
-        }
 
         .form-group {
             margin-bottom: 25px;
@@ -336,16 +324,6 @@
         .custom-radio-description {
             font-size: 11px;
             color: var(--text-gray);
-        }
-        
-        @media (max-width: 768px) {
-            .custom-radio-group {
-                flex-direction: column;
-            }
-            
-            .custom-radio-option {
-                min-width: auto;
-            }
         }
 
         .custom-checkbox-group {
@@ -471,21 +449,8 @@
         .btn-secondary:hover {
             background: var(--gray-border);
         }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        @media (max-width: 768px) {
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-        }
 
+        /* أنماط قسم المنتجات */
         .products-mapping-section {
             margin-top: 20px;
             transition: all 0.3s ease;
@@ -529,34 +494,6 @@
             background: var(--primary-light);
             color: var(--secondary-color);
             font-weight: 600;
-            font-size: 13px;
-        }
-        
-        .mapping-table td {
-            background: white;
-        }
-        
-        .mapping-table input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--gray-border);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: monospace;
-        }
-        
-        .mapping-table input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
-        }
-        
-        .product-name {
-            font-weight: 500;
-            color: var(--secondary-color);
-            text-align: right;
         }
         
         .id-container {
@@ -600,13 +537,8 @@
             transform: scale(1.05);
         }
         
-        .copy-btn:active {
-            transform: scale(0.95);
-        }
-        
         .copy-btn.copied {
             background: var(--success-color);
-            animation: pulse 0.3s ease;
         }
         
         .status-badge {
@@ -632,6 +564,29 @@
         .status-invalid {
             background: #FEE2E2;
             color: #991B1B;
+        }
+        
+        .product-id-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            font-family: monospace;
+            transition: all 0.3s ease;
+        }
+        
+        .product-id-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+        }
+        
+        .product-name {
+            font-weight: 500;
+            color: var(--secondary-color);
+            text-align: right;
         }
         
         .no-products {
@@ -666,19 +621,6 @@
             flex: 1;
         }
         
-        .info-box strong {
-            color: var(--secondary-color);
-            display: block;
-            margin-bottom: 5px;
-        }
-        
-        .info-box p {
-            color: var(--text-gray);
-            font-size: 13px;
-            margin: 0;
-            line-height: 1.5;
-        }
-        
         .toast-notification {
             position: fixed;
             bottom: 20px;
@@ -690,43 +632,22 @@
             font-size: 14px;
             z-index: 9999;
             animation: slideIn 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid white;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.6s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .mapping-table-wrapper::-webkit-scrollbar {
-            height: 6px;
-        }
-        
-        .mapping-table-wrapper::-webkit-scrollbar-track {
-            background: var(--gray-border);
-            border-radius: 10px;
-        }
-        
-        .mapping-table-wrapper::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
-        }
-        
-        @media print {
-            .btn, .form-actions, .copy-btn {
-                display: none;
+        @media (max-width: 768px) {
+            .custom-radio-group {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -767,7 +688,7 @@
         <div class="settings-card">
             <div class="company-header">
                 <div class="company-logo">
-                    <img src="{% static 'img/darb.png' %}" alt="شعار درب السبيل" 
+                    <img src="{% static 'img/darb.png' %}" alt="درب السبيل" 
                          onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-truck\' style=\'font-size: 40px; color: #F97316;\'></i>';">
                 </div>
                 <div class="company-info">
@@ -809,48 +730,40 @@
                     من يدفع قيمة الشحن؟
                 </label>
                 <div class="custom-radio-group">
+                    {% for value, label in form.fields.paymentby.choices %}
                     <div class="custom-radio-option">
-                        <input type="radio" name="paymentby" id="paymentby_sales" 
-                               value="sales" 
-                               {% if form.paymentby.value == 'sales' %}checked{% endif %}
+                        <input type="radio" name="paymentby" id="paymentby_{{ value }}" 
+                               value="{{ value }}" 
+                               {% if form.paymentby.value == value %}checked{% endif %}
                                class="custom-radio-input">
-                        <label for="paymentby_sales" class="custom-radio-label">
+                        <label for="paymentby_{{ value }}" class="custom-radio-label">
                             <div class="custom-radio-icon"></div>
                             <div class="custom-radio-text">
-                                <div class="custom-radio-title">المبيعات</div>
-                                <div class="custom-radio-description">يتم دفع قيمة الشحن من قيمة الطلبية</div>
+                                <div class="custom-radio-title">
+                                    {% if value == 'sales' %}
+                                        المبيعات
+                                    {% elif value == 'sender' %}
+                                        المتجر
+                                    {% else %}
+                                        المستلم
+                                    {% endif %}
+                                </div>
+                                <div class="custom-radio-description">
+                                    {% if value == 'sales' %}
+                                        يتم دفع قيمة الشحن من قيمة الطلبية
+                                    {% elif value == 'sender' %}
+                                        يتم دفع قيمة الشحن من قبل المتجر
+                                    {% else %}
+                                        يتم دفع قيمة الشحن من قبل الزبون عند الاستلام
+                                    {% endif %}
+                                </div>
                             </div>
                         </label>
                     </div>
-                    <div class="custom-radio-option">
-                        <input type="radio" name="paymentby" id="paymentby_sender" 
-                               value="sender" 
-                               {% if form.paymentby.value == 'sender' %}checked{% endif %}
-                               class="custom-radio-input">
-                        <label for="paymentby_sender" class="custom-radio-label">
-                            <div class="custom-radio-icon"></div>
-                            <div class="custom-radio-text">
-                                <div class="custom-radio-title">المتجر</div>
-                                <div class="custom-radio-description">يدفع المتجر قيمة الشحن</div>
-                            </div>
-                        </label>
-                    </div>
-                    <div class="custom-radio-option">
-                        <input type="radio" name="paymentby" id="paymentby_receiver" 
-                               value="receiver" 
-                               {% if form.paymentby.value == 'receiver' %}checked{% endif %}
-                               class="custom-radio-input">
-                        <label for="paymentby_receiver" class="custom-radio-label">
-                            <div class="custom-radio-icon"></div>
-                            <div class="custom-radio-text">
-                                <div class="custom-radio-title">المستلم</div>
-                                <div class="custom-radio-description">يدفع المستلم قيمة الشحن</div>
-                            </div>
-                        </label>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-                     
+            
             <div class="form-group">
                 <div class="custom-checkbox-group">
                     <div class="custom-checkbox-option">
@@ -865,7 +778,6 @@
                     </div>
                 </div>
                 <div class="checkbox-description">
-                    <i class="fas fa-info-circle"></i>
                     تتيح هذه الخدمة لشركة درب السبيل التواصل معك لاستلام الطلبية من مكانك
                 </div>
             </div>
@@ -884,7 +796,6 @@
                     </div>
                 </div>
                 <div class="checkbox-description">
-                    <i class="fas fa-info-circle"></i>
                     تمكين خيار الدفع الإلكتروني للعملاء خلال عملية التوصيل
                 </div>
                 
@@ -936,7 +847,6 @@
                         <div>
                             <strong>خطأ في جلب المنتجات:</strong>
                             <p>{{ api_error }}</p>
-                            <small>يرجى التحقق من صحة رمز الوصول (Access Token) أو الاتصال بدعم درب السبيل.</small>
                         </div>
                     </div>
                 </div>
@@ -946,124 +856,100 @@
                         <i class="fas fa-info-circle"></i>
                         <div class="info-box-content">
                             <strong>منتجات درب السبيل</strong>
-                            <p>في الجدول أدناه ستجد جميع منتجاتك المخزنة في درب السبيل. يمكنك نسخ الـ ID الخاص بكل منتج عن طريق الضغط على زر "نسخ" بجانب كل معرف، ثم إضافته إلى منتجك المقابل في متجرك.</p>
+                            <p>يمكنك نسخ الـ ID من الجدول أدناه ولصقه في منتجك المقابل</p>
                         </div>
                     </div>
                     
-                    <div>
-                        <h3 class="section-title">
-                            <i class="fas fa-warehouse"></i>
-                            منتجات درب السبيل المتاحة للتخزين
-                        </h3>
+                    <h3 class="section-title">
+                        <i class="fas fa-warehouse"></i>
+                        منتجات درب السبيل المتاحة
+                    </h3>
+                    <div class="mapping-table-wrapper">
+                        <table class="mapping-table">
+                            <thead>
+                                <tr>
+                                    <th>المعرف (ID)</th>
+                                    <th>اسم المنتج</th>
+                                    <th>سعر البيع</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in darb_products %}
+                                <tr>
+                                    <td>
+                                        <div class="id-container">
+                                            <span class="id-badge" dir="ltr">{{ product.id }}</span>
+                                            <button type="button" class="copy-btn" data-id="{{ product.id }}">
+                                                <i class="fas fa-copy"></i> نسخ
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="product-name">{{ product.name }}</td>
+                                    <td>{{ product.salePrice|default:"—" }} ل.د</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-link"></i>
+                        ربط منتجات متجرك
+                    </h3>
+                    
+                    {% if my_products %}
                         <div class="mapping-table-wrapper">
                             <table class="mapping-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 30%">المعرف (ID)</th>
-                                        <th style="width: 50%">اسم المنتج في درب السبيل</th>
-                                        <th style="width: 20%">سعر البيع</th>
+                                        <th>منتجك في Liysta</th>
+                                        <th>(ID) في درب السبيل</th>
+                                        <th>الحالة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for product in darb_products %}
+                                    {% for product in my_products %}
                                     <tr>
-                                        <td>
-                                            <div class="id-container">
-                                                <span class="id-badge" dir="ltr">{{ product.id }}</span>
-                                                <button type="button" class="copy-btn" data-id="{{ product.id }}" data-name="{{ product.name }}">
-                                                    <i class="fas fa-copy"></i>
-                                                    نسخ
-                                                </button>
-                                            </div>
-                                        </td>
                                         <td class="product-name">{{ product.name }}</td>
-                                        <td>{{ product.salePrice|default:"—" }} ل.د</td>
+                                        <td>
+                                            <input type="text" 
+                                                   name="del_id_{{ product.id }}" 
+                                                   id="del_id_{{ product.id }}"
+                                                   value="{{ product.del_id|default:'' }}"
+                                                   placeholder="الصق المعرف هنا"
+                                                   class="product-id-input"
+                                                   dir="ltr">
+                                        </td>
+                                        <td>
+                                            {% if product.del_id %}
+                                                {% if product.del_id|length == 24 %}
+                                                    <span class="status-badge status-linked">
+                                                        <i class="fas fa-check-circle"></i> مرتبط
+                                                    </span>
+                                                {% else %}
+                                                    <span class="status-badge status-invalid">
+                                                        <i class="fas fa-exclamation-triangle"></i> غير صالح
+                                                    </span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="status-badge status-pending">
+                                                    <i class="fas fa-clock"></i> غير مرتبط
+                                                </span>
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="settings-card">
-                    <div>
-                        <h3 class="section-title">
-                            <i class="fas fa-link"></i>
-                            ربط منتجات متجرك - أدخل المعرف المناسب من درب السبيل
-                        </h3>
-                        <div class="info-box" style="margin-top: 0; margin-bottom: 20px;">
-                            <i class="fas fa-lightbulb"></i>
-                            <div class="info-box-content">
-                                <strong>كيفية الربط:</strong>
-                                <p>1. انسخ المعرف (ID) من الجدول أعلاه باستخدام زر "نسخ"<br>
-                                2. الصق المعرف في حقل الإدخال المقابل لمنتجك في الجدول أدناه<br>
-                                3. احفظ الإعدادات في نهاية الصفحة</p>
-                            </div>
+                    {% else %}
+                        <div class="no-products">
+                            <i class="fas fa-box-open"></i>
+                            <p>لا توجد منتجات في متجرك</p>
                         </div>
-                        
-                        {% if my_products %}
-                            <div class="mapping-table-wrapper">
-                                <table class="mapping-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 35%">منتجك في متجر Liysta</th>
-                                            <th style="width: 45%">المعرف (ID) في درب السبيل</th>
-                                            <th style="width: 20%">حالة الربط</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for product in my_products %}
-                                        <tr>
-                                            <td class="product-name">
-                                                <i class="fas fa-box" style="color: #F97316; margin-left: 8px;"></i>
-                                                {{ product.name }}
-                                            </td>
-                                            <td>
-                                                <input type="text" 
-                                                       name="del_id_{{ product.id }}" 
-                                                       id="del_id_{{ product.id }}"
-                                                       value="{{ product.del_id|default:'' }}"
-                                                       placeholder="الصق المعرف هنا (24 خانة)"
-                                                       class="product-id-input"
-                                                       pattern="[a-fA-F0-9]{24}"
-                                                       title="يجب أن يكون المعرف بصيغة 24 حرفاً (hexadecimal)"
-                                                       dir="ltr">
-                                                <div class="checkbox-description" style="font-size: 11px; margin-top: 5px;">
-                                                    <i class="fas fa-info-circle"></i> 
-                                                    المعرف يكون بصيغة 24 خانة (مثال: 69de1d2846a435d570fd65d1)
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {% if product.del_id %}
-                                                    {% if product.del_id|length == 24 %}
-                                                        <span class="status-badge status-linked">
-                                                            <i class="fas fa-check-circle"></i> مرتبط
-                                                        </span>
-                                                    {% else %}
-                                                        <span class="status-badge status-invalid">
-                                                            <i class="fas fa-exclamation-triangle"></i> معرف غير صالح
-                                                        </span>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <span class="status-badge status-pending">
-                                                        <i class="fas fa-clock"></i> غير مرتبط
-                                                    </span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% else %}
-                            <div class="no-products">
-                                <i class="fas fa-box-open"></i>
-                                <p>لا توجد منتجات في متجرك حالياً.</p>
-                                <small>قم بإضافة منتجات أولاً ثم عد لربطها مع درب السبيل.</small>
-                            </div>
-                        {% endif %}
-                    </div>
+                    {% endif %}
                 </div>
             {% else %}
                 <div class="settings-card">
@@ -1071,11 +957,7 @@
                         <i class="fas fa-info-circle"></i>
                         <div>
                             <strong>لا توجد منتجات</strong>
-                            <p>لا توجد منتجات مستوردة من درب السبيل حالياً. تأكد من:</p>
-                            <ul style="margin-top: 8px; margin-right: 20px;">
-                                <li>تفعيل خدمة التخزين في حساب درب السبيل الخاص بك</li>
-                                <li>إضافة منتجات إلى مستودع درب السبيل</li>
-                            </ul>
+                            <p>لا توجد منتجات في حساب درب السبيل الخاص بك</p>
                         </div>
                     </div>
                 </div>
@@ -1083,66 +965,29 @@
         </div>
         
         <div class="settings-card">
-            <div class="alert alert-warning">
-                <i class="fas fa-lightbulb"></i>
-                <div>
-                    <strong>ملاحظة مهمة:</strong>
-                    <p style="margin: 5px 0 0 0;">سيتم تطبيق هذه الإعدادات على جميع طلبات التوصيل مع شركة درب السبيل الخاصة بمتجرك</p>
-                </div>
-            </div>
-            
             <div class="form-actions">
                 <a href="{% url 'delivery_companies' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-right"></i>
-                    العودة
+                    <i class="fas fa-arrow-right"></i> العودة
                 </a>
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <i class="fas fa-save"></i>
-                    حفظ الإعدادات
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ الإعدادات
                 </button>
             </div>
         </div>
     </form>
-    
-    <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--gray-border);">
-        <a href="{% url 'customer_dashboard' %}" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">
-            <i class="fas fa-home" style="margin-left: 8px;"></i>
-            العودة للوحة التحكم الرئيسية
-        </a>
-    </div>
 </div>
 
 <script>
-    function showToast(message, isError = false) {
-        const existingToast = document.querySelector('.toast-notification');
-        if (existingToast) existingToast.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.style.background = isError ? '#EF4444' : '#10B981';
-        toast.innerHTML = `
-            <i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
-            <span>${message}</span>
-        `;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => toast.remove(), 300);
-        }, 2500);
-    }
-    
-    async function copyToClipboard(text, productName) {
+    async function copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
-            showToast(` تم نسخ المعرف: ${text}${productName ? ` (${productName})` : ''}`);
+            showToast(' تم نسخ المعرف: ' + text);
             
             const buttons = document.querySelectorAll('.copy-btn');
             for (let btn of buttons) {
                 if (btn.getAttribute('data-id') === text) {
                     const originalHTML = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+                    btn.innerHTML = '<i class="fas fa-check"></i> تم';
                     btn.classList.add('copied');
                     setTimeout(() => {
                         btn.innerHTML = originalHTML;
@@ -1152,27 +997,37 @@
                 }
             }
         } catch (err) {
-            console.error('فشل في النسخ: ', err);
             const textarea = document.createElement('textarea');
             textarea.value = text;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            showToast(` تم نسخ المعرف: ${text}`, false);
+            showToast(' تم نسخ المعرف: ' + text);
         }
     }
     
+    function showToast(message) {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+        
+        toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
-        const copyButtons = document.querySelectorAll('.copy-btn');
-        copyButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const id = this.getAttribute('data-id');
-                const name = this.getAttribute('data-name');
-                if (id) {
-                    copyToClipboard(id, name);
-                }
+                if (id) copyToClipboard(id);
             });
         });
         
@@ -1185,141 +1040,54 @@
         const epayOptions = document.getElementById('epayOptions');
         const productsSection = document.getElementById('productsMappingSection');
         
-        function updateCheckboxVisual(checkbox, visual) {
-            if (!checkbox || !visual) return;
-            if (checkbox.checked) {
-                visual.style.background = '#F97316';
-                visual.style.borderColor = '#F97316';
-            } else {
-                visual.style.background = 'white';
-                visual.style.borderColor = '#E5E7EB';
+        function updateVisual(checkbox, visual) {
+            if (checkbox && visual) {
+                if (checkbox.checked) {
+                    visual.style.background = '#F97316';
+                    visual.style.borderColor = '#F97316';
+                } else {
+                    visual.style.background = 'white';
+                    visual.style.borderColor = '#E5E7EB';
+                }
             }
         }
         
-        function setupCheckboxClick(checkbox, visual) {
+        function setupCheckbox(checkbox, visual, onChange) {
             if (!checkbox || !visual) return;
             
-            visual.addEventListener('click', function(e) {
+            visual.addEventListener('click', (e) => {
                 e.preventDefault();
                 checkbox.checked = !checkbox.checked;
-                updateCheckboxVisual(checkbox, visual);
-                checkbox.dispatchEvent(new Event('change'));
+                updateVisual(checkbox, visual);
+                if (onChange) onChange();
             });
             
-            const label = document.querySelector(`label[for="${checkbox.id}"]`);
-            if (label) {
-                label.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    checkbox.checked = !checkbox.checked;
-                    updateCheckboxVisual(checkbox, visual);
-                    checkbox.dispatchEvent(new Event('change'));
-                });
-            }
+            checkbox.addEventListener('change', () => {
+                updateVisual(checkbox, visual);
+                if (onChange) onChange();
+            });
             
-            checkbox.addEventListener('change', function() {
-                updateCheckboxVisual(checkbox, visual);
-            });
+            updateVisual(checkbox, visual);
         }
         
-        function toggleEpayOptions() {
-            if (epayCheckbox && epayOptions) {
-                if (epayCheckbox.checked) {
-                    epayOptions.classList.add('show');
-                } else {
-                    epayOptions.classList.remove('show');
-                }
+        setupCheckbox(epayCheckbox, epayVisual, () => {
+            if (epayOptions) {
+                if (epayCheckbox.checked) epayOptions.classList.add('show');
+                else epayOptions.classList.remove('show');
             }
-        }
+        });
         
-        function toggleProductsSection() {
-            if (storeingCheckbox && productsSection) {
-                if (storeingCheckbox.checked) {
-                    productsSection.style.display = 'block';
-                    productsSection.style.animation = 'fadeIn 0.3s ease';
-                } else {
-                    productsSection.style.display = 'none';
-                }
+        setupCheckbox(collectingCheckbox, collectingVisual);
+        
+        setupCheckbox(storeingCheckbox, storeingVisual, () => {
+            if (productsSection) {
+                if (storeingCheckbox.checked) productsSection.style.display = 'block';
+                else productsSection.style.display = 'none';
             }
-        }
-        
-        updateCheckboxVisual(epayCheckbox, epayVisual);
-        updateCheckboxVisual(collectingCheckbox, collectingVisual);
-        updateCheckboxVisual(storeingCheckbox, storeingVisual);
-        
-        setupCheckboxClick(epayCheckbox, epayVisual);
-        setupCheckboxClick(collectingCheckbox, collectingVisual);
-        setupCheckboxClick(storeingCheckbox, storeingVisual);
-        
-        if (epayCheckbox) epayCheckbox.addEventListener('change', toggleEpayOptions);
-        if (storeingCheckbox) storeingCheckbox.addEventListener('change', toggleProductsSection);
-        
-        toggleEpayOptions();
-        toggleProductsSection();
-        
-        const allVisuals = [epayVisual, collectingVisual, storeingVisual];
-        allVisuals.forEach(visual => {
-            if (!visual) return;
-            visual.addEventListener('mouseenter', function() {
-                const checkbox = this.previousElementSibling;
-                if (checkbox && !checkbox.checked) {
-                    this.style.borderColor = '#F97316';
-                }
-            });
-            visual.addEventListener('mouseleave', function() {
-                const checkbox = this.previousElementSibling;
-                if (checkbox && !checkbox.checked) {
-                    this.style.borderColor = '#E5E7EB';
-                }
-            });
         });
         
-        const paymentbyRadios = document.querySelectorAll('input[name="paymentby"]');
-        paymentbyRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                paymentbyRadios.forEach(r => {
-                    const label = r.nextElementSibling;
-                    if (label) {
-                        const icon = label.querySelector('.custom-radio-icon');
-                        if (r.checked) {
-                            if (icon) icon.style.borderColor = '#F97316';
-                            if (icon) icon.style.background = '#F97316';
-                        } else {
-                            if (icon) icon.style.borderColor = '#E5E7EB';
-                            if (icon) icon.style.background = 'white';
-                        }
-                    }
-                });
-            });
-        });
-        
-        document.querySelectorAll('.product-id-input').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.style.borderColor = '#F97316';
-                this.style.boxShadow = '0 0 0 2px rgba(249, 115, 22, 0.1)';
-            });
-            input.addEventListener('blur', function() {
-                this.style.borderColor = '#E5E7EB';
-                this.style.boxShadow = 'none';
-            });
-        });
-        
-        const form = document.getElementById('darbSettingsForm');
-        const submitBtn = document.getElementById('submitBtn');
-        
-        if (form && submitBtn) {
-            form.addEventListener('submit', function(e) {
-                submitBtn.disabled = true;
-                const originalHTML = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<span class="loading-spinner"></span><span>جاري الحفظ...</span>';
-                
-                setTimeout(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalHTML;
-                }, 5000);
-            });
-        }
-        
-        console.log('تم تحميل الصفحة بنجاح - أزرار النسخ جاهزة للعمل');
+        if (epayOptions && epayCheckbox && epayCheckbox.checked) epayOptions.classList.add('show');
+        if (productsSection && storeingCheckbox && storeingCheckbox.checked) productsSection.style.display = 'block';
     });
 </script>
 </body>
