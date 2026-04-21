@@ -11,7 +11,8 @@
 <head>
 <meta name="description" content="فيديوهات تعليمية لشرح استخدام منصة Liysta في التجارة الإلكترونية في ليبيا. تعلم إدارة الطلبات، المنتجات، المخزون، والتحليلات خطوة بخطوة.">
 <meta name="keywords" content="تعلم التجارة الإلكترونية ليبيا, شرح Liysta, إدارة الطلبات, إدارة المخزون, متجر إلكتروني ليبيا">
-
+<link rel="canonical" href="https://www.liysta.ly/How-it-works/">
+<meta property="og:url" content="https://www.liysta.ly/How-it-works/">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -570,9 +571,7 @@ body {
     box-shadow: 0 10px 30px rgba(255, 123, 37, 0.4);
 }
 
-/* =========================
-   EMPTY STATE
-========================= */
+
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -674,7 +673,13 @@ body {
 
 <div class="video-page-wrapper">
     
-   
+    <div class="breadcrumb-nav">
+        <ul>
+            <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> الرئيسية</a></li>
+            <li><a href="#">التعليم</a></li>
+            <li>فيديوهات تعليمية</li>
+        </ul>
+    </div>
 
     <div class="video-header-page">
         <h1>فيديوهات تعليمية لاستخدام منصة Liysta</h1>
