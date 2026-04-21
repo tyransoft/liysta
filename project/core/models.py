@@ -786,3 +786,21 @@ class NawrisArea(models.Model):
     def __str__(self):
         return f'{self.city_name} -{self.city_id}-|-{self.area_name}-{self.area_id}'
 
+
+class VanexConnection(models.Model):
+    PAY_CHOICES={
+        ('sender','sender'),
+        ('receiver','receiver'),
+    }
+    customer = models.OneToOneField('Customer', on_delete=models.CASCADE)
+
+    token = models.TextField(null=True, blank=True)
+    is_active = models.BooleanField(default=False)
+
+    paymentby = models.CharField(max_length=50,choices=PAY_CHOICES, default='receiver')
+    storing = models.BooleanField(default=False)
+    epay = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+      return f'{self.customer.store_en_name} -{self.connected_at}' 

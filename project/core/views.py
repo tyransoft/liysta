@@ -32,6 +32,8 @@ import re
 import hashlib
 import base64
 import requests
+from django.views.decorators.csrf import csrf_protect
+
 #guest user and so on
 
 def google_verify(request):
@@ -3082,20 +3084,28 @@ def dilver_darbasabil(request,order_id):
       
        for item in  order.orderitem_set.all():
             product = item.product
-        
-            product_json = {
-             "title": product.name,  
-             "quantity": item.quantity,
-             "widthCM": float(product.latitude or 10.0),
-             "heightCM": float(product.high or 10.0),
-             "lengthCM": float(product.length or 10.0),
-             "allowInspection": product.openable,
-             "allowTesting":product.measurable,
-             "isFragile": product.breakable,
-             "amount": product.get_discounted_price(),
-             "currency": "lyd",
-             "isChargeable": True
-            }
+            if product.del_id:  
+              product_json = {
+                "warehouseProduct": str(product.del_id),
+                "quantity": item.quantity,
+                "amount": product.get_discounted_price(),
+                "currency": "lyd",
+                "isChargeable": True
+              }
+            else:
+             product_json = {
+              "title": product.name,  
+              "quantity": item.quantity,
+              "widthCM": float(product.latitude or 10.0),
+              "heightCM": float(product.high or 10.0),
+              "lengthCM": float(product.length or 10.0),
+              "allowInspection": product.openable,
+              "allowTesting":product.measurable,
+              "isFragile": product.breakable,
+              "amount": product.get_discounted_price(),
+              "currency": "lyd",
+              "isChargeable": True
+              }
         
             shipping_data["products"].append(product_json)
        
@@ -3131,7 +3141,6 @@ def dilver_darbasabil(request,order_id):
 
 
 
-from django.views.decorators.csrf import csrf_protect
 
 
 @csrf_protect
@@ -3800,3 +3809,138 @@ def calculate_nawris_price(request):
             'success': False, 
             'error': f'حدث خطأ غير متوقع: {str(e)}'
         }, status=500)
+
+
+
+BASE_URL = "https://api.vanextest.com.ly/api/v1"
+
+def vanex_login(email, password):
+    url = f"{BASE_URL}/authenticate"
+
+    data = {
+        "email": email,
+        "password": password
+    }
+
+    try:
+        response = requests.post(url, json=data)
+        data = response.json()
+
+        if response.status_code == 200 and 'token' in data:
+            return True, data['token']
+        else:
+            return False, data
+
+    except Exception as e:
+        return False, str(e)
+
+def fetch_vanex_products(token):
+    url = f"{BASE_URL}/customer/products"
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        data = response.json()
+
+        if response.status_code == 200:
+            return True, data
+        return False, data
+
+    except Exception as e:
+        return False, str(e)
+
+
+@login_required
+def connect_vanex(request):
+    customer = Customer.objects.get(user=request.user)
+
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        success, result = vanex_login(email, password)
+
+        if success:
+            VanexConnection.objects.update_or_create(
+                customer=customer,
+                defaults={
+                    "email": email,
+                    "password": password,
+                    "token": result,
+                    "is_active": True
+                }
+            )
+
+            messages.success(request, "تم ربط Vanex بنجاح")
+            return redirect('vanex_integration')
+
+        else:
+            messages.error(request, f"خطأ: {result}")
+
+    return render(request, "connect_vanex.html")
+
+
+@login_required
+def vanex_integration(request):
+
+    try:
+        customer = Customer.objects.get(user=request.user)
+    except Customer.DoesNotExist:
+        messages.error(request, 'لم يتم العثور على بيانات المتجر')
+        return redirect('customer_dashboard')
+
+    try:
+        vanex_conn = VanexConnection.objects.get(customer=customer, is_active=True)
+    except VanexConnection.DoesNotExist:
+        messages.warning(request, 'يرجى ربط Vanex أولاً')
+        return redirect('connect_vanex')
+
+    my_products = Products.objects.filter(menu__customer=customer)
+
+    vanex_products = []
+    api_error = None
+
+    if vanex_conn.storing:
+        success, result = fetch_vanex_products(vanex_conn.token)
+        if success:
+            vanex_products = result
+        else:
+            api_error = result
+
+    if request.method == 'POST':
+        vanex_conn.paymentby = request.POST.get('paymentby', 'receiver')
+        vanex_conn.storing = request.POST.get('storing') == 'on'
+        vanex_conn.epay = request.POST.get('epay') == 'on'
+        vanex_conn.save()
+
+        for product in my_products:
+            key = f'del_id_{product.id}'
+
+            if key in request.POST:
+                val = request.POST.get(key)
+
+                if val and val.isdigit():
+                    product.del_id = int(val)
+                elif val == '':
+                    product.del_id = None
+
+                product.save()
+
+        messages.success(request, 'تم حفظ إعدادات Vanex بنجاح')
+        return redirect('customer_dashboard')
+
+    existing_mapping = {p.id: p.del_id for p in my_products if p.del_id}
+
+    context = {
+        'vanex_conn': vanex_conn,
+        'my_products': my_products,
+        'vanex_products': vanex_products,
+        'existing_mapping': existing_mapping,
+        'api_error': api_error,
+        'customer': customer,
+    }
+
+    return render(request, 'vanex_integration.html', context)
