@@ -792,7 +792,7 @@ class VanexConnection(models.Model):
         ('sender','sender'),
         ('receiver','receiver'),
     }
-    customer = models.OneToOneField('Customer', on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
     token = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
@@ -803,4 +803,4 @@ class VanexConnection(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-      return f'{self.customer.store_en_name} -{self.connected_at}' 
+      return f'{self.customer.store_en_name} -{self.created_at}' 

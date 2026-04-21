@@ -3865,15 +3865,13 @@ def connect_vanex(request):
 
         if success:
             VanexConnection.objects.update_or_create(
-                customer=customer,
-                defaults={
-                    "email": email,
-                    "password": password,
-                    "token": result,
-                    "is_active": True
-                }
+                customer=customer, 
+                token= result,
+                is_active= True,
+                
             )
-
+            customer.connected_del_method = 'vanex'
+            customer.save()
             messages.success(request, "تم ربط Vanex بنجاح")
             return redirect('vanex_integration')
 
