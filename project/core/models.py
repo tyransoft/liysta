@@ -208,7 +208,7 @@ class Products(models.Model):
     menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
     catogery=models.ForeignKey(Catogery,on_delete=models.CASCADE)
    
-    del_id=models.CharField(max_length=50)
+    del_id=models.CharField(max_length=50,null=True,blank=True)
 
     name=models.CharField(max_length=50)
     image=models.ImageField(upload_to=get_upload_path,null=False)
