@@ -5,8 +5,8 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Products
         fields = ['name', 'image','quantity','catogery' ,'bought_price'
-        ,'price', 'description','available_colors','available_sizes','high'
-        ,'length','latitude','openable','breakable','measurable','priority']
+        ,'price', 'description','available_colors','available_sizes','priority','high'
+        ,'length','latitude','openable','breakable','measurable']
         
         labels = {
             'name': 'الاسم',
@@ -16,10 +16,11 @@ class ProductForm(forms.ModelForm):
             'description': 'الوصف',
             'bought_price':'سعر التكلفة(يفضل ادخاله للحصول على احصاءات دقيقة)',
             'quantity':'الكمية(يجب اضافته للتحكم في الطلبات)',
+            'priority':'أولوية العرض ',
             'length':'الطول',
             'high':'الارتفاع',
             'latitude':'العرض',
-            'priority':'أولوية العرض ',
+            
         }
         widgets={
             'catogery': forms.Select(attrs={'class': 'form-input'}), 
