@@ -1993,8 +1993,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch(`/calculate-delivery-price/${menuId}/`, {
                 method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         city: cityName,

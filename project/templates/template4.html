@@ -1755,7 +1755,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const response = await fetch(`/calculate-delivery-price/${menuId}/`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ city: cityName, area: areaName, service: serviceId, products: productsData, company: 'darb' })
                 });
                 const data = await response.json();

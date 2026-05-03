@@ -1865,6 +1865,7 @@ def update_order(request, order_id):
             except (ValueError, TypeError):
                 return 0
 
+
         if delivery_type == 'darbasabil':
             darb_service_id = request.POST.get('darb_sabil_service_id')
             darb_price = request.POST.get('company_delivery_price_final', '0')
@@ -3143,7 +3144,7 @@ def dilver_darbasabil(request,order_id):
 
 
 
-@csrf_protect
+@csrf_exempt
 def calucate_delivery_price(request, menu_id):
     try:
         if request.method != 'POST':
@@ -3209,10 +3210,10 @@ def calucate_delivery_price(request, menu_id):
                     order_data["products"].append({
                         "title": product.name,
                         "quantity": item['quantity'],
-                        "widthCM": product.latitude if  product.latitude else 10,
-                        "heightCM": product.high if product.high else 10,
-                        "lengthCM": product.length if product.length else 10,
-                        "amount": 0,
+                        "widthCM": product.latitude if  product.latitude > 2 else 2,
+                        "heightCM": product.high if product.high  > 2 else 2,
+                        "lengthCM": product.length if product.length  > 2 else 2,
+                        "amount": 0 if darb.paymentby == "receiver" else product.get_discounted_price(),
                         "currency": "lyd",
                         "isChargeable": True
                     })
