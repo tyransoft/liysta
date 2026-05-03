@@ -546,6 +546,29 @@
                 <div class="error">{{ form.available_sizes.errors }}</div>
             {% endif %}
         </div>
+                <div class="form-group">
+            <label for="id_priority" class="form-label">اولوية عرض المنتج على موقعك</label>
+            <span class="required-tag">المنتج ذو رقم الاولوية الاعلى بين منتجاتك سيظهر اولا في موقعك</span>
+            {% if form.priority.value %}
+            <div class="current-price-display">
+                <div class="price-display-row">
+                    <span class="price-label">القيمة الحالية:</span>
+                    <span class="price-value">{{ form.priority.value }}</span>
+                </div>
+            </div>
+            <span class="info-note">يمكنك ترك الاولوية او تركها كماهي</span>
+            {% endif %}
+            
+            <div class="price-input-container">
+                <input type="number" name="priority" id="id_priority" 
+                       class="form-input price-input" step="0.01" min="0" 
+                       value="{{ form.priority.value|default:'0' }}" 
+                       placeholder="ادخل اولوية المنتج">
+            </div>
+            {% if form.priority.errors %}
+                <div class="error">{{ form.priority.errors }}</div>
+            {% endif %}
+        </div>
 <div class="delivery-settings-section">
     <div class="delivery-header">
         <h3 class="delivery-title">

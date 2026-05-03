@@ -6,7 +6,7 @@ class ProductForm(forms.ModelForm):
         model = Products
         fields = ['name', 'image','quantity','catogery' ,'bought_price'
         ,'price', 'description','available_colors','available_sizes','high'
-        ,'length','latitude','openable','breakable','measurable']
+        ,'length','latitude','openable','breakable','measurable','priority']
         
         labels = {
             'name': 'الاسم',
@@ -19,6 +19,7 @@ class ProductForm(forms.ModelForm):
             'length':'الطول',
             'high':'الارتفاع',
             'latitude':'العرض',
+            'priority':'أولوية العرض ',
         }
         widgets={
             'catogery': forms.Select(attrs={'class': 'form-input'}), 

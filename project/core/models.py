@@ -226,7 +226,7 @@ class Products(models.Model):
     breakable= models.BooleanField(default=False)
     measurable= models.BooleanField(default=False)
     openable=models.BooleanField(default=False)
-    
+    priority = models.IntegerField(default=0, help_text="كلما زادت القيمة زادت أولوية الظهور")    
     def get_discounted_price(self):
         
          active_discount = CPDiscount.objects.filter(product=self, start_date__lte=timezone.now(), end_date__gte=timezone.now()).first()

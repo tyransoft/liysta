@@ -2038,7 +2038,7 @@ def menu_page_view(request, store_slug):
     if category:
      products = Products.objects.filter(menu=menu,catogery__id=category)
     else:
-     products = Products.objects.filter(menu=menu)
+     products = Products.objects.filter(menu=menu).order_by('-priority', '-id')
     delim=r'[,،٬\|\\/_\.;:-]'
     for product in products:
         if product.available_sizes:
