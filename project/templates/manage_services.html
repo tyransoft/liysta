@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_generic.html' %}
 {% load static %}
 
 {% block title %}إدارة الطلبات - Liysta{% endblock %}
@@ -232,7 +232,7 @@
                     <th>#</th>
                     <th><i class="fas fa-user"></i> اسم العميل</th>
                     <th><i class="fas fa-info-circle"></i> بيانات العميل</th>
-                    <th><i class="fas fa-tag"></i> الخدمة (الميني)</th>
+                    <th><i class="fas fa-tag"></i> id</th>
                     <th><i class="fas fa-money-bill"></i> السعر</th>
                     <th><i class="fas fa-chart-simple"></i> الحالة</th>
                     <th><i class="fas fa-clock"></i> تاريخ الطلب</th>
@@ -247,10 +247,9 @@
                     <td style="text-align: right;">
                         <small>
                             <i class="fas fa-phone"></i> {{ service.menu.customer.phone|default:"غير متوفر" }}<br>
-                            <i class="fas fa-envelope"></i> {{ service.menu.customer.user.email }}
                         </small>
                     </td>
-                    <td>{{ service.menu.name|default:"خدمة مخصصة" }}</td>
+                    <td>{{ service.menu.id }}</td>
                     <td>{{ service.price }} دينار</td>
                     <td>
                         <span class="status-badge status-{{ service.status }}">
