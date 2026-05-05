@@ -136,7 +136,7 @@ class Menu(models.Model):
     desc=models.CharField(max_length=1000)
     qr_image=models.ImageField(null=True,upload_to='Qr_images')
     invoice=models.CharField(max_length=50, choices=invoices_choices,default='invoice1')
-
+    is_custom=models.BooleanField(default=False)
 
     def get_menu_url(self):
      return f'https://liysta.ly/{self.customer.store_slug}'
@@ -805,3 +805,73 @@ class VanexConnection(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
       return f'{self.customer.store_en_name} -{self.created_at}' 
+
+class CustomService(models.Model):
+    STATUS={
+        ('pending','قيد الانتظار'),
+        ('onwork','قيد العمل'),
+        ('canceled','ملغاة')
+        ('delivered','تم التسليم')
+    }
+    DEFAULT_PRICE = 200
+    menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
+    status=models.CharField(max_length=15)
+    created_at=models.DateTimeField(auto_now_add=True)
+    delivered_at=models.DateTimeField(null=True, blank=True)
+    price = models.FloatField(default=200.0)
+    half_price_deducted = models.BooleanField(default=False) 
+    notes = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return f'{self.menu.id}--{self.menu.customer.store_en_name}--{self.created_at}'
+   
+    def save(self, *args, **kwargs):
+        if not self.pk: 
+            self.price = self.DEFAULT_PRICE
+            self.status = 'pending'
+        super().save(*args, **kwargs)
+
+    def deduct_half_price(self):
+        customer = self.menu.customer
+        half_amount = self.price / 2
+        
+        if customer.wallet >= half_amount:
+            customer.wallet -= half_amount
+            customer.save()
+            self.half_price_deducted = True
+            self.save()
+            return True
+        return False
+    
+    def start_work(self):
+        if self.status == 'pending':
+            if self.deduct_half_price():
+                self.status = 'onwork'
+                self.save()
+                return True
+        return False
+    
+    def complete_delivery(self):
+        if self.status == 'onwork':
+            customer = self.menu.customer
+            remaining_amount = self.price / 2
+            
+            if customer.wallet >= remaining_amount:
+                customer.wallet -= remaining_amount
+                customer.save()
+                self.status = 'delivered'
+                self.delivered_at = timezone.now()
+                self.save()
+                return True
+        return False
+    
+    def cancel_service(self):
+        if self.status in ['pending', 'onwork']:
+            if self.half_price_deducted:
+                customer = self.menu.customer
+                customer.wallet += (self.price / 2)
+                customer.save()
+            
+            self.status = 'canceled'
+            self.save()
+            return True
+        return False        

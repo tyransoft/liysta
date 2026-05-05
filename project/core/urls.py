@@ -30,7 +30,9 @@ urlpatterns = [
     path('customers/', customer_list_view, name='customers_list'),
     path('saler-login/',sales_man,name='saler_login'),
     path('saler-man-info/<int:man_id>/',saler_man_info,name='saler-man-info'),
-    
+    path('request_custom_service/',request_custom_service , name='request_custom'),
+    path('manage-services/ ',manage_services , name='manage_services'),
+
     path('menu/setup/', menu_setup, name='menu_setup'),
 
     path('register-customer/', register_customer, name='register-customer'),

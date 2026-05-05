@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إدارة الطلبات - Liysta{% endblock %}
+
+{% block content %}
+<style>
+    /* يمكنك إضافة أي تنسيقات خاصة بهذه الصفحة هنا إذا لزم الأمر */
+    .orders-section {
+        padding: 100px 5% 60px;
+        background: var(--secondary);
+        min-height: calc(100vh - 300px);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-title h2 {
+        font-size: 2rem;
+        color: var(--text);
+        position: relative;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-action);
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    .filters-container {
+        background: var(--white);
+        padding: 25px;
+        border-radius: var(--radius);
+        margin-bottom: 30px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        align-items: flex-end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.9rem;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 10px 15px;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        font-family: 'Tajawal', sans-serif;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    .orders-table-container {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow-x: auto;
+        box-shadow: var(--shadow-md);
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    .orders-table thead {
+        background: var(--gradient-primary);
+        color: var(--white);
+    }
+
+    .orders-table th {
+        padding: 15px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .orders-table td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #E2E8F0;
+    }
+
+    .orders-table tbody tr:hover {
+        background: var(--secondary);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .status-onwork {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+
+    .status-delivered {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .status-canceled {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .btn-sm i {
+        font-size: 0.8rem;
+    }
+
+    /* Pagination */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .pagination-container .btn-outline {
+        background: transparent;
+        color: var(--action);
+        border: 1px solid var(--action);
+        padding: 8px 16px;
+    }
+
+    .pagination-container .btn-outline:hover {
+        background: var(--action);
+        color: var(--white);
+    }
+
+    .current-page {
+        padding: 8px 20px;
+        background: var(--white);
+        border-radius: 8px;
+        color: var(--text);
+        font-weight: 600;
+    }
+</style>
+
+<section class="orders-section">
+    <div class="section-title">
+        <h2><i class="fas fa-chart-line"></i> إدارة الطلبات</h2>
+        <p>لوحة تحكم كاملة لإدارة جميع طلبات الخدمات المخصصة وتتبع حالتها</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-container">
+        <form method="GET" action="{% url 'manage_services' %}" class="filters-grid">
+            <div class="filter-group">
+                <label><i class="fas fa-filter"></i> الحالة</label>
+                <select name="status">
+                    <option value="">الكل</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>قيد الانتظار</option>
+                    <option value="onwork" {% if status_filter == 'onwork' %}selected{% endif %}>قيد العمل</option>
+                    <option value="delivered" {% if status_filter == 'delivered' %}selected{% endif %}>تم التسليم</option>
+                    <option value="canceled" {% if status_filter == 'canceled' %}selected{% endif %}>ملغاة</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-calendar-alt"></i> من تاريخ</label>
+                <input type="date" name="date_from" value="{{ date_from }}">
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-calendar-alt"></i> إلى تاريخ</label>
+                <input type="date" name="date_to" value="{{ date_to }}">
+            </div>
+            <div class="filter-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> بحث
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="orders-table-container">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th><i class="fas fa-user"></i> اسم العميل</th>
+                    <th><i class="fas fa-info-circle"></i> بيانات العميل</th>
+                    <th><i class="fas fa-tag"></i> الخدمة (الميني)</th>
+                    <th><i class="fas fa-money-bill"></i> السعر</th>
+                    <th><i class="fas fa-chart-simple"></i> الحالة</th>
+                    <th><i class="fas fa-clock"></i> تاريخ الطلب</th>
+                    <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                <tr>
+                    <td>{{ service.id }}</td>
+                    <td>{{ service.menu.customer.store_ar_name|default:service.menu.customer.user.username }}</td>
+                    <td style="text-align: right;">
+                        <small>
+                            <i class="fas fa-phone"></i> {{ service.menu.customer.phone|default:"غير متوفر" }}<br>
+                            <i class="fas fa-envelope"></i> {{ service.menu.customer.user.email }}
+                        </small>
+                    </td>
+                    <td>{{ service.menu.name|default:"خدمة مخصصة" }}</td>
+                    <td>{{ service.price }} دينار</td>
+                    <td>
+                        <span class="status-badge status-{{ service.status }}">
+                            {% if service.status == 'pending' %}
+                                <i class="fas fa-clock"></i> قيد الانتظار
+                            {% elif service.status == 'onwork' %}
+                                <i class="fas fa-cogs"></i> قيد العمل
+                            {% elif service.status == 'delivered' %}
+                                <i class="fas fa-check-circle"></i> تم التسليم
+                            {% else %}
+                                <i class="fas fa-ban"></i> ملغاة
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>{{ service.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="action-buttons">
+                        {% if service.status == 'pending' %}
+                        <form method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                            <button type="submit" name="action" value="start_work" 
+                                    class="btn btn-sm btn-action"
+                                    onclick="return confirm('سيتم خصم نصف القيمة ({{ service.price|floatformat:0|add:0|divisibleby:2 }} دينار) من محفظة العميل. هل أنت متأكد من بدء العمل؟')">
+                                <i class="fas fa-play"></i> بدء العمل
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                        {% if service.status == 'onwork' %}
+                        <form method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                            <button type="submit" name="action" value="complete_delivery" 
+                                    class="btn btn-sm btn-success"
+                                    onclick="return confirm('سيتم خصم النصف المتبقي ({{ service.price|floatformat:0|add:0|divisibleby:2 }} دينار) من محفظة العميل. هل أنت متأكد من التسليم؟')">
+                                <i class="fas fa-check"></i> تسليم
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                        {% if service.status in 'pending,onwork' %}
+                        <form method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                            <button type="submit" name="action" value="cancel_service" 
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('هل أنت متأكد من إلغاء هذا الطلب؟ سيتم رد المبلغ المخصوم إن وجد.')">
+                                <i class="fas fa-times"></i> إلغاء
+                            </button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-inbox fa-4x" style="color: #CBD5E1; margin-bottom: 15px; display: block;"></i>
+                        <p style="color: var(--text-light);">لا توجد طلبات للعرض</p>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">عند تقديم العملاء لطلبات جديدة، ستظهر هنا</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if services.has_other_pages %}
+    <div class="pagination-container">
+        {% if services.has_previous %}
+        <a href="?page={{ services.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}" 
+           class="btn btn-outline">
+            <i class="fas fa-chevron-right"></i> السابق
+        </a>
+        {% endif %}
+        
+        <span class="current-page">
+            صفحة {{ services.number }} من {{ services.paginator.num_pages }}
+        </span>
+        
+        {% if services.has_next %}
+        <a href="?page={{ services.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}" 
+           class="btn btn-outline">
+            التالي <i class="fas fa-chevron-left"></i>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

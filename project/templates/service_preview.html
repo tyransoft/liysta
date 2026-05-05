@@ -1,0 +1,565 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}طلب خدمة مخصصة | {{ menu.name }} - Liysta{% endblock %}
+
+{% block content %}
+<style>
+    .service-request-section {
+        padding: 120px 5% 80px;
+        background: var(--secondary);
+        min-height: 100vh;
+    }
+
+    .service-request-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .service-grid {
+        display: grid;
+        grid-template-columns: 1fr 0.8fr;
+        gap: 30px;
+    }
+
+    @media (max-width: 992px) {
+        .service-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Main Content */
+    .service-main-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+
+    .service-header {
+        background: var(--gradient-primary);
+        color: var(--white);
+        padding: 30px;
+        text-align: center;
+    }
+
+    .service-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .service-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 15px 0;
+    }
+
+    .service-price small {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .half-price {
+        background: rgba(255, 255, 255, 0.2);
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .service-body {
+        padding: 30px;
+    }
+
+    .section-box {
+        margin-bottom: 35px;
+        border-bottom: 1px solid #E2E8F0;
+        padding-bottom: 25px;
+    }
+
+    .section-box:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .section-title-custom {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        color: var(--text);
+        font-size: 1.3rem;
+    }
+
+    .section-title-custom i {
+        color: var(--primary);
+        font-size: 1.5rem;
+    }
+
+    .terms-list, .advantages-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .terms-list li, .advantages-list li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        background: var(--secondary);
+        border-radius: 10px;
+    }
+
+    .terms-list li i, .advantages-list li i {
+        width: 30px;
+        height: 30px;
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .payment-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .payment-step {
+        background: var(--secondary);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+    }
+
+    .payment-step .step-num {
+        width: 30px;
+        height: 30px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: bold;
+    }
+
+    .menu-preview {
+        background: #F0FDF4;
+        border: 1px solid #22C55E;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .menu-preview h4 {
+        color: var(--success);
+        margin-bottom: 10px;
+    }
+
+    /* Sidebar */
+    .service-sidebar {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        position: sticky;
+        top: 100px;
+    }
+
+    .sidebar-header {
+        background: var(--gradient-action);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .sidebar-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+    }
+
+    .recent-services {
+        padding: 20px;
+    }
+
+    .recent-service-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #E2E8F0;
+        transition: var(--transition);
+    }
+
+    .recent-service-item:hover {
+        background: var(--secondary);
+    }
+
+    .recent-service-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .recent-service-info h4 {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        color: var(--text);
+    }
+
+    .recent-service-info p {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .recent-service-date {
+        font-size: 0.7rem;
+        color: var(--success);
+    }
+
+    .empty-services {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-light);
+    }
+
+    /* Form */
+    .request-form {
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 1px solid #E2E8F0;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        resize: vertical;
+        font-family: 'Tajawal', sans-serif;
+        transition: var(--transition);
+    }
+
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    .balance-warning {
+        background: #FEF3C7;
+        border: 1px solid #F59E0B;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .balance-warning i {
+        font-size: 1.5rem;
+        color: #F59E0B;
+    }
+
+    .balance-warning .warning-text {
+        flex: 1;
+        font-size: 0.9rem;
+        color: #92400E;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.1rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .wallet-balance {
+        background: linear-gradient(135deg, #2563EB, #1E40AF);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .wallet-balance span {
+        font-size: 1.8rem;
+        font-weight: bold;
+        display: block;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .fa-spin {
+        animation: spin 1s linear infinite;
+    }
+</style>
+
+<section class="service-request-section">
+    <div class="service-request-container">
+        <div class="service-grid">
+            <!-- Main Content -->
+            <div class="service-main-card">
+                <div class="service-header">
+                    <h1><i class="fas fa-concierge-bell"></i> {{ menu.name|default:"خدمة مخصصة" }}</h1>
+                    <div class="service-price">
+                        {{ service_price }} <small>دينار</small>
+                    </div>
+                    <div class="half-price">
+                        <i class="fas fa-percent"></i> نصف القيمة مقدم: {{ half_price }} دينار
+                    </div>
+                </div>
+
+                <div class="service-body">
+                    <!-- Menu Preview -->
+                    <div class="menu-preview">
+                        <h4><i class="fas fa-info-circle"></i> معاينة الخدمة</h4>
+                        <p>{{ menu.description|default:"هذه خدمة تصميم احترافية حسب متطلباتك، نقدم لك أفضل الحلول المبتكرة لتلبية احتياجاتك." }}</p>
+                        {% if menu.image %}
+                        <div style="margin-top: 10px;">
+                            <img src="{{ menu.image.url }}" alt="{{ menu.name }}" style="max-width: 100%; border-radius: 10px;">
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Terms Section -->
+                    <div class="section-box">
+                        <div class="section-title-custom">
+                            <i class="fas fa-file-contract"></i>
+                            <h3>شروط الخدمة</h3>
+                        </div>
+                        <ul class="terms-list">
+                            <li><i class="fas fa-check"></i> نصف المبلغ مقدم - يتم خصمه فور بدء العمل</li>
+                            <li><i class="fas fa-check"></i> النصف المتبقي يتم خصمه عند انتهاء التصميم والتسليم</li>
+                            <li><i class="fas fa-check"></i> يجب أن يتوفر في محفظتك نصف قيمة الخدمة لتقديم الطلب</li>
+                            <li><i class="fas fa-check"></i> سيتواصل معك موظف الشركة لتأكيد الطلب خلال 24 ساعة</li>
+                            <li><i class="fas fa-check"></i> في حالة الإلغاء قبل البدء، لا يتم خصم أي مبلغ</li>
+                            <li><i class="fas fa-check"></i> في حالة الإلغاء بعد البدء، يتم استرداد المبلغ المتبقي فقط</li>
+                        </ul>
+                    </div>
+
+                    <!-- Advantages Section -->
+                    <div class="section-box">
+                        <div class="section-title-custom">
+                            <i class="fas fa-star"></i>
+                            <h3>مزايا الخدمة</h3>
+                        </div>
+                        <ul class="advantages-list">
+                            <li><i class="fas fa-gem"></i> تصميم احترافي حسب طلبك</li>
+                            <li><i class="fas fa-headset"></i> دعم فني متواصل على مدار الساعة</li>
+                            <li><i class="fas fa-sync-alt"></i> تعديلات غير محدودة حتى إشعارك بالرضا</li>
+                            <li><i class="fas fa-clock"></i> تسليم سريع خلال 3-5 أيام عمل</li>
+                            <li><i class="fas fa-chart-line"></i> تقرير أداء مفصل بعد التسليم</li>
+                            <li><i class="fas fa-shield-alt"></i> ضمان جودة الخدمة لمدة 30 يوم</li>
+                        </ul>
+                    </div>
+
+                    <!-- Payment Process -->
+                    <div class="section-box">
+                        <div class="section-title-custom">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>عملية الدفع</h3>
+                        </div>
+                        <div class="payment-steps">
+                            <div class="payment-step">
+                                <div class="step-num">1</div>
+                                <strong>تقديم الطلب</strong>
+                                <small>بدون أي خصم</small>
+                            </div>
+                            <div class="payment-step">
+                                <div class="step-num">2</div>
+                                <strong>تواصل الموظف</strong>
+                                <small>لتأكيد الطلب</small>
+                            </div>
+                            <div class="payment-step">
+                                <div class="step-num">3</div>
+                                <strong>خصم {{ half_price }} دينار</strong>
+                                <small>عند بدء العمل</small>
+                            </div>
+                            <div class="payment-step">
+                                <div class="step-num">4</div>
+                                <strong>خصم {{ half_price }} دينار</strong>
+                                <small>عند التسليم</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Request Form -->
+                    <div class="request-form">
+                        {% if user.is_authenticated %}
+                            {% if not user.is_staff %}
+                                <!-- Customer View -->
+                                {% if customer_wallet_balance is not None %}
+                                <div class="wallet-balance">
+                                    <i class="fas fa-wallet"></i> رصيد محفظتك الحالي
+                                    <span>{{ customer_wallet_balance }} دينار</span>
+                                </div>
+                                {% endif %}
+
+                                {% if has_sufficient_balance %}
+                                <form method="POST" id="serviceRequestForm">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="notes"><i class="fas fa-pen"></i> ملاحظات إضافية (اختياري)</label>
+                                        <textarea name="notes" id="notes" rows="4" placeholder="اكتب هنا أي تفاصيل إضافية تود إضافتها لطلبك..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn-submit" id="submitBtn">
+                                        <i class="fas fa-check-circle"></i> تقديم الطلب
+                                    </button>
+                                </form>
+                                {% else %}
+                                <div class="balance-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="warning-text">
+                                        <strong>عذراً، رصيد محفظتك غير كافٍ</strong><br>
+                                        يجب أن يكون لديك على الأقل {{ half_price }} دينار لتقديم الطلب.
+                                        رصيدك الحالي: {{ customer_wallet_balance }} دينار
+                                    </div>
+                                </div>
+                                <a href="{% url 'wallet_charging' %}" class="btn btn-primary" style="width: 100%; text-align: center;">
+                                    <i class="fas fa-plus-circle"></i> شحن المحفظة
+                                </a>
+                                {% endif %}
+                            {% else %}
+                                <!-- Admin View -->
+                                <div class="balance-warning">
+                                    <i class="fas fa-info-circle"></i>
+                                    <div class="warning-text">
+                                        أنت مسجل كمسؤول. لا يمكنك تقديم طلب خدمة.
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="balance-warning">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <div class="warning-text">
+                                    <strong>يرجى تسجيل الدخول لتقديم الطلب</strong><br>
+                                    سجل دخولك أولاً لتتمكن من طلب هذه الخدمة.
+                                </div>
+                            </div>
+                            <a href="{% url 'user_login' %}?next={{ request.path }}" class="btn btn-primary" style="width: 100%; text-align: center;">
+                                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar - Recent Services -->
+            <div class="service-sidebar">
+                <div class="sidebar-header">
+                    <h3><i class="fas fa-history"></i> خدمات سابقة منجزة</h3>
+                </div>
+                <div class="recent-services">
+                    {% if recent_services %}
+                        {% for prev_service in recent_services %}
+                        <div class="recent-service-item">
+                            <div class="recent-service-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="recent-service-info">
+                                <h4>{{ prev_service.menu.name|default:"خدمة مخصصة" }}</h4>
+                                <p>{{ prev_service.notes|truncatewords:10|default:"تم التسليم بنجاح" }}</p>
+                                <div class="recent-service-date">
+                                    <i class="fas fa-calendar-alt"></i> {{ prev_service.created_at|date:"Y-m-d" }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-services">
+                            <i class="fas fa-inbox fa-3x" style="margin-bottom: 10px; display: block;"></i>
+                            <p>لا توجد خدمات سابقة منجزة</p>
+                            <small>كن أول من يطلب هذه الخدمة!</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Handle form submission with loading state
+    const form = document.getElementById('serviceRequestForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تقديم الطلب...';
+        });
+    }
+
+    function showMessage(message, type) {
+        const alertContainer = document.querySelector('.alert-container');
+        if (alertContainer) {
+            const alert = document.createElement('div');
+            alert.className = `alert-custom alert-${type}`;
+            alert.innerHTML = `
+                <div class="icon">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                </div>
+                <div class="content">${message}</div>
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert) alert.remove();
+            }, 5000);
+        }
+    }
+</script>
+{% endblock %}

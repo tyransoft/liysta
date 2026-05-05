@@ -2076,7 +2076,10 @@ def menu_page_view(request, store_slug):
         'nawris':nawris,
         'nawris_areas':nawris_areas,
     }
-    return render(request, f'{menu.template}.html', context)
+    if menu.is_custom:
+      return render(request, f'custom_template/{menu.id}.html', context)
+    else:    
+      return render(request, f'{menu.template}.html', context)
     
 @login_required
 def renew_subscription(request, subscription_id):
@@ -3812,6 +3815,155 @@ def calculate_nawris_price(request):
         }, status=500)
 
 
+@login_required
+def request_custom_service(request, menu_id):
+    menu = get_object_or_404(Menu, id=menu_id)
+    
+    if request.method == 'POST':
+        customer = menu.customer
+        half_amount = CustomService.DEFAULT_PRICE / 2
+        
+        if customer.wallet >= half_amount:
+            service = CustomService.objects.create(
+                menu=menu,
+                notes=request.POST.get('notes', '')
+            )
+            messages.success(request, 'تم تقديم طلب الخدمة بنجاح! سيتم التواصل معك قريباً لتأكيد الطلب.')
+            return redirect('service_preview', service_id=service.id)
+        else:
+            messages.error(request, f'عذراً، رصيد محفظتك غير كافٍ. يجب أن يكون لديك على الأقل {half_amount} لتقديم الطلب.')
+            return redirect('service_preview', menu_id=menu_id)
+    
+
+    context = {
+        'menu': menu,
+       
+        'service_price': CustomService.DEFAULT_PRICE,
+        'half_price': CustomService.DEFAULT_PRICE / 2,
+        
+    }
+    return render(request, 'service_preview.html', context)
+
+
+
+
+
+@login_required
+def manage_services(request):
+    if not request.user.is_staff:
+        messages.error(request, 'غير مصرح لك بالدخول إلى هذه الصفحة')
+        return redirect('home')
+    
+    services = CustomService.objects.all()
+    
+    status_filter = request.GET.get('status', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    
+    if status_filter:
+        services = services.filter(status=status_filter)
+    
+    if date_from:
+        services = services.filter(created_at__date__gte=date_from)
+    
+    if date_to:
+        services = services.filter(created_at__date__lte=date_to)
+    
+    
+    paginator = Paginator(services.order_by('-created_at'), 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    if request.method == 'POST':
+        service_id = request.POST.get('service_id')
+        action = request.POST.get('action')
+        service = get_object_or_404(CustomService, id=service_id)
+        
+        if action == 'start_work' and service.start_work():
+            messages.success(request, f'تم بدء العمل على الطلب {service.id} وخصم نصف القيمة')
+        elif action == 'complete_delivery' and service.complete_delivery():
+            messages.success(request, f'تم تسليم الطلب {service.id} وخصم القيمة المتبقية')
+        elif action == 'cancel_service' and service.cancel_service():
+            messages.success(request, f'تم إلغاء الطلب {service.id}')
+        else:
+            messages.error(request, f'لا يمكن تنفيذ هذا الإجراء على الطلب {service.id}')
+        
+        return redirect('manage_services')
+    
+    context = {
+        'services': page_obj,
+        'status_filter': status_filter,
+        'date_from': date_from,
+        'date_to': date_to,
+        'status_choices': CustomService.STATUS,
+    }
+    return render(request, 'manage_services.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 BASE_URL = "https://api.vanextest.com.ly/api/v1"
 
@@ -3943,3 +4095,6 @@ def vanex_integration(request):
     }
 
     return render(request, 'vanex_integration.html', context)
+
+
+
