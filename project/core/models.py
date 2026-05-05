@@ -810,7 +810,7 @@ class CustomService(models.Model):
     STATUS={
         ('pending','قيد الانتظار'),
         ('onwork','قيد العمل'),
-        ('canceled','ملغاة')
+        ('canceled','ملغاة'),
         ('delivered','تم التسليم')
     }
     DEFAULT_PRICE = 200
