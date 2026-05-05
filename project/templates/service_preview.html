@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}طلب خدمة مخصصة | {{ menu.name }} - Liysta{% endblock %}
+{% block title %}طلب خدمة مخصصة  - Liysta{% endblock %}
 
 {% block content %}
 <style>
@@ -352,7 +352,7 @@
             <!-- Main Content -->
             <div class="service-main-card">
                 <div class="service-header">
-                    <h1><i class="fas fa-concierge-bell"></i> {{ menu.name|default:"خدمة مخصصة" }}</h1>
+                    <h1><i class="fas fa-concierge-bell"></i> خدمة مخصصة</h1>
                     <div class="service-price">
                         {{ service_price }} <small>دينار</small>
                     </div>
@@ -365,12 +365,8 @@
                     <!-- Menu Preview -->
                     <div class="menu-preview">
                         <h4><i class="fas fa-info-circle"></i> معاينة الخدمة</h4>
-                        <p>{{ menu.description|default:"هذه خدمة تصميم احترافية حسب متطلباتك، نقدم لك أفضل الحلول المبتكرة لتلبية احتياجاتك." }}</p>
-                        {% if menu.image %}
-                        <div style="margin-top: 10px;">
-                            <img src="{{ menu.image.url }}" alt="{{ menu.name }}" style="max-width: 100%; border-radius: 10px;">
-                        </div>
-                        {% endif %}
+                        <p>هذه خدمة تصميم  حسب متطلباتك، نقدم لك أفضل الحلول المبتكرة لتلبية احتياجاتك.</p>
+               
                     </div>
 
                     <!-- Terms Section -->
@@ -440,10 +436,10 @@
                         {% if user.is_authenticated %}
                             {% if not user.is_staff %}
                                 <!-- Customer View -->
-                                {% if customer_wallet_balance is not None %}
+                                {% if menu.customer.wallet is not None %}
                                 <div class="wallet-balance">
                                     <i class="fas fa-wallet"></i> رصيد محفظتك الحالي
-                                    <span>{{ customer_wallet_balance }} دينار</span>
+                                    <span>{{ menu.customer.wallet }} دينار</span>
                                 </div>
                                 {% endif %}
 
@@ -464,7 +460,7 @@
                                     <div class="warning-text">
                                         <strong>عذراً، رصيد محفظتك غير كافٍ</strong><br>
                                         يجب أن يكون لديك على الأقل {{ half_price }} دينار لتقديم الطلب.
-                                        رصيدك الحالي: {{ customer_wallet_balance }} دينار
+                                        رصيدك الحالي: {{ menu.customer.wallet }} دينار
                                     </div>
                                 </div>
                                 <a href="{% url 'wallet_charging' %}" class="btn btn-primary" style="width: 100%; text-align: center;">
@@ -496,36 +492,7 @@
                 </div>
             </div>
 
-            <!-- Sidebar - Recent Services -->
-            <div class="service-sidebar">
-                <div class="sidebar-header">
-                    <h3><i class="fas fa-history"></i> خدمات سابقة منجزة</h3>
-                </div>
-                <div class="recent-services">
-                    {% if recent_services %}
-                        {% for prev_service in recent_services %}
-                        <div class="recent-service-item">
-                            <div class="recent-service-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="recent-service-info">
-                                <h4>{{ prev_service.menu.name|default:"خدمة مخصصة" }}</h4>
-                                <p>{{ prev_service.notes|truncatewords:10|default:"تم التسليم بنجاح" }}</p>
-                                <div class="recent-service-date">
-                                    <i class="fas fa-calendar-alt"></i> {{ prev_service.created_at|date:"Y-m-d" }}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="empty-services">
-                            <i class="fas fa-inbox fa-3x" style="margin-bottom: 10px; display: block;"></i>
-                            <p>لا توجد خدمات سابقة منجزة</p>
-                            <small>كن أول من يطلب هذه الخدمة!</small>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+          
         </div>
     </div>
 </section>
