@@ -3830,8 +3830,9 @@ def request_custom_service(request, menu_id):
                 menu=menu,
                 notes=request.POST.get('notes', '')
             )
+            service.save()
             messages.success(request, 'تم تقديم طلب الخدمة بنجاح! سيتم التواصل معك قريباً لتأكيد الطلب.')
-            return redirect('service_preview', service_id=service.id)
+            return redirect('customer_dashboard')
         else:
             messages.error(request, f'عذراً، رصيد محفظتك غير كافٍ. يجب أن يكون لديك على الأقل {half_amount} لتقديم الطلب.')
             return redirect('service_preview', menu_id=menu_id)
