@@ -814,12 +814,12 @@ class CustomService(models.Model):
         ('canceled','ملغاة'),
         ('delivered','تم التسليم')
     }
-    DEFAULT_PRICE = 50
+    DEFAULT_PRICE = 100
     menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
     status=models.CharField(max_length=15)
     created_at=models.DateTimeField(auto_now_add=True)
     delivered_at=models.DateTimeField(null=True, blank=True)
-    price = models.FloatField(default=50.0)
+    price = models.FloatField(default=100.0)
     half_price_deducted = models.BooleanField(default=False) 
     notes = models.TextField(blank=True, null=True)
     def __str__(self):

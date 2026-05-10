@@ -466,6 +466,8 @@ def customer_list_view(request):
     }
     return render(request, 'customer_list.html', context)
 
+def view_custom(request):
+        return render(request, 'custom_template/arki-store.html')
 
 #for user (subscription,authentication ......etc)
 

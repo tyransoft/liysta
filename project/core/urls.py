@@ -48,6 +48,7 @@ urlpatterns = [
     path('reset-password-confirm/<uidb64>/<token>',v.PasswordResetConfirmView.as_view(template_name='reset_password_confirm.html'),name='password_reset_confirm'),
     path('reset-password-complete/',v.PasswordResetCompleteView.as_view(template_name='reset_password_complete.html'),name='password_reset_complete'),
 
+    path('preview-custom/', view_custom, name='custom'),
 
     path('wallet-charging/', wallet_charging, name='wallet_charging'),
     path('choose-template/<int:menu_id>', choose_template, name='choose_template'),
