@@ -3820,10 +3820,10 @@ def calculate_nawris_price(request):
 @login_required
 def request_custom_service(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
-    
+    half_amount = CustomService.DEFAULT_PRICE / 2
     if request.method == 'POST':
         customer = menu.customer
-        half_amount = CustomService.DEFAULT_PRICE / 2
+       
         
         if customer.wallet >= half_amount:
             service = CustomService.objects.create(
@@ -3839,7 +3839,7 @@ def request_custom_service(request, menu_id):
 
     context = {
         'menu': menu,
-       
+        'has_sufficient_balance':True if menu.customer.wallet >= half_amount else False ,
         'service_price': CustomService.DEFAULT_PRICE,
         'half_price': CustomService.DEFAULT_PRICE / 2,
         
@@ -3900,69 +3900,6 @@ def manage_services(request):
         'status_choices': CustomService.STATUS,
     }
     return render(request, 'manage_services.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
