@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -854,13 +855,20 @@ class CustomService(models.Model):
         if self.status == 'onwork':
             customer = self.menu.customer
             remaining_amount = self.price / 2
-            
+            now = datetime.now()
             if customer.wallet >= remaining_amount:
                 customer.wallet -= remaining_amount
                 customer.save()
                 self.status = 'delivered'
                 self.delivered_at = timezone.now()
                 self.save()
+                admin, created = AdminSales.objects.get_or_create(
+                  created_at__month=now.month,
+                  created_at__year=now.year,
+                )
+
+                admin.profit += float(self.price)
+                admin.save()
                 return True
         return False
     

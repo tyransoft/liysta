@@ -1,11 +1,10 @@
 {% extends 'base_generic.html' %}
 {% load static %}
 
-{% block title %}إدارة الطلبات - Liysta{% endblock %}
+{% block title %}طلبات التصميم المخصصة  - Liysta{% endblock %}
 
 {% block content %}
 <style>
-    /* يمكنك إضافة أي تنسيقات خاصة بهذه الصفحة هنا إذا لزم الأمر */
     .orders-section {
         padding: 100px 5% 60px;
         background: var(--secondary);
@@ -160,7 +159,6 @@
         font-size: 0.8rem;
     }
 
-    /* Pagination */
     .pagination-container {
         display: flex;
         justify-content: center;
@@ -191,15 +189,13 @@
 
 <section class="orders-section">
     <div class="section-title">
-        <h2><i class="fas fa-chart-line"></i> إدارة الطلبات</h2>
-        <p>لوحة تحكم كاملة لإدارة جميع طلبات الخدمات المخصصة وتتبع حالتها</p>
+        <h2><i class="fas fa-chart-line"></i> طلبات التصميم المخصص </h2>
     </div>
 
-    <!-- Filters -->
     <div class="filters-container">
         <form method="GET" action="{% url 'manage_services' %}" class="filters-grid">
             <div class="filter-group">
-                <label><i class="fas fa-filter"></i> الحالة</label>
+                <label></i> الحالة</label>
                 <select name="status">
                     <option value="">الكل</option>
                     <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>قيد الانتظار</option>
@@ -209,34 +205,33 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label><i class="fas fa-calendar-alt"></i> من تاريخ</label>
+                <label> من تاريخ</label>
                 <input type="date" name="date_from" value="{{ date_from }}">
             </div>
             <div class="filter-group">
-                <label><i class="fas fa-calendar-alt"></i> إلى تاريخ</label>
+                <label> إلى تاريخ</label>
                 <input type="date" name="date_to" value="{{ date_to }}">
             </div>
             <div class="filter-group">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> بحث
+                    </i> بحث
                 </button>
             </div>
         </form>
     </div>
 
-    <!-- Orders Table -->
     <div class="orders-table-container">
         <table class="orders-table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th><i class="fas fa-user"></i> اسم العميل</th>
-                    <th><i class="fas fa-info-circle"></i> بيانات العميل</th>
-                    <th><i class="fas fa-tag"></i> id</th>
-                    <th><i class="fas fa-money-bill"></i> السعر</th>
-                    <th><i class="fas fa-chart-simple"></i> الحالة</th>
-                    <th><i class="fas fa-clock"></i> تاريخ الطلب</th>
-                    <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                    <th> اسم العميل</th>
+                    <th> بيانات العميل</th>
+                    <th> id</th>
+                    <th> السعر</th>
+                    <th> الحالة</th>
+                    <th>تاريخ الطلب</th>
+                    <th> الإجراءات</th>
                 </tr>
             </thead>
             <tbody>
@@ -246,7 +241,7 @@
                     <td>{{ service.menu.customer.store_ar_name|default:service.menu.customer.user.username }}</td>
                     <td style="text-align: right;">
                         <small>
-                            <i class="fas fa-phone"></i> {{ service.menu.customer.phone|default:"غير متوفر" }}<br>
+                            {{ service.menu.customer.phone|default:"غير متوفر" }}<br>
                         </small>
                     </td>
                     <td>{{ service.menu.id }}</td>

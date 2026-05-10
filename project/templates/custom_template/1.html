@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ menu.customer.store_ar_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <style>
+    /* ── Variables ─────────────────────────────────────────── */
+    :root {
+        --primary:       #26170c;
+        --primary-dark:  color-mix(in srgb, var(--primary) 85%, black);
+        --surface:       #fcf9f8;
+        --surface-low:   #f6f3f2;
+        --surface-mid:   #f0eded;
+        --border:        #e5ddd8;
+        --text-main:     #1c1b1b;
+        --text-muted:    #5f5e5b;
+        --text-soft:     #4f453f;
+        --white:         #ffffff;
+        --danger:        #c0392b;
+        --success:       #27ae60;
+        --nav-h:         70px;
+        --font:          'Manrope', system-ui, sans-serif;
+        --radius:        10px;
+        --shadow-sm:     0 1px 4px rgba(0,0,0,.06);
+        --shadow-md:     0 4px 20px rgba(0,0,0,.1);
+        --shadow-lg:     0 12px 48px rgba(0,0,0,.16);
+        --transition:    .28s ease;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--surface); color: var(--text-main); direction: rtl; line-height: 1.6; -webkit-font-smoothing: antialiased; padding-bottom: 60px; }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    ul { list-style: none; }
+    input, select, textarea { font-family: inherit; }
+    .material-symbols-outlined { vertical-align: middle; }
+
+    /* ── Navbar ─────────────────────────────────────────────── */
+    #navbar {
+        position: sticky; top: 0; z-index: 200;
+        height: var(--nav-h);
+        background: rgba(252,249,248,.94);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center;
+    }
+    .nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-logo img { height: 42px; width: auto; object-fit: contain; border-radius: 6px; }
+    .nav-logo span { font-size: 22px; font-weight: 700; letter-spacing: .1em; color: var(--primary); }
+    .nav-rating { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--border); padding: 7px 16px; border-radius: 40px; box-shadow: var(--shadow-sm); font-size: 14px; font-weight: 600; }
+    .nav-stars { color: var(--primary); font-size: 14px; letter-spacing: 2px; }
+    .nav-actions { display: flex; align-items: center; gap: 6px; }
+    .icon-btn { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--text-main); transition: background var(--transition); position: relative; }
+    .icon-btn:hover { background: var(--surface-low); }
+    .icon-btn .material-symbols-outlined { font-size: 22px; }
+    #cart-badge { position: absolute; top: 3px; left: 3px; min-width: 18px; height: 18px; background: var(--primary); color: #fff; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero { position: relative; min-height: 500px; overflow: hidden; display: flex; align-items: center; }
+    .hero-bg { position: absolute; inset: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to left, rgba(20,10,4,.75) 40%, rgba(20,10,4,.3) 100%); }
+    .hero-body { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 80px 24px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 60px; }
+    .hero-content h1 { font-size: clamp(28px, 4vw, 52px); font-weight: 700; color: #fff; line-height: 1.2; letter-spacing: -.02em; margin-bottom: 16px; text-shadow: 0 2px 16px rgba(0,0,0,.3); }
+    .hero-desc { font-size: 16px; color: rgba(255,255,255,.82); line-height: 1.8; margin-bottom: 28px; max-width: 480px; }
+    .hero-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .hero-stars { font-size: 20px; color: #f9c74f; letter-spacing: 3px; }
+    .hero-rating-text { font-size: 14px; color: rgba(255,255,255,.75); font-weight: 600; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 14px 32px; border: none; border-radius: var(--radius); cursor: pointer; transition: all var(--transition); box-shadow: var(--shadow-md); }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.15); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .1em; padding: 14px 28px; border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius); cursor: pointer; transition: all var(--transition); backdrop-filter: blur(8px); }
+    .btn-ghost:hover { background: rgba(255,255,255,.25); }
+    .hero-image-card { display: none; } /* hidden — hero bg IS the image */
+
+    /* ── Filter ─────────────────────────────────────────────── */
+    .filter-bar { background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 24px; }
+    .filter-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+    .filter-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+    .filter-group select { border: 1px solid var(--border); background: var(--surface-low); padding: 10px 14px; border-radius: var(--radius); font-size: 14px; color: var(--text-main); outline: none; cursor: pointer; transition: border-color var(--transition); }
+    .filter-group select:focus { border-color: var(--primary); }
+    .btn-filter { display: inline-flex; align-items: center; gap: 6px; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius); border: none; cursor: pointer; transition: all var(--transition); }
+    .btn-filter:hover { background: var(--primary-dark); }
+    .btn-reset { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-low); color: var(--text-muted); font-size: 12px; font-weight: 700; padding: 10px 18px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; transition: all var(--transition); }
+    .btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ── Products Section ─────────────────────────────────── */
+    .products-section { max-width: 1280px; margin: 0 auto; padding: 60px 24px; }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    .section-title { font-size: 28px; font-weight: 600; border-right: 4px solid var(--primary); padding-right: 16px; line-height: 1.2; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .no-products { grid-column: 1/-1; text-align: center; padding: 60px 24px; color: var(--text-muted); font-size: 16px; }
+
+    /* ── Product Card ─────────────────────────────────────── */
+    .product-card { background: var(--white); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; transition: transform var(--transition), box-shadow var(--transition); position: relative; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .product-card.sold-out { opacity: .75; }
+    .sold-out-badge { position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,.75); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 40px; z-index: 2; }
+    .product-img { height: 220px; overflow: hidden; background: var(--surface-mid); }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .product-card:hover .product-img img { transform: scale(1.06); }
+    .product-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .product-meta { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .product-name { font-size: 17px; font-weight: 600; color: var(--text-main); line-height: 1.35; }
+    .product-pricing { text-align: left; flex-shrink: 0; }
+    .price-main { font-size: 18px; font-weight: 700; color: var(--primary); display: block; }
+    .price-original { font-size: 13px; color: var(--text-muted); text-decoration: line-through; display: block; margin-top: 2px; }
+    .product-desc-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; flex: 1; }
+    .option-group { display: flex; flex-direction: column; gap: 8px; }
+    .option-group label { font-size: 11px; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: .08em; }
+    .option-group label.required-field::after { content: ' *'; color: var(--danger); }
+    .option-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+    .option-btn { padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; background: var(--surface-low); color: var(--text-main); }
+    .option-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .option-btn.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .product-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+    .qty-control { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .qty-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--surface-low); font-size: 18px; font-weight: 700; color: var(--text-muted); transition: background var(--transition); }
+    .qty-btn:hover { background: var(--border); }
+    .qty-num { width: 36px; text-align: center; font-size: 15px; font-weight: 600; border-left: 1px solid var(--border); border-right: 1px solid var(--border); line-height: 36px; }
+    .btn-add-to-cart { display: inline-flex; align-items: center; gap: 6px; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; transition: all var(--transition); }
+    .btn-add-to-cart:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-add-to-cart:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* ── Cart Panel (slide from right) ────────────────────── */
+    #cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 300; opacity: 0; transition: opacity .3s; display: none; }
+    #cart-overlay.visible { opacity: 1; }
+    #cart-panel { position: fixed; top: 0; left: 0; height: 100dvh; width: min(420px,100vw); background: rgba(252,249,248,.97); backdrop-filter: blur(20px); border-right: 1px solid var(--border); z-index: 301; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform .36s cubic-bezier(.4,0,.2,1); box-shadow: var(--shadow-lg); }
+    #cart-panel.open { transform: translateX(0); }
+    .cp-header { display: flex; align-items: center; justify-content: space-between; padding: 24px 24px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .cp-header h3 { font-size: 18px; font-weight: 700; color: var(--primary); }
+    .cp-body { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .cp-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); gap: 10px; padding: 40px 0; }
+    .cp-empty .material-symbols-outlined { font-size: 48px; opacity: .35; }
+    .cp-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--surface-low); }
+    .cp-item:last-child { border-bottom: none; }
+    .cp-item-img { width: 68px; height: 68px; object-fit: cover; border-radius: 8px; background: var(--surface-mid); flex-shrink: 0; }
+    .cp-item-info { flex: 1; }
+    .cp-item-name { font-size: 14px; font-weight: 600; line-height: 1.35; margin-bottom: 3px; }
+    .cp-item-opts { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+    .cp-item-price { font-size: 13px; font-weight: 600; color: var(--primary); }
+    .cp-item-remove { font-size: 11px; color: var(--text-muted); text-decoration: underline; cursor: pointer; margin-top: 4px; background: none; border: none; }
+    .cp-item-remove:hover { color: var(--danger); }
+    .cp-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .cp-summary-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+    .cp-total-row { display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: var(--primary); padding-top: 12px; border-top: 1px solid var(--border); margin-top: 8px; margin-bottom: 16px; }
+    .btn-checkout-main { width: 100%; background: var(--primary); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 16px; border-radius: var(--radius); border: none; cursor: pointer; transition: all var(--transition); }
+    .btn-checkout-main:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-checkout-main:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* ── Checkout Modal ─────────────────────────────────────── */
+    #checkoutModal { display: none; position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,.5); overflow-y: auto; padding: 30px 16px; }
+    .modal-box { background: var(--white); border-radius: 16px; max-width: 620px; margin: 0 auto; padding: 36px; box-shadow: var(--shadow-lg); position: relative; }
+    .modal-close { position: absolute; top: 16px; left: 16px; background: var(--surface-low); border: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: all var(--transition); }
+    .modal-close:hover { background: var(--border); color: var(--primary); }
+    .modal-box h3 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 28px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+    .form-group label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .1em; }
+    .form-control { width: 100%; border: 1px solid var(--border); background: var(--surface-low); padding: 13px 14px; border-radius: var(--radius); font-size: 14px; color: var(--text-main); outline: none; transition: border-color var(--transition), box-shadow var(--transition); }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(38,23,12,.08); }
+    textarea.form-control { resize: vertical; min-height: 90px; }
+    /* Phone input */
+    .phone-input-group { border: 1px solid var(--border); border-radius: var(--radius); display: flex; overflow: hidden; background: var(--surface-low); transition: border-color var(--transition); }
+    .phone-input-group:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(38,23,12,.08); }
+    .phone-prefix { padding: 13px 14px; background: var(--surface-mid); font-weight: 700; font-size: 14px; color: var(--text-soft); border-left: 1px solid var(--border); flex-shrink: 0; }
+    .phone-input { flex: 1; border: none; padding: 13px 14px; font-size: 14px; outline: none; background: transparent; direction: ltr; text-align: left; }
+    .phone-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .phone-hint.error { color: var(--danger); }
+    .phone-hint.success { color: var(--success); }
+    /* Service / delivery options */
+    .service-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .service-option { display: flex; align-items: center; gap: 6px; }
+    .service-option input[type="radio"] { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+    .service-option label { cursor: pointer; padding: 7px 14px; background: var(--surface-low); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; transition: all var(--transition); }
+    .service-option input[type="radio"]:checked + label { background: var(--primary); color: #fff; border-color: var(--primary); }
+    /* Order summary inside modal */
+    .modal-summary { background: var(--surface-low); border-radius: var(--radius); padding: 20px; margin: 24px 0 0; }
+    .modal-summary h4 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+    .modal-sum-item { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; border-bottom: 1px solid var(--border); color: var(--text-soft); }
+    .modal-sum-item:last-of-type { border-bottom: none; }
+    .modal-sum-delivery { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; color: var(--text-soft); }
+    .modal-sum-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: var(--primary); padding-top: 14px; border-top: 2px solid var(--border); margin-top: 10px; }
+    .btn-submit-order { width: 100%; background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; letter-spacing: .1em; padding: 17px; border-radius: var(--radius); border: none; cursor: pointer; margin-top: 20px; transition: all var(--transition); }
+    .btn-submit-order:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+    /* ── Rating Modal ─────────────────────────────────────── */
+    #ratingModal { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.5); align-items: center; justify-content: center; padding: 20px; }
+    #ratingModal.open { display: flex; }
+    .rating-box { background: var(--white); border-radius: 16px; padding: 40px; max-width: 440px; width: 100%; text-align: center; box-shadow: var(--shadow-lg); }
+    .rating-box h3 { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+    .rating-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+    .star-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 28px; }
+    .star-row i { font-size: 40px; color: var(--border); cursor: pointer; transition: color .2s, transform .2s; user-select: none; }
+    .star-row i.active, .star-row i:hover { color: #f9c74f; transform: scale(1.2); }
+    .btn-submit-rating { display: inline-block; background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; padding: 14px 40px; border-radius: var(--radius); border: none; cursor: pointer; transition: all var(--transition); }
+    .btn-submit-rating:hover { background: var(--primary-dark); }
+
+    /* ── Notifications ─────────────────────────────────────── */
+    .notif { position: fixed; top: 90px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--white); border-radius: 10px; padding: 14px 22px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; max-width: 90vw; }
+    .notif.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .notif.success { border-color: var(--success); color: var(--success); }
+    .notif.error { border-color: var(--danger); color: var(--danger); }
+    .notif.info { border-color: var(--primary); color: var(--primary); }
+
+    /* ── Service disabled ─────────────────────────────────── */
+    .service-disabled { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; }
+    .service-disabled h3 { font-size: 24px; color: var(--text-muted); font-weight: 600; }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    #site-footer { background: var(--primary); color: #fff; padding: 40px 24px; text-align: center; margin-top: 80px; }
+    #site-footer p { font-size: 13px; color: rgba(255,255,255,.5); }
+    #site-footer strong { color: rgba(255,255,255,.85); font-weight: 700; letter-spacing: .1em; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+        .hero-body { grid-template-columns: 1fr; padding: 60px 20px; }
+        .hero { min-height: 420px; }
+        .nav-rating { display: none; }
+        .products-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+        .modal-box { padding: 24px 18px; }
+        .form-row { grid-template-columns: 1fr; }
+        #cart-panel { width: 100vw; }
+    }
+    @media (max-width: 480px) {
+        .products-grid { grid-template-columns: 1fr; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══════════════════════════════════════════════ -->
+<nav id="navbar">
+    <div class="nav-inner">
+        <div class="nav-logo">
+            {% if menu.logo %}
+            <img src="{{ menu.logo.url }}" alt="{{ menu.customer.store_ar_name }}">
+            {% endif %}
+            <span>{{ menu.customer.store_ar_name }}</span>
+        </div>
+
+        <div class="nav-actions">
+            {% if subscription.plan.review %}
+            <div class="nav-rating">
+                <span class="nav-stars">
+                    {% for i in "12345"|make_list %}★{% endfor %}
+                </span>
+                <span>{{ menu.average_rating|floatformat:1 }}</span>
+            </div>
+            {% endif %}
+
+            {% if subscription.plan.ordering %}
+            <button class="icon-btn" id="cart-toggle" aria-label="السلة">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span id="cart-badge" style="display:none">0</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+{% if not subscription.is_active %}
+<div class="service-disabled"><h3>نعتذر، الخدمة غير متوفرة حالياً</h3></div>
+
+{% else %}
+
+<!-- ═══ HERO ══════════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-bg">
+        {% if menu.image %}
+        <img src="{{ menu.image.url }}" alt="{{ menu.customer.store_ar_name }}">
+        {% else %}
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#26170c,#5a3a26)"></div>
+        {% endif %}
+    </div>
+    <div class="hero-body">
+        <div class="hero-content">
+            <h1>مرحباً بكم في {{ menu.customer.store_ar_name }}</h1>
+            {% if subscription.plan.review %}
+            <div class="hero-rating">
+                <span class="hero-stars">
+                    {% for i in "12345"|make_list %}★{% endfor %}
+                </span>
+                <span class="hero-rating-text">{{ menu.average_rating|floatformat:1 }} ({{ menu.review_count }} تقييمات)</span>
+            </div>
+            {% endif %}
+            <p class="hero-desc">{{ menu.desc }}</p>
+            <div class="hero-btns">
+                {% if menu.location_url %}
+                <a href="{{ menu.location_url }}" target="_blank" class="btn-ghost">
+                    <span class="material-symbols-outlined" style="font-size:18px">location_on</span>
+                    موقعنا
+                </a>
+                {% endif %}
+                {% if subscription.plan.review %}
+                <button class="btn-primary" id="openRatingModal">
+                    <span class="material-symbols-outlined" style="font-size:18px">star</span>
+                    قيمنا
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ RATING MODAL ═════════════════════════════════════════ -->
+{% if subscription.plan.review %}
+<div id="ratingModal">
+    <div class="rating-box">
+        <h3>قيّم تجربتك</h3>
+        <p>كيف كانت تجربتك مع {{ menu.customer.store_ar_name }}؟</p>
+        <div class="star-row" id="starRow">
+            <i data-r="1">★</i>
+            <i data-r="2">★</i>
+            <i data-r="3">★</i>
+            <i data-r="4">★</i>
+            <i data-r="5">★</i>
+        </div>
+        <input type="hidden" id="selectedRating" value="0">
+        <button class="btn-submit-rating" id="submitRating">تأكيد التقييم</button>
+    </div>
+</div>
+{% endif %}
+
+<!-- ═══ FILTER ════════════════════════════════════════════════ -->
+<div class="filter-bar">
+    <form method="GET" class="filter-inner">
+        <div class="filter-group">
+            <label for="category">تصفية حسب الفئة</label>
+            <select id="category" name="category">
+                <option value="">جميع الفئات</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn-filter">
+            <span class="material-symbols-outlined" style="font-size:16px">filter_list</span>
+            تصفية
+        </button>
+        {% if request.GET %}
+        <a href="?" class="btn-reset">
+            <span class="material-symbols-outlined" style="font-size:16px">close</span>
+            إعادة تعيين
+        </a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- ═══ PRODUCTS ══════════════════════════════════════════════ -->
+<section class="products-section">
+    <div class="section-header">
+        <h2 class="section-title">المنتجات المتاحة</h2>
+    </div>
+    <div class="products-grid" id="productsGrid">
+        {% for product in products %}
+        <div class="product-card {% if product.quantity <= 0 %}sold-out{% endif %}"
+             data-category="{{ product.catogery.id }}"
+             data-available-quantity="{{ product.quantity }}">
+
+            {% if product.quantity <= 0 %}
+            <span class="sold-out-badge">نفذ من المخزن</span>
+            {% endif %}
+
+            <div class="product-img">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+            </div>
+
+            <div class="product-body">
+                <div class="product-meta">
+                    <h4 class="product-name">{{ product.name }}</h4>
+                    <div class="product-pricing">
+                        {% if product.get_discounted_price != product.price %}
+                            <span class="price-main" data-price="{{ product.get_discounted_price }}">{{ product.get_discounted_price }} د.ل</span>
+                            <span class="price-original">{{ product.price }} د.ل</span>
+                        {% else %}
+                            <span class="price-main" data-price="{{ product.price }}">{{ product.price }} د.ل</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <p class="product-desc-text">{{ product.description }}</p>
+
+                <!-- Options -->
+                <div class="product-options">
+                    {% if product.available_colors %}
+                    <div class="option-group">
+                        <label class="required-field">اللون</label>
+                        <div class="option-buttons colors-container">
+                            {% for color in product.colors_list %}
+                            <button type="button" class="option-btn color-btn" data-value="{{ color }}">{{ color }}</button>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" class="selected-color">
+                    </div>
+                    {% endif %}
+                    {% if product.available_sizes %}
+                    <div class="option-group">
+                        <label class="required-field">المقاس</label>
+                        <div class="option-buttons sizes-container">
+                            {% for size in product.sizes_list %}
+                            <button type="button" class="option-btn size-btn" data-value="{{ size }}">{{ size }}</button>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" class="selected-size">
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if subscription.plan.ordering %}
+                <div class="product-actions">
+                    <div class="qty-control">
+                        <button type="button" class="qty-btn minus">−</button>
+                        <span class="qty-num">1</span>
+                        <button type="button" class="qty-btn plus">+</button>
+                    </div>
+                    <button type="button" class="btn-add-to-cart"
+                        data-product-id="{{ product.id }}"
+                        {% if product.available_colors or product.available_sizes %}disabled{% endif %}
+                        {% if product.quantity <= 0 %}disabled{% endif %}>
+                        {% if product.quantity <= 0 %}
+                            نفذ من المخزن
+                        {% else %}
+                            <span class="material-symbols-outlined" style="font-size:16px">add_shopping_cart</span>
+                            أضف للسلة
+                        {% endif %}
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-products">
+            <span class="material-symbols-outlined" style="font-size:48px;color:#ccc;display:block;margin-bottom:12px">inventory_2</span>
+            لا توجد منتجات متطابقة مع معايير البحث
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ═══ CART PANEL ════════════════════════════════════════════ -->
+{% if subscription.plan.ordering %}
+<div id="cart-overlay"></div>
+<aside id="cart-panel">
+    <div class="cp-header">
+        <h3>سلة التسوق</h3>
+        <button class="icon-btn" id="cart-close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="cp-body" id="cart-items-container"></div>
+    <div class="cp-footer" id="cart-footer" style="display:none">
+        <div class="cp-summary-row">
+            <span>المجموع:</span>
+            <span class="subtotal-price">0 د.ل</span>
+        </div>
+        {% if menu.delivery %}
+        <div class="cp-summary-row">
+            <span>رسوم التوصيل:</span>
+            <span class="delivery-price">0 د.ل</span>
+        </div>
+        {% endif %}
+        <div class="cp-total-row">
+            <span>المجموع الكلي:</span>
+            <span class="total-price">0 د.ل</span>
+        </div>
+        <button class="btn-checkout-main" id="open-checkout-btn">
+            <span class="material-symbols-outlined" style="font-size:18px">shopping_cart_checkout</span>
+            إتمام الطلب
+        </button>
+    </div>
+</aside>
+
+<!-- ═══ CHECKOUT MODAL ════════════════════════════════════════ -->
+<div id="checkoutModal">
+    <div class="modal-box">
+        <button class="modal-close" id="closeCheckoutModal">
+            <span class="material-symbols-outlined" style="font-size:18px">close</span>
+        </button>
+        <h3>إتمام الطلب</h3>
+
+        <form id="orderForm" method="POST" action="{% url 'create_order' %}">
+            {% csrf_token %}
+
+            <!-- Customer Info -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الزبون</label>
+                    <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <div class="phone-input-group">
+                        <span class="phone-prefix">+218</span>
+                        <input type="tel" id="customer_phone" name="customer_phone_raw" class="phone-input"
+                               pattern="[0-9]{9}" maxlength="9" placeholder="912345678" inputmode="numeric" required>
+                    </div>
+                    <span class="phone-hint" id="phone-hint">مثال: 912345678</span>
+                    <input type="hidden" id="customer_phone_final" name="customer_phone" value="">
+                </div>
+            </div>
+
+            <!-- Order type (restaurant only) -->
+            {% if menu.customer.store_kind == 'مطعم\مقهى' %}
+            <div class="form-group">
+                <label>نوع الطلب</label>
+                <div class="service-options">
+                    <div class="service-option">
+                        <input type="radio" id="type_in" name="type" value="داخلي">
+                        <label for="type_in">داخلي</label>
+                    </div>
+                    <div class="service-option">
+                        <input type="radio" id="type_out" name="type" value="خارجي">
+                        <label for="type_out">خارجي</label>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Receiving method -->
+            {% if menu.recivieing == 'التوصيل والتسليم في المحل' %}
+            <div class="form-group">
+                <label>طريقة الاستلام</label>
+                <div class="service-options">
+                    <div class="service-option">
+                        <input type="radio" id="method_delivery" name="receiving_method" value="delivery" checked required>
+                        <label for="method_delivery">توصيل</label>
+                    </div>
+                    <div class="service-option">
+                        <input type="radio" id="method_pickup" name="receiving_method" value="pickup" required>
+                        <label for="method_pickup">استلام من المحل</label>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Delivery address section -->
+            <div id="deliveryFields" style="display:{% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}block{% else %}none{% endif %};">
+                {% if menu.recivieing == 'التوصيل' or menu.recivieing == 'التوصيل والتسليم في المحل' %}
+
+                    {% if darbasabil %}
+                    <!-- DarbSabil delivery -->
+                    <div id="darb_sabil_section">
+                        <div class="form-group">
+                            <label>اختر العنوان</label>
+                            <select id="darb_sabil_area" name="darb_sabil_area" class="form-control">
+                                <option value="">-- اختر المدينة --</option>
+                                {% for city in darb_cities %}
+                                <option value="{{ city.id }}"
+                                        data-city-name="{{ city.city }}"
+                                        data-area-name="{{ city.area }}"
+                                        data-city-id="{{ city.city_id|default:city.id }}"
+                                        data-display-name="{{ city.city }}-{{ city.area }}">
+                                    {{ city.city }}-{{ city.area }}
+                                </option>
+                                {% empty %}
+                                <option value="">لا توجد مدن متاحة</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="serviceTypeSection" style="display:none;">
+                            <div class="form-group">
+                                <label>نوع الخدمة</label>
+                                <div class="service-options" id="serviceOptions">
+                                    <div class="service-option">
+                                        <input type="radio" name="darb_sabil_service" value="6783c612dcf305c9e775c987" id="svc_male" data-title="توصيل رجالي">
+                                        <label for="svc_male">توصيل رجالي</label>
+                                    </div>
+                                    <div class="service-option">
+                                        <input type="radio" name="darb_sabil_service" value="67c84fbc9ed6c0d5c5bb1d2b" id="svc_female" data-title="توصيل نسائي">
+                                        <label for="svc_female">توصيل نسائي</label>
+                                    </div>
+                                    <div class="service-option">
+                                        <input type="radio" name="darb_sabil_service" value="67c84fea9ed6c0d5c5bb1d2c" id="svc_express" data-title="توصيل فوري">
+                                        <label for="svc_express">توصيل فوري</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="darb_sabil_price"           name="darb_sabil_price"          value="0">
+                    <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge" value="0">
+                    <input type="hidden" id="company_delivery_price_final"  name="company_delivery_price"  value="0">
+                    <input type="hidden" id="darb_sabil_service_id"      name="darb_sabil_service_id"     value="">
+                    <input type="hidden" id="darb_sabil_service_type"    name="darb_sabil_service_type"   value="">
+                    <input type="hidden" id="darb_sabil_city"            name="darb_sabil_city"           value="">
+                    <input type="hidden" id="darb_sabil_area_name"       name="darb_sabil_area_name"      value="">
+                    <input type="hidden" id="darb_sabil_area_id"         name="darb_sabil_area_id"        value="">
+                    <input type="hidden" id="darb_sabil_city_id"         name="darb_sabil_city_id"        value="">
+                    <input type="hidden" id="selected_delivery_company"  name="selected_delivery_company" value="darb">
+                    <input type="hidden" id="delivery_address_full"      name="delivery_address_full"     value="">
+
+                    {% elif nawris %}
+                    <!-- Nawris delivery -->
+                    <div id="nawris_section">
+                        <div class="form-group">
+                            <label>اختر العنوان</label>
+                            <select id="nawris_area" name="nawris_area" class="form-control">
+                                <option value="">-- اختر المنطقة --</option>
+                                {% for area in nawris_areas %}
+                                <option value="{{ area.city_id }}"
+                                        data-city-name="{{ area.city_name }}"
+                                        data-area-name="{{ area.area_name }}"
+                                        data-city-id="{{ area.city_id }}"
+                                        data-area-id="{{ area.area_id }}">
+                                    {{ area.city_name }}{% if area.area_name %} - {{ area.area_name }}{% endif %}
+                                </option>
+                                {% empty %}
+                                <option value="">لا توجد مناطق متاحة</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="nawris_price"                 name="nawris_price"              value="0">
+                    <input type="hidden" id="nawris_charge"                name="nawris_charge"             value="0">
+                    <input type="hidden" id="nawris_city_name"             name="nawris_city_name"          value="">
+                    <input type="hidden" id="nawris_city_id"               name="nawris_city_id"            value="">
+                    <input type="hidden" id="nawris_area_id"               name="nawris_area_id"            value="">
+                    <input type="hidden" id="nawris_area_name"             name="nawris_area_name"          value="">
+                    <input type="hidden" id="company_delivery_charge_final" name="company_delivery_charge"  value="0">
+                    <input type="hidden" id="company_delivery_price_final"  name="company_delivery_price"   value="0">
+                    <input type="hidden" id="selected_delivery_company"    name="selected_delivery_company" value="nawris">
+                    <input type="hidden" id="delivery_address_full"        name="delivery_address_full"     value="">
+
+                    {% else %}
+                    <!-- Normal delivery -->
+                    <div class="form-group">
+                        <label>العنوان</label>
+                        <select id="delivery_address" name="delivery_address" class="form-control">
+                            <option value="">اختر العنوان</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" data-price="{{ city.price }}">
+                                {{ city.name }} — {{ city.price }} د.ل
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="hidden" id="selected_delivery_company" name="selected_delivery_company" value="normal">
+                    <input type="hidden" id="delivery_address_full"     name="delivery_address_full"     value="">
+                    {% endif %}
+
+                {% endif %}
+            </div>
+
+            <!-- Location link -->
+            {% if menu.location_url %}
+            <div class="form-group">
+                <label>موقعنا</label>
+                <a href="{{ menu.location_url }}" target="_blank" class="btn-ghost" style="display:inline-flex;align-items:center;gap:6px;color:var(--primary);border-color:var(--primary);padding:10px 18px;">
+                    <span class="material-symbols-outlined" style="font-size:16px">location_on</span>
+                    عرض على الخريطة
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Notes -->
+            <div class="form-group">
+                <label>ملاحظات (اختياري)</label>
+                <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="أي تفاصيل إضافية..."></textarea>
+            </div>
+
+            <!-- Order summary -->
+            <div class="modal-summary">
+                <h4>ملخص الطلب</h4>
+                <div id="modalOrderItems"></div>
+                <div class="modal-sum-delivery" id="modalDeliveryFee" style="display:none;">
+                    <span>رسوم التوصيل:</span>
+                    <span id="modalDeliveryPrice">0 د.ل</span>
+                </div>
+                <div class="modal-sum-total">
+                    <span>المجموع الكلي:</span>
+                    <span id="modalTotalPrice">0 د.ل</span>
+                </div>
+            </div>
+
+            <input type="hidden" name="menu_id" value="{{ menu.id }}">
+            <button type="submit" class="btn-submit-order">
+                <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">check_circle</span>
+                تأكيد الطلب
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %} {# end subscription.plan.ordering #}
+
+{% endif %} {# end subscription.is_active #}
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+<footer id="site-footer">
+    <p><strong>{{ menu.customer.store_ar_name }}</strong> &nbsp;·&nbsp; جميع الحقوق محفوظة</p>
+</footer>
+
+<!-- ═══ NOTIFICATION CONTAINER ═══════════════════════════════ -->
+<div id="notif-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════════ -->
+<script>
+/* ── Phone Validation ─────────────────────────────────────── */
+(function() {
+    const phoneInput  = document.getElementById('customer_phone');
+    const hiddenField = document.getElementById('customer_phone_final');
+    const hint        = document.getElementById('phone-hint');
+    if (!phoneInput) return;
+
+    function validatePhone(phone) {
+        phone = phone.replace(/\D/g, '');
+        phoneInput.value = phone;
+        if (phone.length === 9) {
+            const validPfx = ['91','92','93','94','95','96','97','98','99'];
+            const pfx = phone.substring(0,2);
+            if (validPfx.includes(pfx)) {
+                hiddenField.value = '+218' + phone;
+                hint.textContent   = '✓ +218' + phone;
+                hint.className     = 'phone-hint success';
+                phoneInput.style.borderColor = '#27ae60';
+            } else {
+                hiddenField.value  = '';
+                hint.textContent   = 'يجب أن يبدأ الرقم بـ 91-99';
+                hint.className     = 'phone-hint error';
+                phoneInput.style.borderColor = '#c0392b';
+            }
+        } else if (phone.length > 0) {
+            hiddenField.value  = '';
+            hint.textContent   = 'ناقص ' + (9 - phone.length) + ' أرقام';
+            hint.className     = 'phone-hint error';
+            phoneInput.style.borderColor = '#f39c12';
+        } else {
+            hiddenField.value = '';
+            hint.textContent  = 'مثال: 912345678';
+            hint.className    = 'phone-hint';
+            phoneInput.style.borderColor = '';
+        }
+    }
+
+    phoneInput.addEventListener('input', function() { validatePhone(this.value); });
+    phoneInput.addEventListener('blur',  function() { validatePhone(this.value); });
+})();
+
+
+/* ── Notification ─────────────────────────────────────────── */
+function showNotif(msg, type = 'info') {
+    const el = document.createElement('div');
+    el.className = 'notif ' + type;
+    el.textContent = msg;
+    document.getElementById('notif-container').appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 350); }, 4000);
+}
+
+
+/* ── Main DOMContentLoaded ──────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function () {
+
+    const hasOrdering  = {% if subscription.plan.ordering %}true{% else %}false{% endif %};
+    const hasReview    = {% if subscription.plan.review %}true{% else %}false{% endif %};
+    const isDarbSabil  = {% if darbasabil %}true{% else %}false{% endif %};
+    const isNawris     = {% if nawris %}true{% else %}false{% endif %};
+    const menuReceiving = '{{ menu.recivieing }}';
+
+    /* ── Option buttons (color / size) ───────────────────── */
+    document.querySelectorAll('.color-btn, .size-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            this.closest('.option-buttons').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            this.closest('.option-group').querySelector('input[type="hidden"]').value = this.dataset.value;
+            checkAddBtn(this.closest('.product-card'));
+        });
+    });
+
+    function checkAddBtn(card) {
+        const btn = card.querySelector('.btn-add-to-cart');
+        if (!btn) return;
+        let disabled = false;
+        if (card.querySelector('.colors-container') && !card.querySelector('.selected-color').value) disabled = true;
+        if (card.querySelector('.sizes-container')  && !card.querySelector('.selected-size').value)  disabled = true;
+        btn.disabled = disabled;
+    }
+
+    /* ── Qty buttons on cards ─────────────────────────────── */
+    document.querySelectorAll('.qty-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const span = this.parentElement.querySelector('.qty-num');
+            let q = parseInt(span.textContent);
+            if (this.classList.contains('plus'))  q++;
+            if (this.classList.contains('minus') && q > 1) q--;
+            span.textContent = q;
+        });
+    });
+
+
+    /* ════ ORDERING LOGIC ═══════════════════════════════════ */
+    if (!hasOrdering) return;
+
+    let cart       = [];
+    let deliveryFee = 0;
+    let selectedServiceId = '';
+
+    const cartPanel     = document.getElementById('cart-panel');
+    const cartOverlay   = document.getElementById('cart-overlay');
+    const cartItemsCon  = document.getElementById('cart-items-container');
+    const cartFooter    = document.getElementById('cart-footer');
+    const subtotalEl    = document.querySelector('.subtotal-price');
+    const deliveryEl    = document.querySelector('.delivery-price');
+    const totalEl       = document.querySelector('.total-price');
+    const cartBadge     = document.getElementById('cart-badge');
+    const checkoutModal = document.getElementById('checkoutModal');
+    const orderForm     = document.getElementById('orderForm');
+    const modalItems    = document.getElementById('modalOrderItems');
+    const modalTotal    = document.getElementById('modalTotalPrice');
+    const modalDelivFee = document.getElementById('modalDeliveryFee');
+    const modalDelivPrc = document.getElementById('modalDeliveryPrice');
+
+    /* ── Cart open / close ─────────────────────────────── */
+    function openCart() {
+        cartPanel.classList.add('open');
+        cartOverlay.style.display = 'block';
+        requestAnimationFrame(() => cartOverlay.classList.add('visible'));
+        document.body.style.overflow = 'hidden';
+    }
+    function closeCart() {
+        cartPanel.classList.remove('open');
+        cartOverlay.classList.remove('visible');
+        setTimeout(() => { cartOverlay.style.display = 'none'; }, 300);
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('cart-toggle')?.addEventListener('click', openCart);
+    document.getElementById('cart-close')?.addEventListener('click', closeCart);
+    cartOverlay?.addEventListener('click', closeCart);
+
+    /* ── Add to cart ────────────────────────────────────── */
+    document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const card     = this.closest('.product-card');
+            const id       = this.dataset.productId;
+            const name     = card.querySelector('.product-name').textContent.trim();
+            const priceEl  = card.querySelector('.price-main');
+            const price    = parseFloat(priceEl.dataset.price.replace(',','.'));
+            const qty      = parseInt(card.querySelector('.qty-num').textContent);
+            const img      = card.querySelector('.product-img img').src;
+            const avail    = parseInt(card.dataset.availableQuantity) || 9999;
+            const color    = card.querySelector('.selected-color')?.value || null;
+            const size     = card.querySelector('.selected-size')?.value  || null;
+
+            if (avail <= 0) { showNotif('هذا المنتج غير متوفر', 'error'); return; }
+
+            const existing = cart.find(i => i.id===id && i.color===color && i.size===size);
+            if (existing) {
+                const newQty = existing.quantity + qty;
+                if (newQty > avail) { showNotif(`الكمية المتاحة ${avail} فقط`, 'error'); return; }
+                existing.quantity = newQty;
+            } else {
+                if (qty > avail) { showNotif(`الكمية المتاحة ${avail} فقط`, 'error'); return; }
+                cart.push({ id, name, price, quantity: qty, image: img, color, size, avail });
+            }
+
+            card.querySelector('.qty-num').textContent = '1';
+            renderCart();
+            openCart();
+            showNotif(`تم إضافة ${qty} × ${name}`, 'success');
+        });
+    });
+
+    /* ── Render cart panel ──────────────────────────────── */
+    function renderCart() {
+        if (cart.length === 0) {
+            cartItemsCon.innerHTML = `
+                <div class="cp-empty">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                    <p>السلة فارغة</p>
+                </div>`;
+            cartFooter.style.display = 'none';
+        } else {
+            cartItemsCon.innerHTML = cart.map((item, i) => `
+                <div class="cp-item">
+                    <img class="cp-item-img" src="${item.image}" alt="${item.name}">
+                    <div class="cp-item-info">
+                        <div class="cp-item-name">${item.name}</div>
+                        ${item.color || item.size ? `<div class="cp-item-opts">${item.color ? 'اللون: '+item.color : ''}${item.color && item.size ? ' | ' : ''}${item.size ? 'المقاس: '+item.size : ''}</div>` : ''}
+                        <div class="cp-item-price">${item.price.toFixed(2)} د.ل × ${item.quantity}</div>
+                        <button class="cp-item-remove" data-i="${i}">إزالة</button>
+                    </div>
+                </div>`).join('');
+            cartFooter.style.display = 'block';
+            cartItemsCon.querySelectorAll('.cp-item-remove').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const name = cart[+this.dataset.i].name;
+                    cart.splice(+this.dataset.i, 1);
+                    renderCart();
+                    showNotif(`تم إزالة ${name}`, 'info');
+                });
+            });
+        }
+        updateTotals();
+    }
+
+    function updateTotals() {
+        const subtotal = cart.reduce((s,i) => s + i.price * i.quantity, 0);
+        const total    = subtotal + deliveryFee;
+        const count    = cart.reduce((s,i) => s + i.quantity, 0);
+        if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2) + ' د.ل';
+        if (deliveryEl) deliveryEl.textContent = deliveryFee.toFixed(2) + ' د.ل';
+        if (totalEl)    totalEl.textContent    = total.toFixed(2) + ' د.ل';
+        if (cartBadge)  { cartBadge.textContent = count; cartBadge.style.display = count ? 'flex' : 'none'; }
+        updateModalSummary();
+    }
+
+    renderCart();
+
+    /* ── Checkout modal ──────────────────────────────────── */
+    document.getElementById('open-checkout-btn')?.addEventListener('click', function () {
+        if (cart.length === 0) { showNotif('السلة فارغة', 'error'); return; }
+        const items = cart.map(i => ({ product_id:i.id, quantity:i.quantity, price:i.price, name:i.name, color:i.color, size:i.size }));
+        const subtotal = cart.reduce((s,i) => s + i.price*i.quantity, 0);
+        sessionStorage.setItem('currentOrder', JSON.stringify({ items, subtotal, delivery_fee:deliveryFee, total:subtotal+deliveryFee }));
+        updateModalItems();
+        updateModalSummary();
+        checkoutModal.style.display = 'block';
+    });
+
+    document.getElementById('closeCheckoutModal')?.addEventListener('click', () => { checkoutModal.style.display = 'none'; });
+    window.addEventListener('click', e => { if (e.target === checkoutModal) checkoutModal.style.display = 'none'; });
+
+    function updateModalItems() {
+        if (!modalItems) return;
+        modalItems.innerHTML = cart.map(item => {
+            let opts = '';
+            if (item.color) opts += ` | اللون: ${item.color}`;
+            if (item.size)  opts += ` | المقاس: ${item.size}`;
+            return `<div class="modal-sum-item"><span>${item.name} (${item.quantity})${opts}</span><span>${(item.price*item.quantity).toFixed(2)} د.ل</span></div>`;
+        }).join('');
+    }
+
+    function updateModalSummary() {
+        const subtotal = cart.reduce((s,i) => s + i.price*i.quantity, 0);
+        const total    = subtotal + deliveryFee;
+        if (modalDelivFee)  { modalDelivFee.style.display = deliveryFee > 0 ? 'flex' : 'none'; }
+        if (modalDelivPrc)  modalDelivPrc.textContent = deliveryFee.toFixed(2) + ' د.ل';
+        if (modalTotal)     modalTotal.textContent    = total.toFixed(2) + ' د.ل';
+    }
+
+    /* ── Delivery method toggle ──────────────────────────── */
+    const deliveryFields      = document.getElementById('deliveryFields');
+    const deliveryMethodRadios = document.querySelectorAll('input[name="receiving_method"]');
+    const deliveryAddressSel  = document.getElementById('delivery_address');
+    const darbAreaSel         = document.getElementById('darb_sabil_area');
+    const nawrisAreaSel       = document.getElementById('nawris_area');
+    const svcTypeSection      = document.getElementById('serviceTypeSection');
+
+    if (deliveryMethodRadios.length) {
+        deliveryMethodRadios.forEach(r => {
+            r.addEventListener('change', function () {
+                if (this.value === 'delivery') {
+                    if (deliveryFields) deliveryFields.style.display = 'block';
+                } else {
+                    if (deliveryFields) deliveryFields.style.display = 'none';
+                    deliveryFee = 0;
+                    selectedServiceId = '';
+                    updateTotals();
+                }
+            });
+        });
+        const checked = document.querySelector('input[name="receiving_method"]:checked');
+        if (checked) checked.dispatchEvent(new Event('change'));
+    }
+
+    /* ── Normal delivery: price from select data-price ───── */
+    if (deliveryAddressSel) {
+        deliveryAddressSel.addEventListener('change', function () {
+            const opt = this.options[this.selectedIndex];
+            deliveryFee = opt?.value ? parseFloat(opt.getAttribute('data-price')) || 0 : 0;
+            if (document.getElementById('delivery_address_full')) document.getElementById('delivery_address_full').value = opt?.text || '';
+            updateTotals();
+            updateModalSummary();
+        });
+    }
+
+    /* ── DarbSabil area select ───────────────────────────── */
+    if (isDarbSabil && darbAreaSel) {
+        darbAreaSel.addEventListener('change', function () {
+            if (this.value) {
+                if (svcTypeSection) svcTypeSection.style.display = 'block';
+                document.querySelectorAll('input[name="darb_sabil_service"]').forEach(r => r.checked = false);
+                deliveryFee = 0; selectedServiceId = '';
+                updateTotals();
+            } else {
+                if (svcTypeSection) svcTypeSection.style.display = 'none';
+            }
+        });
+        document.querySelectorAll('input[name="darb_sabil_service"]').forEach(radio => {
+            radio.addEventListener('change', async function () {
+                if (!darbAreaSel.value) { showNotif('الرجاء اختيار المنطقة أولاً', 'error'); this.checked = false; return; }
+                const opt      = darbAreaSel.options[darbAreaSel.selectedIndex];
+                const cityName = opt.getAttribute('data-city-name');
+                const areaName = opt.getAttribute('data-area-name');
+                selectedServiceId = this.value;
+                await calcDarbPrice(this.value, this.getAttribute('data-title'), cityName, areaName);
+            });
+        });
+    }
+
+    /* ── Nawris area select ──────────────────────────────── */
+    if (isNawris && nawrisAreaSel) {
+        nawrisAreaSel.addEventListener('change', async function () {
+            if (this.value) {
+                const opt      = this.options[this.selectedIndex];
+                const cityName = opt.getAttribute('data-city-name');
+                const cityId   = opt.getAttribute('data-city-id');
+                const areaName = opt.getAttribute('data-area-name');
+                const areaId   = this.value;
+                if (document.getElementById('nawris_city_name')) document.getElementById('nawris_city_name').value = cityName;
+                if (document.getElementById('nawris_city_id'))   document.getElementById('nawris_city_id').value   = cityId;
+                if (document.getElementById('nawris_area_id'))   document.getElementById('nawris_area_id').value   = areaId;
+                if (document.getElementById('nawris_area_name')) document.getElementById('nawris_area_name').value = areaName || '';
+                const full = areaName ? `${cityName} - ${areaName}` : cityName;
+                if (document.getElementById('delivery_address_full')) document.getElementById('delivery_address_full').value = full;
+                await calcNawrisPrice(cityId, areaId, cityName, areaName);
+            } else {
+                deliveryFee = 0;
+                if (document.getElementById('nawris_price')) document.getElementById('nawris_price').value = 0;
+                updateTotals();
+            }
+        });
+    }
+
+    /* ── DarbSabil price API ─────────────────────────────── */
+    async function calcDarbPrice(serviceId, serviceTitle, cityName, areaName) {
+        try {
+            const res  = await fetch(`/calculate-delivery-price/{{ menu.id }}/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ city: cityName, area: areaName, service: serviceId, products: cartForApi(), company: 'darb' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                const fp = parseFloat(data.price);
+                const cp = parseFloat(data.charge);
+                setHidden('darb_sabil_price', fp);
+                setHidden('company_delivery_price_final', fp);
+                setHidden('company_delivery_charge_final', cp);
+                setHidden('darb_sabil_service_id', serviceId);
+                setHidden('darb_sabil_service_type', serviceTitle);
+                setHidden('darb_sabil_city', cityName);
+                setHidden('darb_sabil_area_name', areaName);
+                setHidden('darb_sabil_area_id', darbAreaSel.value);
+                const opt = darbAreaSel.options[darbAreaSel.selectedIndex];
+                setHidden('darb_sabil_city_id', opt.getAttribute('data-city-id') || cityName);
+                setHidden('delivery_address_full', `${cityName} - ${areaName}`);
+                deliveryFee = fp;
+                updateTotals();
+                showNotif(`سعر التوصيل: ${fp} د.ل (${serviceTitle})`, 'success');
+            } else { throw new Error(data.error || 'خطأ في حساب السعر'); }
+        } catch (e) {
+            showNotif(e.message || 'خطأ في حساب سعر التوصيل', 'error');
+            document.querySelectorAll('input[name="darb_sabil_service"]').forEach(r => r.checked = false);
+            selectedServiceId = '';
+        }
+    }
+
+    /* ── Nawris price API ────────────────────────────────── */
+    async function calcNawrisPrice(cityId, areaId, cityName, areaName) {
+        try {
+            const body = { customer: {{ menu.customer.id }}, city_id: cityId, products: cartForApi() };
+            if (areaId) body.area_id = areaId;
+            const res  = await fetch('/calculate-nawris-price/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            if (data.success) {
+                const fp = parseFloat(data.price);
+                const cp = parseFloat(data.charge);
+                if (document.getElementById('nawris_price'))  document.getElementById('nawris_price').value  = fp;
+                if (document.getElementById('nawris_charge')) document.getElementById('nawris_charge').value = cp;
+                setHidden('company_delivery_price_final', fp);
+                setHidden('company_delivery_charge_final', cp);
+                deliveryFee = fp;
+                updateTotals();
+                showNotif(`سعر التوصيل: ${fp} د.ل`, 'success');
+            } else { throw new Error(data.error || 'خطأ في حساب السعر'); }
+        } catch (e) {
+            showNotif(e.message || 'خطأ في حساب سعر التوصيل', 'error');
+            deliveryFee = 0;
+            updateTotals();
+        }
+    }
+
+    /* ── Form submit ─────────────────────────────────────── */
+    orderForm?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const hiddenPhone = document.getElementById('customer_phone_final');
+        if (!hiddenPhone?.value || hiddenPhone.value.length < 13) {
+            showNotif('يرجى إدخال رقم هاتف صحيح', 'error');
+            document.getElementById('customer_phone')?.focus();
+            return;
+        }
+        const receivingMethod = document.querySelector('input[name="receiving_method"]:checked');
+        const isDelivery = menuReceiving === 'التوصيل' || (receivingMethod && receivingMethod.value === 'delivery');
+
+        if (isDelivery) {
+            if (isDarbSabil) {
+                if (!darbAreaSel?.value)  { showNotif('الرجاء اختيار العنوان', 'error'); return; }
+                if (!selectedServiceId)   { showNotif('يرجى اختيار خدمة التوصيل', 'error'); return; }
+            } else if (isNawris) {
+                if (!nawrisAreaSel?.value) { showNotif('الرجاء اختيار المنطقة', 'error'); return; }
+            } else {
+                if (!deliveryAddressSel?.value) { showNotif('الرجاء اختيار العنوان', 'error'); return; }
+            }
+        }
+
+        try {
+            const fd = new FormData(orderForm);
+            const orderData = JSON.parse(sessionStorage.getItem('currentOrder') || '{}');
+            fd.set('customer_phone', hiddenPhone.value);
+            fd.append('order_data', JSON.stringify(orderData));
+
+            if (isDelivery) {
+                if (isDarbSabil) {
+                    const opt = darbAreaSel.options[darbAreaSel.selectedIndex];
+                    fd.append('delivery_type', 'darb_sabil');
+                    fd.append('company_delivery_price', deliveryFee.toString());
+                    fd.append('darb_sabil_service_id', selectedServiceId);
+                    fd.append('darb_sabil_city', opt.getAttribute('data-city-name'));
+                    fd.append('darb_sabil_area', opt.getAttribute('data-area-name'));
+                    fd.append('darb_sabil_city_id', opt.getAttribute('data-city-id'));
+                    fd.append('darb_sabil_area_id', darbAreaSel.value);
+                    fd.append('company_delivery_address', `${opt.getAttribute('data-city-name')} - ${opt.getAttribute('data-area-name')}`);
+                    fd.append('delivery_address_full', document.getElementById('delivery_address_full')?.value || '');
+                } else if (isNawris) {
+                    const opt      = nawrisAreaSel.options[nawrisAreaSel.selectedIndex];
+                    const cityName = document.getElementById('nawris_city_name')?.value || opt.getAttribute('data-city-name');
+                    const areaName = document.getElementById('nawris_area_name')?.value || opt.getAttribute('data-area-name');
+                    fd.append('delivery_type', 'nawris');
+                    fd.append('company_delivery_price', deliveryFee.toString());
+                    fd.append('company_delivery_charge', document.getElementById('nawris_charge')?.value || '0');
+                    fd.append('darb_sabil_city', cityName);
+                    fd.append('darb_sabil_area', areaName || '');
+                    fd.append('company_delivery_address', `${cityName}${areaName ? ' - '+areaName : ''}`);
+                    fd.append('delivery_address_full', `${cityName}${areaName ? ' - '+areaName : ''}`);
+                } else {
+                    const opt = deliveryAddressSel.options[deliveryAddressSel.selectedIndex];
+                    fd.append('delivery_type', 'normal');
+                    fd.append('delivery_address_id', deliveryAddressSel.value);
+                    fd.append('company_delivery_address', opt.text);
+                    fd.append('company_delivery_price', deliveryFee.toString());
+                    fd.append('delivery_address_full', opt.text);
+                }
+            } else {
+                fd.append('delivery_type', 'none');
+            }
+
+            const res = await fetch(orderForm.action, {
+                method: 'POST',
+                body: fd,
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': fd.get('csrfmiddlewaretoken') }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                cart = []; deliveryFee = 0; selectedServiceId = '';
+                renderCart();
+                checkoutModal.style.display = 'none';
+                if (data.order_id) window.location.href = `/order/success/${data.order_id}`;
+                else showNotif('تم تقديم الطلب بنجاح!', 'success');
+            } else { throw new Error(data.error || 'فشل في تقديم الطلب'); }
+        } catch (err) {
+            showNotif(`حدث خطأ: ${err.message}`, 'error');
+        }
+    });
+
+    /* ── Helpers ─────────────────────────────────────────── */
+    function cartForApi() {
+        return cart.map(i => ({ product_id:i.id, quantity:i.quantity, price:i.price, name:i.name }));
+    }
+    function setHidden(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    }
+
+
+    /* ════ REVIEW LOGIC ═════════════════════════════════════ */
+    if (hasReview) {
+        const ratingModal  = document.getElementById('ratingModal');
+        const stars        = document.querySelectorAll('#starRow i');
+        const selectedRat  = document.getElementById('selectedRating');
+
+        document.getElementById('openRatingModal')?.addEventListener('click', () => ratingModal?.classList.add('open'));
+        ratingModal?.addEventListener('click', e => { if (e.target === ratingModal) ratingModal.classList.remove('open'); });
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                const r = parseInt(this.dataset.r);
+                selectedRat.value = r;
+                stars.forEach((s, i) => s.classList.toggle('active', i < r));
+            });
+            star.addEventListener('mouseenter', function () {
+                const r = parseInt(this.dataset.r);
+                stars.forEach((s, i) => s.classList.toggle('active', i < r));
+            });
+        });
+        document.getElementById('starRow')?.addEventListener('mouseleave', () => {
+            const r = parseInt(selectedRat.value);
+            stars.forEach((s, i) => s.classList.toggle('active', i < r));
+        });
+
+        document.getElementById('submitRating')?.addEventListener('click', function () {
+            const rating = selectedRat.value;
+            if (rating === '0') { showNotif('الرجاء اختيار تقييم من 1 إلى 5 نجوم', 'error'); return; }
+            fetch('{% url "submit_review" %}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: JSON.stringify({ menu_id: {{ menu.id }}, rating: rating })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showNotif('شكراً لتقييمك! ★'.repeat(rating), 'success');
+                    setTimeout(() => location.reload(), 1800);
+                } else { showNotif('حدث خطأ في إرسال التقييم', 'error'); }
+            })
+            .catch(() => showNotif('حدث خطأ في الاتصال', 'error'));
+        });
+    }
+
+}); /* end DOMContentLoaded */
+</script>
+</body>
+</html>

@@ -226,7 +226,26 @@
         color: var(--text-light);
         margin: 0;
     }
+    .preview-btn {
+     background: var(--action);
+     color: white;
+     border: none;
+     padding: 5px 12px;
+     border-radius: 6px;
+     cursor: pointer;
+     font-size: 0.75rem;
+     transition: var(--transition);
+     display: flex;
+     align-items: center;
+     gap: 5px;
+     flex-shrink: 0;
+     text-decoration: none;
+    }
 
+    .preview-btn:hover {
+     background: var(--action-dark);
+     transform: translateY(-2px);
+    }
     .recent-service-date {
         font-size: 0.7rem;
         color: var(--success);
@@ -352,7 +371,8 @@
             <!-- Main Content -->
             <div class="service-main-card">
                 <div class="service-header">
-                    <h1><i class="fas fa-concierge-bell"></i> خدمة مخصصة</h1>
+                    <h1> احصل على تصميم مخصص</h1>
+                    <p>يمكنك الان الحصول على تصميم خاص لمتجرك الالكتروني على منصة liysta</p>
                     <div class="service-price">
                         {{ service_price }} <small>دينار</small>
                     </div>
@@ -362,11 +382,9 @@
                 </div>
 
                 <div class="service-body">
-                    <!-- Menu Preview -->
                     <div class="menu-preview">
-                        <h4><i class="fas fa-info-circle"></i> معاينة الخدمة</h4>
-                        <p>هذه خدمة تصميم  حسب متطلباتك، نقدم لك أفضل الحلول المبتكرة لتلبية احتياجاتك.</p>
-               
+                        <h4> ملاحظة </h4>
+                        <P>هذا الخدمة تمكنك من  الحصول على تصميم خاص لمتجرك على منصتنا لاظهر موقع متجرك بصورة احترافية </P>                             
                     </div>
 
                     <!-- Terms Section -->
@@ -376,32 +394,35 @@
                             <h3>شروط الخدمة</h3>
                         </div>
                         <ul class="terms-list">
-                            <li><i class="fas fa-check"></i> نصف المبلغ مقدم - يتم خصمه فور بدء العمل</li>
+                            <li><i class="fas fa-check"></i> نصف المبلغ مقدم - يتم خصمه فور قيامك بطلب الخدمة </li>
                             <li><i class="fas fa-check"></i> النصف المتبقي يتم خصمه عند انتهاء التصميم والتسليم</li>
                             <li><i class="fas fa-check"></i> يجب أن يتوفر في محفظتك نصف قيمة الخدمة لتقديم الطلب</li>
                             <li><i class="fas fa-check"></i> سيتواصل معك موظف الشركة لتأكيد الطلب خلال 24 ساعة</li>
-                            <li><i class="fas fa-check"></i> في حالة الإلغاء قبل البدء، لا يتم خصم أي مبلغ</li>
+                            <li><i class="fas fa-check"></i> في حالة الإلغاء قبل البدء في التنفيذ لن يتم خصم اي قيمة من محفظتك</li>
                             <li><i class="fas fa-check"></i> في حالة الإلغاء بعد البدء، يتم استرداد المبلغ المتبقي فقط</li>
+                            <li><i class="fas fa-check"></i>عند شرائك للخدمة لن يتم فرض رسوم اضافية على اشتراكك على منصتنا</li>
+
                         </ul>
                     </div>
 
-                    <!-- Advantages Section -->
                     <div class="section-box">
                         <div class="section-title-custom">
                             <i class="fas fa-star"></i>
                             <h3>مزايا الخدمة</h3>
                         </div>
                         <ul class="advantages-list">
-                            <li><i class="fas fa-gem"></i> تصميم احترافي حسب طلبك</li>
-                            <li><i class="fas fa-headset"></i> دعم فني متواصل على مدار الساعة</li>
+
+                            <li><i class="fas fa-gem"></i> تصميم احترافي حسب طلبك ، حيث يمكنك جعل موقعك فخما او ملما بمجال متجرك بتصميم انيق</li>
+                            <li><i class="fas fa-headset"></i>سنتواصل معك بعد طلبك الخدمة لناكد طلبك ونفهم تفاصيل التصميم الذي تريده وسنرسل لك صورا للتصميم </li>
                             <li><i class="fas fa-sync-alt"></i> تعديلات غير محدودة حتى إشعارك بالرضا</li>
+                            <li><i class="fas fa-clock"></i>يمكنك طلب الكود الخاص بالموقع والاحتفاظ به فهو صالح للعمل خارج منصتنا باضافة بعض التعديلات</li>
+
                             <li><i class="fas fa-clock"></i> تسليم سريع خلال 3-5 أيام عمل</li>
                             <li><i class="fas fa-chart-line"></i> تقرير أداء مفصل بعد التسليم</li>
                             <li><i class="fas fa-shield-alt"></i> ضمان جودة الخدمة لمدة 30 يوم</li>
                         </ul>
                     </div>
 
-                    <!-- Payment Process -->
                     <div class="section-box">
                         <div class="section-title-custom">
                             <i class="fas fa-credit-card"></i>
@@ -431,11 +452,8 @@
                         </div>
                     </div>
 
-                    <!-- Request Form -->
                     <div class="request-form">
                         {% if user.is_authenticated %}
-                            {% if not user.is_staff %}
-                                <!-- Customer View -->
                                 {% if menu.customer.wallet is not None %}
                                 <div class="wallet-balance">
                                     <i class="fas fa-wallet"></i> رصيد محفظتك الحالي
@@ -467,15 +485,7 @@
                                     <i class="fas fa-plus-circle"></i> شحن المحفظة
                                 </a>
                                 {% endif %}
-                            {% else %}
-                                <!-- Admin View -->
-                                <div class="balance-warning">
-                                    <i class="fas fa-info-circle"></i>
-                                    <div class="warning-text">
-                                        أنت مسجل كمسؤول. لا يمكنك تقديم طلب خدمة.
-                                    </div>
-                                </div>
-                            {% endif %}
+                          
                         {% else %}
                             <div class="balance-warning">
                                 <i class="fas fa-sign-in-alt"></i>
@@ -491,14 +501,54 @@
                     </div>
                 </div>
             </div>
-
+                     <div class="service-sidebar">
+                <div class="sidebar-header">
+                    <h3> خدمات سابقة منجزة</h3>
+                    <p>يمكنك معاينتها لتعرف كيف يمكن ان يكون موقعك</p>
+                </div>
+                <div class="recent-services">
+                        <div class="recent-service-item">
+                            
+                            <div class="recent-service-info">
+                                <h4>BigyBoss store</h4>
+                                <p>تصميم احترافي ومخصص لمجال المتجر  لاظهاره بشكل فخم</p>
+                            
+                            </div>
+                              <button type="button" class="preview-btn" onclick="window.open('', '_blank')">
+                               معاينة
+                             </button>
+                        </div>
+                        <div class="recent-service-item">
+                            
+                            <div class="recent-service-info">
+                                <h4>BigyBoss store</h4>
+                                <p>تصميم احترافي ومخصص لمجال المتجر  لاظهاره بشكل فخم</p>
+                            
+                            </div>
+                              <button type="button" class="preview-btn" onclick="window.open('', '_blank')">
+                               معاينة
+                             </button>
+                        </div>                   
+                        <div class="recent-service-item">
+                            
+                            <div class="recent-service-info">
+                                <h4>BigyBoss store</h4>
+                                <p>تصميم احترافي ومخصص لمجال المتجر  لاظهاره بشكل فخم</p>
+                            
+                            </div>
+                              <button type="button" class="preview-btn" onclick="window.open('', '_blank')">
+                               معاينة
+                             </button>
+                        </div>                
+                
+                </div>
+            </div>
           
         </div>
     </div>
 </section>
 
 <script>
-    // Handle form submission with loading state
     const form = document.getElementById('serviceRequestForm');
     const submitBtn = document.getElementById('submitBtn');
 
