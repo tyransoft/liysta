@@ -1202,7 +1202,7 @@ def edit_customer_data(request):
         clint = Customer.objects.get(user=request.user)
 
         if request.method == "POST":
-            form = CustomerForm(request.POST, instance=clint)
+            form = CustomerForm(request.POST, instance=clint,user=request.user)
             
             if form.is_valid():
                 changed = form.changed_data
@@ -1221,7 +1221,7 @@ def edit_customer_data(request):
             else:
                 messages.error(request, 'يرجى تصحيح الأخطاء أدناه.')
         else:
-            form = CustomerForm(instance=clint)
+            form = CustomerForm(instance=clint,user=request.user)
         
         return render(request, 'update_cust.html', {'form': form, 'customer': clint})
       

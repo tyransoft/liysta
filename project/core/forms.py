@@ -114,7 +114,7 @@ class CustomerForm(forms.ModelForm):
     
     class Meta:
         model = Customer
-        exclude = ['user', 'has_used_free_trial', 'wallet', 'customer_status','store_slug']
+        exclude = ['user', 'has_used_free_trial', 'wallet', 'customer_status','store_slug','connected_del_method']
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
