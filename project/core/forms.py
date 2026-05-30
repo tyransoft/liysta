@@ -127,7 +127,20 @@ class CustomerForm(forms.ModelForm):
             self.user.first_name = self.cleaned_data['first_name']
             self.user.save()
         return customer
- 
+    def clean_store_en_name(self):
+      store_en_name = self.cleaned_data['store_en_name']
+
+      qs = Customer.objects.filter(store_en_name=store_en_name)
+
+      if self.instance.pk:
+        qs = qs.exclude(pk=self.instance.pk)
+
+      if qs.exists():
+        raise forms.ValidationError(
+            "اسم المتجر الإنجليزي مستخدم بالفعل، يرجى اختيار اسم آخر."
+        )
+
+      return store_en_name
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
