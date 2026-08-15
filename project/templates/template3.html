@@ -2080,7 +2080,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('order_data', JSON.stringify(orderData));
                 const response = await fetch(orderForm.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': formData.get('csrfmiddlewaretoken') } });
                 const data = await response.json();
-                if (response.ok) { cart = []; deliveryFee = 0; selectedServiceId = ''; updateCart(); closeModal(); if (data.order_id) window.location.href = `/order/success/${data.order_id}`; else showNotification('تم تقديم الطلب بنجاح!', 'success'); }
+                if (response.ok) { cart = []; deliveryFee = 0; selectedServiceId = ''; updateCart(); closeModal(); if (data.order_id) window.location.href = `/checkout/${data.order_id}`; else showNotification('تم تقديم الطلب بنجاح!', 'success'); }
                 else throw new Error(data.error || 'فشل في تقديم الطلب');
             } catch (error) { console.error('Error:', error); showNotification(`حدث خطأ: ${error.message}`, 'error'); }
         }

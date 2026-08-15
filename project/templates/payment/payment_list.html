@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}سجل المدفوعات{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0 text-gray-800">سجل المدفوعات</h1>
+    <div>
+        <span class="badge badge-success">المجموع: {{ stats.total_amount|floatformat:2 }} ر.س</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            إجمالي المدفوعات
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            ناجحة
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.completed }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            معلقة
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.pending }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            فاشلة
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.failed }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">الفلاتر والبحث</h6>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>الحالة</label>
+                    <select name="status" class="form-control">
+                        <option value="all">الكل</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>من تاريخ</label>
+                    <input type="date" name="date_from" class="form-control" value="{{ date_from|default:'' }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>إلى تاريخ</label>
+                    <input type="date" name="date_to" class="form-control" value="{{ date_to|default:'' }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>بحث</label>
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="رقم العملية، العميل..." value="{{ search|default:'' }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">قائمة المدفوعات</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>رقم العملية</th>
+                        <th>العميل</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <span class="font-weight-bold">{{ payment.payment_reference }}</span>
+                            {% if payment.transaction_id %}
+                                <br><small class="text-muted">{{ payment.transaction_id|truncatechars:15 }}</small>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {{ payment.order.customer_name }}
+                        </td>
+                        <td>
+                            <span class="font-weight-bold">{{ payment.amount|floatformat:2 }}</span>
+                            <br><small>د.ل</small>
+                        </td>
+                        <td>
+                            {% if payment.status == 'completed' %}
+                                <span class="badge badge-success">ناجحة</span>
+                            {% elif payment.status == 'pending' %}
+                                <span class="badge badge-warning">معلقة</span>
+                            {% elif payment.status == 'failed' %}
+                                <span class="badge badge-danger">فاشلة</span>
+                            {% elif payment.status == 'refunded' %}
+                                <span class="badge badge-info">مستردة</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ payment.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ payment.created_at|date:"Y-m-d" }}
+                            <br><small>{{ payment.created_at|time:"H:i" }}</small>
+                        </td>
+                        <td>
+                            <a href="{% url 'payment_details' payment.id %}" 
+                               class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-gray-300 mb-3"></i>
+                            <p>لا توجد مدفوعات حالياً</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if payments.has_other_pages %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if payments.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ payments.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                            السابق
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in payments.paginator.page_range %}
+                    {% if payments.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > payments.number|add:'-3' and num < payments.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if payments.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ payments.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                            التالي
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

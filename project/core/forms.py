@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from django.core.exceptions import ValidationError
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -342,3 +343,78 @@ class NawrisForm(forms.ModelForm):
         self.fields['storeing'].widget.attrs.update({'class': 'custom-checkbox'})
         self.fields['epay'].widget.attrs.update({'class': 'custom-checkbox'})
         self.fields['paymentby'].widget.attrs.update({'class': 'radio-group'})
+
+class CoastsForm(forms.ModelForm):
+    class Meta:
+        model = Coasts
+        fields = ['coast_kind', 'amount', 'recurring']
+        widgets = {
+            'coast_kind': forms.Select(attrs={
+                'class': 'form-input',
+                'placeholder': 'اختر نوع التكلفة'
+            }),
+            'amount': forms.NumberInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'أدخل المبلغ',
+                'step': '1',
+                'min': '0'
+            }),
+            'recurring': forms.CheckboxInput(attrs={
+                'class': 'checkbox-input'
+            })
+        }
+        labels = {
+            'coast_kind': 'نوع التكلفة',
+            'amount': 'المبلغ',
+            'recurring': 'تكلفة متكررة '
+        }
+
+
+
+class PaymentGatewaySettingForm(forms.ModelForm):
+    class Meta:
+        model = PaymentGatewaySetting
+        fields = ['provider', 'api_key', 'webhook_secret', 'payment_methods', 'is_active']
+        widgets = {
+            'api_key': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'webhook_secret': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'payment_methods': forms.Select(attrs={'class': 'form-control'}),
+            'provider': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['api_key'].required = True
+        self.fields['webhook_secret'].required = True
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        merchant = cleaned_data.get('merchant')
+        provider = cleaned_data.get('provider')
+        payment_methods = cleaned_data.get('payment_methods')
+        
+        if merchant and provider:
+            existing = PaymentGatewaySetting.objects.filter(
+                merchant=merchant,
+                provider=provider
+            )
+            
+            if self.instance.pk:
+                existing = existing.exclude(pk=self.instance.pk)
+            
+            if existing.exists():
+                raise ValidationError(
+                    f'يوجد إعدادات مكررة للمتجر {merchant.user.first_name}'
+                )
+        
+        if payment_methods == PaymentGatewaySetting.PaymentMethods.ONLINE:
+            if not cleaned_data.get('api_key'):
+                raise ValidationError({
+                    'api_key': 'مفتاح API مطلوب عند تفعيل الدفع الإلكتروني'
+                })
+            if not cleaned_data.get('webhook_secret'):
+                raise ValidationError({
+                    'webhook_secret': 'مفتاح Webhook مطلوب عند تفعيل الدفع الإلكتروني'
+                })
+        
+        return cleaned_data

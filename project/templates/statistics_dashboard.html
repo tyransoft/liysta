@@ -11,364 +11,410 @@
     <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
 
 <style>
-        :root {
-            --primary: #2563EB;
-            --primary-dark: #2667cc;
-            --primary-light: #1F2937;
-            --secondary: #F97316;
-            --accent: #F97316;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --info: #0EA5E9;
-            
-            --dark: #1f2937;
-            --gray: #6b7280;
-            --light: #f9fafb;
-            --lighter: #ffffff;
-            
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: 12px;
-            --radius-lg: 16px;
-        }
+    :root {
+        --primary: #FF8C00;
+        --primary-dark: #E65100;
+        --primary-light: #FFF3E0;
+        --secondary: #FFA500;
+        --accent: #F97316;
+        --success: #10B981;
+        --warning: #F59E0B;
+        --danger: #EF4444;
+        --info: #0EA5E9;
+        --dark: #1f2937;
+        --gray: #6b7280;
+        --light: #f9fafb;
+        --lighter: #ffffff;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+        --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --radius: 12px;
+        --radius-lg: 16px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            direction: rtl;
-            min-height: 100vh;
-            padding: 20px;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        direction: rtl;
+        min-height: 100vh;
+        padding: 20px;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-      
-        .logo-text {
-            font-weight: 900;
-            font-size: 1.8rem;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+  
+    .logo-text {
+        font-weight: 900;
+        font-size: 1.8rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-        /* Enhanced Dashboard Container */
-        .dashboard-container {
-            padding: 2rem;
-            max-width: 1800px;
-            margin: 0 auto;
-        }
+    .dashboard-container {
+        padding: 2rem;
+        max-width: 1800px;
+        margin: 0 auto;
+    }
 
-        /* Premium Header */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        color: white;
+        position: relative;
+        overflow: hidden;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
 
-        .dashboard-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(30deg);
-        }
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+    }
 
-        .dashboard-header h1 {
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 800;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    .dashboard-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 800;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-        .dashboard-header h1 i {
-            font-size: 2.5rem;
-            color: white;
-        }
+    .dashboard-header h1 i {
+        font-size: 2.2rem;
+    }
 
-        .user-actions, .guest-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-       
-        .s-btn {
-            padding: 8px 15px;
-            border-radius: 25px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-            background: #F97316; 
-            color: white;
-        }
-        
-        /* Advanced Stat Grid */
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .s-btn {
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .s-btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+
+    .filter-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        background: rgba(255,255,255,0.15);
+        padding: 8px 15px;
+        border-radius: 25px;
+    }
+
+    .filter-form select {
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: none;
+        background: rgba(255,255,255,0.9);
+        font-family: 'Tajawal', sans-serif;
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--dark);
+        cursor: pointer;
+    }
+
+    .filter-form select:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+    }
+
+    .filter-btn {
+        padding: 6px 16px;
+        border-radius: 20px;
+        border: none;
+        background: white;
+        color: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 0.9rem;
+    }
+
+    .filter-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: var(--lighter);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        border-right: 4px solid var(--primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card-header .icon-container {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        flex-shrink: 0;
+    }
+
+    .stat-card-header h3 {
+        color: var(--dark);
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+        flex-grow: 1;
+        padding: 0 0.8rem;
+    }
+
+    .stat-value {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value .main-value {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--dark);
+        line-height: 1;
+    }
+
+    .stat-value .unit {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gray);
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .stat-change {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        gap: 0.3rem;
+    }
+
+    .positive {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+    }
+
+    .negative {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+    }
+
+    .neutral {
+        background-color: rgba(14, 165, 233, 0.15);
+        color: var(--info);
+    }
+
+    .warning {
+        background-color: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+    }
+
+    .stat-period {
+        color: var(--gray);
+        font-size: 0.8rem;
+    }
+
+    .chart-section {
+        background: var(--lighter);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+    }
+
+    .chart-section:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem;
+        color: var(--dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .section-header h2 i {
+        color: var(--primary);
+    }
+
+    .chart-container {
+        height: 400px;
+        width: 100%;
+        position: relative;
+    }
+
+    .card-subtitle {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 1200px) {
         .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         }
+    }
 
-        /* Premium Stat Card */
-        .stat-card {
-            background: var(--lighter);
-            border-radius: var(--radius);
-            padding: 1.8rem;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            border-left: 4px solid var(--primary);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            transition: var(--transition);
-        }
-
-        .stat-card:hover::after {
-            height: 6px;
-        }
-
-        .stat-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card-header .icon-container {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            box-shadow: 0 4px 12px rgba(58, 134, 255, 0.3);
-        }
-
-        .stat-card-header .card-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .stat-card-header .card-actions button {
-            background: none;
-            border: none;
-            color: var(--gray);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1.1rem;
-        }
-
-        .stat-card-header .card-actions button:hover {
-            color: var(--primary);
-        }
-
-        .stat-card-header h3 {
-            color: var(--dark);
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 0;
-            flex-grow: 1;
-            padding: 0 1rem;
-        }
-
-        .stat-value {
-            display: flex;
-            align-items: flex-end;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-value .main-value {
-            font-size: 2.8rem;
-            font-weight: 800;
-            color: var(--dark);
-            line-height: 1;
-        }
-
-        .stat-value .unit {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-change {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            gap: 0.5rem;
-        }
-
-        .positive {
-            background-color: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-        }
-
-        .negative {
-            background-color: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-        }
-
-        .neutral {
-            background-color: rgba(14, 165, 233, 0.15);
-            color: var(--info);
-        }
-
-        .stat-period {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        /* Premium Chart Section */
-        .chart-section {
-            background: var(--lighter);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            margin-bottom: 2.5rem;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-        }
-
-        .chart-section:hover {
-            box-shadow: var(--shadow-lg);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.8rem;
-            color: var(--dark);
-            margin: 0;
-            display: flex;
-            align-items: center;
+    @media (max-width: 992px) {
+        .dashboard-header {
+            flex-direction: column;
+            align-items: stretch;
             gap: 1rem;
         }
-
-        .section-header h2 i {
-            color: var(--primary);
+        
+        .header-actions {
+            flex-direction: column;
+            align-items: stretch;
         }
 
+        .filter-form {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+        
+        .stat-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stat-value .main-value {
+            font-size: 2rem;
+        }
+        
         .chart-container {
-            height: 400px;
+            height: 280px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .stat-card {
+            padding: 1.2rem;
+        }
+        
+        .stat-value .main-value {
+            font-size: 1.8rem;
+        }
+
+        .filter-form {
+            flex-direction: column;
             width: 100%;
-            position: relative;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .stat-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            }
+        .filter-form select {
+            width: 100%;
         }
 
-        @media (max-width: 992px) {
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1.5rem;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
+        .filter-btn {
+            width: 100%;
         }
-
-        @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 1rem;
-            }
-            
-            .stat-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stat-value .main-value {
-                font-size: 2.4rem;
-            }
-            
-            .chart-container {
-                height: 300px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .dashboard-header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .stat-card {
-                padding: 1.5rem;
-            }
-            
-            .stat-value .main-value {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -378,7 +424,26 @@
         
         <div class="dashboard-header">
             <h1><i class="fas fa-chart-pie"></i> لوحة الإحصائيات</h1>
-            <div class="user-actions">
+            <div class="header-actions">
+                <form method="GET" class="filter-form">
+                    <select name="year_filter">
+                        {% for year in years_range %}
+                        <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>
+                            {{ year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <select name="month_filter">
+                        {% for month in months_range %}
+                        <option value="{{ month }}" {% if selected_month == month %}selected{% endif %}>
+                            {{ month_names|slice:month|last }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="filter-btn">
+                        <i class="fas fa-filter"></i> تصفية
+                    </button>
+                </form>
                 <a href="{% url 'home' %}" class="s-btn">    
                     <i class="fas fa-home"></i> الصفحة الرئيسية
                 </a>
@@ -388,110 +453,194 @@
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="icon-container">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>المستخدمون النشطون</h3>
+                    <div class="icon-container"><i class="fas fa-users"></i></div>
+                    <h3>إجمالي المستخدمين</h3>
                 </div>
                 <div class="stat-value">
-                    <span class="main-value">{{ active_users }}</span>
+                    <span class="main-value">{{ active_users|add:inactive_users }}</span>
                     <span class="unit">مستخدم</span>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--danger) 0%, #d43a5f 100%); box-shadow: 0 4px 12px rgba(239, 71, 111, 0.3);">
-                        <i class="fas fa-user-slash"></i>
-                    </div>
-                    <h3>المستخدمون غير النشطين</h3>
-                </div>
-                <div class="stat-value">
-                    <span class="main-value">{{ inactive_users }}</span>
-                    <span class="unit">مستخدم</span>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--info) 0%, #0e6f8e 100%); box-shadow: 0 4px 12px rgba(17, 138, 178, 0.3);">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    <h3> عدد زيارات قوائمنا</h3>
-                </div>
-                <div class="stat-value">
-                    <span class="main-value">{{ visits }}</span>
-                    <span class="unit">زيارة</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change positive">
-                        <i class="fas fa-plus"></i> {{ month_visits }} هذا الشهر 
-                    </span>
+                    <span class="stat-change positive">{{ active_users }} نشط</span>
+                    <span class="stat-change negative">{{ inactive_users }} غير نشط</span>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%); box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);">
-                        <i class="fas fa-file-contract"></i>
-                    </div>
-                    <h3>إجمالي الاشتراكات</h3>
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%);"><i class="fas fa-user-plus"></i></div>
+                    <h3>المستخدمين الجدد ({{ previous_month }}/{{ previous_year }})</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ new_active_users|add:new_inactive_users }}</span>
+                    <span class="unit">مستخدم</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">{{ new_active_users }} نشط</span>
+                    <span class="stat-change negative">{{ new_inactive_users }} غير نشط</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--info) 0%, #0e6f8e 100%);"><i class="fas fa-percent"></i></div>
+                    <h3>نسبة النشاط</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ actives_percentage|floatformat:1 }}</span>
+                    <span class="unit">%</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change neutral">نشاط الشهر: {{ month_actives_percentage|floatformat:1 }}%</span>
+                    <span class="stat-change positive">تحويل: {{ activetion_converted_percentage|floatformat:1 }}%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%);"><i class="fas fa-file-contract"></i></div>
+                    <h3>الاشتراكات</h3>
                 </div>
                 <div class="stat-value">
                     <span class="main-value">{{ subscriptions_count }}</span>
                     <span class="unit">اشتراك</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change positive">
-                        <i class="fas fa-check-circle"></i> {{ active_subscriptions }} نشط
-                    </span>
-                    <span class="stat-period">هذا الشهر</span>
+                    <span class="stat-change positive">{{ active_subscriptions }} نشط</span>
+                    <span class="stat-change neutral">{{ active_subs_percentage|floatformat:1 }}% فعالة</span>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h3>الإيرادات هذا الشهر</h3>
-                </div>
-                <div class="stat-value">
-                    <span class="main-value">{{ monthly_income }}</span>
-                    <span class="unit">د.ل</span>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%); box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <h3>مستفيدي العرض المجاني</h3>
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%);"><i class="fas fa-gift"></i></div>
+                    <h3>العرض المجاني</h3>
                 </div>
                 <div class="stat-value">
                     <span class="main-value">{{ free_users }}</span>
-                    <span class="unit">إجمالي</span>
+                    <span class="unit">مستخدم</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change positive">
-                        <i class="fas fa-user"></i> {{ currentfree_users }} نشط حاليًا
-                    </span>
-                    <span class="stat-change neutral">
-                        <i class="fas fa-arrow-up"></i> {{ converted_users }} تم الترقية
-                    </span>
+                    <span class="stat-change positive">{{ converted_users }} تم الترقية</span>
+                    <span class="stat-change success">{{ converted_percentage|floatforma:1 }}% تحويل</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%);"><i class="fas fa-coins"></i></div>
+                    <h3>الإيرادات ({{ previous_month }}/{{ previous_year }})</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ monthly_income|floatformat:2 }}</span>
+                    <span class="unit">د.ل</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change positive">
-                        <i class="fas fa-percent"></i> {{ converted_per|floatformat:2 }}% نسبة التحويل
+                    <span class="stat-period">الإجمالي: {{ total_income|floatformat:2 }} د.ل</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--danger) 0%, #d43a5f 100%);"><i class="fas fa-cogs"></i></div>
+                    <h3>التكاليف التشغيلية</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ operations_amount|floatformat:2 }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change warning">{{ operations_amount|floatformat:2 }} د.ل</span>
+                    <span class="stat-period">{{ previous_month }}/{{ previous_year }}</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%);"><i class="fas fa-bullhorn"></i></div>
+                    <h3>التكاليف التسويقية</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ marketing_amount|floatformat:2 }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change neutral">مندوبين: {{ seller_amount|floatformat:2 }}</span>
+                    <span class="stat-period">{{ previous_month }}/{{ previous_year }}</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%);"><i class="fas fa-chart-line"></i></div>
+                    <h3>هامش الربح الإجمالي</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ gross_profit|floatformat:2 }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">{{ gross_percentage|floatformat:1 }}%</span>
+                    <span class="stat-period">{{ previous_month }}/{{ previous_year }}</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--info) 0%, #0e6f8e 100%);"><i class="fas fa-chart-pie"></i></div>
+                    <h3>صافي الربح</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ net_profit|floatformat:2 }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change {% if net_percentage > 0 %}positive{% else %}negative{% endif %}">
+                        {{ net_percentage|floatformat:1 }}%
                     </span>
+                    <span class="stat-period">{{ previous_month }}/{{ previous_year }}</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);"><i class="fas fa-user-cost"></i></div>
+                    <h3>تكلفة العميل الجديد</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ new_coast|floatformat:2 }}</span>
+                    <span class="unit">د.ل</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-period">بناءً على {{ new_active_users }} عميل جديد</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--info) 0%, #0e6f8e 100%);"><i class="fas fa-shopping-cart"></i></div>
+                    <h3>الطلبات</h3>
+                </div>
+                <div class="stat-value">
+                    <span class="main-value">{{ orders_stats.total }}</span>
+                    <span class="unit">طلب</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-change positive">{{ orders_stats.delivered }} مكتمل</span>
+                    <span class="stat-change warning">{{ orders_stats.pending }} قيد الانتظار</span>
+                    <span class="stat-change neutral">{{ orders_stats.onwork }} قيد العمل</span>
+                </div>
+                <div class="stat-meta">
+                    <span class="stat-period">{{ orders_monthly }} طلب هذا الشهر</span>
                 </div>
             </div>
         </div>
 
         <div class="chart-section">
             <div class="section-header">
-                <h2><i class="fas fa-chart-line"></i> إحصائيات المبيعات السنوية {{ current_year }}</h2>
+                <h2><i class="fas fa-chart-line"></i> المبيعات والتكاليف {{ selected_year }}</h2>
             </div>
             <div class="chart-container">
                 <canvas id="salesChart"></canvas>
@@ -501,48 +650,41 @@
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3>الإيرادات السنوية</h3>
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);"><i class="fas fa-calendar-alt"></i></div>
+                    <h3>الإيرادات السنوية {{ selected_year }}</h3>
                 </div>
                 <div class="stat-value">
-                    <span class="main-value">{{ yearly_income }}</span>
+                    <span class="main-value">{{ yearly_income|floatformat:2 }}</span>
                     <span class="unit">د.ل</span>
                 </div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--accent) 0%, #d9005a 100%); box-shadow: 0 4px 12px rgba(255, 0, 110, 0.3);">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <h3>إجمالي الطلبات</h3>
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--success) 0%, #05b58b 100%);"><i class="fas fa-eye"></i></div>
+                    <h3>زيارات القوائم</h3>
                 </div>
                 <div class="stat-value">
-                    <span class="main-value">{{ orders_stats.total }}</span>
-                    <span class="unit">طلب</span>
+                    <span class="main-value">{{ total_visits }}</span>
+                    <span class="unit">زيارة</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change positive">
-                        <i class="fas fa-check-circle"></i> {{ orders_stats.delivered }} مكتمل
-                    </span>
+                    <span class="stat-change positive">{{ month_visits }} هذا الشهر</span>
                 </div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%); box-shadow: 0 4px 12px rgba(255, 190, 11, 0.3);">
-                        <i class="fas fa-hourglass-half"></i>
-                    </div>
-                    <h3>طلبات قيد الانتظار</h3>
+                    <div class="icon-container" style="background: linear-gradient(135deg, var(--warning) 0%, #e6ab09 100%);"><i class="fas fa-chart-simple"></i></div>
+                    <h3>المستخدمين النشطاء</h3>
                 </div>
                 <div class="stat-value">
-                    <span class="main-value">{{ orders_stats.pending }}</span>
-                    <span class="unit">طلب</span>
+                    <span class="main-value">{{ active_users }}</span>
+                    <span class="unit">مستخدم</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-period">من إجمالي الطلبات</span>
+                    <span class="stat-change positive">{{ old_active_users }} قديم</span>
+                    <span class="stat-change success">{{ new_active_users }} جديد</span>
                 </div>
             </div>
         </div>
@@ -550,24 +692,31 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const ctx = document.getElementById('salesChart').getContext('2d');
             
-            // البيانات من Django
             const monthlyLabels = {{ months|safe }};
-            const currentYearData = {{ monthly_sales }};
+            const salesData = {{ monthly_sales }};
+            const coastsData = {{ monthly_coasts }};
             
-            // إنشاء المخطط
-            new Chart(salesCtx, {
+            new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: monthlyLabels,
                     datasets: [
                         {
-                            label: 'المبيعات الشهرية لعام {{ current_year }}',
-                            data: currentYearData,
-                            backgroundColor: 'rgba(37, 99, 235, 0.7)',
-                            borderColor: 'rgba(37, 99, 235, 1)',
-                            borderWidth: 1,
+                            label: 'المبيعات',
+                            data: salesData,
+                            backgroundColor: 'rgba(255, 140, 0, 0.7)',
+                            borderColor: 'rgba(255, 140, 0, 1)',
+                            borderWidth: 2,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'التكاليف',
+                            data: coastsData,
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 2,
                             borderRadius: 4
                         }
                     ]
@@ -581,8 +730,10 @@
                             rtl: true,
                             labels: {
                                 font: {
-                                    family: 'Tajawal, sans-serif'
-                                }
+                                    family: 'Tajawal, sans-serif',
+                                    size: 14
+                                },
+                                padding: 20
                             }
                         },
                         tooltip: {

@@ -2421,7 +2421,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.ok) {
             cart = []; deliveryFee = 0; selectedServiceId = '';
             updateCart(); closeModal();
-            if (data.order_id) window.location.href = `/order/success/${data.order_id}`;
+            if (data.order_id) window.location.href = `/checkout/${data.order_id}`;
             else showNotification('تم تقديم الطلب بنجاح!', 'success');
         } else throw new Error(data.error || 'فشل في تقديم الطلب');
     } catch (error) {

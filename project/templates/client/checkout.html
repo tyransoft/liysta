@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إتمام الطلب{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">إتمام الطلب</h4>
+                </div>
+                <div class="card-body">
+                    <!-- ملخص الطلب -->
+                    <div class="order-summary mb-4">
+                        <h5>ملخص الطلب</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>المنتج</th>
+                                        <th>الكمية</th>
+                                        <th>السعر</th>
+                                        <th>الإجمالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                    <tr>
+                                        <td>{{ item.menu_item.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.price }} د.ل</td>
+                                        <td>{{ item.total_price }} د.ل</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="text-end">الإجمالي</th>
+                                        <th>{{ order.sales_total }} د.ل</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- خيارات الدفع -->
+                    <form method="post" id="checkoutForm">
+                        {% csrf_token %}
+                        
+                        <div class="payment-options">
+                            <h5>اختر طريقة الدفع</h5>
+                            
+                            {% if payment_methods.online_only %}
+                                <!-- حالة 1: دفع إلكتروني فقط -->
+                                <input type="hidden" name="payment_method" value="online">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-credit-card"></i>
+                                    سيتم الدفع إلكترونياً عبر البوابة الإلكترونية
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-credit-card"></i> ادفع الآن
+                                </button>
+                                
+                            {% elif payment_methods.cash_only %}
+                                <!-- حالة 2: دفع عند الاستلام فقط -->
+                                <input type="hidden" name="payment_method" value="cash">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    سيتم الدفع نقداً عند استلام الطلب
+                                </div>
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-check-circle"></i> تأكيد الطلب
+                                </button>
+                                
+                            {% elif payment_methods.both %}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="payment-option-card">
+                                            <input type="radio" name="payment_method" value="online" id="online_payment" checked>
+                                            <label for="online_payment" class="payment-option-label">
+                                                <div class="option-content">
+                                                    <i class="fas fa-credit-card fa-2x text-primary"></i>
+                                                    <h6>دفع إلكتروني</h6>
+                                                    <small>الدفع عبر البوابة الإلكترونية</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="payment-option-card">
+                                            <input type="radio" name="payment_method" value="cash" id="cash_payment">
+                                            <label for="cash_payment" class="payment-option-label">
+                                                <div class="option-content">
+                                                    <i class="fas fa-money-bill-wave fa-2x text-success"></i>
+                                                    <h6>دفع عند الاستلام</h6>
+                                                    <small>الدفع نقداً عند الاستلام</small>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                                    <i class="fas fa-credit-card"></i> ادفع الآن
+                                </button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-option-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-option-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0,123,255,0.1);
+}
+
+.payment-option-card input[type="radio"] {
+    display: none;
+}
+
+.payment-option-card input[type="radio"]:checked + .payment-option-label {
+    border-color: #007bff;
+    background-color: #f8f9ff;
+}
+
+.payment-option-label {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.option-content {
+    text-align: center;
+}
+
+.option-content i {
+    margin-bottom: 10px;
+}
+
+.option-content h6 {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.option-content small {
+    color: #6c757d;
+}
+</style>
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('input[name="payment_method"]').on('change', function() {
+        const selected = $(this).val();
+        const submitBtn = $('#submitBtn');
+        
+        if (selected === 'online') {
+            submitBtn.html('<i class="fas fa-credit-card"></i> ادفع الآن');
+            submitBtn.removeClass('btn-success').addClass('btn-primary');
+        } else if (selected === 'cash') {
+            submitBtn.html('<i class="fas fa-check-circle"></i> تأكيد الطلب');
+            submitBtn.removeClass('btn-primary').addClass('btn-success');
+        }
+    });
+    
+    $('#checkoutForm').on('submit', function(e) {
+        const paymentMethod = $('input[name="payment_method"]:checked').val();
+        
+        {% if payment_methods.both %}
+            if (!paymentMethod) {
+                e.preventDefault();
+                toastr.warning('يرجى اختيار طريقة الدفع');
+                return false;
+            }
+        {% endif %}
+    });
+});
+
+if (typeof toastr === 'undefined') {
+    document.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">');
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"><\/script>');
+    toastr.options = {
+        "positionClass": "toast-top-left",
+        "timeOut": "5000",
+    };
+}
+</script>
+{% endblock %}
+{% endblock %}

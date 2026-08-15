@@ -157,6 +157,25 @@ urlpatterns = [
     path('clint/edit/<int:clint_id>/', edit_clint, name='edit_clint'),
     path('clint/delete/<int:clint_id>/', delete_clint, name='delete_clint'),
 
-    
+    path('services/', service_list_view, name='service_list'),
+    path('services/update-status/', update_service_status, name='update_service_status'),
+    path('services/details/<int:service_id>/', get_service_details, name='service_details'),
+    path('coasts/', coast_list_view, name='coast_list'),
+    path('add-coast/', add_coast_view, name='add_coast'),
+    path('edit-coast/<int:coast_id>/', edit_coast, name='edit_coast'),
+    path('delete-coast/<int:coast_id>/', delete_coast, name='delete_coast'),
 
-]
+    path('checkout/<int:order_id>/', checkout_page, name='checkout'),
+    path('return/<int:payment_id>/', payment_return, name='payment_return'),
+    path('success/<int:payment_id>/', payment_success, name='payment_success'),
+    path('failed/<int:payment_id>/', payment_failed, name='payment_failed'),
+    
+    
+    path('api/check-status/<int:payment_id>/', check_payment_status_api, name='check_payment_status_api'),
+    
+    path('dashboard/payment-settings/',payment_settings, name='payment_settings'),
+    path('dashboard/test-connection/', test_connection, name='test_connection'),
+    path('dashboard/payments/', payment_list, name='payment_list'),
+    path('dashboard/payments/<int:payment_id>/', payment_details, name='payment_details'),
+    path('webhook/ezonepay/', ezonepay_webhook, name='ezonepay_webhook'),
+]   

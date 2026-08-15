@@ -1,5 +1,5 @@
 from decimal import Decimal
-
+from django.views.decorators.http import require_POST, require_GET
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.db.models import Sum,F, ExpressionWrapper,DecimalField,Avg,IntegerField,Count
+from django.db.models import Sum,F, ExpressionWrapper,DecimalField,Avg,IntegerField,Count,Q
 from datetime import date
 from django.db.models.functions import ExtractMonth
 from django.core.mail import send_mail
@@ -25,7 +25,7 @@ from django.db import transaction
 from io import BytesIO
 from openpyxl import Workbook
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.utils.dateparse import parse_datetime
 from django.utils.text import slugify
 import re
@@ -33,6 +33,11 @@ import hashlib
 import base64
 import requests
 from django.views.decorators.csrf import csrf_protect
+from django.db.models.functions import ExtractMonth
+from .services import *
+from django.views.decorators.http import require_http_methods
+
+
 
 #guest user and so on
 
@@ -324,82 +329,227 @@ def coupon_list(request):
     return render(request, 'coupon_list.html', {'coupons': coupons})
 
 
+
 @staff_member_required
 def statistics_dashboard(request):
     today = timezone.now().date()
     
-    active_users = Customer.objects.filter(customer_status='active').count()
-    inactive_users = Customer.objects.filter(customer_status='inactive').count()
-    subscriptions_count = Subscription.objects.count()
-    active_subscriptions = Subscription.objects.filter(is_active=True).count()
-    free_users = Customer.objects.filter(has_used_free_trial=True).count()
-    currentfree_users = Customer.objects.filter(customer_status='inactive', has_used_free_trial=True).count()
-    converted_users = Customer.objects.filter(customer_status='active', has_used_free_trial=True).count()
-    converted_percentage = converted_users / free_users * 100 if free_users else 0
+    selected_month = request.GET.get('month')
+    selected_year = request.GET.get('year')
     
-    now = timezone.now()
-    start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-
+    if selected_month and selected_year:
+        month = int(selected_month)
+        year = int(selected_year)
+    else:
+        month = today.month
+        year = today.year
+    
+    previous_month = month - 1 if month > 1 else 12
+    previous_year = year if month > 1 else year - 1
+    
+    current_year = today.year
+    current_month = today.month
+    
+    year_filter = request.GET.get('year_filter', str(current_year))
+    month_filter = request.GET.get('month_filter', str(current_month))
+    
+    if year_filter and month_filter:
+        filter_year = int(year_filter)
+        filter_month = int(month_filter)
+    else:
+        filter_year = current_year
+        filter_month = current_month
+    
+    start_of_month = datetime(filter_year, filter_month, 1)
+    if filter_month == 12:
+        end_of_month = datetime(filter_year + 1, 1, 1) - timedelta(days=1)
+    else:
+        end_of_month = datetime(filter_year, filter_month + 1, 1) - timedelta(days=1)
+    
+    subs_count = Subscription.objects.count()
+    
+    new_active_users = Customer.objects.filter(
+        customer_status='active',
+        created_at__year=previous_year,
+        created_at__month=previous_month
+    ).count()
+    
+    new_inactive_users = Customer.objects.filter(
+        customer_status='inactive',
+        created_at__year=previous_year,
+        created_at__month=previous_month
+    ).count()
+    
+    total_active = Customer.objects.filter(customer_status='active').count()
+    total_inactive = Customer.objects.filter(customer_status='inactive').count()
+    
+    old_active_users = total_active - new_active_users
+    old_inactive_users = total_inactive - new_inactive_users
+    
+    month_actives_percentage = (new_active_users / old_active_users * 100) if old_active_users else 0
+    actives_percentage = ((old_active_users + new_active_users) / (old_inactive_users + new_inactive_users) * 100) if (old_inactive_users + new_inactive_users) else 0
+    activetion_converted_percentage = (new_active_users / (old_inactive_users + new_inactive_users) * 100) if (old_inactive_users + new_inactive_users) else 0
+    
+    active_subscriptions = Subscription.objects.filter(is_active=True).count()
+    active_subs_percentage = (active_subscriptions / subs_count * 100) if subs_count else 0
+    
+    free_users = Customer.objects.filter(has_used_free_trial=True).count()
+    converted_users = Customer.objects.filter(customer_status='active', has_used_free_trial=True).count()
+    converted_percentage = (converted_users / free_users * 100) if free_users else 0
+    
     monthly_income = AdminSales.objects.filter(
-        created_at__year=now.year,
-        created_at__month=now.month
+        created_at__year=previous_year,
+        created_at__month=previous_month,
+    ).aggregate(total=Sum('profit'))['total'] or 0
+    
+    operations_coasts = Coasts.objects.filter(
+        coast_kind='Operations',
+        created_at__year=previous_year,
+        created_at__month=previous_month
+    )
+    operations_amount = 0
+    for i in operations_coasts:
+        if i.created_at.month == previous_month or i.recurring:
+            operations_amount += i.amount
+    operations_amount += monthly_income * 0.1
+    
+    sellers_coast = Coasts.objects.filter(
+        coast_kind='sellermen',
+        created_at__year=previous_year,
+        created_at__month=previous_month
+    ).first()
+    seller_amount = sellers_coast.amount if sellers_coast else 0
+    
+    marketing_coasts = Coasts.objects.filter(
+        coast_kind='Marketing&sells',
+        created_at__year=previous_year,
+        created_at__month=previous_month
+    )
+    marketing_amount = seller_amount
+    for i in marketing_coasts:
+        if i.created_at.month == previous_month or i.recurring:
+            marketing_amount += i.amount
+    
+    gross_profit = monthly_income - operations_amount
+    gross_percentage = (gross_profit / monthly_income * 100) if monthly_income else 0
+    net_profit = gross_profit - marketing_amount
+    net_percentage = (net_profit / monthly_income * 100) if monthly_income else 0
+    new_coast = (marketing_amount / new_active_users) if new_active_users else 0
+    
+    monthly_income_current = AdminSales.objects.filter(
+        created_at__year=filter_year,
+        created_at__month=filter_month,
     ).aggregate(total=Sum('profit'))['total'] or 0
     
     yearly_income = AdminSales.objects.filter(
-        created_at__year=now.year
+        created_at__year=filter_year
     ).aggregate(total=Sum('profit'))['total'] or 0
-
+    
+    total_income = AdminSales.objects.aggregate(total=Sum('profit'))['total'] or 0
+    
     visit_exp = ExpressionWrapper(
         F('visits_count'),
         output_field=IntegerField()
     )
-
-    visits = {
-        'total': MenuStatistics.objects.all().aggregate(total=Sum(visit_exp))['total'] or 0,
-        'month': MenuStatistics.objects.filter(date__gte=start_of_month).aggregate(total=Sum(visit_exp))['total'] or 0,
-    }
-
+    
+    total_visits = MenuStatistics.objects.aggregate(total=Sum(visit_exp))['total'] or 0
+    month_visits = MenuStatistics.objects.filter(
+        date__gte=start_of_month,
+        date__lte=end_of_month
+    ).aggregate(total=Sum(visit_exp))['total'] or 0
+    
     orders_stats = {
         'total': Order.objects.count(),
         'pending': Order.objects.filter(status='pending').count(),
+        'onwork': Order.objects.filter(status='onwork').count(),
         'delivered': Order.objects.filter(status='delivered').count(),
+        'canceled': Order.objects.filter(status='canceled').count(),
     }
+    
+    orders_monthly = Order.objects.filter(
+        created_at__year=filter_year,
+        created_at__month=filter_month
+    ).count()
     
     monthly_labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
                       'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-
+    
     monthly_sales = [0] * 12
-    current_year = now.year
-
     sales_data = AdminSales.objects.filter(
-        created_at__year=current_year,
+        created_at__year=filter_year,
     ).annotate(
         month=ExtractMonth('created_at')
     ).values('month').annotate(
         total_sales=Sum('profit'),
     ).order_by('month')
-
+    
     for data in sales_data:
         month_index = data['month'] - 1
         monthly_sales[month_index] = float(data['total_sales'] or 0)
-
+    
+    monthly_coasts = [0] * 12
+    coasts_data = Coasts.objects.filter(
+        created_at__year=filter_year
+    ).annotate(
+        month=ExtractMonth('created_at')
+    ).values('month').annotate(
+        total_coasts=Sum('amount'),
+    ).order_by('month')
+    
+    for data in coasts_data:
+        month_index = data['month'] - 1
+        monthly_coasts[month_index] = float(data['total_coasts'] or 0)
+    
+    months_range = range(1, 13)
+    month_names = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                   'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+    
+    years_range = range(2023, current_year + 2)
+    
     context = {
-        'active_users': active_users,
-        'inactive_users': inactive_users,
-        'subscriptions_count': subscriptions_count,
+        'active_users': total_active,
+        'inactive_users': total_inactive,
+        'new_active_users': new_active_users,
+        'new_inactive_users': new_inactive_users,
+        'old_active_users': old_active_users,
+        'old_inactive_users': old_inactive_users,
+        'month_actives_percentage': month_actives_percentage,
+        'actives_percentage': actives_percentage,
+        'activetion_converted_percentage': activetion_converted_percentage,
+        'subscriptions_count': subs_count,
         'active_subscriptions': active_subscriptions,
+        'active_subs_percentage': active_subs_percentage,
         'monthly_income': monthly_income,
         'yearly_income': yearly_income,
+        'total_income': total_income,
+        'monthly_income_current': monthly_income_current,
         'orders_stats': orders_stats,
+        'orders_monthly': orders_monthly,
         'months': monthly_labels,
         'monthly_sales': monthly_sales,
+        'monthly_coasts': monthly_coasts,
         'free_users': free_users,
         'converted_users': converted_users,
-        'converted_per': converted_percentage,
-        'currentfree_users': currentfree_users,
-        'visits': visits['total'],
-        'month_visits': visits['month'],
+        'converted_percentage': converted_percentage,
+        'operations_amount': operations_amount,
+        'marketing_amount': marketing_amount,
+        'seller_amount': seller_amount,
+        'gross_profit': gross_profit,
+        'gross_percentage': gross_percentage,
+        'net_profit': net_profit,
+        'net_percentage': net_percentage,
+        'new_coast': new_coast,
+        'total_visits': total_visits,
+        'month_visits': month_visits,
+        'selected_month': filter_month,
+        'selected_year': filter_year,
+        'months_range': months_range,
+        'month_names': month_names,
+        'years_range': years_range,
         'current_year': current_year,
+        'current_month': current_month,
+        'previous_month': previous_month,
+        'previous_year': previous_year,
     }
     
     return render(request, 'statistics_dashboard.html', context)
@@ -413,56 +563,61 @@ def dashboard_view(request):
         'coupons_count': Coupon.objects.count(),
         'clients_count': OurCustomer.objects.count(),
         'customers_count': Customer.objects.count(),
+        'custome_count':CustomService.objects.filter(status='pending').count(),
 
     }
     return render(request, 'control_dashboard.html', context)
 
 def customer_list_view(request):
-    today=timezone.now().date()
-    today_joined=Customer.objects.filter(created_at=today)
-    new_customer_pg=Paginator(today_joined,15)
-    page_number=request.GET.get('page')
-    new_customers=new_customer_pg.get_page(page_number)
+    today = timezone.now().date()
+    today_joined = Customer.objects.filter(created_at__date=today)
+    new_customer_pg = Paginator(today_joined, 15)
+    page_number = request.GET.get('page')
+    new_customers = new_customer_pg.get_page(page_number)
     
-    status_filter=None
-    kind_filter=None
-    freeplan_filter=None
+    status_filter = None
+    kind_filter = None
+    freeplan_filter = None
+    search_query = None
 
-    if request.method =='POST':
-        status_filter=request.POST.get('status')
-        kind_filter=request.POST.get('kind')
-        freeplan_filter=request.POST.get('freeplan')
+    if request.method == 'POST':
+        status_filter = request.POST.get('status')
+        kind_filter = request.POST.get('kind')
+        freeplan_filter = request.POST.get('freeplan')
+        search_query = request.POST.get('search', '').strip()
 
-    if status_filter and kind_filter and freeplan_filter:
-        all_customers=Customer.objects.filter(customer_status=status_filter,store_kind=kind_filter,has_used_free_trial=freeplan_filter)
-    elif status_filter and not kind_filter and  freeplan_filter:
-        all_customers=Customer.objects.filter(customer_status=status_filter)
-    elif not status_filter and  kind_filter and  freeplan_filter:
-        all_customers=Customer.objects.filter(customer_status=status_filter)
-    elif status_filter and  kind_filter and not freeplan_filter:
-        all_customers=Customer.objects.filter(customer_status=status_filter)
-    elif status_filter and not kind_filter and not freeplan_filter:
-        all_customers=Customer.objects.filter(customer_status=status_filter)                                
+    all_customers = Customer.objects.all()
     
-    elif status_filter and not kind_filter and not freeplan_filter:
-        all_customers=Customer.objects.filter(customer_status=status_filter)
-    elif  kind_filter and not status_filter and not freeplan_filter:
-        all_customers=Customer.objects.filter(store_kind=kind_filter)
-    elif  freeplan_filter and not status_filter and not kind_filter:
-        all_customers=Customer.objects.filter(store_kind=kind_filter)    
+    if search_query:
+        all_customers = all_customers.filter(
+            Q(user__first_name__icontains=search_query) |
+            Q(store_ar_name__icontains=search_query) |
+            Q(phone__icontains=search_query)
+        )
     
-    else:
-        all_customers=Customer.objects.all()
+    if status_filter:
+        all_customers = all_customers.filter(customer_status=status_filter)
     
-    customer_pg=Paginator(all_customers,20)
-    page_number=request.GET.get('page')
-    customers=customer_pg.get_page(page_number)
+    if kind_filter:
+        all_customers = all_customers.filter(store_kind=kind_filter)
     
-
+    if freeplan_filter:
+        if freeplan_filter == 'true':
+            all_customers = all_customers.filter(has_used_free_trial=True)
+        elif freeplan_filter == 'false':
+            all_customers = all_customers.filter(has_used_free_trial=False)
+    
+    customer_pg = Paginator(all_customers, 100)
+    page_number = request.GET.get('page')
+    customers = customer_pg.get_page(page_number)
+    
     context = {
-        'new_customers':new_customers,
-        'customers':customers,
-
+        'new_customers': new_customers,
+        'customers': customers,
+        'status_filter': status_filter,
+        'kind_filter': kind_filter,
+        'freeplan_filter': freeplan_filter,
+        'search_query': search_query,
     }
     return render(request, 'customer_list.html', context)
 
@@ -2501,13 +2656,16 @@ def confirm_delivered(request, order_id):
         else:
          messages.error(
                 request, 
-                f'⚠️ تعذر شحن الطلب #{order.ordernumber} - {order.customer_name} '
+                f' تعذر شحن الطلب #{order.ordernumber} - {order.customer_name} '
                 f'بسبب عدم كفاية المخزون للمنتجات المطلوبة. '
                 f'يرجى تحديث المخزون أولاً ثم إعادة محاولة الشحن.'
             )
          return redirect('customer_dashboard')
      
     order.status = 'delivered'
+    order.is_paid = True
+    if not order.paid_at:
+        order.paid_at = timezone.now()
     order.save()
     messages.success(request, 'تم تاكيد تسليم الطلب بنجاح.')
     return redirect('customer_dashboard')
@@ -4038,3 +4196,618 @@ def vanex_integration(request):
 
 
 
+
+def service_list_view(request):
+    status_filter = request.GET.get('status')
+    search_query = request.GET.get('search', '').strip()
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    
+    services = CustomService.objects.all().order_by('-created_at')
+    
+    if search_query:
+        services = services.filter(
+            Q(menu__customer__user__first_name__icontains=search_query) |
+            Q(menu__customer__store_ar_name__icontains=search_query) |
+            Q(menu__name__icontains=search_query) |
+            Q(menu__customer__phone__icontains=search_query)
+        )
+    
+    if status_filter:
+        services = services.filter(status=status_filter)
+    
+    if date_from:
+        services = services.filter(created_at__date__gte=date_from)
+    if date_to:
+        services = services.filter(created_at__date__lte=date_to)
+    
+    total_services = services.count()
+    pending_count = services.filter(status='pending').count()
+    onwork_count = services.filter(status='onwork').count()
+    delivered_count = services.filter(status='delivered').count()
+    canceled_count = services.filter(status='canceled').count()
+    
+    paginator = Paginator(services, 100)
+    page_number = request.GET.get('page')
+    services_page = paginator.get_page(page_number)
+    
+    context = {
+        'services': services_page,
+        'total_services': total_services,
+        'pending_count': pending_count,
+        'onwork_count': onwork_count,
+        'delivered_count': delivered_count,
+        'canceled_count': canceled_count,
+        'status_filter': status_filter,
+        'search_query': search_query,
+        'date_from': date_from,
+        'date_to': date_to,
+    }
+    return render(request, 'service_list.html', context)
+
+def update_service_status(request):
+    if request.method == 'POST':
+        service_id = request.POST.get('service_id')
+        action = request.POST.get('action')
+        
+        service = get_object_or_404(CustomService, id=service_id)
+        
+        if action == 'start_work':
+            if service.start_work():
+                messages.success(request, 'تم بدء العمل على الخدمة بنجاح')
+            else:
+                messages.error(request, 'فشل بدء العمل، تأكد من رصيد العميل')
+        
+        elif action == 'complete_delivery':
+            if service.complete_delivery():
+                messages.success(request, 'تم تسليم الخدمة بنجاح')
+            else:
+                messages.error(request, 'فشل تسليم الخدمة، تأكد من رصيد العميل')
+        
+        elif action == 'cancel':
+            if service.cancel_service():
+                messages.success(request, 'تم إلغاء الخدمة بنجاح')
+            else:
+                messages.error(request, 'فشل إلغاء الخدمة')
+        
+        return redirect('service_list')
+    
+    return redirect('service_list')
+
+def get_service_details(request, service_id):
+    service = get_object_or_404(CustomService, id=service_id)
+    data = {
+        'id': service.id,
+        'menu_name': service.menu.name,
+        'customer_name': service.menu.customer.user.first_name,
+        'store_name': service.menu.customer.store_ar_name,
+        'phone': service.menu.customer.phone,
+        'status': service.status,
+        'status_display': service.get_status_display_ar(),
+        'price': service.price,
+        'half_deducted': service.half_price_deducted,
+        'notes': service.notes,
+        'created_at': service.created_at.strftime('%Y-%m-%d %H:%M'),
+        'delivered_at': service.delivered_at.strftime('%Y-%m-%d %H:%M') if service.delivered_at else None,
+    }
+    return JsonResponse(data)
+
+
+def coast_list_view(request):
+    kind_filter = request.GET.get('kind')
+    search_query = request.GET.get('search', '').strip()
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    recurring_filter = request.GET.get('recurring')
+    
+    coasts = Coasts.objects.all().order_by('-created_at')
+    
+    if search_query:
+        coasts = coasts.filter(
+            Q(coast_kind__icontains=search_query) |
+            Q(amount__icontains=search_query)
+        )
+    
+    if kind_filter:
+        coasts = coasts.filter(coast_kind=kind_filter)
+    
+    if recurring_filter == 'true':
+        coasts = coasts.filter(recurring=True)
+    elif recurring_filter == 'false':
+        coasts = coasts.filter(recurring=False)
+    
+    if date_from:
+        coasts = coasts.filter(created_at__gte=date_from)
+    if date_to:
+        coasts = coasts.filter(created_at__lte=date_to)
+    
+    total_coasts = coasts.aggregate(Sum('amount'))['amount__sum'] or 0
+    
+    today = timezone.now().date()
+    monthly_coasts = Coasts.objects.filter(
+        created_at__month=today.month,
+        created_at__year=today.year
+    )
+    total_monthly = monthly_coasts.aggregate(Sum('amount'))['amount__sum'] or 0
+    
+    monthly_by_kind = {}
+    for coast in monthly_coasts:
+        kind_name = dict(Coasts.KIND).get(coast.coast_kind, coast.coast_kind)
+        if kind_name in monthly_by_kind:
+            monthly_by_kind[kind_name] += coast.amount
+        else:
+            monthly_by_kind[kind_name] = coast.amount
+    
+    paginator = Paginator(coasts, 100)
+    page_number = request.GET.get('page')
+    coasts_page = paginator.get_page(page_number)
+    
+    context = {
+        'coasts': coasts_page,
+        'total_coasts': total_coasts,
+        'total_monthly': total_monthly,
+        'monthly_by_kind': monthly_by_kind,
+        'month_name': today.strftime('%B %Y'),
+        'kind_filter': kind_filter,
+        'search_query': search_query,
+        'date_from': date_from,
+        'date_to': date_to,
+        'recurring_filter': recurring_filter,
+        'kind_choices': Coasts.KIND,
+    }
+    return render(request, 'coast_list.html', context)
+
+
+def delete_coast(request, coast_id):
+    coast = get_object_or_404(Coasts, id=coast_id)
+    if request.method == 'POST':
+        amount = coast.amount
+        kind = dict(Coasts.KIND).get(coast.coast_kind, coast.coast_kind)
+        coast.delete()
+        messages.success(request, f'تم حذف التكلفة "{kind}" بمبلغ {amount} بنجاح')
+        return redirect('coast_list')
+    return redirect('coast_list')
+
+
+def add_coast_view(request):
+    
+    if request.method == 'POST':
+        form = CoastsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم إضافة التكلفة بنجاح')
+            return redirect('coast_list')
+    else:
+        form = CoastsForm()
+    
+    context = {
+        'form': form,
+        'is_edit': False,
+    }
+    return render(request, 'add_coast.html', context)
+
+def edit_coast(request, coast_id):
+    coast = get_object_or_404(Coasts, id=coast_id)
+    
+    if request.method == 'POST':
+        form = CoastsForm(request.POST, instance=coast)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم تحديث التكلفة بنجاح')
+            return redirect('coast_list')
+    else:
+        form = CoastsForm(instance=coast)
+    
+    context = {
+        'form': form,
+        'coast': coast,
+        'is_edit': True,
+    }
+    return render(request, 'add_coast.html', context)
+
+
+
+
+@login_required
+def payment_settings(request):
+
+    setting, created = PaymentGatewaySetting.objects.get_or_create(
+        merchant__user=request.user,
+        defaults={
+            'provider': 'ezonepay',
+            'api_key': '',
+            'webhook_secret': '',
+            'is_active': False
+        }
+    )
+    
+    if request.method == 'POST':
+        form = PaymentGatewaySettingForm(request.POST, instance=setting)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم حفظ إعدادات الدفع بنجاح')
+            return redirect('payment_settings')
+    else:
+        form = PaymentGatewaySettingForm(instance=setting)
+    
+    context = {
+        'form': form,
+        'setting': setting,
+        'is_active': setting.is_active,
+    }
+    return render(request, 'payment/payment_settings.html', context)
+
+@login_required
+def test_connection(request):
+
+    if request.method == 'POST':
+        try:
+            setting = PaymentGatewaySetting.objects.get(merchant__user=request.user)
+            service = EzonePayService(setting)
+            result = service.test_connection()
+            
+            if result['success']:
+                webhook_result = service.subscribe_webhook(
+                    url='https://liysta.ly/webhook/ezonepay/',
+                    event=2
+                )
+
+                if webhook_result['success']:
+                  setting.webhook_secret = webhook_result['secret_key']
+                  setting.save()
+
+
+                  messages.success(request, 'تم الاتصال بنجاح مع بوابة الدفع')
+            else:
+                messages.error(request, f'فشل الاتصال: {result.get("message", "خطأ غير معروف")}')
+        except PaymentGatewaySetting.DoesNotExist:
+            messages.error(request, 'يرجى حفظ الإعدادات أولاً')
+        except Exception as e:
+            messages.error(request, f'حدث خطأ: {str(e)}')
+    
+    return redirect('payment_settings')
+
+@login_required
+def payment_list(request):
+
+    payments = Payment.objects.filter(merchant__user=request.user)
+    
+    status = request.GET.get('status')
+    if status and status != 'all':
+        payments = payments.filter(status=status)
+    
+    date_from = request.GET.get('date_from')
+    if date_from:
+        payments = payments.filter(created_at__gte=date_from)
+    
+    date_to = request.GET.get('date_to')
+    if date_to:
+        payments = payments.filter(created_at__lte=date_to + ' 23:59:59')
+    
+    search = request.GET.get('search')
+    if search:
+        payments = payments.filter(
+            Q(payment_reference__icontains=search) |
+            Q(customer_name__icontains=search) |
+            Q(customer_email__icontains=search) |
+            Q(transaction_id__icontains=search)
+        )
+    
+    payments = payments.order_by('-created_at')
+    
+    paginator = Paginator(payments, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    stats = {
+        'total': Payment.objects.filter(merchant__user=request.user).count(),
+        'completed': Payment.objects.filter(merchant__user=request.user, status='completed').count(),
+        'pending': Payment.objects.filter(merchant__user=request.user, status='pending').count(),
+        'failed': Payment.objects.filter(merchant__user=request.user, status='failed').count(),
+        'total_amount': Payment.objects.filter(
+            merchant__user=request.user, 
+            status='completed'
+        ).aggregate(total=models.Sum('amount'))['total'] or 0
+    }
+    
+    context = {
+        'payments': page_obj,
+        'stats': stats,
+        'status_filter': status,
+        'date_from': date_from,
+        'date_to': date_to,
+        'search': search,
+        'status_choices': Payment.StatusChoices.choices,
+    }
+    return render(request, 'payment/payment_list.html', context)
+
+@login_required
+def payment_details(request, payment_id):
+
+    payment = get_object_or_404(Payment, id=payment_id, merchant__user=request.user)
+    
+    service = EzonePayService(payment.merchant.payment_settings.first())
+    if payment.transaction_id:
+        try:
+            remote_status = service.query_payment(payment.transaction_id)
+            if remote_status and remote_status.get('status') != payment.status:
+                    PaymentService.update_payment_status(
+                        payment, 
+                        remote_status.get('status'),
+                        remote_status
+                    )
+        except Exception as e:  
+            PaymentService.log_gateway_error(
+                payment, 
+                'query_payment', 
+                str(e)
+            )
+    
+    context = {
+        'payment': payment,
+        'gateway_response': payment.gateway_response,
+    }
+    return render(request, 'payment/payment_details.html', context)    
+
+
+def checkout_page(request, order_id):
+
+    
+    order = get_object_or_404(Order, id=order_id)
+    
+    if order.is_paid:
+        messages.warning(request, 'هذا الطلب مدفوع بالفعل')
+        return redirect('order_details', order_id=order.id)
+    
+    try:
+        settings = PaymentGatewaySetting.objects.get(
+            merchant=order.menu.customer,
+            is_active=True
+        )
+    except PaymentGatewaySetting.DoesNotExist:
+        messages.error(request, 'الدفع الإلكتروني غير متاح حالياً')
+        return redirect('order_details', order_id=order.id)
+    payment_method = request.POST.get('payment_method') if request.method == 'POST' else None
+
+    if request.method == 'POST':
+      
+      if payment_method == 'online':
+        order.payment_method = 'online'
+        order.save()
+        payment = Payment.objects.create(
+            order=order,
+            merchant=order.menu.customer,
+            amount=order.sales_total,
+            customer_name=order.customer_name,
+            customer_phone=order.customer_phone,
+            status=Payment.StatusChoices.PENDING
+        )
+        
+        service = EzonePayService(settings)
+        result = service.create_payment_link(payment)
+        
+        if result['success']:
+            payment.payment_url = result['payment_url']
+            if result.get('transaction_id'):
+                payment.transaction_id = result['transaction_id']
+            payment.save()
+            
+            return redirect(result['payment_url'])
+        else:
+            PaymentService.log_gateway_error(
+                payment,
+                'create_payment_link',
+                result.get('message', 'Unknown error')
+            )
+            return JsonResponse({
+                'success': False,
+                'message': result.get('message', 'حدث خطأ في إنشاء رابط الدفع')
+            }, status=500)
+            
+      else:
+            return redirect('order_success', order_id=order.id)
+    
+    context = {
+        'order': order,
+        'settings': settings,
+    }
+    return render(request, 'client/checkout.html', context)
+
+def payment_return(request, payment_id):
+ 
+    payment = get_object_or_404(Payment, id=payment_id, customer=request.user)
+    
+    if payment.status == Payment.StatusChoices.COMPLETED:
+        return redirect('payment_success', payment_id=payment.id)
+    
+    if payment.status == Payment.StatusChoices.FAILED:
+        return redirect('payment_failed', payment_id=payment.id)
+    
+    context = {
+        'payment': payment,
+        'timeout_seconds': 300, 
+    }
+    return render(request, 'client/payment_return.html', context)
+
+@require_GET
+def check_payment_status_api(request, payment_id):
+  
+    payment = get_object_or_404(Payment, id=payment_id, customer=request.user)
+    
+    return JsonResponse({
+        'status': payment.status,
+        'is_completed': payment.status == Payment.StatusChoices.COMPLETED,
+        'is_failed': payment.status == Payment.StatusChoices.FAILED,
+        'payment_reference': payment.payment_reference,
+        'transaction_id': payment.transaction_id,
+    })
+
+def payment_success(request, payment_id):
+ 
+    payment = get_object_or_404(Payment, id=payment_id)
+    
+    if payment.status != Payment.StatusChoices.COMPLETED:
+        return redirect('payment_return', payment_id=payment.id)
+    
+    context = {
+        'payment': payment,
+    }
+    return render(request, 'client/payment_success.html', context)
+
+def payment_failed(request, payment_id):
+ 
+    payment = get_object_or_404(Payment, id=payment_id)
+    
+    error_message = payment.gateway_response.get('message', 'حدث خطأ في عملية الدفع')
+    
+    context = {
+        'payment': payment,
+        'error_message': error_message,
+    }
+    return render(request, 'client/payment_failed.html', context)
+
+
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def ezonepay_webhook(request):
+
+        
+    try:
+        raw_body = request.body.decode('utf-8')
+        
+        if not raw_body:
+            logger.warning("Empty webhook request body")
+            return JsonResponse({'error': 'Empty request body'}, status=400)
+        
+        signature = request.headers.get('X-Signature')
+        
+        if not signature:
+            logger.warning("Webhook received without X-Signature header")
+            return JsonResponse({'error': 'Missing signature'}, status=401)
+        
+        try:
+            payload = json.loads(raw_body)
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON: {str(e)}")
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        
+        logger.info(f"Webhook received: {raw_body[:200]}...")
+        
+        event = payload.get('event')
+        transaction_id = str(payload.get('transactionId', ''))
+        order_reference = payload.get('orderReference')
+        transaction_type = payload.get('transactionType')
+        amount = payload.get('amount') 
+        
+        logger.info(f"Webhook data: event={event}, transaction_id={transaction_id}, order_reference={order_reference}, amount={amount}")
+        
+        if event != 2:  
+            logger.info(f"Ignoring webhook event: {event}")
+            return JsonResponse({
+                'status': 'ignored',
+                'message': f'Event {event} not processed'
+            }, status=200)
+        
+        if not order_reference:
+            logger.error("Order reference not found in webhook")
+            return JsonResponse({'error': 'Order reference missing'}, status=400)
+        
+        payment = Payment.objects.filter(
+            payment_reference=order_reference
+        ).first()
+        
+        if not payment:
+            logger.error(f"Payment not found for reference: {order_reference}")
+            return JsonResponse({'error': 'Payment not found'}, status=404)
+        
+        settings = PaymentGatewaySetting.objects.filter(
+            merchant=payment.merchant,
+            is_active=True
+        ).first()
+        
+        if not settings:
+            logger.error(f"Payment settings not found for merchant: {payment.merchant.id}")
+            return JsonResponse({'error': 'Merchant settings not found'}, status=404)
+        
+        if not settings.webhook_secret:
+            logger.error(f"Webhook secret not configured for merchant: {payment.merchant.id}")
+            return JsonResponse({'error': 'Webhook secret not configured'}, status=400)
+        
+        is_valid = EzonePayService.verify_webhook_signature(
+            raw_body=raw_body,
+            signature=signature,
+            secret_key=settings.webhook_secret
+        )
+        
+        if not is_valid:
+            logger.warning(f"Invalid webhook signature for payment: {payment.payment_reference}")
+            return JsonResponse({'error': 'Invalid signature'}, status=401)
+        
+        logger.info(f"Webhook signature verified for payment: {payment.payment_reference}")
+        
+        if amount is not None:
+            try:
+                webhook_amount = Decimal(str(amount))
+                payment_amount = Decimal(str(payment.amount))
+                
+                if abs(webhook_amount - payment_amount) > Decimal('0.01'):
+                   return JsonResponse({
+                     'error': 'Amount mismatch',
+                     'webhook_amount': str(webhook_amount),
+                      'payment_amount': str(payment_amount)
+                    }, status=409)  
+            
+            except (ValueError, TypeError, Decimal.InvalidOperation) as e:
+              logger.error(f"Amount conversion error: {str(e)}")
+              return JsonResponse({
+                'error': f'Invalid amount format: {str(e)}'
+                }, status=400)     
+               
+        webhook_key = f"{transaction_id}_{event}"
+        if payment.gateway_response and payment.gateway_response.get('webhook_processed') == webhook_key:
+            logger.info(f"Webhook already processed: {webhook_key}")
+            return JsonResponse({
+                'status': 'already_processed',
+                'message': 'Webhook already processed'
+            }, status=200)
+        
+        payment.transaction_id = transaction_id
+        payment.status = Payment.StatusChoices.COMPLETED
+        payment.paid_at = timezone.now()
+        
+        if not payment.gateway_response:
+            payment.gateway_response = {}
+        
+        payment.gateway_response['webhook_data'] = {
+            'event': event,
+            'transaction_id': transaction_id,
+            'transaction_type': transaction_type,
+            'order_reference': order_reference,
+            'amount': str(amount) if amount else None,
+        }
+        payment.gateway_response['webhook_processed'] = webhook_key
+        payment.gateway_response['raw_payload'] = payload
+        payment.gateway_response['received_at'] = timezone.now().isoformat()
+        payment.save()
+        
+        logger.info(f"Payment {payment.payment_reference} updated to COMPLETED")
+        
+        PaymentService.mark_order_paid(payment.order)
+        
+        try:
+            PaymentService.notify_merchant(payment)
+        except Exception as e:
+            logger.error(f"Error sending notifications: {str(e)}")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Payment updated successfully',
+            'payment_reference': payment.payment_reference,
+            'order_id': payment.order.id
+        }, status=200)
+        
+    except Exception as e:
+        logger.error(f"Webhook processing error: {str(e)}")
+        return JsonResponse({'error': str(e)}, status=500)

@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}إعدادات الدفع{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0 text-gray-800">إعدادات الدفع</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">إعدادات بوابة الدفع الإلكتروني</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" id="paymentSettingsForm">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="id_is_active" 
+                                   name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                            <label class="custom-control-label" for="id_is_active">
+                                <strong>تفعيل الدفع الإلكتروني</strong>
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">عند التفعيل، سيتمكن العملاء من الدفع عبر البوابة الإلكترونية</small>
+                        {% if form.is_active.errors %}
+                            <div class="text-danger">{{ form.is_active.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_provider"><strong>مزود الخدمة</strong></label>
+                        <select class="form-control" id="id_provider" name="provider">
+                            <option value="ezonepay" {% if form.provider.value == 'ezonepay' %}selected{% endif %}>
+                                EzonePay
+                            </option>
+                        </select>
+                        {% if form.provider.errors %}
+                            <div class="text-danger">{{ form.provider.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_payment_methods"><strong>طرق الدفع المتاحة</strong></label>
+                        <select class="form-control" id="id_payment_methods" name="payment_methods">
+                            <option value="online" {% if form.payment_methods.value == 'online' %}selected{% endif %}>
+                                دفع إلكتروني فقط
+                            </option>
+                            <option value="cash" {% if form.payment_methods.value == 'cash' %}selected{% endif %}>
+                                دفع عند الاستلام فقط
+                            </option>
+                            <option value="both" {% if form.payment_methods.value == 'both' %}selected{% endif %}>
+                                كلا الخيارين (إلكتروني وعند الاستلام)
+                            </option>
+                        </select>
+                        <small class="form-text text-muted">
+                            اختر طرق الدفع التي تريد تقديمها لعملائك
+                        </small>
+                        {% if form.payment_methods.errors %}
+                            <div class="text-danger">{{ form.payment_methods.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_api_key"><strong>مفتاح API</strong></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="id_api_key" 
+                                   name="api_key" value="{{ form.api_key.value|default:'' }}" 
+                                   placeholder="أدخل مفتاح API من EzonePay">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="toggleApiKey">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            قم بإنشاء مفتاح API من لوحة تحكم EzonePay
+                        </small>
+                        {% if form.api_key.errors %}
+                            <div class="text-danger">{{ form.api_key.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_webhook_secret"><strong>مفتاح Webhook</strong></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="id_webhook_secret" 
+                                   name="webhook_secret" value="{{ form.webhook_secret.value|default:'' }}" 
+                                   placeholder="أدخل مفتاح Webhook من EzonePay">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="toggleWebhookSecret">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            قم بإنشاء مفتاح Webhook من لوحة تحكم EzonePay
+                        </small>
+                        {% if form.webhook_secret.errors %}
+                            <div class="text-danger">{{ form.webhook_secret.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    {% if setting.is_active and setting.webhook_subscription_id %}
+                        <hr>
+                        <div class="alert alert-info">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <strong>Webhook مفعل</strong>
+                            <br>
+                            <small>
+                                معرف الاشتراك: <code>{{ setting.webhook_subscription_id }}</code>
+                                <br>
+                                تم الاشتراك في: {{ setting.webhook_subscribed_at|date:"Y-m-d H:i"|default:"غير محدد" }}
+                            </small>
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ الإعدادات
+                        </button>
+                        <button type="button" class="btn btn-info" id="testConnectionBtn">
+                            <i class="fas fa-plug"></i> اختبار الاتصال
+                        </button>
+                        <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+       
+    </div>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">جاري الاختبار...</span>
+                </div>
+                <p class="mt-2" id="loadingMessage">جاري اختبار الاتصال...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#toggleApiKey').on('click', function() {
+        const input = $('#id_api_key');
+        const icon = $(this).find('i');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    $('#toggleWebhookSecret').on('click', function() {
+        const input = $('#id_webhook_secret');
+        const icon = $(this).find('i');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    $('#testConnectionBtn').on('click', function() {
+        const apiKey = $('#id_api_key').val();
+        
+        if (!apiKey) {
+            toastr.warning('يرجى إدخال مفتاح API أولاً');
+            return;
+        }
+        
+        $('#loadingMessage').text('جاري اختبار الاتصال...');
+        $('#loadingModal').modal('show');
+        
+        fetch('{% url "test_connection" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('#loadingModal').modal('hide');
+            if (data.success) {
+                toastr.success(data.message);
+            } else {
+                toastr.error(data.message);
+            }
+        })
+        .catch(error => {
+            $('#loadingModal').modal('hide');
+            toastr.error('حدث خطأ في اختبار الاتصال');
+            console.error('Error:', error);
+        });
+    });
+
+    $('#id_payment_methods').on('change', function() {
+        const selected = $(this).val();
+        if (selected === 'cash') {
+            $('#id_api_key').closest('.form-group').hide();
+            $('#id_webhook_secret').closest('.form-group').hide();
+            $('#testConnectionBtn').hide();
+        } else {
+            $('#id_api_key').closest('.form-group').show();
+            $('#id_webhook_secret').closest('.form-group').show();
+            $('#testConnectionBtn').show();
+        }
+    });
+
+    $('#id_payment_methods').trigger('change');
+});
+
+if (typeof toastr === 'undefined') {
+    document.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">');
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"><\/script>');
+    toastr.options = {
+        "positionClass": "toast-top-left",
+        "timeOut": "5000",
+    };
+}
+</script>
+{% endblock %}

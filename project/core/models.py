@@ -13,6 +13,7 @@ from django.utils.encoding import force_str
 import os
 import uuid
 import requests
+from django.core.exceptions import ValidationError
 
 def get_upload_path(instance, filename):
     name, ext = os.path.splitext(filename)
@@ -490,6 +491,11 @@ class Order(models.Model):
         ('delivered', 'تم التسليم'),
 
     ]
+    payment_CHOICES = [
+        ('online', 'دفع الكتروني'),
+        ('cash', 'دفع نقداً'),
+
+    ]
     refrence=models.CharField(max_length=100,null=True,blank=True)
     serviceid=models.CharField(max_length=100,null=True,blank=True)
 
@@ -508,12 +514,14 @@ class Order(models.Model):
     company_delivery_charge=models.IntegerField(default=0)       
     
     notes = models.TextField(null=True, blank=True)
+    payment_method = models.CharField(max_length=20, choices=payment_CHOICES, default='cash')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateField(auto_now_add=True)
     sales_total=models.FloatField(null=True,blank=True)
     profit_total=models.FloatField(null=True,blank=True)
     last_check = models.DateTimeField(default=timezone.now)
-     
+    paid_at = models.DateTimeField(null=True, blank=True)
+    is_paid = models.BooleanField(default=False) 
     def get_total(self):
         if self.delivery_address:
             total= self.sales_total + self.delivery_address.price
@@ -825,6 +833,13 @@ class CustomService(models.Model):
     def __str__(self):
         return f'{self.menu.id}--{self.menu.customer.store_en_name}--{self.created_at}'
    
+    def get_status_display_ar(self):
+        return self.STATUS.get(self.status, self.status)
+    
+    def get_status_color(self):
+        return self.STATUS_COLORS.get(self.status, 'bg-secondary')
+
+
     def save(self, *args, **kwargs):
         if not self.pk: 
             self.price = self.DEFAULT_PRICE
@@ -858,6 +873,8 @@ class CustomService(models.Model):
             now = datetime.now()
             if customer.wallet >= remaining_amount:
                 customer.wallet -= remaining_amount
+                self.menu.is_custom =True
+                self.menu.save()
                 customer.save()
                 self.status = 'delivered'
                 self.delivered_at = timezone.now()
@@ -883,3 +900,137 @@ class CustomService(models.Model):
             self.save()
             return True
         return False        
+
+class PaymentGatewaySetting(models.Model):
+    class ProviderChoices(models.TextChoices):
+        EZONEPAY = 'ezonepay', 'EzonePay'
+    
+    class PaymentMethods(models.TextChoices):
+        ONLINE = 'online', 'دفع إلكتروني'
+        CASH = 'cash', 'دفع عند الاستلام'
+        BOTH = 'both', 'كلا الخيارين'
+    
+    merchant = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name='payment_settings',verbose_name='المتجر')
+    provider = models.CharField(max_length=50,choices=ProviderChoices.choices,default=ProviderChoices.EZONEPAY,verbose_name='مزود الخدمة') 
+    api_key = models.CharField( max_length=255, verbose_name='مفتاح API')
+    webhook_secret = models.CharField(max_length=255,verbose_name='مفتاح Webhook')
+    payment_methods = models.CharField(max_length=20,choices=PaymentMethods.choices,default=PaymentMethods.ONLINE,verbose_name='طرق الدفع المتاحة')     
+    is_active = models.BooleanField(default=True,verbose_name='نشط')     
+    created_at = models.DateTimeField(auto_now_add=True,verbose_name='تاريخ الإنشاء')
+    updated_at = models.DateTimeField(auto_now=True,verbose_name='تاريخ التحديث')
+    
+    class Meta:
+        verbose_name = 'إعدادات بوابة الدفع'
+        verbose_name_plural = 'إعدادات بوابات الدفع'
+        unique_together = [['merchant', 'provider', 'environment']]
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.merchant.user.first_name} - {self.provider} "
+    
+    def clean(self):
+    
+        if self.pk:  
+            existing = PaymentGatewaySetting.objects.filter(
+                merchant=self.merchant,
+            ).exclude(pk=self.pk)
+        else:
+            existing = PaymentGatewaySetting.objects.filter(
+                merchant=self.merchant,
+                provider=self.provider
+            )
+        
+        if existing.exists():
+            raise ValidationError(
+                f'يوجد إعدادات مكررة للمتجر {self.merchant.user.first_name} '
+            )
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()  
+        super().save(*args, **kwargs)        
+
+
+    def online_payment(self):
+       if self.payment_methods == 'online':
+              return True
+       else:
+              return False
+    def cash_payment(self):
+       if self.payment_methods == 'cash':
+              return True
+       else:
+              return False
+    def both_payment(self):
+       if self.payment_methods == 'both':
+              return True
+       else:
+              return False
+class Payment(models.Model):
+
+    class StatusChoices(models.TextChoices):
+        PENDING = 'pending', 'قيد الانتظار'
+        PROCESSING = 'processing', 'قيد المعالجة'
+        COMPLETED = 'completed', 'مكتمل'
+        FAILED = 'failed', 'فشل'
+        REFUNDED = 'refunded', 'مسترد'
+        CANCELLED = 'cancelled', 'ملغي'
+        EXPIRED = 'expired', 'منتهي الصلاحية'
+    
+    class CurrencyChoices(models.TextChoices):
+        USD = 'USD', 'دولار أمريكي'
+        LYD = 'LYD', 'دينار ليبي'
+    
+    
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,related_name='payments',verbose_name='الطلب')    
+    merchant = models.ForeignKey(Customer,on_delete=models.CASCADE,related_name='payments',verbose_name='المتجر')    
+    amount = models.DecimalField(max_digits=10,decimal_places=2,verbose_name='المبلغ')    
+    currency = models.CharField(max_length=3,choices=CurrencyChoices.choices,default=CurrencyChoices.LYD,verbose_name='العملة')    
+    status = models.CharField(max_length=20,choices=StatusChoices.choices,default=StatusChoices.PENDING,verbose_name='الحالة')    
+    payment_reference = models.CharField(max_length=100,unique=True,db_index=True,verbose_name='مرجع الدفع')    
+    transaction_id = models.CharField(max_length=100,blank=True,null=True,db_index=True,verbose_name='معرف المعاملة')   
+    payment_url = models.URLField(max_length=500,blank=True,null=True,verbose_name='رابط الدفع')   
+    gateway_response = models.JSONField(default=dict,blank=True,verbose_name='استجابة البوابة') 
+    paid_at = models.DateTimeField(blank=True,null=True,verbose_name='تاريخ الدفع') 
+    created_at = models.DateTimeField(auto_now_add=True,verbose_name='تاريخ الإنشاء')
+    updated_at = models.DateTimeField(auto_now=True,verbose_name='تاريخ التحديث')
+    
+    class Meta:
+        verbose_name = 'دفع'
+        verbose_name_plural = 'المدفوعات'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['status', 'created_at']),
+            models.Index(fields=['merchant', 'status']),
+            models.Index(fields=['payment_reference']),
+            models.Index(fields=['transaction_id']),
+        ]
+    
+    def __str__(self):
+        return f"{self.payment_reference} - {self.amount} {self.currency} ({self.status})"
+    
+    def save(self, *args, **kwargs):
+        if not self.payment_reference:
+            import uuid
+            self.payment_reference = f"PAY-{uuid.uuid4().hex[:12].upper()}"
+        
+        if self.status == self.StatusChoices.COMPLETED and not self.paid_at:
+            self.paid_at = timezone.now()
+        
+        super().save(*args, **kwargs)
+    
+    def mark_as_completed(self, transaction_id=None, gateway_response=None):
+        
+        self.status = self.StatusChoices.COMPLETED
+        self.paid_at = timezone.now()
+        if transaction_id:
+            self.transaction_id = transaction_id
+        if gateway_response:
+            self.gateway_response = gateway_response
+        self.save()
+    
+    def mark_as_failed(self, gateway_response=None):
+        
+        self.status = self.StatusChoices.FAILED
+        if gateway_response:
+            self.gateway_response = gateway_response
+        self.save()        
