@@ -69,6 +69,14 @@ urlpatterns = [
     path('menu/<int:menu_id>/add-customer-discount/', add_cpdiscount, name='add_cpdiscount'),
     path('customer-discount/edit/<int:cpdiscount_id>/', edit_cpdiscount, name='edit_cpcdiscount'),
     path('customer-discount/delete/<int:cpdiscount_id>/', delete_cpdiscount, name='delete_cpdiscount'),   
+
+    path('services/', service_list_view, name='service_list'),
+    path('services/update-status/', update_service_status, name='update_service_status'),
+    path('services/details/<int:service_id>/', get_service_details, name='service_details'),
+    path('liysta-coasts/', coast_list_view, name='coast_list'),
+    path('liysta-add-coast/', add_coast_view, name='add_coast'),
+    path('liysta-edit-coast/<int:coast_id>/', edit_coast, name='edit_coast'),
+    path('liysta-delete-coast/<int:coast_id>/', delete_coast, name='delete_coast'),
    
     path('menu/<int:menu_id>/coasts/',manege_coast, name='coast_list'),
     
@@ -156,14 +164,6 @@ urlpatterns = [
     path('clint/add/', add_clint, name='add_clint'),
     path('clint/edit/<int:clint_id>/', edit_clint, name='edit_clint'),
     path('clint/delete/<int:clint_id>/', delete_clint, name='delete_clint'),
-
-    path('services/', service_list_view, name='service_list'),
-    path('services/update-status/', update_service_status, name='update_service_status'),
-    path('services/details/<int:service_id>/', get_service_details, name='service_details'),
-    path('coasts/', coast_list_view, name='coast_list'),
-    path('add-coast/', add_coast_view, name='add_coast'),
-    path('edit-coast/<int:coast_id>/', edit_coast, name='edit_coast'),
-    path('delete-coast/<int:coast_id>/', delete_coast, name='delete_coast'),
 
     path('checkout/<int:order_id>/', checkout_page, name='checkout'),
     path('return/<int:payment_id>/', payment_return, name='payment_return'),
