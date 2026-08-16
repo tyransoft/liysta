@@ -487,12 +487,12 @@
                     <h3>نسبة النشاط</h3>
                 </div>
                 <div class="stat-value">
-                    <span class="main-value">{{ actives_percentage|floatformat:1 }}</span>
+                    <span class="main-value">{{ actives_percentage}}</span>
                     <span class="unit">%</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change neutral">نشاط الشهر: {{ month_actives_percentage|floatformat:1 }}%</span>
-                    <span class="stat-change positive">تحويل: {{ activetion_converted_percentage|floatformat:1 }}%</span>
+                    <span class="stat-change neutral">نشاط الشهر: {{ month_actives_percentage}}%</span>
+                    <span class="stat-change positive">تحويل: {{ activetion_converted_percentage}}%
                 </div>
             </div>
 
@@ -507,7 +507,7 @@
                 </div>
                 <div class="stat-meta">
                     <span class="stat-change positive">{{ active_subscriptions }} نشط</span>
-                    <span class="stat-change neutral">{{ active_subs_percentage|floatformat:1 }}% فعالة</span>
+                    <span class="stat-change neutral">{{ active_subs_percentage}}% فعالة</span>
                 </div>
             </div>
 
@@ -582,7 +582,7 @@
                     <span class="unit">د.ل</span>
                 </div>
                 <div class="stat-meta">
-                    <span class="stat-change positive">{{ gross_percentage|floatformat:1 }}%</span>
+                    <span class="stat-change positive">{{ gross_percentage}}%</span>
                     <span class="stat-period">{{ previous_month }}/{{ previous_year }}</span>
                 </div>
             </div>
@@ -598,7 +598,7 @@
                 </div>
                 <div class="stat-meta">
                     <span class="stat-change {% if net_percentage > 0 %}positive{% else %}negative{% endif %}">
-                        {{ net_percentage|floatformat:1 }}%
+                        {{ net_percentage}}%
                     </span>
                     <span class="stat-period">{{ previous_month }}/{{ previous_year }}</span>
                 </div>
