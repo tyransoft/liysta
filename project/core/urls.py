@@ -31,7 +31,7 @@ urlpatterns = [
     path('saler-login/',sales_man,name='saler_login'),
     path('saler-man-info/<int:man_id>/',saler_man_info,name='saler-man-info'),
     path('request_custom_service/<int:menu_id>',request_custom_service , name='request_custom'),
-    path('manage-services/',manage_services , name='manage_services'),
+    path('manage-services/',manage_services , name='service_list'),
 
     path('menu/setup/', menu_setup, name='menu_setup'),
 
@@ -70,13 +70,13 @@ urlpatterns = [
     path('customer-discount/edit/<int:cpdiscount_id>/', edit_cpdiscount, name='edit_cpcdiscount'),
     path('customer-discount/delete/<int:cpdiscount_id>/', delete_cpdiscount, name='delete_cpdiscount'),   
 
-    path('services/', service_list_view, name='service_list'),
     path('services/update-status/', update_service_status, name='update_service_status'),
     path('services/details/<int:service_id>/', get_service_details, name='service_details'),
     path('liysta-coasts/', coast_list_view, name='liysta_coast_list'),
     path('liysta-add-coast/', add_coast_view, name='liysta_add_coast'),
     path('liysta-edit-coast/<int:coast_id>/', edit_coast, name='liysta_edit_coast'),
     path('liysta-delete-coast/<int:coast_id>/', delete_coast, name='liysta_delete_coast'),
+
    
     path('menu/<int:menu_id>/coasts/',manege_coast, name='coast_list'),
     

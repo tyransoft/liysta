@@ -4196,55 +4196,6 @@ def vanex_integration(request):
 
 
 
-
-def service_list_view(request):
-    status_filter = request.GET.get('status')
-    search_query = request.GET.get('search', '').strip()
-    date_from = request.GET.get('date_from')
-    date_to = request.GET.get('date_to')
-    
-    services = CustomService.objects.all().order_by('-created_at')
-    
-    if search_query:
-        services = services.filter(
-            Q(menu__customer__user__first_name__icontains=search_query) |
-            Q(menu__customer__store_ar_name__icontains=search_query) |
-            Q(menu__name__icontains=search_query) |
-            Q(menu__customer__phone__icontains=search_query)
-        )
-    
-    if status_filter:
-        services = services.filter(status=status_filter)
-    
-    if date_from:
-        services = services.filter(created_at__date__gte=date_from)
-    if date_to:
-        services = services.filter(created_at__date__lte=date_to)
-    
-    total_services = services.count()
-    pending_count = services.filter(status='pending').count()
-    onwork_count = services.filter(status='onwork').count()
-    delivered_count = services.filter(status='delivered').count()
-    canceled_count = services.filter(status='canceled').count()
-    
-    paginator = Paginator(services, 100)
-    page_number = request.GET.get('page')
-    services_page = paginator.get_page(page_number)
-    
-    context = {
-        'services': services_page,
-        'total_services': total_services,
-        'pending_count': pending_count,
-        'onwork_count': onwork_count,
-        'delivered_count': delivered_count,
-        'canceled_count': canceled_count,
-        'status_filter': status_filter,
-        'search_query': search_query,
-        'date_from': date_from,
-        'date_to': date_to,
-    }
-    return render(request, 'service_list.html', context)
-
 def update_service_status(request):
     if request.method == 'POST':
         service_id = request.POST.get('service_id')
