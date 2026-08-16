@@ -852,7 +852,6 @@
             animation: slideInRight 0.5s forwards, fadeOut 0.5s forwards 4.5s;
             position: relative;
             overflow: hidden;
-            border-right: 4px solid;
         }
 
         .alert-custom .icon {

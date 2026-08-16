@@ -282,7 +282,6 @@
             padding: 1.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             z-index: 10000;
-            border-right: 4px solid var(--success);
             max-width: 350px;
             opacity: 0;
             transform: translateX(-100%);
@@ -532,7 +531,6 @@
 
         .orders-table tr.selected {
             background: rgba(249, 115, 22, 0.1) !important;
-            border-right: 3px solid var(--primary);
         }
 
 .action-btn {
@@ -1130,7 +1128,6 @@
     border-radius: 8px;
     padding: 1rem;
     margin-top: 1rem;
-    border-right: 3px solid var(--primary);
 }
 
 .benefits-title {

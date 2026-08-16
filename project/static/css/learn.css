@@ -237,7 +237,6 @@
         background: var(--secondary);
         padding: 25px;
         border-radius: 10px;
-        border-right: 4px solid var(--primary);
         margin: 30px 0;
     }
     
@@ -321,7 +320,6 @@
         background: var(--secondary);
         padding: 25px;
         border-radius: 10px;
-        border-right: 4px solid var(--action);
         margin: 30px 0;
     }
     
