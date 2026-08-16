@@ -506,7 +506,7 @@ def statistics_dashboard(request):
     
     years_range = range(2023, current_year + 2)
     
-context = {
+    context = {
     'active_users': total_active,
     'inactive_users': total_inactive,
     'new_active_users': new_active_users,
