@@ -4361,9 +4361,9 @@ def edit_coast(request, coast_id):
 
 @login_required
 def payment_settings(request):
-
+    customer = Customer.objects.get(user=request.user)
     setting, created = PaymentGatewaySetting.objects.get_or_create(
-        merchant__user=request.user,
+        merchant=customer,
         defaults={
             'provider': 'ezonepay',
             'api_key': '',
