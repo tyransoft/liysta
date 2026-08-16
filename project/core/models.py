@@ -922,7 +922,7 @@ class PaymentGatewaySetting(models.Model):
     class Meta:
         verbose_name = 'إعدادات بوابة الدفع'
         verbose_name_plural = 'إعدادات بوابات الدفع'
-        unique_together = [['merchant', 'provider', 'environment']]
+        unique_together = [['merchant', 'provider']]
         ordering = ['-created_at']
     
     def __str__(self):

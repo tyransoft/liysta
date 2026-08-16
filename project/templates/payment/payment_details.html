@@ -104,7 +104,6 @@
                 <ul class="list-unstyled">
                     <li><strong>الحالة:</strong> {{ payment.get_status_display }}</li>
                     <li><strong>العملة:</strong> {{ payment.currency }}</li>
-                    <li><strong>البيئة:</strong> {{ payment.merchant.payment_settings.first.environment|title }}</li>
                     <li><strong>آخر تحديث:</strong> {{ payment.updated_at|timesince }}</li>
                 </ul>
             </div>
