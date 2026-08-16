@@ -73,10 +73,10 @@ urlpatterns = [
     path('services/', service_list_view, name='service_list'),
     path('services/update-status/', update_service_status, name='update_service_status'),
     path('services/details/<int:service_id>/', get_service_details, name='service_details'),
-    path('liysta-coasts/', coast_list_view, name='coast_list'),
-    path('liysta-add-coast/', add_coast_view, name='add_coast'),
-    path('liysta-edit-coast/<int:coast_id>/', edit_coast, name='edit_coast'),
-    path('liysta-delete-coast/<int:coast_id>/', delete_coast, name='delete_coast'),
+    path('liysta-coasts/', coast_list_view, name='liysta_coast_list'),
+    path('liysta-add-coast/', add_coast_view, name='liysta_add_coast'),
+    path('liysta-edit-coast/<int:coast_id>/', edit_coast, name='liysta_edit_coast'),
+    path('liysta-delete-coast/<int:coast_id>/', delete_coast, name='liysta_delete_coast'),
    
     path('menu/<int:menu_id>/coasts/',manege_coast, name='coast_list'),
     
