@@ -32,7 +32,7 @@ SECRET_KEY=os.getenv("SECRET_KET")
 
 
 
-DEBUG = True
+DEBUG = False
 
 
 

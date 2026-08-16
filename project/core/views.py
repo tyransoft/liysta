@@ -4361,30 +4361,37 @@ def edit_coast(request, coast_id):
 
 @login_required
 def payment_settings(request):
-    customer = Customer.objects.get(user=request.user)
-    setting, created = PaymentGatewaySetting.objects.get_or_create(
-        merchant=customer,
-        defaults={
-            'provider': 'ezonepay',
-            'api_key': '',
-            'webhook_secret': '',
-            'is_active': False
-        }
-    )
+    try:
+        customer = Customer.objects.get(user=request.user)
+    except Customer.DoesNotExist:
+        messages.error(request, 'ليس لديك حساب تاجر')
+        return redirect('customer_dashboard')
+    
+    try:
+        setting = PaymentGatewaySetting.objects.get(merchant=customer)
+    except PaymentGatewaySetting.DoesNotExist:
+        setting = None
     
     if request.method == 'POST':
+        if setting is None:
+            setting = PaymentGatewaySetting(merchant=customer)
+        
         form = PaymentGatewaySettingForm(request.POST, instance=setting)
         if form.is_valid():
             form.save()
             messages.success(request, 'تم حفظ إعدادات الدفع بنجاح')
             return redirect('payment_settings')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
     else:
-        form = PaymentGatewaySettingForm(instance=setting)
+        form = PaymentGatewaySettingForm(instance=setting) if setting else PaymentGatewaySettingForm()
     
     context = {
         'form': form,
         'setting': setting,
-        'is_active': setting.is_active,
+        'is_active': setting.is_active if setting else False,
     }
     return render(request, 'payment/payment_settings.html', context)
 
