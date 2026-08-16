@@ -487,7 +487,7 @@
 
     <div class="section-header">
         <h2><i class="fas fa-coins"></i> قائمة التكاليف</h2>
-        <a href="{% url 'add_coast' %}" class="add-btn">
+        <a href="{% url 'liysta_add_coast' %}" class="add-btn">
             <i class="fas fa-plus"></i> إضافة تكلفة جديدة
         </a>
     </div>
@@ -528,10 +528,10 @@
                     <td>{{ coast.created_at|date:"Y-m-d" }}</td>
                     <td>
                         <div class="action-buttons">
-                            <a href="{% url 'edit_coast' coast.id %}" class="btn-action btn-edit">
+                            <a href="{% url 'liysta_edit_coast' coast.id %}" class="btn-action btn-edit">
                                 <i class="fas fa-edit"></i> تعديل
                             </a>
-                            <form method="POST" action="{% url 'delete_coast' coast.id %}" 
+                            <form method="POST" action="{% url 'liysta_delete_coast' coast.id %}" 
                                   onsubmit="return confirm('هل أنت متأكد من حذف هذه التكلفة؟');" 
                                   style="display:inline;">
                                 {% csrf_token %}

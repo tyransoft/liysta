@@ -817,10 +817,10 @@ class VanexConnection(models.Model):
 
 class CustomService(models.Model):
     STATUS={
-        ('pending','قيد الانتظار'),
-        ('onwork','قيد العمل'),
-        ('canceled','ملغاة'),
-        ('delivered','تم التسليم')
+        'pending':'قيد الانتظار',
+        'onwork':'قيد العمل',
+        'canceled':'ملغاة',
+        'delivered':'تم التسليم'
     }
     DEFAULT_PRICE = 100
     menu=models.ForeignKey(Menu,on_delete=models.CASCADE)
