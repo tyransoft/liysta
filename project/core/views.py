@@ -4395,35 +4395,67 @@ def payment_settings(request):
     }
     return render(request, 'payment/payment_settings.html', context)
 
+
 @login_required
 def test_connection(request):
 
-    if request.method == 'POST':
-        try:
-            setting = PaymentGatewaySetting.objects.get(merchant__user=request.user)
-            service = EzonePayService(setting)
-            result = service.test_connection()
-            
-            if result['success']:
-                webhook_result = service.subscribe_webhook(
-                    url='https://liysta.ly/webhook/ezonepay/',
-                    event=2
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'message': 'طريقة الطلب غير صحيحة'
+        }, status=405)
+
+    try:
+        setting = PaymentGatewaySetting.objects.get(
+            merchant__user=request.user
+        )
+
+        service = EzonePayService(setting)
+
+        result = service.test_connection()
+
+        if not result.get('success'):
+            return JsonResponse({
+                'success': False,
+                'message': result.get(
+                    'message',
+                    'فشل الاتصال ببوابة الدفع'
                 )
+            })
 
-                if webhook_result['success']:
-                  setting.webhook_secret = webhook_result['secret_key']
-                  setting.save()
+        webhook_result = service.subscribe_webhook(
+            url='https://liysta.ly/webhook/ezonepay/',
+            event=2
+        )
 
+        if not webhook_result.get('success'):
+            return JsonResponse({
+                'success': False,
+                'message': webhook_result.get(
+                    'message',
+                    'تم الاتصال ولكن فشل تسجيل Webhook'
+                )
+            })
 
-                  messages.success(request, 'تم الاتصال بنجاح مع بوابة الدفع')
-            else:
-                messages.error(request, f'فشل الاتصال: {result.get("message", "خطأ غير معروف")}')
-        except PaymentGatewaySetting.DoesNotExist:
-            messages.error(request, 'يرجى حفظ الإعدادات أولاً')
-        except Exception as e:
-            messages.error(request, f'حدث خطأ: {str(e)}')
-    
-    return redirect('payment_settings')
+        setting.webhook_secret = webhook_result['secret_key']
+        setting.save(update_fields=['webhook_secret'])
+
+        return JsonResponse({
+            'success': True,
+            'message': 'تم الاتصال بنجاح مع بوابة الدفع وتسجيل Webhook'
+        })
+
+    except PaymentGatewaySetting.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'يرجى حفظ الإعدادات أولاً'
+        }, status=404)
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'حدث خطأ: {str(e)}'
+        }, status=500)
 
 @login_required
 def payment_list(request):
