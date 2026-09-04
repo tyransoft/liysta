@@ -79,7 +79,6 @@
             padding: 1.25rem 1.5rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
-            border-right: 4px solid;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -90,11 +89,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .stat-card.primary { border-color: var(--primary); }
-        .stat-card.success { border-color: var(--success); }
-        .stat-card.warning { border-color: var(--warning); }
-        .stat-card.danger { border-color: var(--danger); }
-
+        
         .stat-info .stat-label {
             font-size: 0.7rem;
             font-weight: 700;
@@ -431,7 +426,11 @@
 <div class="container">
     <div class="page-header">
         <h1>سجل المدفوعات</h1>
-        <span class="badge-total">المجموع: {{ stats.total_amount|floatformat:2 }} ر.س</span>
+        <span class="badge-total">المجموع: {{ stats.total_amount|floatformat:2 }} د.ل</span>
+        <span class="badge-total"> <a href="{% url 'home' %}" class="s-btn">    
+                    <i class="fas fa-home"></i> الصفحة الرئيسية
+                </a></span>
+
     </div>
 
     <div class="stats-row">
