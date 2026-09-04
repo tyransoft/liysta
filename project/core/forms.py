@@ -410,9 +410,6 @@ class PaymentGatewaySettingForm(forms.ModelForm):
                 raise ValidationError({
                     'api_key': 'مفتاح API مطلوب عند تفعيل الدفع الإلكتروني'
                 })
-            if not cleaned_data.get('webhook_secret'):
-                raise ValidationError({
-                    'webhook_secret': 'مفتاح Webhook مطلوب عند تفعيل الدفع الإلكتروني'
-                })
+           
         
         return cleaned_data
