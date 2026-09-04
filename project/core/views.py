@@ -4406,9 +4406,25 @@ def test_connection(request):
         }, status=405)
 
     try:
-        setting = PaymentGatewaySetting.objects.get(
-            merchant__user=request.user
+        customer = Customer.objects.get(user=request.user)
+
+        data = json.loads(request.body)
+        api_key = data.get('api_key', '').strip()
+
+        if not api_key:
+            return JsonResponse({
+                'success': False,
+                'message': 'يرجى إدخال مفتاح API'
+            })
+
+        setting, created = PaymentGatewaySetting.objects.get_or_create(
+            merchant=customer,
+            defaults={
+                'api_key': api_key
+            }
         )
+
+        setting.api_key = api_key
 
         service = EzonePayService(setting)
 
@@ -4437,26 +4453,34 @@ def test_connection(request):
                 )
             })
 
-        setting.webhook_secret = webhook_result['secret_key']
-        setting.save(update_fields=['webhook_secret'])
+        setting.api_key = api_key
+        setting.webhook_secret = webhook_result.get('secret_key')
+        setting.save()
 
         return JsonResponse({
             'success': True,
-            'message': 'تم الاتصال بنجاح مع بوابة الدفع وتسجيل Webhook'
+            'message': 'تم الاتصال بنجاح وتفعيل بوابة الدفع'
         })
 
-    except PaymentGatewaySetting.DoesNotExist:
+    except Customer.DoesNotExist:
         return JsonResponse({
             'success': False,
-            'message': 'يرجى حفظ الإعدادات أولاً'
+            'message': 'ليس لديك حساب تاجر'
         }, status=404)
 
-    except Exception as e:
+    except json.JSONDecodeError:
         return JsonResponse({
             'success': False,
-            'message': f'حدث خطأ: {str(e)}'
-        }, status=500)
+            'message': 'البيانات المرسلة غير صحيحة'
+        }, status=400)
 
+    except Exception as e:
+        logger.exception("EzonePay test connection error")
+
+        return JsonResponse({
+            'success': False,
+            'message': f'Unexpected error: {str(e)}'
+        }, status=500)
 @login_required
 def payment_list(request):
 

@@ -641,27 +641,32 @@
                 $('#loadingMessage').text('جاري اختبار الاتصال...');
                 $('#loadingModal').addClass('show');
                 
-                fetch('{% url "test_connection" %}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    $('#loadingModal').removeClass('show');
-                    if (data.success) {
-                        toastr.success(data.message);
-                    } else {
-                        toastr.error(data.message);
-                    }
-                })
-                .catch(error => {
-                    $('#loadingModal').removeClass('show');
-                    toastr.error('حدث خطأ في اختبار الاتصال');
-                    console.error('Error:', error);
-                });
+               fetch('{% url "test_connection" %}', {
+    method: 'POST',
+    headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        api_key: apiKey
+    })
+})
+.then(response => response.json())
+.then(data => {
+    $('#loadingModal').removeClass('show');
+
+    if (data.success) {
+        toastr.success(data.message);
+    } else {
+        toastr.error(data.message);
+    }
+})
+.catch(error => {
+    $('#loadingModal').removeClass('show');
+
+    toastr.error('حدث خطأ في اختبار الاتصال');
+    console.error('Error:', error);
+});
             });
 
             $('#id_payment_methods').on('change', function() {

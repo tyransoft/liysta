@@ -374,10 +374,9 @@ class CoastsForm(forms.ModelForm):
 class PaymentGatewaySettingForm(forms.ModelForm):
     class Meta:
         model = PaymentGatewaySetting
-        fields = ['provider', 'api_key', 'webhook_secret', 'payment_methods', 'is_active']
+        fields = ['provider', 'api_key',  'payment_methods', 'is_active']
         widgets = {
             'api_key': forms.PasswordInput(attrs={'class': 'form-control'}),
-            'webhook_secret': forms.PasswordInput(attrs={'class': 'form-control'}),
             'payment_methods': forms.Select(attrs={'class': 'form-control'}),
             'provider': forms.Select(attrs={'class': 'form-control'}),
         }
@@ -385,7 +384,6 @@ class PaymentGatewaySettingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['api_key'].required = True
-        self.fields['webhook_secret'].required = True
     
     def clean(self):
         cleaned_data = super().clean()
