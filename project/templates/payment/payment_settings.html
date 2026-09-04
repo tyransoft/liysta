@@ -1,804 +1,694 @@
-{% extends 'base_generic.html' %}
+<!DOCTYPE html>
 {% load static %}
-
-{% block title %}إعدادات الدفع{% endblock %}
-
-{% block page_header %}
-<div class="d-flex justify-content-between align-items-center">
-    <h1 class="h3 mb-0 text-gray-800">إعدادات الدفع</h1>
-</div>
-<style>
-    :root {
-    --primary: #2563EB;
-    --action: #F97316;
-    --text: #1F2937;
-    --light-bg: #F9FAFB;
-    --border: #E5E7EB;
-    --success: #059669;
-    --danger: #dc2626;
-    --warning: #d97706;
-    --info: #3b82f6;
-}
-
-body {
-    background-color: var(--light-bg);
-    font-family: 'Tajawal', 'Segoe UI', sans-serif;
-    color: var(--text);
-}
-
-.page-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-}
-
-.page-header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text);
-}
-
-.card {
-    background: white;
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: box-shadow 0.3s ease;
-    overflow: hidden;
-}
-
-.card:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.card-header {
-    background: transparent;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-}
-
-.card-header h6 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin: 0;
-}
-
-.card-body {
-    padding: 1.75rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-}
-
-.form-control {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    background: white;
-    color: var(--text);
-}
-
-.form-control:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.form-control:disabled {
-    background: #f3f4f6;
-    cursor: not-allowed;
-}
-
-.form-control.is-invalid {
-    border-color: var(--danger);
-}
-
-.form-control.is-invalid:focus {
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-}
-
-.form-text {
-    display: block;
-    margin-top: 0.375rem;
-    font-size: 0.85rem;
-    color: #6B7280;
-}
-
-.text-danger {
-    color: var(--danger);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-}
-
-.custom-control {
-    position: relative;
-    display: block;
-    min-height: 1.5rem;
-    padding-left: 0;
-}
-
-.custom-control-input {
-    position: absolute;
-    z-index: -1;
-    opacity: 0;
-}
-
-.custom-control-label {
-    position: relative;
-    display: inline-block;
-    padding-right: 3rem;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text);
-    user-select: none;
-}
-
-.custom-control-label::before {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0.125rem;
-    width: 2.5rem;
-    height: 1.5rem;
-    background-color: #cbd5e1;
-    border-radius: 0.75rem;
-    transition: background-color 0.3s ease;
-}
-
-.custom-control-label::after {
-    content: "";
-    position: absolute;
-    right: 0.125rem;
-    top: 0.1875rem;
-    width: 1.125rem;
-    height: 1.125rem;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.custom-control-input:checked ~ .custom-control-label::before {
-    background-color: var(--success);
-}
-
-.custom-control-input:checked ~ .custom-control-label::after {
-    transform: translateX(-1.125rem);
-}
-
-.custom-control-input:focus ~ .custom-control-label::before {
-    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25);
-}
-
-.btn {
-    padding: 0.625rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-.btn-info {
-    background: var(--info);
-    color: white;
-}
-
-.btn-info:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
-}
-
-.btn-secondary {
-    background: #6B7280;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background: #4B5563;
-    transform: translateY(-1px);
-}
-
-.btn-outline-secondary {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: #6B7280;
-}
-
-.btn-outline-secondary:hover {
-    background: #f3f4f6;
-    border-color: #9CA3AF;
-}
-
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.alert {
-    padding: 1rem 1.25rem;
-    border-radius: 8px;
-    margin-bottom: 1.25rem;
-    border-right: 4px solid;
-}
-
-.alert-danger {
-    background: #fef2f2;
-    border-color: var(--danger);
-    color: #991b1b;
-}
-
-.alert-info {
-    background: #eff6ff;
-    border-color: var(--info);
-    color: #1e40af;
-}
-
-.alert-success {
-    background: #f0fdf4;
-    border-color: var(--success);
-    color: #065f46;
-}
-
-.alert-warning {
-    background: #fffbeb;
-    border-color: var(--warning);
-    color: #92400e;
-}
-
-.alert i {
-    margin-left: 0.5rem;
-}
-
-.alert code {
-    background: rgba(0, 0, 0, 0.05);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-family: 'Courier New', monospace;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-.row {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -0.75rem;
-}
-
-.col-lg-8 {
-    flex: 0 0 66.666667%;
-    max-width: 66.666667%;
-    padding: 0 0.75rem;
-}
-
-.mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 1.5rem 0;
-}
-
-.mt-4 {
-    margin-top: 1.5rem;
-}
-
-.mb-4 {
-    margin-bottom: 1.5rem;
-}
-
-.mb-0 {
-    margin-bottom: 0;
-}
-
-.py-3 {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1050;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal.show {
-    display: flex;
-}
-
-.modal-dialog {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    margin: 1.75rem auto;
-}
-
-.modal-sm {
-    max-width: 300px;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-}
-
-.modal-body {
-    padding: 2rem;
-    text-align: center;
-}
-
-.modal-body .spinner-border {
-    display: inline-block;
-    width: 3rem;
-    height: 3rem;
-    border: 4px solid var(--border);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.75s linear infinite;
-}
-
-.modal-body .spinner-border.text-primary {
-    border-top-color: var(--primary);
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.modal-body p {
-    margin-top: 1rem;
-    color: #6B7280;
-    font-size: 1rem;
-}
-
-.d-flex {
-    display: flex;
-}
-
-.justify-content-between {
-    justify-content: space-between;
-}
-
-.align-items-center {
-    align-items: center;
-}
-
-.input-group {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    width: 100%;
-}
-
-.input-group .form-control {
-    flex: 1 1 auto;
-    width: 1%;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-.input-group-append {
-    display: flex;
-}
-
-.input-group-append .btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    background: white;
-    color: #6B7280;
-}
-
-.input-group-append .btn:hover {
-    background: #f3f4f6;
-    color: var(--text);
-}
-
-.toast-top-left {
-    top: 20px;
-    left: 20px;
-}
-
-.toast-success {
-    background-color: var(--success) !important;
-}
-
-.toast-error {
-    background-color: var(--danger) !important;
-}
-
-.toast-warning {
-    background-color: var(--warning) !important;
-}
-
-.btn-group {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.fa-eye,
-.fa-eye-slash {
-    font-size: 1rem;
-}
-
-@media (max-width: 992px) {
-    .col-lg-8 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 576px) {
-    .card-body {
-        padding: 1.25rem;
-    }
-
-    .btn {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .btn-group {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .custom-control-label {
-        font-size: 0.95rem;
-    }
-
-    .d-flex.justify-content-between {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-    }
-
-    .page-header h1 {
-        font-size: 1.25rem;
-    }
-
-    .alert {
-        font-size: 0.9rem;
-        padding: 0.75rem 1rem;
-    }
-}
-
-.text-gray-800 {
-    color: var(--text);
-}
-
-.font-weight-bold {
-    font-weight: 700;
-}
-
-.text-primary {
-    color: var(--primary);
-}
-
-.text-success {
-    color: var(--success);
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.card {
-    animation: fadeIn 0.4s ease;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--light-bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">إعدادات بوابة الدفع الإلكتروني</h6>
-            </div>
-            <div class="card-body">
-                <form method="post" id="paymentSettingsForm">
-                    {% csrf_token %}
-                    
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    
-                    <div class="form-group">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="id_is_active" 
-                                   name="is_active" {% if form.is_active.value %}checked{% endif %}>
-                            <label class="custom-control-label" for="id_is_active">
-                                <strong>تفعيل الدفع الإلكتروني</strong>
-                            </label>
-                        </div>
-                        <small class="form-text text-muted">عند التفعيل، سيتمكن العملاء من الدفع عبر البوابة الإلكترونية</small>
-                        {% if form.is_active.errors %}
-                            <div class="text-danger">{{ form.is_active.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_provider"><strong>مزود الخدمة</strong></label>
-                        <select class="form-control" id="id_provider" name="provider">
-                            <option value="ezonepay" {% if form.provider.value == 'ezonepay' %}selected{% endif %}>
-                                EzonePay
-                            </option>
-                        </select>
-                        {% if form.provider.errors %}
-                            <div class="text-danger">{{ form.provider.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_payment_methods"><strong>طرق الدفع المتاحة</strong></label>
-                        <select class="form-control" id="id_payment_methods" name="payment_methods">
-                            <option value="online" {% if form.payment_methods.value == 'online' %}selected{% endif %}>
-                                دفع إلكتروني فقط
-                            </option>
-                            <option value="cash" {% if form.payment_methods.value == 'cash' %}selected{% endif %}>
-                                دفع عند الاستلام فقط
-                            </option>
-                            <option value="both" {% if form.payment_methods.value == 'both' %}selected{% endif %}>
-                                كلا الخيارين (إلكتروني وعند الاستلام)
-                            </option>
-                        </select>
-                        <small class="form-text text-muted">
-                            اختر طرق الدفع التي تريد تقديمها لعملائك
-                        </small>
-                        {% if form.payment_methods.errors %}
-                            <div class="text-danger">{{ form.payment_methods.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_api_key"><strong>مفتاح API</strong></label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="id_api_key" 
-                                   name="api_key" value="{{ form.api_key.value|default:'' }}" 
-                                   placeholder="أدخل مفتاح API من EzonePay">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="toggleApiKey">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <small class="form-text text-muted">
-                            قم بإنشاء مفتاح API من لوحة تحكم EzonePay
-                        </small>
-                        {% if form.api_key.errors %}
-                            <div class="text-danger">{{ form.api_key.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                   
-
-                    {% if setting.is_active and setting.webhook_subscription_id %}
-                        <hr>
-                        <div class="alert alert-info">
-                            <i class="fas fa-check-circle text-success"></i>
-                            <strong>Webhook مفعل</strong>
-                            <br>
-                            <small>
-                                معرف الاشتراك: <code>{{ setting.webhook_subscription_id }}</code>
-                                <br>
-                                تم الاشتراك في: {{ setting.webhook_subscribed_at|date:"Y-m-d H:i"|default:"غير محدد" }}
-                            </small>
-                        </div>
-                    {% endif %}
-
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">
-                             حفظ الإعدادات
-                        </button>
-                        <button type="button" class="btn btn-info" id="testConnectionBtn">
-                             اختبار الاتصال
-                        </button>
-                        <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">
-                             إلغاء
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-       
-    </div>
-</div>
-
-<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center py-4">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">جاري الاختبار...</span>
-                </div>
-                <p class="mt-2" id="loadingMessage">جاري اختبار الاتصال...</p>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-$(document).ready(function() {
-    $('#toggleApiKey').on('click', function() {
-        const input = $('#id_api_key');
-        const icon = $(this).find('i');
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            input.attr('type', 'password');
-            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - إعدادات الدفع</title>
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --action: #F97316;
+            --text: #1F2937;
+            --light-bg: #F9FAFB;
+            --border: #E5E7EB;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --info: #3b82f6;
         }
-    });
 
-    $('#toggleWebhookSecret').on('click', function() {
-        const input = $('#id_webhook_secret');
-        const icon = $(this).find('i');
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            input.attr('type', 'password');
-            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        * {
+            box-sizing: border-box;
         }
-    });
 
-    $('#testConnectionBtn').on('click', function() {
-        const apiKey = $('#id_api_key').val();
-        
-        if (!apiKey) {
-            toastr.warning('يرجى إدخال مفتاح API أولاً');
-            return;
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Tajawal', 'Segoe UI', sans-serif;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        
-        $('#loadingMessage').text('جاري اختبار الاتصال...');
-        $('#loadingModal').modal('show');
-        
-        fetch('dashboard/test-connection/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            $('#loadingModal').modal('hide');
-            if (data.success) {
-                toastr.success(data.message);
-            } else {
-                toastr.error(data.message);
+
+        .auth-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--action));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-subtitle {
+            color: #6B7280;
+            font-size: 1.1rem;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+            color: var(--text);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .form-text {
+            display: block;
+            margin-top: 0.375rem;
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+
+        .text-danger {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .custom-control {
+            position: relative;
+            display: block;
+            min-height: 1.5rem;
+            padding-left: 0;
+        }
+
+        .custom-control-input {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+        }
+
+        .custom-control-label {
+            position: relative;
+            display: inline-block;
+            padding-right: 3rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            user-select: none;
+        }
+
+        .custom-control-label::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0.125rem;
+            width: 2.5rem;
+            height: 1.5rem;
+            background-color: #cbd5e1;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-control-label::after {
+            content: "";
+            position: absolute;
+            right: 0.125rem;
+            top: 0.1875rem;
+            width: 1.125rem;
+            height: 1.125rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: var(--success);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::after {
+            transform: translateX(-1.125rem);
+        }
+
+        .custom-control-input:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25);
+        }
+
+        .btn {
+            padding: 0.625rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+        }
+
+        .btn-secondary {
+            background: #6B7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4B5563;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: #6B7280;
+        }
+
+        .btn-outline-secondary:hover {
+            background: #f3f4f6;
+            border-color: #9CA3AF;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            border-right: 4px solid;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border-color: var(--danger);
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: var(--info);
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .alert i {
+            margin-left: 0.5rem;
+        }
+
+        .alert code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .input-group .form-control {
+            flex: 1 1 auto;
+            width: 1%;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .input-group-append {
+            display: flex;
+        }
+
+        .input-group-append .btn {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            background: white;
+            color: #6B7280;
+        }
+
+        .input-group-append .btn:hover {
+            background: #f3f4f6;
+            color: var(--text);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-dialog {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 1.75rem auto;
+        }
+
+        .modal-sm {
+            max-width: 300px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .spinner-border {
+            display: inline-block;
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal-body p {
+            margin-top: 1rem;
+            color: #6B7280;
+            font-size: 1rem;
+        }
+
+        .toast-top-left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .toast-success {
+            background-color: var(--success) !important;
+        }
+
+        .toast-error {
+            background-color: var(--danger) !important;
+        }
+
+        .toast-warning {
+            background-color: var(--warning) !important;
+        }
+
+        .text-muted {
+            color: #6B7280;
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 1rem;
             }
-        })
-        .catch(error => {
-            $('#loadingModal').modal('hide');
-            toastr.error('حدث خطأ في اختبار الاتصال');
-            console.error('Error:', error);
-        });
-    });
+            
+            .auth-card {
+                padding: 1.5rem;
+            }
 
-    $('#id_payment_methods').on('change', function() {
-        const selected = $(this).val();
-        if (selected === 'cash') {
-            $('#id_api_key').closest('.form-group').hide();
-            $('#id_webhook_secret').closest('.form-group').hide();
-            $('#testConnectionBtn').hide();
-        } else {
-            $('#id_api_key').closest('.form-group').show();
-            $('#id_webhook_secret').closest('.form-group').show();
-            $('#testConnectionBtn').show();
+            .btn-group .btn {
+                flex: 1 1 100%;
+                min-width: unset;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .brand-logo {
+                font-size: 2rem;
+            }
+            
+            .brand-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .auth-title {
+                font-size: 1.25rem;
+            }
+
+            .alert {
+                font-size: 0.9rem;
+                padding: 0.75rem 1rem;
+            }
         }
-    });
+    </style>
+</head>
+<body>
 
-    $('#id_payment_methods').trigger('change');
-});
+    <div class="auth-container">
+        <div class="brand-header">
+            <div class="brand-logo">Liysta</div>
+            <div class="brand-subtitle">إعدادات بوابة الدفع الإلكتروني</div>
+        </div>
+        
+        <div class="auth-card">
+            <h2 class="auth-title">إعدادات الدفع</h2>
+            
+            <form method="post" id="paymentSettingsForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <div class="custom-control">
+                        <input type="checkbox" class="custom-control-input" id="id_is_active" 
+                               name="is_active" {% if form.is_active.value %}checked{% endif %}>
+                        <label class="custom-control-label" for="id_is_active">
+                            تفعيل الدفع الإلكتروني
+                        </label>
+                    </div>
+                    <small class="form-text text-muted">عند التفعيل، سيتمكن العملاء من الدفع عبر البوابة الإلكترونية</small>
+                    {% if form.is_active.errors %}
+                        <div class="text-danger">{{ form.is_active.errors }}</div>
+                    {% endif %}
+                </div>
 
-if (typeof toastr === 'undefined') {
-    document.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">');
-    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"><\/script>');
-    toastr.options = {
-        "positionClass": "toast-top-left",
-        "timeOut": "5000",
-    };
-}
-</script>
-{% endblock %}
+                <div class="form-group">
+                    <label for="id_provider">مزود الخدمة</label>
+                    <select class="form-control" id="id_provider" name="provider">
+                        <option value="ezonepay" {% if form.provider.value == 'ezonepay' %}selected{% endif %}>
+                            EzonePay
+                        </option>
+                    </select>
+                    {% if form.provider.errors %}
+                        <div class="text-danger">{{ form.provider.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_payment_methods">طرق الدفع المتاحة</label>
+                    <select class="form-control" id="id_payment_methods" name="payment_methods">
+                        <option value="online" {% if form.payment_methods.value == 'online' %}selected{% endif %}>
+                            دفع إلكتروني فقط
+                        </option>
+                        <option value="cash" {% if form.payment_methods.value == 'cash' %}selected{% endif %}>
+                            دفع عند الاستلام فقط
+                        </option>
+                        <option value="both" {% if form.payment_methods.value == 'both' %}selected{% endif %}>
+                            كلا الخيارين (إلكتروني وعند الاستلام)
+                        </option>
+                    </select>
+                    <small class="form-text text-muted">
+                        اختر طرق الدفع التي تريد تقديمها لعملائك
+                    </small>
+                    {% if form.payment_methods.errors %}
+                        <div class="text-danger">{{ form.payment_methods.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group" id="apiKeyGroup">
+                    <label for="id_api_key">مفتاح API</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="id_api_key" 
+                               name="api_key" value="{{ form.api_key.value|default:'' }}" 
+                               placeholder="أدخل مفتاح API من EzonePay">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleApiKey">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">
+                        قم بإنشاء مفتاح API من لوحة تحكم EzonePay
+                    </small>
+                    {% if form.api_key.errors %}
+                        <div class="text-danger">{{ form.api_key.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group" id="webhookSecretGroup">
+                    <label for="id_webhook_secret">Webhook Secret</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="id_webhook_secret" 
+                               name="webhook_secret" value="{{ form.webhook_secret.value|default:'' }}" 
+                               placeholder="أدخل Webhook Secret من EzonePay">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleWebhookSecret">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">
+                        يستخدم لتأمين إشعارات الدفع القادمة من EzonePay
+                    </small>
+                    {% if form.webhook_secret.errors %}
+                        <div class="text-danger">{{ form.webhook_secret.errors }}</div>
+                    {% endif %}
+                </div>
+
+                {% if setting.is_active and setting.webhook_subscription_id %}
+                    <hr>
+                    <div class="alert alert-info">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <strong>Webhook مفعل</strong>
+                        <br>
+                        <small>
+                            معرف الاشتراك: <code>{{ setting.webhook_subscription_id }}</code>
+                            <br>
+                            تم الاشتراك في: {{ setting.webhook_subscribed_at|date:"Y-m-d H:i"|default:"غير محدد" }}
+                        </small>
+                    </div>
+                {% endif %}
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ الإعدادات
+                    </button>
+                    <button type="button" class="btn btn-info" id="testConnectionBtn">
+                        <i class="fas fa-plug"></i> اختبار الاتصال
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> العودة للوحة
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="loadingModal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p id="loadingMessage">جاري اختبار الاتصال...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            "positionClass": "toast-top-left",
+            "timeOut": "5000",
+            "closeButton": true,
+            "progressBar": true
+        };
+
+        $(document).ready(function() {
+            $('#toggleApiKey').on('click', function() {
+                const input = $('#id_api_key');
+                const icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            $('#toggleWebhookSecret').on('click', function() {
+                const input = $('#id_webhook_secret');
+                const icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            $('#testConnectionBtn').on('click', function() {
+                const apiKey = $('#id_api_key').val();
+                
+                if (!apiKey) {
+                    toastr.warning('يرجى إدخال مفتاح API أولاً');
+                    return;
+                }
+                
+                $('#loadingMessage').text('جاري اختبار الاتصال...');
+                $('#loadingModal').addClass('show');
+                
+                fetch('{% url "test_payment_connection" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    $('#loadingModal').removeClass('show');
+                    if (data.success) {
+                        toastr.success(data.message);
+                    } else {
+                        toastr.error(data.message);
+                    }
+                })
+                .catch(error => {
+                    $('#loadingModal').removeClass('show');
+                    toastr.error('حدث خطأ في اختبار الاتصال');
+                    console.error('Error:', error);
+                });
+            });
+
+            $('#id_payment_methods').on('change', function() {
+                const selected = $(this).val();
+                if (selected === 'cash') {
+                    $('#apiKeyGroup').hide();
+                    $('#webhookSecretGroup').hide();
+                    $('#testConnectionBtn').hide();
+                } else {
+                    $('#apiKeyGroup').show();
+                    $('#webhookSecretGroup').show();
+                    $('#testConnectionBtn').show();
+                }
+            });
+
+            $('#id_payment_methods').trigger('change');
+        });
+    </script>
+
+</body>
+</html>
