@@ -570,7 +570,7 @@ def dashboard_view(request):
 
 def customer_list_view(request):
     today = timezone.now().date()
-    today_joined = Customer.objects.filter(created_at__date=today)
+    today_joined = Customer.objects.filter(created_at=today)
     new_customer_pg = Paginator(today_joined, 15)
     page_number = request.GET.get('page')
     new_customers = new_customer_pg.get_page(page_number)
