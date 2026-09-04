@@ -43,7 +43,7 @@ class EzonePayService:
         
             #return 'https://api.ezonepay.ly'
         
-        return 'https://demo.ezonepay.ly'
+        return 'https://test.ezonepay.ly'
     
     def _get_headers(self) -> Dict[str, str]:
        
