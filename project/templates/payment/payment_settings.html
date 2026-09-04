@@ -650,7 +650,7 @@
                 $('#loadingMessage').text('جاري اختبار الاتصال...');
                 $('#loadingModal').addClass('show');
                 
-                fetch('{% url "test_payment_connection" %}', {
+                fetch('{% url "test_connection" %}', {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}',
