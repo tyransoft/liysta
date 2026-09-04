@@ -913,7 +913,7 @@ class PaymentGatewaySetting(models.Model):
     merchant = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name='payment_settings',verbose_name='المتجر')
     provider = models.CharField(max_length=50,choices=ProviderChoices.choices,default=ProviderChoices.EZONEPAY,verbose_name='مزود الخدمة') 
     api_key = models.CharField( max_length=255, verbose_name='مفتاح API')
-    webhook_secret = models.CharField(max_length=255,verbose_name='مفتاح Webhook')
+    webhook_secret = models.CharField(max_length=255,verbose_name='مفتاح Webhook' , null=True, blank=True)
     payment_methods = models.CharField(max_length=20,choices=PaymentMethods.choices,default=PaymentMethods.ONLINE,verbose_name='طرق الدفع المتاحة')     
     is_active = models.BooleanField(default=True,verbose_name='نشط')     
     created_at = models.DateTimeField(auto_now_add=True,verbose_name='تاريخ الإنشاء')

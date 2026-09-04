@@ -143,9 +143,9 @@ def deactivate_users_subs():
     subs=Subscription.objects.filter(end_date__lt=today,is_active=True)
     for sub in subs:
         if sub.plan.duration != 'forever':
-           
-          sub.customer.customer_status = 'inactive'
-          sub.customer.save()
+          customer=Customer.objects.get(id=sub.customer.id)
+          customer.customer_status = 'inactive'
+          customer.save()
         
           sub.is_active=False
           sub.save()
