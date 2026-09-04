@@ -188,54 +188,50 @@ class EzonePayService:
     
     
     def test_connection(self) -> Dict[str, Any]:
+      try:
+        api_key = self.api_key.strip()
 
-        try:
-            response = requests.get(
-                f"{self.base_url}/payment-link/list",
-                params={'limit': 1},
-                headers=self._get_headers(),
-                timeout=10
-            )
-            
-            if response.status_code == 200:
-                return {
-                    'success': True,
-                    'message': 'Connection successful',
-                    'data': response.json(),
-                }
-            elif response.status_code == 401:
-                return {
-                    'success': False,
-                    'message': 'Invalid API Key or insufficient permissions',
-                }
-            elif response.status_code == 403:
-                return {
-                    'success': False,
-                    'message': 'API Key does not have required scopes (payment.link.view)',
-                }
-            else:
-                result = response.json()
-                return {
-                    'success': False,
-                    'message': f"API error: {result.get('message', 'Unknown error')}",
-                    'code': response.status_code,
-                }
-                
-        except requests.ConnectionError:
+        print("API KEY LENGTH:", len(api_key))
+        print("API KEY ASCII:", api_key.isascii())
+        print("API KEY REPR:", repr(api_key[:10] + "..." + api_key[-10:]))
+
+        headers = {
+            'X-API-Key': api_key,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+        print("HEADERS CREATED SUCCESSFULLY")
+
+        response = requests.get(
+            f"{self.base_url}/payment-link/list",
+            params={'limit': 1},
+            headers=headers,
+            timeout=10
+        )
+
+        print("STATUS:", response.status_code)
+        print("RESPONSE:", response.text[:500])
+
+        if response.status_code == 200:
             return {
-                'success': False,
-                'message': 'Cannot connect to EzonePay API. Please check your internet connection.',
+                'success': True,
+                'message': 'Connection successful',
+                'data': response.json(),
             }
-        except requests.Timeout:
-            return {
-                'success': False,
-                'message': 'Connection timeout. Please try again later.',
-            }
-        except Exception as e:
-            return {
-                'success': False,
-                'message': f'Unexpected error: {str(e)}',
-            }
+
+        return {
+            'success': False,
+            'message': f'API returned status {response.status_code}',
+        }
+
+      except Exception as e:
+        logger.exception("EzonePay test connection failed")
+
+        return {
+            'success': False,
+            'message': f'Unexpected error: {str(e)}',
+        }
 
 class PaymentService:
    
