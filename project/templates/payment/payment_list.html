@@ -1,649 +1,626 @@
-{% extends 'base_generic.html' %}
+<!DOCTYPE html>
 {% load static %}
-
-{% block title %}سجل المدفوعات{% endblock %}
-
-{% block page_header %}
-<div class="d-flex justify-content-between align-items-center">
-    <h1 class="h3 mb-0 text-gray-800">سجل المدفوعات</h1>
-    <div>
-        <span class="badge badge-success">المجموع: {{ stats.total_amount|floatformat:2 }} ر.س</span>
-    </div>
-</div>
-{% endblock %}
-
-{% block content %}
-<style>
-    :root {
-        --primary: #2563EB;
-        --action: #F97316;
-        --text: #1F2937;
-        --light-bg: #F9FAFB;
-        --border: #E5E7EB;
-        --success: #059669;
-        --danger: #dc2626;
-        --warning: #d97706;
-        --info: #3b82f6;
-    }
-
-    /* ====== كاردز الإحصائيات ====== */
-    .stats-row {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.25rem 1.5rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        border-right: 4px solid;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    .stat-card.primary { 
-        border-color: var(--primary);
-        background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-    }
-    
-    .stat-card.success { 
-        border-color: var(--success);
-        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-    }
-    
-    .stat-card.warning { 
-        border-color: var(--warning);
-        background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
-    }
-    
-    .stat-card.danger { 
-        border-color: var(--danger);
-        background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
-    }
-
-    .stat-info {
-        flex: 1;
-    }
-
-    .stat-info .stat-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #6B7280;
-        margin-bottom: 0.25rem;
-    }
-
-    .stat-info .stat-number {
-        font-size: 2rem;
-        font-weight: 900;
-        color: var(--text);
-        line-height: 1.2;
-    }
-
-    .stat-card.primary .stat-number { color: var(--primary); }
-    .stat-card.success .stat-number { color: var(--success); }
-    .stat-card.warning .stat-number { color: var(--warning); }
-    .stat-card.danger .stat-number { color: var(--danger); }
-
-    .stat-icon {
-        font-size: 2.5rem;
-        opacity: 0.15;
-        color: var(--text);
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover .stat-icon {
-        opacity: 0.25;
-        transform: scale(1.1);
-    }
-
-    /* ====== الكارد ====== */
-    .card {
-        background: white;
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
-
-    .card-header {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid var(--border);
-        background: transparent;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .card-header h6 {
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--primary);
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    /* ====== الفلاتر ====== */
-    .filter-form {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-
-    .filter-form .form-group {
-        margin-bottom: 0;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 600;
-        font-size: 0.85rem;
-        color: var(--text);
-        margin-bottom: 0.25rem;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.6rem 0.75rem;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-        background: white;
-        color: var(--text);
-        font-family: 'Tajawal', sans-serif;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary);
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .input-group {
-        display: flex;
-        align-items: stretch;
-    }
-
-    .input-group .form-control {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        flex: 1;
-    }
-
-    .input-group-append .btn {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        padding: 0.6rem 1rem;
-        background: var(--primary);
-        color: white;
-        border: none;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-    .input-group-append .btn:hover {
-        background: #1d4ed8;
-    }
-
-    /* ====== الجدول ====== */
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.95rem;
-    }
-
-    .table th {
-        background: #f8fafc;
-        font-weight: 700;
-        color: var(--text);
-        padding: 0.75rem 1rem;
-        text-align: right;
-        border-bottom: 2px solid var(--border);
-        white-space: nowrap;
-    }
-
-    .table td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--border);
-        vertical-align: middle;
-    }
-
-    .table tbody tr {
-        transition: background 0.2s;
-    }
-
-    .table tbody tr:hover {
-        background: #f8fafc;
-    }
-
-    /* ====== البادجات ====== */
-    .badge {
-        display: inline-block;
-        padding: 0.3rem 0.85rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    .badge-success {
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .badge-warning {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .badge-danger {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .badge-info {
-        background: #dbeafe;
-        color: #1e40af;
-    }
-
-    .badge-secondary {
-        background: #f3f4f6;
-        color: #6B7280;
-    }
-
-    .badge-total {
-        background: linear-gradient(135deg, var(--primary), var(--action));
-        color: white;
-        padding: 0.4rem 1.2rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        font-weight: 700;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-
-    /* ====== الأزرار ====== */
-    .btn-sm {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.85rem;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        transition: all 0.3s;
-    }
-
-    .btn-info {
-        background: var(--info);
-        color: white;
-    }
-
-    .btn-info:hover {
-        background: #2563eb;
-        transform: scale(1.05);
-    }
-
-    /* ====== الترقيم ====== */
-    .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 0.25rem;
-        margin-top: 1.5rem;
-        list-style: none;
-        padding: 0;
-        flex-wrap: wrap;
-    }
-
-    .pagination .page-item .page-link {
-        display: block;
-        padding: 0.5rem 0.85rem;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        color: var(--text);
-        text-decoration: none;
-        transition: all 0.2s;
-        font-size: 0.9rem;
-    }
-
-    .pagination .page-item.active .page-link {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-    }
-
-    .pagination .page-item .page-link:hover {
-        background: #f3f4f6;
-    }
-
-    .pagination .page-item.active .page-link:hover {
-        background: var(--primary);
-    }
-
-    /* ====== أخرى ====== */
-    .text-center {
-        text-align: center;
-    }
-
-    .py-4 {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-
-    .text-gray-300 {
-        color: #d1d5db;
-    }
-
-    .text-muted {
-        color: #6B7280;
-    }
-
-    .font-weight-bold {
-        font-weight: 700;
-    }
-
-    .mb-3 {
-        margin-bottom: 1rem;
-    }
-
-    /* ====== التجاوب ====== */
-    @media (max-width: 1200px) {
-        .stats-row {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .stats-row {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liysta - سجل المدفوعات</title>
+    <link rel="icon" href="{% static 'img/fc.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --action: #F97316;
+            --text: #1F2937;
+            --light-bg: #F9FAFB;
+            --border: #E5E7EB;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --info: #3b82f6;
         }
 
-        .stat-card {
-            padding: 1rem;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        .stat-info .stat-number {
-            font-size: 1.5rem;
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Tajawal', 'Segoe UI', sans-serif;
+            color: var(--text);
+            padding: 2rem 1rem;
         }
 
-        .stat-icon {
-            font-size: 2rem;
-        }
-
-        .filter-form {
-            grid-template-columns: 1fr;
-        }
-
-        .table {
-            font-size: 0.85rem;
-        }
-
-        .table th,
-        .table td {
-            padding: 0.5rem;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .page-header {
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: flex-start;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .card-header {
-            flex-direction: column;
-            align-items: flex-start;
+        .page-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
         }
-    }
 
-    @media (max-width: 480px) {
+        .badge-total {
+            background: linear-gradient(135deg, var(--primary), var(--action));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
         .stats-row {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
-            padding: 0.75rem 1rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border-right: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card.primary { border-color: var(--primary); }
+        .stat-card.success { border-color: var(--success); }
+        .stat-card.warning { border-color: var(--warning); }
+        .stat-card.danger { border-color: var(--danger); }
+
+        .stat-info .stat-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
         }
 
         .stat-info .stat-number {
-            font-size: 1.25rem;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-top: 0.25rem;
         }
+
+        .stat-card.primary .stat-number { color: var(--primary); }
+        .stat-card.success .stat-number { color: var(--success); }
+        .stat-card.warning .stat-number { color: var(--warning); }
+        .stat-card.danger .stat-number { color: var(--danger); }
 
         .stat-icon {
-            font-size: 1.5rem;
+            font-size: 2.5rem;
+            opacity: 0.15;
+            color: var(--text);
         }
-    }
-</style>
 
-<!-- ====== كاردز الإحصائيات ====== -->
-<div class="stats-row">
-    <div class="stat-card primary">
-        <div class="stat-info">
-            <div class="stat-label">إجمالي المدفوعات</div>
-            <div class="stat-number">{{ stats.total }}</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-calendar-alt"></i>
-        </div>
-    </div>
-    
-    <div class="stat-card success">
-        <div class="stat-info">
-            <div class="stat-label">ناجحة</div>
-            <div class="stat-number">{{ stats.completed }}</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-    </div>
-    
-    <div class="stat-card warning">
-        <div class="stat-info">
-            <div class="stat-label">معلقة</div>
-            <div class="stat-number">{{ stats.pending }}</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-clock"></i>
-        </div>
-    </div>
-    
-    <div class="stat-card danger">
-        <div class="stat-info">
-            <div class="stat-label">فاشلة</div>
-            <div class="stat-number">{{ stats.failed }}</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-times-circle"></i>
-        </div>
-    </div>
-</div>
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
 
-<!-- ====== الفلاتر ====== -->
-<div class="card">
-    <div class="card-header">
-        <h6><i class="fas fa-filter"></i> الفلاتر والبحث</h6>
-    </div>
-    <div class="card-body">
-        <form method="get" class="filter-form">
-            <div class="form-group">
-                <label>الحالة</label>
-                <select name="status" class="form-control">
-                    <option value="all">الكل</option>
-                    {% for value, label in status_choices %}
-                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label>من تاريخ</label>
-                <input type="date" name="date_from" class="form-control" value="{{ date_from|default:'' }}">
-            </div>
-            <div class="form-group">
-                <label>إلى تاريخ</label>
-                <input type="date" name="date_to" class="form-control" value="{{ date_to|default:'' }}">
-            </div>
-            <div class="form-group">
-                <label>بحث</label>
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="رقم العملية، العميل..." value="{{ search|default:'' }}">
-                    <div class="input-group-append">
-                        <button class="btn" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
 
-<!-- ====== الجدول ====== -->
-<div class="card">
-    <div class="card-header">
-        <h6><i class="fas fa-list"></i> قائمة المدفوعات</h6>
+        .card-header h6 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-form .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: white;
+            color: var(--text);
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .input-group .form-control {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            flex: 1;
+        }
+
+        .input-group-append .btn {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            padding: 0.6rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .input-group-append .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .table th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            text-align: right;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-secondary {
+            background: #f3f4f6;
+            color: #6B7280;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.3s;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-top: 1.5rem;
+            list-style: none;
+            padding: 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination .page-item .page-link {
+            display: block;
+            padding: 0.5rem 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pagination .page-item .page-link:hover {
+            background: #f3f4f6;
+        }
+
+        .pagination .page-item.active .page-link:hover {
+            background: var(--primary);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .py-4 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .text-gray-300 {
+            color: #d1d5db;
+        }
+
+        .text-muted {
+            color: #6B7280;
+        }
+
+        .font-weight-bold {
+            font-weight: 700;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-info .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .table {
+                font-size: 0.85rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.5rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 0.75rem 1rem;
+            }
+
+            .stat-info .stat-number {
+                font-size: 1.25rem;
+            }
+
+            .stat-icon {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="page-header">
+        <h1>سجل المدفوعات</h1>
         <span class="badge-total">المجموع: {{ stats.total_amount|floatformat:2 }} ر.س</span>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>رقم العملية</th>
-                        <th>العميل</th>
-                        <th>المبلغ</th>
-                        <th>الحالة</th>
-                        <th>التاريخ</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for payment in payments %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>
-                            <span class="font-weight-bold">{{ payment.payment_reference }}</span>
-                            {% if payment.transaction_id %}
-                                <br><small class="text-muted">{{ payment.transaction_id|truncatechars:15 }}</small>
-                            {% endif %}
-                        </td>
-                        <td>{{ payment.order.customer_name }}</td>
-                        <td>
-                            <span class="font-weight-bold">{{ payment.amount|floatformat:2 }}</span>
-                            <br><small>ر.س</small>
-                        </td>
-                        <td>
-                            {% if payment.status == 'completed' %}
-                                <span class="badge badge-success">ناجحة</span>
-                            {% elif payment.status == 'pending' %}
-                                <span class="badge badge-warning">معلقة</span>
-                            {% elif payment.status == 'failed' %}
-                                <span class="badge badge-danger">فاشلة</span>
-                            {% elif payment.status == 'refunded' %}
-                                <span class="badge badge-info">مستردة</span>
-                            {% else %}
-                                <span class="badge badge-secondary">{{ payment.get_status_display }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {{ payment.created_at|date:"Y-m-d" }}
-                            <br><small>{{ payment.created_at|time:"H:i" }}</small>
-                        </td>
-                        <td>
-                            <a href="{% url 'payment_details' payment.id %}" class="btn-sm btn-info">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center py-4">
-                            <i class="fas fa-inbox fa-3x text-gray-300 mb-3"></i>
-                            <p>لا توجد مدفوعات حالياً</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+    <div class="stats-row">
+        <div class="stat-card primary">
+            <div class="stat-info">
+                <div class="stat-label">إجمالي المدفوعات</div>
+                <div class="stat-number">{{ stats.total }}</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
         </div>
         
-        <!-- ====== الترقيم ====== -->
-        {% if payments.has_other_pages %}
-        <nav>
-            <ul class="pagination">
-                {% if payments.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ payments.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
-                            السابق
-                        </a>
-                    </li>
-                {% endif %}
-                
-                {% for num in payments.paginator.page_range %}
-                    {% if payments.number == num %}
-                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                    {% elif num > payments.number|add:'-3' and num < payments.number|add:'3' %}
+        <div class="stat-card success">
+            <div class="stat-info">
+                <div class="stat-label">ناجحة</div>
+                <div class="stat-number">{{ stats.completed }}</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        
+        <div class="stat-card warning">
+            <div class="stat-info">
+                <div class="stat-label">معلقة</div>
+                <div class="stat-number">{{ stats.pending }}</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        
+        <div class="stat-card danger">
+            <div class="stat-info">
+                <div class="stat-label">فاشلة</div>
+                <div class="stat-number">{{ stats.failed }}</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h6>الفلاتر والبحث</h6>
+        </div>
+        <div class="card-body">
+            <form method="get" class="filter-form">
+                <div class="form-group">
+                    <label>الحالة</label>
+                    <select name="status" class="form-control">
+                        <option value="all">الكل</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>من تاريخ</label>
+                    <input type="date" name="date_from" class="form-control" value="{{ date_from|default:'' }}">
+                </div>
+                <div class="form-group">
+                    <label>إلى تاريخ</label>
+                    <input type="date" name="date_to" class="form-control" value="{{ date_to|default:'' }}">
+                </div>
+                <div class="form-group">
+                    <label>بحث</label>
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="رقم العملية، العميل..." value="{{ search|default:'' }}">
+                        <div class="input-group-append">
+                            <button class="btn" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h6>قائمة المدفوعات</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>رقم العملية</th>
+                            <th>العميل</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                            <th>التاريخ</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <span class="font-weight-bold">{{ payment.payment_reference }}</span>
+                                {% if payment.transaction_id %}
+                                    <br><small class="text-muted">{{ payment.transaction_id|truncatechars:15 }}</small>
+                                {% endif %}
+                            </td>
+                            <td>{{ payment.order.customer_name }}</td>
+                            <td>
+                                <span class="font-weight-bold">{{ payment.amount|floatformat:2 }}</span>
+                                <br><small>ر.س</small>
+                            </td>
+                            <td>
+                                {% if payment.status == 'completed' %}
+                                    <span class="badge badge-success">ناجحة</span>
+                                {% elif payment.status == 'pending' %}
+                                    <span class="badge badge-warning">معلقة</span>
+                                {% elif payment.status == 'failed' %}
+                                    <span class="badge badge-danger">فاشلة</span>
+                                {% elif payment.status == 'refunded' %}
+                                    <span class="badge badge-info">مستردة</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">{{ payment.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ payment.created_at|date:"Y-m-d" }}
+                                <br><small>{{ payment.created_at|time:"H:i" }}</small>
+                            </td>
+                            <td>
+                                <a href="{% url 'payment_details' payment.id %}" class="btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-gray-300 mb-3"></i>
+                                <p>لا توجد مدفوعات حالياً</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if payments.has_other_pages %}
+            <nav>
+                <ul class="pagination">
+                    {% if payments.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
-                                {{ num }}
+                            <a class="page-link" href="?page={{ payments.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                السابق
                             </a>
                         </li>
                     {% endif %}
-                {% endfor %}
-                
-                {% if payments.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ payments.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
-                            التالي
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
+                    
+                    {% for num in payments.paginator.page_range %}
+                        {% if payments.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > payments.number|add:'-3' and num < payments.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if payments.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ payments.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                التالي
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
     </div>
 </div>
-{% endblock %}
+
+</body>
+</html>
